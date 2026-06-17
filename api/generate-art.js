@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
       },
-      body: JSON.stringify({ model: 'dall-e-3', prompt: prompt, n: 1, size: '1024x1024', quality: 'standard' })
+      body: JSON.stringify({ model: 'dall-e-2', prompt: prompt, n: 1, size: '1024x1024', quality: 'standard' })
     });
     const data = await response.json();
     res.status(200).json(data);
