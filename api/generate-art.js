@@ -10,11 +10,16 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
       },
-      body: JSON.stringify({ model: gpt-image-1, prompt: prompt, n: 1, size: '1024x1024', })
+      body: JSON.stringify({ 
+        model: 'gpt-image-1', 
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024'
+      })
     });
-    const data = await response.json();
-    res.status(200).json(data);
+    const text = await response.text();
+    return res.status(200).json({ raw: text });
   } catch (err) {
-    res.status(500).json({ error: 'Generation failed' });
+    res.status(500).json({ error: err.message });
   }
 }
