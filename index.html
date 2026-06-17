@@ -472,7 +472,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <script>
 let genCount = 0;
 let planCount = 0;
-const OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY_HERE';
+
 
 function showPage(page, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -498,14 +498,7 @@ async function generateArt() {
   document.getElementById('artGrid').style.opacity = '0.3';
   document.getElementById('generatedImage').classList.remove('show');
 
-  if (OPENAI_API_KEY === 'YOUR_OPENAI_API_KEY_HERE') {
-    setTimeout(() => {
-      document.getElementById('generating').classList.remove('show');
-      document.getElementById('artGrid').style.opacity = '1';
-      alert('Add your OpenAI API key to the code to generate real images. Replace YOUR_OPENAI_API_KEY_HERE in the script section.');
-    }, 1500);
-    return;
-  }
+
 
   try {
     const response = await fetch(''const response = await fetch('/api/generate-art', {, {
