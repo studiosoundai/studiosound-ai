@@ -42,8 +42,9 @@ Return exactly 8 timeline items covering pre-release through post-release. Forma
     if (data.error) {
       return res.status(400).json({ error: data.error.message });
     }
-    const content = data.choices[0].message.content;
-    const timeline = JSON.parse(content);
+   let content = data.choices[0].message.content;
+content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+const timeline = JSON.parse(content);
     return res.status(200).json({ timeline });
   } catch (err) {
     res.status(500).json({ error: err.message });
