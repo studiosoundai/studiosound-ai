@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         model: 'gpt-image-1', 
         prompt: prompt,
         n: 1,
-        size: '1024x1024'
+        size: '3000x3000'
       })
     });
     const data = await response.json();
