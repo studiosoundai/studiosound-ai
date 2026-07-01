@@ -40,7 +40,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .gallerysec{padding:48px 32px;}
 .gallerylabel{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:0.06em;margin-bottom:16px;}
 .maingrid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:220px 220px;gap:12px;margin-bottom:12px;}
-.griditem{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:var(--card);border:0.5px solid var(--border);transition:border-color 0.2s;}
+.griditem.tall{grid-row:span 2;height:100%;}
+.griditem img{width:100%;height:100%;object-fit:cover;display:block;}
+.griditem{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:var(--card);border:0.5px solid var(--border);transition:border-color 0.2s;min-height:220px;}
 .griditem:hover{border-color:var(--neon);}
 .griditem:hover .gridoverlay{opacity:1;}
 .griditem.tall{grid-row:span 2;}
