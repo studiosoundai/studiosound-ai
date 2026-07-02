@@ -10,31 +10,35 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#1a1a28;--text:#fafafa;--muted:#6b6b80;}
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:52px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;}
-.logodot{width:26px;height:26px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:13px;color:#05050a;}
-.logoname{font-size:14px;font-weight:700;letter-spacing:-0.02em;}
+.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logodot i{font-size:14px;color:#05050a;}
+.logoname{font-size:15px;font-weight:800;letter-spacing:-0.02em;color:#fff;}
 .navlinks{display:flex;gap:2px;}
-.navlink{color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;padding:5px 10px;border-radius:6px;transition:all 0.15s;text-decoration:none;}
-.navlink:hover{color:var(--text);background:#0d0d14;}
+.navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
+.navlink:hover{opacity:1;background:#0d0d14;}
 .navlink.drop::after{content:' ▾';font-size:9px;}
 .navbtns{display:flex;gap:8px;}
-.btn-ghost{border:0.5px solid #2a2a3a;color:var(--text);background:transparent;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
+.btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
 .btn-ghost:hover{border-color:var(--neon);}
-.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;padding:64px 32px 48px;position:relative;overflow:hidden;}
+.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:64px 32px 52px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:-80px;left:-80px;width:500px;height:500px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
 .heroleft{position:relative;z-index:1;}
 .herobadge{display:inline-flex;align-items:center;gap:8px;border:0.5px solid var(--neon);border-radius:24px;padding:5px 14px;font-size:11px;color:var(--neon);font-weight:600;margin-bottom:20px;animation:pulse 3s ease-in-out infinite;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 #00FFD120;}50%{box-shadow:0 0 0 8px transparent;}}
-.herotitle{font-size:64px;font-weight:900;line-height:1.0;letter-spacing:-0.04em;margin-bottom:16px;}
+.herotitle{font-size:68px;font-weight:900;line-height:1.0;letter-spacing:-0.04em;margin-bottom:16px;color:#fff;}
 .herotitle .neon{color:var(--neon);}
 .herosub{color:var(--muted);font-size:15px;font-weight:500;line-height:1.65;max-width:440px;margin-bottom:28px;}
 .herobtns{display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
-.btn-hero{background:var(--neon);color:#05050a;border:none;border-radius:28px;padding:14px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:transform 0.15s;}
+.btn-hero{background:var(--neon);color:#05050a;border:none;border-radius:28px;padding:14px 32px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:transform 0.15s;}
 .btn-hero:hover{transform:scale(1.03);}
-.btn-hero2{background:transparent;border:0.5px solid var(--border);color:var(--text);border-radius:28px;padding:14px 24px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
+.btn-hero2{background:transparent;border:0.5px solid #3a3a52;color:#fff;border-radius:28px;padding:14px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
 .btn-hero2:hover{border-color:var(--neon);}
 .herosmall{color:#3a3a50;font-size:11px;}
 .herosmall span{margin:0 6px;color:#2a2a38;}
@@ -43,10 +47,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .herogriditem{border-radius:12px;overflow:hidden;aspect-ratio:1;border:0.5px solid var(--border);transition:border-color 0.2s,transform 0.15s;}
 .herogriditem:hover{border-color:var(--neon);transform:scale(1.02);}
 .herogriditem img{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* TOOLS ROW */
 .toolsrow{border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:40px 0;}
 .toolsrow-inner{display:flex;gap:0;align-items:center;}
 .toolsleft{width:220px;flex-shrink:0;padding:0 32px;}
-.tleftitle{font-size:26px;font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;}
+.tleftitle{font-size:26px;font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;color:#fff;}
 .tleftitle .neon{color:var(--neon);}
 .tleftdesc{color:var(--muted);font-size:11px;font-weight:500;line-height:1.6;margin-bottom:14px;}
 .btn-exp{background:var(--neon);color:#05050a;border:none;border-radius:22px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:6px;}
@@ -57,8 +63,64 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tcimg{height:130px;display:flex;align-items:center;justify-content:center;font-size:44px;}
 .tcbody{padding:10px 12px 12px;}
 .tcdesc{color:var(--muted);font-size:10px;margin-bottom:3px;}
-.tcname{color:var(--text);font-size:12px;font-weight:700;margin-bottom:3px;}
+.tcname{color:#fff;font-size:12px;font-weight:700;margin-bottom:3px;}
 .tclink{color:var(--neon);font-size:10px;font-weight:600;}
+
+/* LOGO SLIDER */
+.logoslider{padding:28px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);overflow:hidden;position:relative;}
+.logoslider::before,.logoslider::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;}
+.logoslider::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
+.logoslider::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.logoslider-label{text-align:center;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:18px;}
+.logotrack{display:flex;gap:52px;animation:logoscroll 30s linear infinite;white-space:nowrap;align-items:center;}
+@keyframes logoscroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.logoitem{display:inline-flex;align-items:center;gap:8px;color:#3a3a52;font-size:13px;font-weight:700;flex-shrink:0;transition:color 0.2s;cursor:pointer;}
+.logoitem:hover{color:var(--text);}
+.logobadge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+.sp{background:#1DB954;color:#000;}
+.am{background:#fc3c44;color:#fff;}
+.yt{background:#FF0000;color:#fff;}
+.tt{background:#010101;color:#fff;border:1px solid #333;}
+.ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.fb{background:#1877F2;color:#fff;}
+.td{background:#fff;color:#000;}
+.az{background:#FF9900;color:#000;}
+.dz{background:#A238FF;color:#fff;}
+.sc{background:#FF5500;color:#fff;}
+.sn{background:#FFFC00;color:#000;}
+.tw{background:#000;color:#fff;border:1px solid #333;}
+
+/* TOOLKIT */
+.toolkit{padding:56px 32px;}
+.toolkit-label{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
+.toolkit-title{font-size:34px;font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:28px;color:#fff;}
+.toolkit-title .neon{color:var(--neon);}
+.toolkit-inner{display:flex;gap:0;}
+.toolkit-left{width:200px;flex-shrink:0;padding-right:24px;border-right:0.5px solid var(--border);}
+.cat-item{padding:11px 14px;border-radius:8px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;margin-bottom:4px;transition:all 0.15s;display:flex;align-items:center;gap:10px;border-left:2px solid transparent;}
+.cat-item:hover{background:var(--card);color:#fff;}
+.cat-item.active{background:#00FFD112;color:var(--neon);border-left:2px solid var(--neon);}
+.cat-item i{font-size:16px;}
+.toolkit-right{flex:1;padding-left:24px;}
+.toolcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;transition:opacity 0.2s;}
+.toolcard{border-radius:14px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
+.toolcard:hover{border-color:var(--neon);transform:translateY(-4px);}
+.toolcard-img{height:200px;display:flex;align-items:center;justify-content:center;}
+.toolcard-img .fallback{font-size:72px;}
+.toolcard-body{padding:12px 14px 14px;}
+.toolcard-desc{color:var(--muted);font-size:10px;margin-bottom:4px;}
+.toolcard-name{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.02em;}
+.toolcard-link{color:var(--neon);font-size:11px;font-weight:600;}
+.tc1{background:linear-gradient(135deg,#0f1f3a,#162b50);}
+.tc2{background:linear-gradient(135deg,#1a0828,#2d1045);}
+.tc3{background:linear-gradient(135deg,#0f3a1f,#1a5030);}
+.tc4{background:linear-gradient(135deg,#3a0f1f,#501a2a);}
+.tc5{background:linear-gradient(135deg,#3a1f0f,#502a1a);}
+.tc6{background:linear-gradient(135deg,#0f0f3a,#1a1a50);}
+.tc7{background:linear-gradient(135deg,#2a0f3a,#3a1a50);}
+.tc8{background:linear-gradient(135deg,#1a2a0f,#2a3a1a);}
+
+/* GALLERY */
 .gallerysec{padding:48px 32px;}
 .galleryhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .gallerylabel{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:0.06em;}
@@ -74,18 +136,24 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .gname{color:#fff;font-size:12px;font-weight:600;}
 .grow2{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 .grow2 .griditem{height:100px;}
+
+/* MARQUEE */
 .marquee{overflow:hidden;padding:16px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);}
 .marqinner{display:flex;gap:44px;animation:marq 22s linear infinite;white-space:nowrap;}
 @keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 .marqitem{color:#252535;font-size:11px;font-weight:700;letter-spacing:0.07em;display:inline-flex;align-items:center;gap:12px;}
 .marqitem::before{content:'✦';color:var(--neon);font-size:9px;}
+
+/* STATS */
 .statsbar{margin:48px 32px;background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .statitem{text-align:center;}
 .statnum{font-size:32px;font-weight:900;color:var(--neon);letter-spacing:-0.03em;}
 .statlabel{color:var(--muted);font-size:11px;font-weight:500;margin-top:4px;line-height:1.4;}
+
+/* FEATURES */
 .featsec{padding:0 32px 56px;}
 .seclabel{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
-.sectitle{font-size:34px;font-weight:900;letter-spacing:-0.03em;margin-bottom:8px;line-height:1.1;}
+.sectitle{font-size:34px;font-weight:900;letter-spacing:-0.03em;margin-bottom:8px;line-height:1.1;color:#fff;}
 .sectitle .neon{color:var(--neon);}
 .secsub{color:var(--muted);font-size:13px;font-weight:500;line-height:1.7;margin-bottom:28px;max-width:500px;}
 .featgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -93,48 +161,81 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .featcard:hover{border-color:var(--neon);transform:translateY(-3px);}
 .ficon{width:36px;height:36px;background:#00FFD118;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
 .ficon i{font-size:18px;color:var(--neon);}
-.ftitle{color:var(--text);font-size:13px;font-weight:700;margin-bottom:6px;}
+.ftitle{color:#fff;font-size:13px;font-weight:700;margin-bottom:6px;}
 .fdesc{color:var(--muted);font-size:11px;font-weight:500;line-height:1.7;margin-bottom:10px;}
 .fbullet{color:#a1a1b8;font-size:11px;display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;line-height:1.4;}
 .fbullet::before{content:'→';color:var(--neon);flex-shrink:0;}
+
+/* STEPS */
 .stepsec{padding:0 32px 56px;}
 .stepsrow{display:flex;gap:0;align-items:flex-start;margin-top:28px;}
 .stepitem{flex:1;text-align:center;position:relative;}
 .stepitem:not(:last-child)::after{content:'';position:absolute;top:19px;left:58%;width:84%;height:0.5px;background:var(--border);}
 .stepnum{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--neon);margin:0 auto 10px;background:var(--bg);position:relative;z-index:1;}
-.steptitle{color:var(--text);font-size:12px;font-weight:700;margin-bottom:4px;}
+.steptitle{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;}
 .stepdesc{color:var(--muted);font-size:10px;line-height:1.6;padding:0 10px;}
+
+/* PRICING */
 .pricesec{padding:0 32px 56px;}
 .pricegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px;}
 .pricecard{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:22px;position:relative;}
 .pricecard.hot{border-color:var(--neon);}
 .hotbadge{position:absolute;top:-10px;right:14px;background:var(--neon);color:#05050a;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;}
 .ptier{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:6px;}
-.pnum{font-size:32px;font-weight:900;letter-spacing:-0.03em;margin-bottom:2px;}
+.pnum{font-size:32px;font-weight:900;letter-spacing:-0.03em;margin-bottom:2px;color:#fff;}
 .pper{color:var(--muted);font-size:11px;}
 .pdiv{border-top:0.5px solid var(--border);margin:14px 0;}
 .pfeat{display:flex;align-items:flex-start;gap:7px;color:#a1a1b8;font-size:11px;margin-bottom:8px;line-height:1.4;}
 .pfeat i{color:var(--neon);font-size:13px;flex-shrink:0;margin-top:1px;}
 .pbtn{width:100%;border-radius:9px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;font-family:'Sora',sans-serif;}
-.pbtn.out{background:transparent;border:0.5px solid var(--border);color:var(--text);}
+.pbtn.out{background:transparent;border:0.5px solid var(--border);color:#fff;}
 .pbtn.fill{background:var(--neon);border:none;color:#05050a;}
+
+/* FAQ */
 .faqsec{padding:0 32px 56px;}
 .faqwrap{max-width:680px;margin:24px 0 0;}
 .faqitem{border-bottom:0.5px solid var(--border);}
-.faqq{padding:14px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-size:13px;font-weight:600;gap:14px;}
+.faqq{padding:14px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:#fff;font-size:13px;font-weight:600;gap:14px;}
 .faqq i{color:var(--neon);font-size:15px;flex-shrink:0;transition:transform 0.2s;}
 .faqa{color:var(--muted);font-size:12px;line-height:1.8;padding-bottom:14px;display:none;}
 .faqitem.open .faqa{display:block;}
 .faqitem.open .faqq i{transform:rotate(45deg);}
+
+/* CTA */
 .ctasec{padding:0 32px 56px;}
 .ctabox{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:56px 32px;text-align:center;}
-.ctatitle{font-size:32px;font-weight:900;letter-spacing:-0.03em;margin-bottom:10px;line-height:1.1;}
+.ctatitle{font-size:32px;font-weight:900;letter-spacing:-0.03em;margin-bottom:10px;line-height:1.1;color:#fff;}
 .ctasub{color:var(--muted);font-size:13px;font-weight:500;margin-bottom:24px;line-height:1.7;}
-.footer{padding:20px 32px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.footerleft{color:#252535;font-size:11px;}
-.footerlinks{display:flex;gap:18px;}
-.footerlink{color:#303048;font-size:11px;cursor:pointer;text-decoration:none;}
-.footerlink:hover{color:var(--muted);}
+
+/* TRUST BAR */
+.trustbar{padding:32px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);text-align:center;margin-bottom:0;}
+.trusttext{color:var(--muted);font-size:12px;font-weight:500;margin-bottom:20px;}
+.trustbadges{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
+.trustbadge{border:0.5px solid #2a2a3a;border-radius:24px;padding:10px 24px;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.trustbadge i{color:var(--neon);font-size:16px;}
+
+/* FOOTER */
+.footer{background:#030308;border-top:0.5px solid var(--border);padding:40px 32px 20px;}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.footer-logodot{width:26px;height:26px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.footer-logodot i{font-size:13px;color:#05050a;}
+.footer-logoname{font-size:14px;font-weight:800;color:#fff;}
+.footer-desc{color:var(--muted);font-size:12px;line-height:1.7;max-width:220px;margin-bottom:16px;}
+.footer-social{display:flex;gap:10px;}
+.footer-social a{width:32px;height:32px;border:0.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-decoration:none;transition:all 0.15s;}
+.footer-social a:hover{border-color:var(--neon);color:var(--neon);}
+.footer-col{}
+.footer-col-title{color:#fff;font-size:12px;font-weight:700;letter-spacing:0.04em;margin-bottom:14px;}
+.footer-link{display:block;color:var(--muted);font-size:12px;font-weight:500;text-decoration:none;margin-bottom:9px;transition:color 0.15s;cursor:pointer;}
+.footer-link:hover{color:var(--neon);}
+.footer-bottom{border-top:0.5px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy{color:#252535;font-size:11px;}
+.footer-bottom-links{display:flex;gap:20px;}
+.footer-bottom-link{color:#303048;font-size:11px;text-decoration:none;cursor:pointer;}
+.footer-bottom-link:hover{color:var(--muted);}
+
 @media(max-width:768px){
 .navlinks{display:none;}
 .hero{grid-template-columns:1fr;padding:40px 16px 32px;}
@@ -142,18 +243,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .herotitle{font-size:42px;}
 .toolsrow-inner{flex-direction:column;gap:20px;}
 .toolsleft{width:100%;padding:0 16px;}
-.gallerysec,.featsec,.stepsec,.pricesec,.faqsec,.ctasec{padding-left:16px;padding-right:16px;}
+.gallerysec,.featsec,.stepsec,.pricesec,.faqsec,.ctasec,.toolkit{padding-left:16px;padding-right:16px;}
 .maingrid{grid-template-columns:1fr 1fr;height:auto;}
 .griditem.tall{grid-row:span 1;}
 .statsbar{margin:32px 16px;grid-template-columns:repeat(2,1fr);}
 .featgrid,.pricegrid{grid-template-columns:1fr;}
 .stepsrow{flex-direction:column;gap:20px;}
 .stepitem:not(:last-child)::after{display:none;}
+.toolcards{grid-template-columns:repeat(2,1fr);}
+.toolkit-inner{flex-direction:column;}
+.toolkit-left{width:100%;padding-right:0;border-right:none;border-bottom:0.5px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.footer-top{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="nav">
   <div class="logo">
     <div class="logodot"><i class="ti ti-waveform"></i></div>
@@ -164,6 +270,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <span class="navlink drop">AI Playground</span>
     <span class="navlink">Features</span>
     <span class="navlink">Community</span>
+    <span class="navlink">Distribution</span>
     <span class="navlink">Blog</span>
     <span class="navlink">Pricing</span>
     <span class="navlink">Contact Us</span>
@@ -174,6 +281,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
   <div class="heroleft">
     <div class="herobadge"><i class="ti ti-sparkles"></i> The AI studio built exclusively for independent artists</div>
@@ -187,22 +295,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
   <div class="heroright">
     <div class="herogrid">
-      <div class="herogriditem">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/>
-      </div>
-      <div class="herogriditem">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/>
-      </div>
-      <div class="herogriditem">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/>
-      </div>
-      <div class="herogriditem">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/>
-      </div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/></div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/></div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/></div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/></div>
     </div>
   </div>
 </section>
 
+<!-- TOOLS ROW -->
 <div class="toolsrow" id="tools">
   <div class="toolsrow-inner">
     <div class="toolsleft">
@@ -243,32 +344,85 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </div>
 
+<!-- LOGO SLIDER -->
+<div class="logoslider">
+  <div class="logoslider-label">DISTRIBUTE AND PROMOTE EVERYWHERE YOUR FANS ARE</div>
+  <div class="logotrack">
+    <span class="logoitem"><div class="logobadge sp">♪</div>Spotify</span>
+    <span class="logoitem"><div class="logobadge am">♫</div>Apple Music</span>
+    <span class="logoitem"><div class="logobadge yt">▶</div>YouTube</span>
+    <span class="logoitem"><div class="logobadge tt">♪</div>TikTok</span>
+    <span class="logoitem"><div class="logobadge ig">📷</div>Instagram</span>
+    <span class="logoitem"><div class="logobadge fb">f</div>Facebook</span>
+    <span class="logoitem"><div class="logobadge td">T</div>Tidal</span>
+    <span class="logoitem"><div class="logobadge az">a</div>Amazon Music</span>
+    <span class="logoitem"><div class="logobadge dz">D</div>Deezer</span>
+    <span class="logoitem"><div class="logobadge sc">☁</div>SoundCloud</span>
+    <span class="logoitem"><div class="logobadge sn">👻</div>Snapchat</span>
+    <span class="logoitem"><div class="logobadge tw">𝕏</div>X / Twitter</span>
+    <span class="logoitem"><div class="logobadge sp">♪</div>Spotify</span>
+    <span class="logoitem"><div class="logobadge am">♫</div>Apple Music</span>
+    <span class="logoitem"><div class="logobadge yt">▶</div>YouTube</span>
+    <span class="logoitem"><div class="logobadge tt">♪</div>TikTok</span>
+    <span class="logoitem"><div class="logobadge ig">📷</div>Instagram</span>
+    <span class="logoitem"><div class="logobadge fb">f</div>Facebook</span>
+    <span class="logoitem"><div class="logobadge td">T</div>Tidal</span>
+    <span class="logoitem"><div class="logobadge az">a</div>Amazon Music</span>
+    <span class="logoitem"><div class="logobadge dz">D</div>Deezer</span>
+    <span class="logoitem"><div class="logobadge sc">☁</div>SoundCloud</span>
+    <span class="logoitem"><div class="logobadge sn">👻</div>Snapchat</span>
+    <span class="logoitem"><div class="logobadge tw">𝕏</div>X / Twitter</span>
+  </div>
+</div>
+
+<!-- ULTIMATE CREATOR TOOLKIT -->
+<div class="toolkit">
+  <div class="toolkit-label">STUDIO SUITE</div>
+  <div class="toolkit-title">The Ultimate <span class="neon">Creator's Toolkit</span></div>
+  <div class="toolkit-inner">
+    <div class="toolkit-left">
+      <div class="cat-item active" onclick="setcat(this,'cover')"><i class="ti ti-disc"></i>Cover Art</div>
+      <div class="cat-item" onclick="setcat(this,'video')"><i class="ti ti-video"></i>Music Videos</div>
+      <div class="cat-item" onclick="setcat(this,'merch')"><i class="ti ti-shirt"></i>Merch & Products</div>
+      <div class="cat-item" onclick="setcat(this,'marketing')"><i class="ti ti-chart-bar"></i>Marketing & Ads</div>
+      <div class="cat-item" onclick="setcat(this,'release')"><i class="ti ti-rocket"></i>Release Strategy</div>
+      <div class="cat-item" onclick="setcat(this,'social')"><i class="ti ti-share"></i>Social Content</div>
+    </div>
+    <div class="toolkit-right">
+      <div class="toolcards" id="toolcards">
+        <div class="toolcard">
+          <div class="toolcard-img tc1"><span class="fallback">🎨</span></div>
+          <div class="toolcard-body"><div class="toolcard-desc">Generate label-quality artwork</div><div class="toolcard-name">Cover Art Generator</div><div class="toolcard-link">Generate now →</div></div>
+        </div>
+        <div class="toolcard">
+          <div class="toolcard-img tc2"><span class="fallback">🖼️</span></div>
+          <div class="toolcard-body"><div class="toolcard-desc">Sized for YouTube channels</div><div class="toolcard-name">YouTube Thumbnail Maker</div><div class="toolcard-link">Create now →</div></div>
+        </div>
+        <div class="toolcard">
+          <div class="toolcard-img tc3"><span class="fallback">📱</span></div>
+          <div class="toolcard-body"><div class="toolcard-desc">Perfect for IG and stories</div><div class="toolcard-name">Instagram Cover Art</div><div class="toolcard-link">Create now →</div></div>
+        </div>
+        <div class="toolcard">
+          <div class="toolcard-img tc4"><span class="fallback">🎭</span></div>
+          <div class="toolcard-body"><div class="toolcard-desc">Full project artwork</div><div class="toolcard-name">EP & Album Art</div><div class="toolcard-link">Create now →</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
 <div class="gallerysec">
   <div class="galleryhead">
     <p class="gallerylabel">AI-GENERATED ARTWORK FROM INDEPENDENT ARTISTS</p>
     <span class="gallerylink">View all →</span>
   </div>
   <div class="maingrid">
-    <div class="griditem tall">
-      <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/>
-      <div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit — In Due Time</div></div>
-    </div>
-    <div class="griditem">
-      <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/>
-      <div class="gover"><div class="gtag">COVER ART</div><div class="gname">Troopin N Atlanta</div></div>
-    </div>
-    <div class="griditem">
-      <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/>
-      <div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh Vol 2</div></div>
-    </div>
-    <div class="griditem">
-      <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/>
-      <div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz Vol 2</div></div>
-    </div>
-    <div class="griditem">
-      <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/>
-      <div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div>
-    </div>
+    <div class="griditem tall"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit — In Due Time</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Troopin N Atlanta</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh Vol 2</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz Vol 2</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
   </div>
   <div class="grow2">
     <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit</div></div></div>
@@ -278,12 +432,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </div>
 
+<!-- MARQUEE -->
 <div class="marquee">
   <div class="marqinner">
     <span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">MUSIC VIDEOS</span><span class="marqitem">1800+ ARTISTS</span><span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">MUSIC VIDEOS</span><span class="marqitem">1800+ ARTISTS</span>
   </div>
 </div>
 
+<!-- STATS -->
 <div class="statsbar">
   <div class="statitem"><div class="statnum" id="s1">0+</div><div class="statlabel">Independent artists using StudioSound</div></div>
   <div class="statitem"><div class="statnum">&lt;10s</div><div class="statlabel">Average cover art generation time</div></div>
@@ -291,6 +447,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="statitem"><div class="statnum">100%</div><div class="statlabel">Independent artist focused</div></div>
 </div>
 
+<!-- FEATURES -->
 <div class="featsec" style="padding-top:56px;">
   <div class="seclabel">FEATURES</div>
   <h2 class="sectitle">What you'll <span class="neon">actually create</span></h2>
@@ -305,6 +462,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </div>
 
+<!-- HOW IT WORKS -->
 <div class="stepsec">
   <div class="seclabel">HOW IT WORKS</div>
   <h2 class="sectitle">From idea to release in <span class="neon">4 steps</span></h2>
@@ -316,6 +474,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </div>
 
+<!-- PRICING -->
 <div class="pricesec">
   <div class="seclabel">PRICING</div>
   <h2 class="sectitle">Start free. <span class="neon">Scale when ready.</span></h2>
@@ -327,6 +486,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </div>
 
+<!-- FAQ -->
 <div class="faqsec">
   <div class="seclabel">FAQ</div>
   <h2 class="sectitle">Common <span class="neon">questions</span></h2>
@@ -335,10 +495,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="faqitem"><div class="faqq" onclick="this.parentElement.classList.toggle('open')">Who owns the content I generate? <i class="ti ti-plus"></i></div><div class="faqa">You do. Everything you generate belongs to you. Use it commercially, upload to DSPs, print on merch, run ads — no restrictions.</div></div>
     <div class="faqitem"><div class="faqq" onclick="this.parentElement.classList.toggle('open')">Is the cover art sized correctly for streaming platforms? <i class="ti ti-plus"></i></div><div class="faqa">Yes. Every cover art is automatically sized to 3000×3000 pixels JPEG — the standard required by Spotify, Apple Music, Tidal, and most DSPs.</div></div>
     <div class="faqitem"><div class="faqq" onclick="this.parentElement.classList.toggle('open')">Can I cancel my subscription at any time? <i class="ti ti-plus"></i></div><div class="faqa">Absolutely. No long-term contracts, no cancellation fees. Cancel anytime from your account settings and keep access until the end of your billing period.</div></div>
-    <div class="faqitem"><div class="faqq" onclick="this.parentElement.classList.toggle('open')">What makes StudioSound.ai different from other AI tools? <i class="ti ti-plus"></i></div><div class="faqa">StudioSound.ai is the only platform built exclusively for independent music artists. Every feature is designed around what artists actually need to compete professionally — from cover art to release planning to merch mockups.</div></div>
+    <div class="faqitem"><div class="faqq" onclick="this.parentElement.classList.toggle('open')">What makes StudioSound.ai different from other AI tools? <i class="ti ti-plus"></i></div><div class="faqa">StudioSound.ai is the only platform built exclusively for independent music artists. Every feature is designed around what artists actually need to compete professionally.</div></div>
   </div>
 </div>
 
+<!-- CTA -->
 <div class="ctasec">
   <div class="ctabox">
     <h2 class="ctatitle">Talent should be the only<br>barrier to success in music.</h2>
@@ -347,12 +508,68 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </div>
 
+<!-- TRUST BAR -->
+<div class="trustbar">
+  <p class="trusttext">With StudioSound.ai we deliver professional-grade creative tools to independent artists worldwide</p>
+  <div class="trustbadges">
+    <div class="trustbadge"><i class="ti ti-shield-check"></i> SSL Secured</div>
+    <div class="trustbadge"><i class="ti ti-lock"></i> Data Protected</div>
+    <div class="trustbadge"><i class="ti ti-certificate"></i> Content Ownership Guaranteed</div>
+    <div class="trustbadge"><i class="ti ti-clock-24"></i> 99.9% Uptime</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
 <footer class="footer">
-  <span class="footerleft">© 2026 StudioSound.ai — The AI Studio for Independent Artists</span>
-  <div class="footerlinks">
-    <a class="footerlink" href="#">Privacy</a>
-    <a class="footerlink" href="#">Terms</a>
-    <a class="footerlink" href="#">Contact</a>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+        <span class="footer-logoname">StudioSound.ai</span>
+      </div>
+      <p class="footer-desc">The AI studio built exclusively for independent music artists. Create. Release. Drop like a major.</p>
+      <div class="footer-social">
+        <a href="#"><i class="ti ti-brand-instagram"></i></a>
+        <a href="#"><i class="ti ti-brand-tiktok"></i></a>
+        <a href="#"><i class="ti ti-brand-youtube"></i></a>
+        <a href="#"><i class="ti ti-brand-twitter"></i></a>
+        <a href="#"><i class="ti ti-brand-facebook"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">STUDIO SUITE</div>
+      <span class="footer-link">Cover Art Generator</span>
+      <span class="footer-link">Merch Mockup Studio</span>
+      <span class="footer-link">AI Release Planner</span>
+      <span class="footer-link">Lyric Video Creator</span>
+      <span class="footer-link">AI Song Generator</span>
+      <span class="footer-link">AI Ad Manager</span>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">COMPANY</div>
+      <span class="footer-link">About Us</span>
+      <span class="footer-link">Community</span>
+      <span class="footer-link">Distribution</span>
+      <span class="footer-link">Blog</span>
+      <span class="footer-link">Contact Us</span>
+      <span class="footer-link">Pricing</span>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">LEGAL</div>
+      <span class="footer-link">Privacy Policy</span>
+      <span class="footer-link">Terms of Use</span>
+      <span class="footer-link">Cookie Policy</span>
+      <span class="footer-link">Content Rights</span>
+      <span class="footer-link">Security</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a class="footer-bottom-link" href="#">Privacy</a>
+      <a class="footer-bottom-link" href="#">Terms</a>
+      <a class="footer-bottom-link" href="#">Contact</a>
+    </div>
   </div>
 </footer>
 
@@ -360,7 +577,60 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 function countUp(el,target,suffix,duration){let start=0;const inc=target/60;const t=setInterval(()=>{start+=inc;if(start>=target){start=target;clearInterval(t);}el.textContent=Math.round(start).toLocaleString()+suffix;},duration/60);}
 const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){countUp(document.getElementById('s1'),1800,'+',2000);countUp(document.getElementById('s2'),12000,'+',2000);obs.disconnect();}});},{threshold:0.3});
 const sb=document.querySelector('.statsbar');if(sb)obs.observe(sb);
-document.querySelectorAll('.navlink').forEach(l=>{l.addEventListener('click',e=>{const href=l.getAttribute('href');if(href&&href.startsWith('#')){e.preventDefault();const t=document.querySelector(href);if(t)t.scrollIntoView({behavior:'smooth'});}});});
+
+const cats={
+  cover:[
+    {icon:'🎨',desc:'Generate label-quality artwork',name:'Cover Art Generator',link:'Generate now →',bg:'tc1'},
+    {icon:'🖼️',desc:'Sized for YouTube channels',name:'YouTube Thumbnail Maker',link:'Create now →',bg:'tc2'},
+    {icon:'📱',desc:'Perfect for IG and stories',name:'Instagram Cover Art',link:'Create now →',bg:'tc3'},
+    {icon:'🎭',desc:'Full project artwork',name:'EP & Album Art',link:'Create now →',bg:'tc4'},
+  ],
+  video:[
+    {icon:'🎬',desc:'Sync lyrics to your beat',name:'Lyric Video Creator',link:'Make now →',bg:'tc1'},
+    {icon:'🎥',desc:'AI cinematic music videos',name:'Music Video Generator',link:'Coming soon →',bg:'tc2'},
+    {icon:'📱',desc:'Vertical short form content',name:'TikTok Video Maker',link:'Coming soon →',bg:'tc3'},
+    {icon:'🎞️',desc:'Announce your release',name:'Release Trailer Maker',link:'Coming soon →',bg:'tc4'},
+  ],
+  merch:[
+    {icon:'👕',desc:'See your art on a tee',name:'T-Shirt Mockup',link:'Create now →',bg:'tc1'},
+    {icon:'🧥',desc:'Premium hoodies',name:'Hoodie Mockup',link:'Create now →',bg:'tc2'},
+    {icon:'🧢',desc:'Fitted and snapbacks',name:'Hat Mockup',link:'Create now →',bg:'tc3'},
+    {icon:'📱',desc:'Custom phone cases',name:'Phone Case Mockup',link:'Create now →',bg:'tc4'},
+  ],
+  marketing:[
+    {icon:'📊',desc:'Targeted Facebook and IG ads',name:'Meta Ad Creator',link:'Coming soon →',bg:'tc1'},
+    {icon:'🎯',desc:'Search and display ads',name:'Google Ad Creator',link:'Coming soon →',bg:'tc2'},
+    {icon:'📱',desc:'Short form ad videos',name:'TikTok Ad Maker',link:'Coming soon →',bg:'tc3'},
+    {icon:'✍️',desc:'AI writes your ad copy',name:'Ad Copy Writer',link:'Coming soon →',bg:'tc4'},
+  ],
+  release:[
+    {icon:'🚀',desc:'30-day marketing roadmap',name:'Release Plan Generator',link:'Plan now →',bg:'tc1'},
+    {icon:'📅',desc:'Optimal post times by city',name:'Post Schedule Builder',link:'Build now →',bg:'tc2'},
+    {icon:'🎵',desc:'Get fans hyped early',name:'Pre-Save Campaign',link:'Coming soon →',bg:'tc3'},
+    {icon:'📧',desc:'Professional press kit',name:'Press Kit Generator',link:'Coming soon →',bg:'tc4'},
+  ],
+  social:[
+    {icon:'📱',desc:'Vertical story graphics',name:'Instagram Story Maker',link:'Coming soon →',bg:'tc1'},
+    {icon:'▶️',desc:'Channel art and thumbnails',name:'YouTube Thumbnail',link:'Create now →',bg:'tc2'},
+    {icon:'🎬',desc:'Trending content formats',name:'TikTok Content Maker',link:'Coming soon →',bg:'tc3'},
+    {icon:'🌟',desc:'Everything sized and ready',name:'Social Media Kit',link:'Coming soon →',bg:'tc4'},
+  ]
+};
+
+function setcat(el,cat){
+  document.querySelectorAll('.cat-item').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const cards=document.getElementById('toolcards');
+  cards.style.opacity='0';
+  setTimeout(()=>{
+    cards.innerHTML=cats[cat].map(t=>`
+      <div class="toolcard">
+        <div class="toolcard-img ${t.bg}"><span class="fallback">${t.icon}</span></div>
+        <div class="toolcard-body"><div class="toolcard-desc">${t.desc}</div><div class="toolcard-name">${t.name}</div><div class="toolcard-link">${t.link}</div></div>
+      </div>`).join('');
+    cards.style.opacity='1';
+  },150);
+}
 </script>
 </body>
 </html>
