@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — StudioSound.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logodot i{font-size:14px;color:#05050a;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;}
+.navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
+.navlink:hover{opacity:1;background:#0d0d14;}
+.navlink.drop::after{content:' ▾';font-size:9px;}
+.navlink.active{opacity:1;color:var(--neon);}
+.navbtns{display:flex;gap:8px;}
+.btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.btn-ghost:hover{border-color:var(--neon);}
+.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+.hero{padding:64px 32px 40px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:#00FFD115;border:0.5px solid var(--neon);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--neon);font-weight:700;margin-bottom:20px;}
+.hero-title{font-size:52px;font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:16px;color:#fff;}
+.hero-title .neon{color:var(--neon);}
+.hero-sub{color:var(--muted);font-size:14px;font-weight:500;margin-bottom:28px;line-height:1.6;}
+.hero-btns{display:flex;gap:12px;justify-content:center;margin-bottom:20px;}
+.btn-hero{background:var(--neon);color:#05050a;border:none;border-radius:28px;padding:13px 28px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:transform 0.15s;}
+.btn-hero:hover{transform:scale(1.03);}
+.btn-outline{background:transparent;border:0.5px solid #3a3a52;color:#fff;border-radius:28px;padding:13px 24px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
+.btn-outline:hover{border-color:var(--neon);}
+.trust-pills{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.trust-pill{display:inline-flex;align-items:center;gap:6px;color:#c0c0d8;font-size:12px;font-weight:600;}
+.trust-pill i{color:var(--neon);font-size:14px;}
+.toggle-sec{text-align:center;padding:36px 32px 0;}
+.toggle-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px;}
+.tlabel{color:var(--muted);font-size:13px;font-weight:600;}
+.tlabel.active{color:#fff;}
+.toggle{width:46px;height:26px;background:#00FFD130;border-radius:13px;position:relative;cursor:pointer;border:0.5px solid var(--neon);}
+.toggle-dot{width:20px;height:20px;background:var(--neon);border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.2s;}
+.toggle.on .toggle-dot{left:24px;}
+.save-pill{background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;}
+.toggle-sub{color:var(--muted);font-size:12px;}
+.pick-sec{padding:28px 32px 0;text-align:center;}
+.pick-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px;color:#fff;}
+.pick-title .neon{color:var(--neon);}
+.pick-sub{color:var(--muted);font-size:13px;font-weight:500;}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 32px 56px;}
+.price-card{background:var(--card);border:0.5px solid var(--border);border-radius:18px;padding:26px;position:relative;transition:border-color 0.2s;}
+.price-card:hover{border-color:var(--neon);}
+.price-card.hot{border-color:var(--neon);}
+.hot-badge{position:absolute;top:-12px;right:18px;background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:4px 14px;border-radius:20px;}
+.price-context{color:var(--muted);font-size:11px;font-weight:500;margin-bottom:8px;}
+.price-name{font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;letter-spacing:-0.02em;}
+.price-amount{font-size:48px;font-weight:900;color:#fff;letter-spacing:-0.04em;line-height:1;}
+.price-period{color:var(--muted);font-size:13px;font-weight:500;}
+.price-billing{color:var(--muted);font-size:11px;margin-top:4px;margin-bottom:20px;}
+.price-btn{width:100%;border-radius:10px;padding:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;margin-bottom:20px;transition:opacity 0.15s;}
+.price-btn:hover{opacity:0.85;}
+.price-btn.out{background:transparent;border:0.5px solid #3a3a52;color:#fff;}
+.price-btn.fill{background:var(--neon);border:none;color:#05050a;}
+.price-div{border-top:0.5px solid var(--border);margin:0 0 16px;}
+.pf{display:flex;align-items:flex-start;gap:8px;font-size:12px;margin-bottom:10px;line-height:1.5;}
+.pf.yes{color:#e0e0f0;}
+.pf.yes i{color:var(--neon);font-size:14px;flex-shrink:0;margin-top:1px;}
+.pf.no{color:#5a5a72;}
+.pf.no i{color:#3a3a52;font-size:14px;flex-shrink:0;margin-top:1px;}
+.pf.hl{color:var(--neon);font-weight:700;}
+.pf.hl i{color:var(--neon);font-size:14px;flex-shrink:0;margin-top:1px;}
+.partners{padding:0 32px 56px;text-align:center;}
+.partners-title{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:6px;}
+.partners-title .neon{color:var(--neon);}
+.partners-sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
+.partners-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:720px;margin:0 auto;}
+.partner-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;transition:border-color 0.2s,transform 0.15s;}
+.partner-card:hover{border-color:var(--neon);transform:translateY(-2px);}
+.partner-icon{font-size:24px;margin-bottom:6px;}
+.partner-name{color:#fff;font-size:11px;font-weight:700;margin-bottom:2px;}
+.partner-by{color:var(--muted);font-size:10px;font-weight:500;}
+.steps-sec{padding:0 32px 56px;text-align:center;}
+.sec-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px;color:#fff;}
+.sec-title .neon{color:var(--neon);}
+.sec-sub{color:var(--muted);font-size:13px;font-weight:500;margin-bottom:32px;}
+.steps-row{display:flex;align-items:flex-start;gap:0;position:relative;max-width:800px;margin:0 auto;}
+.steps-row::before{content:'';position:absolute;top:20px;left:10%;width:80%;height:0.5px;background:var(--neon);opacity:0.3;}
+.step{flex:1;text-align:center;position:relative;z-index:1;}
+.step-num{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--neon);margin:0 auto 12px;background:var(--bg);}
+.step-title{color:#fff;font-size:12px;font-weight:700;margin-bottom:6px;}
+.step-desc{color:var(--muted);font-size:11px;line-height:1.6;padding:0 8px;}
+.statsbar{margin:0 32px 56px;background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.stat-item{text-align:center;}
+.stat-num{font-size:36px;font-weight:900;color:var(--neon);letter-spacing:-0.03em;}
+.stat-label{color:var(--muted);font-size:11px;font-weight:500;margin-top:4px;}
+.faq-sec{padding:0 32px 56px;text-align:center;}
+.faq-wrap{max-width:680px;margin:24px auto 0;text-align:left;}
+.faq-item{background:var(--card);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.faq-q{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:#fff;font-size:13px;font-weight:600;gap:14px;}
+.faq-q i{color:var(--neon);font-size:16px;flex-shrink:0;transition:transform 0.2s;}
+.faq-a{color:var(--muted);font-size:12px;line-height:1.8;padding:0 20px 16px;display:none;}
+.faq-item.open .faq-a{display:block;}
+.faq-item.open .faq-q i{transform:rotate(45deg);}
+.cta-sec{padding:0 32px 56px;text-align:center;}
+.cta-title{font-size:44px;font-weight:900;letter-spacing:-0.03em;margin-bottom:10px;line-height:1.1;color:#fff;}
+.cta-title .neon{color:var(--neon);}
+.cta-sub{color:var(--muted);font-size:14px;margin-bottom:28px;}
+.trust-bar{padding:28px 32px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);text-align:center;}
+.trust-bar-text{color:var(--muted);font-size:12px;margin-bottom:20px;}
+.trust-badges{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+.trust-badge{border:0.5px solid #3a3a52;border-radius:24px;padding:10px 22px;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.trust-badge i{color:var(--neon);font-size:16px;}
+.footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;}
+.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
+.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoname{font-size:13px;font-weight:800;color:#fff;}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;cursor:pointer;}
+.footer-link:hover{color:var(--neon);}
+.footer-social{display:flex;gap:12px;}
+.footer-social-link{color:#c0c0d8;font-size:20px;text-decoration:none;transition:color 0.15s;display:inline-flex;}
+.footer-social-link:hover{color:var(--neon);}
+.footer-copy{color:#6b6b80;font-size:11px;text-align:center;border-top:0.5px solid var(--border);padding-top:14px;}
+@media(max-width:768px){
+.navlinks{display:none;}
+.hero{padding:40px 16px 28px;}
+.hero-title{font-size:34px;}
+.price-grid{grid-template-columns:1fr;padding:20px 16px 40px;}
+.partners-grid{grid-template-columns:repeat(3,1fr);}
+.steps-row{flex-direction:column;gap:20px;align-items:center;}
+.steps-row::before{display:none;}
+.statsbar{margin:0 16px 40px;grid-template-columns:repeat(2,1fr);}
+.partners,.faq-sec,.cta-sec,.steps-sec{padding-left:16px;padding-right:16px;}
+.footer-inner{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="/landing.html">
+    <div class="logodot"><i class="ti ti-waveform"></i></div>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="navlinks">
+    <span class="navlink drop">Studio Suite</span>
+    <span class="navlink drop">AI Playground</span>
+    <span class="navlink">Features</span>
+    <span class="navlink">Community</span>
+    <span class="navlink">Distribution</span>
+    <span class="navlink">Blog</span>
+    <span class="navlink active">Pricing</span>
+    <span class="navlink">Contact Us</span>
+  </div>
+  <div class="navbtns">
+    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge"><i class="ti ti-sparkles"></i> Free to start — no card needed</div>
+  <h1 class="hero-title">Unlimited creation.<br><span class="neon">Half the price</span> of a studio.</h1>
+  <p class="hero-sub">Cover art, merch, release plans, lyric videos, AI clips and full songs.<br>Every tool. One subscription.</p>
+  <div class="hero-btns">
+    <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+    <button class="btn-outline" onclick="document.querySelector('.price-grid').scrollIntoView({behavior:'smooth'})">See plans →</button>
+  </div>
+  <div class="trust-pills">
+    <span class="trust-pill"><i class="ti ti-check"></i> No card required</span>
+    <span class="trust-pill"><i class="ti ti-check"></i> Free tier included</span>
+    <span class="trust-pill"><i class="ti ti-check"></i> Cancel anytime</span>
+  </div>
+</div>
+
+<div class="toggle-sec">
+  <div class="toggle-row">
+    <span class="tlabel active" id="ml">Monthly</span>
+    <div class="toggle" id="tog" onclick="toggleBilling()"><div class="toggle-dot"></div></div>
+    <span class="tlabel" id="yl">Yearly <span class="save-pill">Save 33%</span></span>
+  </div>
+  <div class="toggle-sub">Switch to yearly and save 4 months of payments</div>
+</div>
+
+<div class="pick-sec">
+  <div class="pick-title">Pick your <span class="neon">creative power</span></div>
+  <div class="pick-sub">Free to start. Pro to unlock everything. Yearly saves 33%.</div>
+</div>
+
+<div class="price-grid">
+  <div class="price-card">
+    <div class="price-context">Start here — no card</div>
+    <div class="price-name">Free</div>
+    <div><span class="price-amount">$0</span></div>
+    <div class="price-billing">Free forever · no card needed</div>
+    <button class="price-btn out" onclick="window.location.href='/signup.html'">Start Free</button>
+    <div class="price-div"></div>
+    <div class="pf yes"><i class="ti ti-check"></i>3 cover arts per month</div>
+    <div class="pf yes"><i class="ti ti-check"></i>1 release plan per month</div>
+    <div class="pf yes"><i class="ti ti-check"></i>2 merch mockups</div>
+    <div class="pf yes"><i class="ti ti-check"></i>Watermarked lyric video</div>
+    <div class="pf no"><i class="ti ti-x"></i>Song generation</div>
+    <div class="pf no"><i class="ti ti-x"></i>AI video clipping</div>
+    <div class="pf no"><i class="ti ti-x"></i>Music video generation</div>
+    <div class="pf no"><i class="ti ti-x"></i>AI ad creation</div>
+  </div>
+  <div class="price-card hot">
+    <div class="hot-badge">MOST POPULAR</div>
+    <div class="price-context">For active independent artists</div>
+    <div class="price-name">Pro</div>
+    <div><span class="price-amount" id="pro-amt">$9.99</span><span class="price-period">/mo</span></div>
+    <div class="price-billing" id="pro-bill">Billed monthly · cancel anytime</div>
+    <button class="price-btn fill" onclick="window.location.href='/signup.html'">Upgrade to Pro</button>
+    <div class="price-div"></div>
+    <div class="pf hl"><i class="ti ti-check"></i>Unlimited cover art</div>
+    <div class="pf hl"><i class="ti ti-check"></i>Unlimited release plans</div>
+    <div class="pf yes"><i class="ti ti-check"></i>Full merch mockup suite</div>
+    <div class="pf yes"><i class="ti ti-check"></i>5 lyric videos per month</div>
+    <div class="pf yes"><i class="ti ti-check"></i>3 song generations per month</div>
+    <div class="pf yes"><i class="ti ti-check"></i>AI video clipping (Veed)</div>
+    <div class="pf no"><i class="ti ti-x"></i>Music video generation</div>
+    <div class="pf no"><i class="ti ti-x"></i>AI ad creation</div>
+  </div>
+  <div class="price-card">
+    <div class="price-context">For artists going all in</div>
+    <div class="price-name">Premium</div>
+    <div><span class="price-amount" id="prem-amt">$24.99</span><span class="price-period">/mo</span></div>
+    <div class="price-billing" id="prem-bill">Billed monthly · cancel anytime</div>
+    <button class="price-btn out" onclick="window.location.href='/signup.html'">Upgrade to Premium</button>
+    <div class="price-div"></div>
+    <div class="pf hl"><i class="ti ti-check"></i>Everything in Pro</div>
+    <div class="pf hl"><i class="ti ti-check"></i>Unlimited lyric videos</div>
+    <div class="pf hl"><i class="ti ti-check"></i>Unlimited song generation</div>
+    <div class="pf hl"><i class="ti ti-check"></i>Music video generation</div>
+    <div class="pf hl"><i class="ti ti-check"></i>AI video clipping (Veed + Opus)</div>
+    <div class="pf hl"><i class="ti ti-check"></i>AI ad creation</div>
+    <div class="pf hl"><i class="ti ti-check"></i>Meta & Google ad manager</div>
+    <div class="pf yes"><i class="ti ti-check"></i>Priority support</div>
+  </div>
+</div>
+
+<div class="partners">
+  <div class="partners-title">All the <span class="neon">best AI models</span> — one subscription</div>
+  <div class="partners-sub">Stop paying for each tool separately. StudioSound.ai unlocks every AI model you need.</div>
+  <div class="partners-grid">
+    <div class="partner-card"><div class="partner-icon">🎨</div><div class="partner-name">GPT Image</div><div class="partner-by">OPENAI</div></div>
+    <div class="partner-card"><div class="partner-icon">🎵</div><div class="partner-name">Suno AI</div><div class="partner-by">SONG GEN</div></div>
+    <div class="partner-card"><div class="partner-icon">🎬</div><div class="partner-name">Runway</div><div class="partner-by">VIDEO GEN</div></div>
+    <div class="partner-card"><div class="partner-icon">✂️</div><div class="partner-name">Veed</div><div class="partner-by">AI CLIPS</div></div>
+    <div class="partner-card"><div class="partner-icon">📊</div><div class="partner-name">Meta Ads</div><div class="partner-by">META</div></div>
+    <div class="partner-card"><div class="partner-icon">🎯</div><div class="partner-name">Google Ads</div><div class="partner-by">GOOGLE</div></div>
+  </div>
+</div>
+
+<div class="steps-sec">
+  <div class="sec-title">How the <span class="neon">free plan works</span></div>
+  <div class="sec-sub">Sign up in 30 seconds. No card. Start creating immediately.</div>
+  <div class="steps-row">
+    <div class="step"><div class="step-num">1</div><div class="step-title">Sign up free</div><div class="step-desc">Just your email — no credit card needed.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">Pick your tool</div><div class="step-desc">Cover art, merch, release plan, lyric video.</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">Generate instantly</div><div class="step-desc">Professional results in seconds.</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-title">Upgrade when ready</div><div class="step-desc">Unlock unlimited when you're scaling.</div></div>
+  </div>
+</div>
+
+<div class="statsbar">
+  <div class="stat-item"><div class="stat-num">1,800+</div><div class="stat-label">Independent Artists</div></div>
+  <div class="stat-item"><div class="stat-num">&lt;10s</div><div class="stat-label">Cover Art Generation</div></div>
+  <div class="stat-item"><div class="stat-num">99.9%</div><div class="stat-label">Platform Uptime</div></div>
+  <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Content Ownership</div></div>
+</div>
+
+<div class="faq-sec">
+  <div class="sec-title">Questions, <span class="neon">answered</span></div>
+  <div class="sec-sub">Everything you need to know before subscribing.</div>
+  <div class="faq-wrap">
+    <div class="faq-item open"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's included in the free plan? <i class="ti ti-plus"></i></div><div class="faq-a">The free plan gives you 3 cover arts, 1 release plan, 2 merch mockups, and a watermarked lyric video every month. No credit card needed — ever.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is AI video clipping? <i class="ti ti-plus"></i></div><div class="faq-a">Using Veed and Opus Clip AI, StudioSound automatically finds the best moments in your long videos — performances, studio sessions, music videos — and turns them into short clips sized for TikTok, Reels, and YouTube Shorts. Captions included.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do I own the content I generate? <i class="ti ti-plus"></i></div><div class="faq-a">Yes. 100%. Everything you generate on StudioSound.ai belongs to you. Use it commercially, upload to DSPs, print on merch, run ads — no restrictions whatsoever.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's the difference between monthly and yearly? <i class="ti ti-plus"></i></div><div class="faq-a">Monthly gives you full flexibility. Yearly saves you 33% — that's 4 months free. Both plans include all the same features. You can switch anytime.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I cancel at any time? <i class="ti ti-plus"></i></div><div class="faq-a">Absolutely. No long-term contracts, no cancellation fees. Cancel anytime from your account settings and keep full access until the end of your billing period.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is the cover art sized correctly for streaming platforms? <i class="ti ti-plus"></i></div><div class="faq-a">Yes. Every cover art is automatically sized to 3000×3000 pixels JPEG — the exact standard required by Spotify, Apple Music, Tidal, and most major DSPs.</div></div>
+  </div>
+</div>
+
+<div class="cta-sec">
+  <div class="cta-title">Ready to <span class="neon">create unlimited?</span></div>
+  <div class="cta-sub">Start free. No card needed. Upgrade when you're ready to scale.</div>
+  <div class="hero-btns">
+    <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+    <button class="btn-outline" onclick="document.querySelector('.price-grid').scrollIntoView({behavior:'smooth'})">See plans again →</button>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <div class="trust-bar-text">With StudioSound.ai we deliver professional-grade creative tools to independent artists worldwide</div>
+  <div class="trust-badges">
+    <div class="trust-badge"><i class="ti ti-shield-check"></i> SSL Secured</div>
+    <div class="trust-badge"><i class="ti ti-lock"></i> Data Protected</div>
+    <div class="trust-badge"><i class="ti ti-certificate"></i> Content Ownership Guaranteed</div>
+    <div class="trust-badge"><i class="ti ti-clock-24"></i> 99.9% Uptime</div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <span class="footer-logoname">StudioSound.ai</span>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="#">About Us</a>
+      <a class="footer-link" href="#">Terms of Use</a>
+      <a class="footer-link" href="#">Privacy Policy</a>
+      <a class="footer-link" href="#">Security</a>
+      <a class="footer-link" href="#">Contact Us</a>
+      <a class="footer-link" href="/community.html">Community</a>
+    </div>
+    <div class="footer-social">
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-facebook"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-x"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-instagram"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-youtube"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-tiktok"></i></a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
+</footer>
+
+<script>
+let yearly=false;
+function toggleBilling(){
+  yearly=!yearly;
+  document.getElementById('tog').classList.toggle('on',yearly);
+  document.getElementById('ml').classList.toggle('active',!yearly);
+  document.getElementById('yl').classList.toggle('active',yearly);
+  document.getElementById('pro-amt').textContent=yearly?'$7.99':'$9.99';
+  document.getElementById('prem-amt').textContent=yearly?'$16.99':'$24.99';
+  document.getElementById('pro-bill').textContent=yearly?'Billed yearly · cancel anytime':'Billed monthly · cancel anytime';
+  document.getElementById('prem-bill').textContent=yearly?'Billed yearly · cancel anytime':'Billed monthly · cancel anytime';
+}
+</script>
+</body>
+</html>
