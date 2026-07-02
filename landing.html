@@ -10,8 +10,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#1a1a28;--text:#fafafa;--muted:#6b6b80;}
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-
-/* NAV */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;}
 .logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
@@ -25,8 +23,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
 .btn-ghost:hover{border-color:var(--neon);}
 .btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
-
-/* HERO */
 .hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:64px 32px 52px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:-80px;left:-80px;width:500px;height:500px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
 .heroleft{position:relative;z-index:1;}
@@ -47,8 +43,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .herogriditem{border-radius:12px;overflow:hidden;aspect-ratio:1;border:0.5px solid var(--border);transition:border-color 0.2s,transform 0.15s;}
 .herogriditem:hover{border-color:var(--neon);transform:scale(1.02);}
 .herogriditem img{width:100%;height:100%;object-fit:cover;display:block;}
-
-/* TOOLS ROW */
 .toolsrow{border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:40px 0;}
 .toolsrow-inner{display:flex;gap:0;align-items:center;}
 .toolsleft{width:220px;flex-shrink:0;padding:0 32px;}
@@ -65,8 +59,51 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tcdesc{color:var(--muted);font-size:10px;margin-bottom:3px;}
 .tcname{color:#fff;font-size:12px;font-weight:700;margin-bottom:3px;}
 .tclink{color:var(--neon);font-size:10px;font-weight:600;}
-
-/* LOGO SLIDER */
+.gallerysec{padding:48px 32px;}
+.galleryhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.gallerylabel{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:0.06em;}
+.gallerylink{color:var(--neon);font-size:11px;font-weight:600;cursor:pointer;}
+.maingrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;height:460px;margin-bottom:10px;}
+.griditem{border-radius:12px;overflow:hidden;position:relative;cursor:pointer;background:var(--card);border:0.5px solid var(--border);transition:border-color 0.2s;}
+.griditem:hover{border-color:var(--neon);}
+.griditem:hover .gover{opacity:1;}
+.griditem.tall{grid-row:span 2;}
+.griditem img{width:100%;height:100%;object-fit:cover;display:block;}
+.gover{position:absolute;inset:0;background:rgba(0,0,0,0.65);opacity:0;transition:opacity 0.2s;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:12px;}
+.gtag{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.05em;margin-bottom:2px;}
+.gname{color:#fff;font-size:12px;font-weight:600;}
+.grow2{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.grow2 .griditem{height:100px;}
+.marquee{overflow:hidden;padding:16px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);}
+.marqinner{display:flex;gap:44px;animation:marq 22s linear infinite;white-space:nowrap;}
+@keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.marqitem{color:#252535;font-size:11px;font-weight:700;letter-spacing:0.07em;display:inline-flex;align-items:center;gap:12px;}
+.marqitem::before{content:'✦';color:var(--neon);font-size:9px;}
+.statsbar{margin:48px 32px;background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.statitem{text-align:center;}
+.statnum{font-size:32px;font-weight:900;color:var(--neon);letter-spacing:-0.03em;}
+.statlabel{color:var(--muted);font-size:11px;font-weight:500;margin-top:4px;line-height:1.4;}
+.featsec{padding:0 32px 56px;}
+.seclabel{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
+.sectitle{font-size:34px;font-weight:900;letter-spacing:-0.03em;margin-bottom:8px;line-height:1.1;color:#fff;}
+.sectitle .neon{color:var(--neon);}
+.secsub{color:var(--muted);font-size:13px;font-weight:500;line-height:1.7;margin-bottom:28px;max-width:500px;}
+.featgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.featcard{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.2s,transform 0.15s;cursor:pointer;}
+.featcard:hover{border-color:var(--neon);transform:translateY(-3px);}
+.ficon{width:36px;height:36px;background:#00FFD118;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.ficon i{font-size:18px;color:var(--neon);}
+.ftitle{color:#fff;font-size:13px;font-weight:700;margin-bottom:6px;}
+.fdesc{color:var(--muted);font-size:11px;font-weight:500;line-height:1.7;margin-bottom:10px;}
+.fbullet{color:#a1a1b8;font-size:11px;display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;line-height:1.4;}
+.fbullet::before{content:'→';color:var(--neon);flex-shrink:0;}
+.stepsec{padding:0 32px 56px;}
+.stepsrow{display:flex;gap:0;align-items:flex-start;margin-top:28px;}
+.stepitem{flex:1;text-align:center;position:relative;}
+.stepitem:not(:last-child)::after{content:'';position:absolute;top:19px;left:58%;width:84%;height:0.5px;background:var(--border);}
+.stepnum{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--neon);margin:0 auto 10px;background:var(--bg);position:relative;z-index:1;}
+.steptitle{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;}
+.stepdesc{color:var(--muted);font-size:10px;line-height:1.6;padding:0 10px;}
 .logoslider{padding:28px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);overflow:hidden;position:relative;}
 .logoslider::before,.logoslider::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;}
 .logoslider::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
@@ -89,8 +126,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .sc{background:#FF5500;color:#fff;}
 .sn{background:#FFFC00;color:#000;}
 .tw{background:#000;color:#fff;border:1px solid #333;}
-
-/* TOOLKIT */
 .toolkit{padding:56px 32px;}
 .toolkit-label{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
 .toolkit-title{font-size:34px;font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:28px;color:#fff;}
@@ -119,63 +154,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tc6{background:linear-gradient(135deg,#0f0f3a,#1a1a50);}
 .tc7{background:linear-gradient(135deg,#2a0f3a,#3a1a50);}
 .tc8{background:linear-gradient(135deg,#1a2a0f,#2a3a1a);}
-
-/* GALLERY */
-.gallerysec{padding:48px 32px;}
-.galleryhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.gallerylabel{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:0.06em;}
-.gallerylink{color:var(--neon);font-size:11px;font-weight:600;cursor:pointer;}
-.maingrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;height:460px;margin-bottom:10px;}
-.griditem{border-radius:12px;overflow:hidden;position:relative;cursor:pointer;background:var(--card);border:0.5px solid var(--border);transition:border-color 0.2s;}
-.griditem:hover{border-color:var(--neon);}
-.griditem:hover .gover{opacity:1;}
-.griditem.tall{grid-row:span 2;}
-.griditem img{width:100%;height:100%;object-fit:cover;display:block;}
-.gover{position:absolute;inset:0;background:rgba(0,0,0,0.65);opacity:0;transition:opacity 0.2s;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:12px;}
-.gtag{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.05em;margin-bottom:2px;}
-.gname{color:#fff;font-size:12px;font-weight:600;}
-.grow2{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.grow2 .griditem{height:100px;}
-
-/* MARQUEE */
-.marquee{overflow:hidden;padding:16px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);}
-.marqinner{display:flex;gap:44px;animation:marq 22s linear infinite;white-space:nowrap;}
-@keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.marqitem{color:#252535;font-size:11px;font-weight:700;letter-spacing:0.07em;display:inline-flex;align-items:center;gap:12px;}
-.marqitem::before{content:'✦';color:var(--neon);font-size:9px;}
-
-/* STATS */
-.statsbar{margin:48px 32px;background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-.statitem{text-align:center;}
-.statnum{font-size:32px;font-weight:900;color:var(--neon);letter-spacing:-0.03em;}
-.statlabel{color:var(--muted);font-size:11px;font-weight:500;margin-top:4px;line-height:1.4;}
-
-/* FEATURES */
-.featsec{padding:0 32px 56px;}
-.seclabel{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
-.sectitle{font-size:34px;font-weight:900;letter-spacing:-0.03em;margin-bottom:8px;line-height:1.1;color:#fff;}
-.sectitle .neon{color:var(--neon);}
-.secsub{color:var(--muted);font-size:13px;font-weight:500;line-height:1.7;margin-bottom:28px;max-width:500px;}
-.featgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.featcard{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.2s,transform 0.15s;cursor:pointer;}
-.featcard:hover{border-color:var(--neon);transform:translateY(-3px);}
-.ficon{width:36px;height:36px;background:#00FFD118;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
-.ficon i{font-size:18px;color:var(--neon);}
-.ftitle{color:#fff;font-size:13px;font-weight:700;margin-bottom:6px;}
-.fdesc{color:var(--muted);font-size:11px;font-weight:500;line-height:1.7;margin-bottom:10px;}
-.fbullet{color:#a1a1b8;font-size:11px;display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;line-height:1.4;}
-.fbullet::before{content:'→';color:var(--neon);flex-shrink:0;}
-
-/* STEPS */
-.stepsec{padding:0 32px 56px;}
-.stepsrow{display:flex;gap:0;align-items:flex-start;margin-top:28px;}
-.stepitem{flex:1;text-align:center;position:relative;}
-.stepitem:not(:last-child)::after{content:'';position:absolute;top:19px;left:58%;width:84%;height:0.5px;background:var(--border);}
-.stepnum{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--neon);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--neon);margin:0 auto 10px;background:var(--bg);position:relative;z-index:1;}
-.steptitle{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;}
-.stepdesc{color:var(--muted);font-size:10px;line-height:1.6;padding:0 10px;}
-
-/* PRICING */
 .pricesec{padding:0 32px 56px;}
 .pricegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px;}
 .pricecard{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:22px;position:relative;}
@@ -190,35 +168,25 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .pbtn{width:100%;border-radius:9px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;font-family:'Sora',sans-serif;}
 .pbtn.out{background:transparent;border:0.5px solid var(--border);color:#fff;}
 .pbtn.fill{background:var(--neon);border:none;color:#05050a;}
-
-/* FAQ */
 .faqsec{padding:0 32px 56px;text-align:center;}
 .faqwrap{max-width:680px;margin:24px auto 0;text-align:left;}
-.faqwrap{max-width:680px;margin:24px auto 0;}
 .faqitem{border-bottom:0.5px solid var(--border);}
 .faqq{padding:14px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:#fff;font-size:13px;font-weight:600;gap:14px;}
 .faqq i{color:var(--neon);font-size:15px;flex-shrink:0;transition:transform 0.2s;}
 .faqa{color:var(--muted);font-size:12px;line-height:1.8;padding-bottom:14px;display:none;}
 .faqitem.open .faqa{display:block;}
 .faqitem.open .faqq i{transform:rotate(45deg);}
-
-/* CTA */
 .ctasec{padding:0 32px 56px;}
 .ctabox{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:56px 32px;text-align:center;}
 .ctatitle{font-size:32px;font-weight:900;letter-spacing:-0.03em;margin-bottom:10px;line-height:1.1;color:#fff;}
 .ctasub{color:var(--muted);font-size:13px;font-weight:500;margin-bottom:24px;line-height:1.7;}
-
-/* TRUST BAR */
-.trustbar{padding:32px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);text-align:center;margin-bottom:0;}
+.trustbar{padding:32px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);text-align:center;}
 .trusttext{color:var(--muted);font-size:12px;font-weight:500;margin-bottom:20px;}
 .trustbadges{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
 .trustbadge{border:0.5px solid #2a2a3a;border-radius:24px;padding:10px 24px;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;}
 .trustbadge i{color:var(--neon);font-size:16px;}
-
-/* FOOTER */
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:40px 32px 20px;}
 .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;}
-.footer-brand{}
 .footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
 .footer-logodot{width:26px;height:26px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;}
 .footer-logodot i{font-size:13px;color:#05050a;}
@@ -227,7 +195,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer-social{display:flex;gap:10px;}
 .footer-social a{width:32px;height:32px;border:0.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-decoration:none;transition:all 0.15s;}
 .footer-social a:hover{border-color:var(--neon);color:var(--neon);}
-.footer-col{}
 .footer-col-title{color:#fff;font-size:12px;font-weight:700;letter-spacing:0.04em;margin-bottom:14px;}
 .footer-link{display:block;color:var(--muted);font-size:12px;font-weight:500;text-decoration:none;margin-bottom:9px;transition:color 0.15s;cursor:pointer;}
 .footer-link:hover{color:var(--neon);}
@@ -236,7 +203,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer-bottom-links{display:flex;gap:20px;}
 .footer-bottom-link{color:#303048;font-size:11px;text-decoration:none;cursor:pointer;}
 .footer-bottom-link:hover{color:var(--muted);}
-
 @media(max-width:768px){
 .navlinks{display:none;}
 .hero{grid-template-columns:1fr;padding:40px 16px 32px;}
@@ -260,7 +226,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <div class="logo">
     <div class="logodot"><i class="ti ti-waveform"></i></div>
@@ -282,7 +247,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="heroleft">
     <div class="herobadge"><i class="ti ti-sparkles"></i> The AI studio built exclusively for independent artists</div>
@@ -304,7 +268,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </section>
 
-<!-- TOOLS ROW -->
 <div class="toolsrow" id="tools">
   <div class="toolsrow-inner">
     <div class="toolsleft">
@@ -313,35 +276,72 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       <button class="btn-exp">Explore all tools →</button>
     </div>
     <div class="tscroll">
-      <div class="tcard" onclick="window.location.href='/'">
-        <div class="tcimg" style="background:linear-gradient(135deg,#0f1f3a,#1a2b50);">🎨</div>
-        <div class="tcbody"><div class="tcdesc">Generate label-quality artwork</div><div class="tcname">Cover Art Generator</div><div class="tclink">Generate now →</div></div>
-      </div>
-      <div class="tcard" onclick="window.location.href='/'">
-        <div class="tcimg" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">🚀</div>
-        <div class="tcbody"><div class="tcdesc">30-day personalized strategy</div><div class="tcname">Release Planner</div><div class="tclink">Plan your drop →</div></div>
-      </div>
-      <div class="tcard" onclick="window.location.href='/'">
-        <div class="tcimg" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div>
-        <div class="tcbody"><div class="tcdesc">See your art on real products</div><div class="tcname">Merch Mockup Studio</div><div class="tclink">Create mockups →</div></div>
-      </div>
-      <div class="tcard" onclick="window.location.href='/'">
-        <div class="tcimg" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">🎬</div>
-        <div class="tcbody"><div class="tcdesc">Professional lyric videos fast</div><div class="tcname">Lyric Video Creator</div><div class="tclink">Make a video →</div></div>
-      </div>
-      <div class="tcard">
-        <div class="tcimg" style="background:linear-gradient(135deg,#0f0f3a,#1a1a50);">🎵</div>
-        <div class="tcbody"><div class="tcdesc">Turn ideas into full tracks</div><div class="tcname">AI Song Generator</div><div class="tclink">Coming soon →</div></div>
-      </div>
-      <div class="tcard">
-        <div class="tcimg" style="background:linear-gradient(135deg,#2a0f3a,#3a1a50);">📊</div>
-        <div class="tcbody"><div class="tcdesc">Launch Meta and Google ads</div><div class="tcname">AI Ad Manager</div><div class="tclink">Coming soon →</div></div>
-      </div>
-      <div class="tcard">
-        <div class="tcimg" style="background:linear-gradient(135deg,#1a2a0f,#2a3a1a);">🎤</div>
-        <div class="tcbody"><div class="tcdesc">AI cinematic music videos</div><div class="tcname">Music Video Generator</div><div class="tclink">Coming soon →</div></div>
-      </div>
+      <div class="tcard" onclick="window.location.href='/'"><div class="tcimg" style="background:linear-gradient(135deg,#0f1f3a,#1a2b50);">🎨</div><div class="tcbody"><div class="tcdesc">Generate label-quality artwork</div><div class="tcname">Cover Art Generator</div><div class="tclink">Generate now →</div></div></div>
+      <div class="tcard" onclick="window.location.href='/'"><div class="tcimg" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">🚀</div><div class="tcbody"><div class="tcdesc">30-day personalized strategy</div><div class="tcname">Release Planner</div><div class="tclink">Plan your drop →</div></div></div>
+      <div class="tcard" onclick="window.location.href='/'"><div class="tcimg" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div><div class="tcbody"><div class="tcdesc">See your art on real products</div><div class="tcname">Merch Mockup Studio</div><div class="tclink">Create mockups →</div></div></div>
+      <div class="tcard" onclick="window.location.href='/'"><div class="tcimg" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">🎬</div><div class="tcbody"><div class="tcdesc">Professional lyric videos fast</div><div class="tcname">Lyric Video Creator</div><div class="tclink">Make a video →</div></div></div>
+      <div class="tcard"><div class="tcimg" style="background:linear-gradient(135deg,#0f0f3a,#1a1a50);">🎵</div><div class="tcbody"><div class="tcdesc">Turn ideas into full tracks</div><div class="tcname">AI Song Generator</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard"><div class="tcimg" style="background:linear-gradient(135deg,#2a0f3a,#3a1a50);">📊</div><div class="tcbody"><div class="tcdesc">Launch Meta and Google ads</div><div class="tcname">AI Ad Manager</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard"><div class="tcimg" style="background:linear-gradient(135deg,#1a2a0f,#2a3a1a);">🎤</div><div class="tcbody"><div class="tcdesc">AI cinematic music videos</div><div class="tcname">Music Video Generator</div><div class="tclink">Coming soon →</div></div></div>
     </div>
+  </div>
+</div>
+
+<div class="gallerysec">
+  <div class="galleryhead">
+    <p class="gallerylabel">AI-GENERATED ARTWORK FROM INDEPENDENT ARTISTS</p>
+    <span class="gallerylink">View all →</span>
+  </div>
+  <div class="maingrid">
+    <div class="griditem tall"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit — In Due Time</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Troopin N Atlanta</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh Vol 2</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz Vol 2</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
+  </div>
+  <div class="grow2">
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz</div></div></div>
+  </div>
+</div>
+
+<div class="marquee">
+  <div class="marqinner">
+    <span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">MUSIC VIDEOS</span><span class="marqitem">1800+ ARTISTS</span><span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">MUSIC VIDEOS</span><span class="marqitem">1800+ ARTISTS</span>
+  </div>
+</div>
+
+<div class="statsbar">
+  <div class="statitem"><div class="statnum" id="s1">0+</div><div class="statlabel">Independent artists using StudioSound</div></div>
+  <div class="statitem"><div class="statnum">&lt;10s</div><div class="statlabel">Average cover art generation time</div></div>
+  <div class="statitem"><div class="statnum" id="s2">0+</div><div class="statlabel">Pieces of content generated</div></div>
+  <div class="statitem"><div class="statnum">100%</div><div class="statlabel">Independent artist focused</div></div>
+</div>
+
+<div class="featsec" style="padding-top:56px;">
+  <div class="seclabel">FEATURES</div>
+  <h2 class="sectitle">What you'll <span class="neon">actually create</span></h2>
+  <p class="secsub">Every tool built around what independent artists need to compete with major label budgets.</p>
+  <div class="featgrid">
+    <div class="featcard"><div class="ficon"><i class="ti ti-disc"></i></div><div class="ftitle">AI Cover Art Generator</div><div class="fdesc">Label-quality artwork from a title, genre, and mood.</div><div class="fbullet">Generate in under 10 seconds</div><div class="fbullet">Auto-sized 3000×3000 JPEG for every DSP</div><div class="fbullet">Multiple variations per generation</div><div class="fbullet">Download instantly, no watermark</div></div>
+    <div class="featcard"><div class="ficon"><i class="ti ti-shirt"></i></div><div class="ftitle">Merch Mockup Studio</div><div class="fdesc">Upload your art and see it on real products instantly.</div><div class="fbullet">Tees, hoodies, hats, phone cases, posters</div><div class="fbullet">Real cost breakdown — POD vs bulk</div><div class="fbullet">Vendor recommendations with direct links</div><div class="fbullet">Affiliate ordering built in</div></div>
+    <div class="featcard"><div class="ficon"><i class="ti ti-rocket"></i></div><div class="ftitle">AI Release Planner</div><div class="fdesc">Personalized 30-day roadmap built around your release.</div><div class="fbullet">Specific dates and post times for your city</div><div class="fbullet">Genre-specific playlist contacts</div><div class="fbullet">Pre-save campaign and press outreach</div><div class="fbullet">Adapts to your career stage</div></div>
+    <div class="featcard"><div class="ficon"><i class="ti ti-video"></i></div><div class="ftitle">Lyric Video Creator</div><div class="fdesc">Professional lyric videos without a videographer.</div><div class="fbullet">Upload MP3 and lyrics</div><div class="fbullet">Sized for YouTube, TikTok, Instagram Reels</div><div class="fbullet">Multiple visual styles</div><div class="fbullet">Export as MP4 instantly</div></div>
+    <div class="featcard"><div class="ficon"><i class="ti ti-music"></i></div><div class="ftitle">AI Song Generator</div><div class="fdesc">Turn an idea into a full track. Coming soon.</div><div class="fbullet">Describe your concept in plain language</div><div class="fbullet">Generate beats, hooks, and full tracks</div><div class="fbullet">Choose genre, BPM, mood, energy</div><div class="fbullet">Download as MP3 instantly</div></div>
+    <div class="featcard"><div class="ficon"><i class="ti ti-chart-bar"></i></div><div class="ftitle">AI Ad Manager</div><div class="fdesc">Launch targeted ads from your dashboard. Coming soon.</div><div class="fbullet">AI-generated ad visuals and copy</div><div class="fbullet">Target by genre, location, demographics</div><div class="fbullet">Manage Meta and Google campaigns</div><div class="fbullet">Track performance in real time</div></div>
+  </div>
+</div>
+
+<div class="stepsec">
+  <div class="seclabel">HOW IT WORKS</div>
+  <h2 class="sectitle">From idea to release in <span class="neon">4 steps</span></h2>
+  <div class="stepsrow">
+    <div class="stepitem"><div class="stepnum">1</div><div class="steptitle">Sign up free</div><div class="stepdesc">Just your email. No credit card. Ready in seconds.</div></div>
+    <div class="stepitem"><div class="stepnum">2</div><div class="steptitle">Pick your tool</div><div class="stepdesc">Cover art, merch, release plan, or lyric video.</div></div>
+    <div class="stepitem"><div class="stepnum">3</div><div class="steptitle">Generate instantly</div><div class="stepdesc">Type your details, hit generate, get pro results.</div></div>
+    <div class="stepitem"><div class="stepnum">4</div><div class="steptitle">Drop and release</div><div class="stepdesc">Upload straight to your DSP, socials, or merch store.</div></div>
   </div>
 </div>
 
@@ -391,87 +391,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     </div>
     <div class="toolkit-right">
       <div class="toolcards" id="toolcards">
-        <div class="toolcard">
-          <div class="toolcard-img tc1"><span class="fallback">🎨</span></div>
-          <div class="toolcard-body"><div class="toolcard-desc">Generate label-quality artwork</div><div class="toolcard-name">Cover Art Generator</div><div class="toolcard-link">Generate now →</div></div>
-        </div>
-        <div class="toolcard">
-          <div class="toolcard-img tc2"><span class="fallback">🖼️</span></div>
-          <div class="toolcard-body"><div class="toolcard-desc">Sized for YouTube channels</div><div class="toolcard-name">YouTube Thumbnail Maker</div><div class="toolcard-link">Create now →</div></div>
-        </div>
-        <div class="toolcard">
-          <div class="toolcard-img tc3"><span class="fallback">📱</span></div>
-          <div class="toolcard-body"><div class="toolcard-desc">Perfect for IG and stories</div><div class="toolcard-name">Instagram Cover Art</div><div class="toolcard-link">Create now →</div></div>
-        </div>
-        <div class="toolcard">
-          <div class="toolcard-img tc4"><span class="fallback">🎭</span></div>
-          <div class="toolcard-body"><div class="toolcard-desc">Full project artwork</div><div class="toolcard-name">EP & Album Art</div><div class="toolcard-link">Create now →</div></div>
-        </div>
+        <div class="toolcard"><div class="toolcard-img tc1"><span class="fallback">🎨</span></div><div class="toolcard-body"><div class="toolcard-desc">Generate label-quality artwork</div><div class="toolcard-name">Cover Art Generator</div><div class="toolcard-link">Generate now →</div></div></div>
+        <div class="toolcard"><div class="toolcard-img tc2"><span class="fallback">🖼️</span></div><div class="toolcard-body"><div class="toolcard-desc">Sized for YouTube channels</div><div class="toolcard-name">YouTube Thumbnail Maker</div><div class="toolcard-link">Create now →</div></div></div>
+        <div class="toolcard"><div class="toolcard-img tc3"><span class="fallback">📱</span></div><div class="toolcard-body"><div class="toolcard-desc">Perfect for IG and stories</div><div class="toolcard-name">Instagram Cover Art</div><div class="toolcard-link">Create now →</div></div></div>
+        <div class="toolcard"><div class="toolcard-img tc4"><span class="fallback">🎭</span></div><div class="toolcard-body"><div class="toolcard-desc">Full project artwork</div><div class="toolcard-name">EP & Album Art</div><div class="toolcard-link">Create now →</div></div></div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- GALLERY -->
-<div class="gallerysec">
-  <div class="galleryhead">
-    <p class="gallerylabel">AI-GENERATED ARTWORK FROM INDEPENDENT ARTISTS</p>
-    <span class="gallerylink">View all →</span>
-  </div>
-  <div class="maingrid">
-    <div class="griditem tall"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit — In Due Time</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Troopin N Atlanta</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh Vol 2</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz Vol 2</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
-  </div>
-  <div class="grow2">
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz</div></div></div>
-  </div>
-</div>
-
-<!-- MARQUEE -->
-<div class="marquee">
-  <div class="marqinner">
-    <span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">MUSIC VIDEOS</span><span class="marqitem">1800+ ARTISTS</span><span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">MUSIC VIDEOS</span><span class="marqitem">1800+ ARTISTS</span>
-  </div>
-</div>
-
-<!-- STATS -->
-<div class="statsbar">
-  <div class="statitem"><div class="statnum" id="s1">0+</div><div class="statlabel">Independent artists using StudioSound</div></div>
-  <div class="statitem"><div class="statnum">&lt;10s</div><div class="statlabel">Average cover art generation time</div></div>
-  <div class="statitem"><div class="statnum" id="s2">0+</div><div class="statlabel">Pieces of content generated</div></div>
-  <div class="statitem"><div class="statnum">100%</div><div class="statlabel">Independent artist focused</div></div>
-</div>
-
-<!-- FEATURES -->
-<div class="featsec" style="padding-top:56px;">
-  <div class="seclabel">FEATURES</div>
-  <h2 class="sectitle">What you'll <span class="neon">actually create</span></h2>
-  <p class="secsub">Every tool built around what independent artists need to compete with major label budgets.</p>
-  <div class="featgrid">
-    <div class="featcard"><div class="ficon"><i class="ti ti-disc"></i></div><div class="ftitle">AI Cover Art Generator</div><div class="fdesc">Label-quality artwork from a title, genre, and mood.</div><div class="fbullet">Generate in under 10 seconds</div><div class="fbullet">Auto-sized 3000×3000 JPEG for every DSP</div><div class="fbullet">Multiple variations per generation</div><div class="fbullet">Download instantly, no watermark</div></div>
-    <div class="featcard"><div class="ficon"><i class="ti ti-shirt"></i></div><div class="ftitle">Merch Mockup Studio</div><div class="fdesc">Upload your art and see it on real products instantly.</div><div class="fbullet">Tees, hoodies, hats, phone cases, posters</div><div class="fbullet">Real cost breakdown — POD vs bulk</div><div class="fbullet">Vendor recommendations with direct links</div><div class="fbullet">Affiliate ordering built in</div></div>
-    <div class="featcard"><div class="ficon"><i class="ti ti-rocket"></i></div><div class="ftitle">AI Release Planner</div><div class="fdesc">Personalized 30-day roadmap built around your release.</div><div class="fbullet">Specific dates and post times for your city</div><div class="fbullet">Genre-specific playlist contacts</div><div class="fbullet">Pre-save campaign and press outreach</div><div class="fbullet">Adapts to your career stage</div></div>
-    <div class="featcard"><div class="ficon"><i class="ti ti-video"></i></div><div class="ftitle">Lyric Video Creator</div><div class="fdesc">Professional lyric videos without a videographer.</div><div class="fbullet">Upload MP3 and lyrics</div><div class="fbullet">Sized for YouTube, TikTok, Instagram Reels</div><div class="fbullet">Multiple visual styles</div><div class="fbullet">Export as MP4 instantly</div></div>
-    <div class="featcard"><div class="ficon"><i class="ti ti-music"></i></div><div class="ftitle">AI Song Generator</div><div class="fdesc">Turn an idea into a full track. Coming soon.</div><div class="fbullet">Describe your concept in plain language</div><div class="fbullet">Generate beats, hooks, and full tracks</div><div class="fbullet">Choose genre, BPM, mood, energy</div><div class="fbullet">Download as MP3 instantly</div></div>
-    <div class="featcard"><div class="ficon"><i class="ti ti-chart-bar"></i></div><div class="ftitle">AI Ad Manager</div><div class="fdesc">Launch targeted ads from your dashboard. Coming soon.</div><div class="fbullet">AI-generated ad visuals and copy</div><div class="fbullet">Target by genre, location, demographics</div><div class="fbullet">Manage Meta and Google campaigns</div><div class="fbullet">Track performance in real time</div></div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<div class="stepsec">
-  <div class="seclabel">HOW IT WORKS</div>
-  <h2 class="sectitle">From idea to release in <span class="neon">4 steps</span></h2>
-  <div class="stepsrow">
-    <div class="stepitem"><div class="stepnum">1</div><div class="steptitle">Sign up free</div><div class="stepdesc">Just your email. No credit card. Ready in seconds.</div></div>
-    <div class="stepitem"><div class="stepnum">2</div><div class="steptitle">Pick your tool</div><div class="stepdesc">Cover art, merch, release plan, or lyric video.</div></div>
-    <div class="stepitem"><div class="stepnum">3</div><div class="steptitle">Generate instantly</div><div class="stepdesc">Type your details, hit generate, get pro results.</div></div>
-    <div class="stepitem"><div class="stepnum">4</div><div class="steptitle">Drop and release</div><div class="stepdesc">Upload straight to your DSP, socials, or merch store.</div></div>
   </div>
 </div>
 
@@ -523,7 +448,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-top">
-    <div class="footer-brand">
+    <div>
       <div class="footer-logo">
         <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
         <span class="footer-logoname">StudioSound.ai</span>
@@ -537,7 +462,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <a href="#"><i class="ti ti-brand-facebook"></i></a>
       </div>
     </div>
-    <div class="footer-col">
+    <div>
       <div class="footer-col-title">STUDIO SUITE</div>
       <span class="footer-link">Cover Art Generator</span>
       <span class="footer-link">Merch Mockup Studio</span>
@@ -546,7 +471,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       <span class="footer-link">AI Song Generator</span>
       <span class="footer-link">AI Ad Manager</span>
     </div>
-    <div class="footer-col">
+    <div>
       <div class="footer-col-title">COMPANY</div>
       <span class="footer-link">About Us</span>
       <span class="footer-link">Community</span>
@@ -555,7 +480,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       <span class="footer-link">Contact Us</span>
       <span class="footer-link">Pricing</span>
     </div>
-    <div class="footer-col">
+    <div>
       <div class="footer-col-title">LEGAL</div>
       <span class="footer-link">Privacy Policy</span>
       <span class="footer-link">Terms of Use</span>
@@ -578,7 +503,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 function countUp(el,target,suffix,duration){let start=0;const inc=target/60;const t=setInterval(()=>{start+=inc;if(start>=target){start=target;clearInterval(t);}el.textContent=Math.round(start).toLocaleString()+suffix;},duration/60);}
 const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){countUp(document.getElementById('s1'),1800,'+',2000);countUp(document.getElementById('s2'),12000,'+',2000);obs.disconnect();}});},{threshold:0.3});
 const sb=document.querySelector('.statsbar');if(sb)obs.observe(sb);
-
 const cats={
   cover:[
     {icon:'🎨',desc:'Generate label-quality artwork',name:'Cover Art Generator',link:'Generate now →',bg:'tc1'},
@@ -617,7 +541,6 @@ const cats={
     {icon:'🌟',desc:'Everything sized and ready',name:'Social Media Kit',link:'Coming soon →',bg:'tc4'},
   ]
 };
-
 function setcat(el,cat){
   document.querySelectorAll('.cat-item').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
