@@ -103,8 +103,19 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .comment-input:focus{border-color:var(--neon);}
 .comment-input::placeholder{color:#5a5a72;}
 .comment-btn{background:var(--neon);color:#05050a;border:none;border-radius:24px;padding:10px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
-.footer{background:#030308;border-top:0.5px solid var(--border);padding:32px;text-align:center;}
-.footer-copy{color:#252535;font-size:12px;}
+.footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;}
+.footer-logodot{width:24px;height:24px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.footer-logodot i{font-size:12px;color:#05050a;}
+.footer-logoname{font-size:14px;font-weight:800;color:#fff;}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;}
+.footer-link:hover{color:var(--neon);}
+.footer-social{display:flex;gap:12px;}
+.footer-social-link{color:#c0c0d8;font-size:18px;text-decoration:none;transition:color 0.15s;}
+.footer-social-link:hover{color:var(--neon);}
+.footer-copy{color:#6b6b80;font-size:11px;text-align:center;border-top:0.5px solid var(--border);padding-top:16px;}
 @media(max-width:768px){
 .navlinks{display:none;}
 .hero{padding:40px 16px 28px;}
@@ -385,7 +396,29 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 </div>
 
 <footer class="footer">
-  <p class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</p>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <span class="footer-logoname">StudioSound.ai</span>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="#">About Us</a>
+      <a class="footer-link" href="#">Terms of Use</a>
+      <a class="footer-link" href="#">Privacy Policy</a>
+      <a class="footer-link" href="#">Security</a>
+      <a class="footer-link" href="#">Contact Us</a>
+      <a class="footer-link" href="/pricing.html">Pricing</a>
+      <a class="footer-link" href="/community.html">Community</a>
+    </div>
+    <div class="footer-social">
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-facebook"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-twitter"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-instagram"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-youtube"></i></a>
+      <a class="footer-social-link" href="#"><i class="ti ti-brand-tiktok"></i></a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
 </footer>
 
 </body>
