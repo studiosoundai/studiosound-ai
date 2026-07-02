@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community — StudioSound.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logodot i{font-size:14px;color:#05050a;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;}
+.navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
+.navlink:hover{opacity:1;background:#0d0d14;}
+.navlink.drop::after{content:' ▾';font-size:9px;}
+.navlink.active{opacity:1;color:var(--neon);}
+.navbtns{display:flex;gap:8px;}
+.btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
+.btn-ghost:hover{border-color:var(--neon);}
+.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+.hero{padding:56px 32px 40px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;left:-60px;width:400px;height:400px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
+.seclabel{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;}
+.sectitle{font-size:40px;font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:12px;color:#fff;}
+.sectitle .neon{color:var(--neon);}
+.secsub{color:var(--muted);font-size:14px;font-weight:500;line-height:1.7;max-width:500px;}
+.section{padding:40px 32px;border-top:0.5px solid var(--border);}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:20px;}
+.section-platform{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.platform-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.platform-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.01em;}
+.section-sub{color:var(--muted);font-size:13px;font-weight:500;line-height:1.6;max-width:500px;}
+.section-btn{display:inline-flex;align-items:center;gap:8px;border:0.5px solid var(--neon);color:var(--neon);background:transparent;border-radius:24px;padding:9px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.section-btn:hover{background:var(--neon);color:#05050a;}
+.section-btn.filled{background:var(--neon);color:#05050a;border-color:var(--neon);}
+.discord-box{background:linear-gradient(135deg,#1a1f4a,#0d1030);border:0.5px solid #5865F2;border-radius:18px;padding:32px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.discord-title{font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:8px;}
+.discord-desc{color:#c0c0d8;font-size:13px;font-weight:500;line-height:1.6;margin-bottom:20px;max-width:420px;}
+.discord-stats{display:flex;gap:24px;margin-bottom:20px;}
+.discord-stat-num{font-size:22px;font-weight:900;color:#5865F2;}
+.discord-stat-label{color:var(--muted);font-size:11px;font-weight:500;}
+.discord-btn{background:#5865F2;color:#fff;border:none;border-radius:24px;padding:12px 28px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:opacity 0.15s;}
+.discord-btn:hover{opacity:0.9;}
+.discord-right{font-size:80px;flex-shrink:0;}
+.creator-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.creator-card{border-radius:12px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
+.creator-card:hover{border-color:var(--neon);transform:translateY(-3px);}
+.creator-thumb{height:140px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.creator-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.creator-thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;}
+.creator-card:hover .creator-thumb-overlay{opacity:1;}
+.play-btn{width:44px;height:44px;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.3);}
+.play-btn i{font-size:20px;color:#fff;margin-left:3px;}
+.creator-badge{position:absolute;top:8px;left:8px;background:var(--neon);color:#05050a;font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;z-index:1;}
+.creator-body{padding:10px 12px 12px;}
+.creator-name{color:#fff;font-size:12px;font-weight:700;margin-bottom:2px;}
+.creator-genre{color:var(--neon);font-size:10px;font-weight:600;margin-bottom:4px;}
+.creator-views{color:var(--muted);font-size:10px;}
+.video-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.video-card{border-radius:12px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
+.video-card:hover{border-color:var(--neon);transform:translateY(-3px);}
+.video-thumb{height:130px;display:flex;align-items:center;justify-content:center;position:relative;}
+.video-duration{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.85);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.video-body{padding:10px 12px 12px;}
+.video-title{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;line-height:1.4;}
+.video-meta{color:var(--muted);font-size:10px;font-weight:500;}
+.tiktok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.tiktok-card{border-radius:12px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;}
+.tiktok-card:hover{border-color:var(--neon);transform:translateY(-3px);}
+.tiktok-thumb{aspect-ratio:9/16;max-height:300px;display:flex;align-items:center;justify-content:center;position:relative;}
+.tiktok-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}
+.tiktok-title{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;}
+.tiktok-views{color:rgba(255,255,255,0.7);font-size:11px;display:flex;align-items:center;gap:4px;}
+.reels-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.reel-card{border-radius:12px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;}
+.reel-card:hover{border-color:var(--neon);transform:translateY(-3px);}
+.reel-thumb{aspect-ratio:9/16;max-height:240px;display:flex;align-items:center;justify-content:center;}
+.reel-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);display:flex;flex-direction:column;justify-content:flex-end;padding:10px;}
+.reel-title{color:#fff;font-size:11px;font-weight:700;margin-bottom:3px;}
+.reel-likes{color:rgba(255,255,255,0.7);font-size:10px;display:flex;align-items:center;gap:4px;}
+.feed{display:flex;flex-direction:column;gap:14px;}
+.post{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:18px;}
+.post-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.post-name{color:#fff;font-size:13px;font-weight:700;}
+.post-meta{color:var(--muted);font-size:11px;margin-top:2px;}
+.post-badge{background:#00FFD115;border:0.5px solid var(--neon);color:var(--neon);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;}
+.post-body{color:#e0e0f0;font-size:13px;font-weight:500;line-height:1.6;margin-bottom:12px;}
+.post-img{border-radius:10px;overflow:hidden;margin-bottom:12px;}
+.post-img img{width:100%;height:180px;object-fit:cover;display:block;}
+.post-actions{display:flex;gap:16px;}
+.post-action{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:color 0.15s;}
+.post-action:hover{color:var(--neon);}
+.post-action i{font-size:15px;}
+.comment-box{display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:0.5px solid var(--border);}
+.comment-input{flex:1;background:#0f0f1a;border:0.5px solid var(--border);border-radius:24px;padding:10px 16px;color:#fff;font-size:12px;outline:none;font-family:'Sora',sans-serif;transition:border-color 0.15s;}
+.comment-input:focus{border-color:var(--neon);}
+.comment-input::placeholder{color:#5a5a72;}
+.comment-btn{background:var(--neon);color:#05050a;border:none;border-radius:24px;padding:10px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.footer{background:#030308;border-top:0.5px solid var(--border);padding:32px;text-align:center;}
+.footer-copy{color:#252535;font-size:12px;}
+@media(max-width:768px){
+.navlinks{display:none;}
+.hero{padding:40px 16px 28px;}
+.sectitle{font-size:28px;}
+.section{padding:28px 16px;}
+.creator-grid,.video-grid,.reels-grid{grid-template-columns:repeat(2,1fr);}
+.tiktok-grid{grid-template-columns:1fr;}
+.discord-box{flex-direction:column;}
+.discord-right{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="/landing.html">
+    <div class="logodot"><i class="ti ti-waveform"></i></div>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="navlinks">
+    <span class="navlink drop">Studio Suite</span>
+    <span class="navlink drop">AI Playground</span>
+    <span class="navlink">Features</span>
+    <span class="navlink active">Community</span>
+    <span class="navlink">Distribution</span>
+    <span class="navlink">Blog</span>
+    <span class="navlink">Pricing</span>
+    <span class="navlink">Contact Us</span>
+  </div>
+  <div class="navbtns">
+    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="seclabel">COMMUNITY</div>
+  <h1 class="sectitle">Where independent artists<br><span class="neon">build together.</span></h1>
+  <p class="secsub">Connect with artists, share your AI-generated content, get inspired, and grow your fanbase — all in one place.</p>
+</div>
+
+<!-- 1. DISCORD -->
+<div class="section">
+  <div class="discord-box">
+    <div>
+      <div class="discord-title">Join Our Discord Community 🎵</div>
+      <div class="discord-desc">Connect with 1,800+ independent artists. Share your music, get feedback on your cover art, find collaborators, and stay updated on the latest StudioSound.ai features.</div>
+      <div class="discord-stats">
+        <div class="discord-stat"><div class="discord-stat-num">1,800+</div><div class="discord-stat-label">Members</div></div>
+        <div class="discord-stat"><div class="discord-stat-num">50+</div><div class="discord-stat-label">Channels</div></div>
+        <div class="discord-stat"><div class="discord-stat-num">Daily</div><div class="discord-stat-label">Active</div></div>
+      </div>
+      <button class="discord-btn" onclick="window.open('https://discord.gg/YOUR_DISCORD_LINK','_blank')"><i class="ti ti-brand-discord"></i> Join Discord — It's Free</button>
+    </div>
+    <div class="discord-right">🎮</div>
+  </div>
+</div>
+
+<!-- 2. TOP CREATOR VIDEOS -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-platform">
+        <div class="platform-icon" style="background:#00FFD115;border:0.5px solid var(--neon);"><i class="ti ti-sparkles" style="color:var(--neon);font-size:18px;"></i></div>
+        <span class="platform-name">Top Creator Videos Built on StudioSound</span>
+      </div>
+      <div class="section-sub">Real artists. Real content. All created using StudioSound.ai tools.</div>
+    </div>
+    <button class="section-btn">View all →</button>
+  </div>
+  <div class="creator-grid">
+    <div class="creator-card">
+      <div class="creator-thumb">
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/>
+        <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
+        <div class="creator-badge">NEW DROP</div>
+      </div>
+      <div class="creator-body"><div class="creator-name">Too Hunnit — In Due Time</div><div class="creator-genre">Hip-Hop · ATL</div><div class="creator-views">12.4K views</div></div>
+    </div>
+    <div class="creator-card">
+      <div class="creator-thumb">
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/>
+        <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
+      </div>
+      <div class="creator-body"><div class="creator-name">Poor Little Richh Vol 2</div><div class="creator-genre">Trap · LA</div><div class="creator-views">8.7K views</div></div>
+    </div>
+    <div class="creator-card">
+      <div class="creator-thumb">
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/>
+        <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
+        <div class="creator-badge">AI GENERATED</div>
+      </div>
+      <div class="creator-body"><div class="creator-name">NVRSFE — AI Generated</div><div class="creator-genre">R&B · Miami</div><div class="creator-views">15.2K views</div></div>
+    </div>
+    <div class="creator-card">
+      <div class="creator-thumb">
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/>
+        <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
+      </div>
+      <div class="creator-body"><div class="creator-name">Space Jawz Vol 2</div><div class="creator-genre">Electronic · NY</div><div class="creator-views">6.3K views</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. YOUTUBE -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-platform">
+        <div class="platform-icon" style="background:#FF0000;"><i class="ti ti-brand-youtube" style="color:#fff;font-size:20px;"></i></div>
+        <span class="platform-name">Follow Us on YouTube</span>
+      </div>
+      <div class="section-sub">Tutorials, artist features, platform updates and more — subscribe so you never miss a drop.</div>
+    </div>
+    <button class="section-btn filled" onclick="window.open('https://youtube.com/@StudioSoundAI','_blank')"><i class="ti ti-brand-youtube"></i> Subscribe</button>
+  </div>
+  <div class="video-grid">
+    <div class="video-card">
+      <div class="video-thumb" style="background:linear-gradient(135deg,#1a0808,#2a0f0f);"><div class="play-btn"><i class="ti ti-player-play"></i></div><div class="video-duration">4:32</div></div>
+      <div class="video-body"><div class="video-title">How to Generate Stunning Cover Art in Under 10 Seconds</div><div class="video-meta">StudioSound.ai · 2.4K views</div></div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb" style="background:linear-gradient(135deg,#1a0f08,#2a180a);"><div class="play-btn"><i class="ti ti-player-play"></i></div><div class="video-duration">6:18</div></div>
+      <div class="video-body"><div class="video-title">Build Your 30-Day Release Plan with AI</div><div class="video-meta">StudioSound.ai · 1.8K views</div></div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb" style="background:linear-gradient(135deg,#0a1a08,#0f2a0a);"><div class="play-btn"><i class="ti ti-player-play"></i></div><div class="video-duration">3:45</div></div>
+      <div class="video-body"><div class="video-title">Turn Your Cover Art Into Merch Mockups Instantly</div><div class="video-meta">StudioSound.ai · 3.1K views</div></div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);"><div class="play-btn"><i class="ti ti-player-play"></i></div><div class="video-duration">8:02</div></div>
+      <div class="video-body"><div class="video-title">Independent Artist Drops Like a Major Using StudioSound.ai</div><div class="video-meta">StudioSound.ai · 5.2K views</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. TIKTOK -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-platform">
+        <div class="platform-icon" style="background:#010101;border:1px solid #333;"><i class="ti ti-brand-tiktok" style="color:#fff;font-size:20px;"></i></div>
+        <span class="platform-name">Follow Us on TikTok</span>
+      </div>
+      <div class="section-sub">Daily tips, AI art reveals, artist features and trending music content. Follow for your daily dose of creative fuel.</div>
+    </div>
+    <button class="section-btn" onclick="window.open('https://tiktok.com/@StudioSoundAI','_blank')"><i class="ti ti-brand-tiktok"></i> Follow on TikTok</button>
+  </div>
+  <div class="tiktok-grid">
+    <div class="tiktok-card">
+      <div class="tiktok-thumb" style="background:linear-gradient(135deg,#0a0a1a,#1a0828);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="tiktok-overlay"><div class="tiktok-title">Cover art generated in 8 seconds 🔥</div><div class="tiktok-views"><i class="ti ti-eye" style="font-size:12px;"></i> 48.2K views</div></div>
+      </div>
+    </div>
+    <div class="tiktok-card">
+      <div class="tiktok-thumb" style="background:linear-gradient(135deg,#0f1f3a,#0a1020);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="tiktok-overlay"><div class="tiktok-title">From idea to release plan in 60 seconds</div><div class="tiktok-views"><i class="ti ti-eye" style="font-size:12px;"></i> 32.1K views</div></div>
+      </div>
+    </div>
+    <div class="tiktok-card">
+      <div class="tiktok-thumb" style="background:linear-gradient(135deg,#1a0f08,#2a1808);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="tiktok-overlay"><div class="tiktok-title">Independent artist merch mockup reveal 👕</div><div class="tiktok-views"><i class="ti ti-eye" style="font-size:12px;"></i> 61.4K views</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. INSTAGRAM REELS -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-platform">
+        <div class="platform-icon" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);"><i class="ti ti-brand-instagram" style="color:#fff;font-size:20px;"></i></div>
+        <span class="platform-name">Follow Us on Instagram</span>
+      </div>
+      <div class="section-sub">Daily cover art reveals, artist spotlights, and behind the scenes content. Follow and turn on notifications.</div>
+    </div>
+    <button class="section-btn" onclick="window.open('https://instagram.com/StudioSoundAI','_blank')"><i class="ti ti-brand-instagram"></i> Follow on Instagram</button>
+  </div>
+  <div class="reels-grid">
+    <div class="reel-card">
+      <div class="reel-thumb" style="background:linear-gradient(135deg,#1a0828,#2d1045);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="reel-overlay"><div class="reel-title">AI cover art reveal 🎨</div><div class="reel-likes"><i class="ti ti-heart" style="font-size:12px;"></i> 2.4K likes</div></div>
+      </div>
+    </div>
+    <div class="reel-card">
+      <div class="reel-thumb" style="background:linear-gradient(135deg,#0f1f3a,#1a2b50);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="reel-overlay"><div class="reel-title">Release plan walkthrough 🚀</div><div class="reel-likes"><i class="ti ti-heart" style="font-size:12px;"></i> 1.8K likes</div></div>
+      </div>
+    </div>
+    <div class="reel-card">
+      <div class="reel-thumb" style="background:linear-gradient(135deg,#1a0f08,#2a1808);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="reel-overlay"><div class="reel-title">Merch mockup in 10 seconds 👕</div><div class="reel-likes"><i class="ti ti-heart" style="font-size:12px;"></i> 3.1K likes</div></div>
+      </div>
+    </div>
+    <div class="reel-card">
+      <div class="reel-thumb" style="background:linear-gradient(135deg,#0a1a10,#0f2a18);">
+        <div class="play-btn"><i class="ti ti-player-play"></i></div>
+        <div class="reel-overlay"><div class="reel-title">Artist spotlight ft. Too Hunnit</div><div class="reel-likes"><i class="ti ti-heart" style="font-size:12px;"></i> 4.7K likes</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. COMMUNITY WALL -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-platform">
+        <div class="platform-icon" style="background:#00FFD115;border:0.5px solid var(--neon);"><i class="ti ti-users" style="color:var(--neon);font-size:18px;"></i></div>
+        <span class="platform-name">Community Wall</span>
+      </div>
+      <div class="section-sub">Share your creations, drops, and thoughts with the StudioSound community.</div>
+    </div>
+    <button class="section-btn filled"><i class="ti ti-plus"></i> Share Something</button>
+  </div>
+  <div class="feed">
+    <div class="post">
+      <div class="post-top">
+        <div class="avatar" style="background:#1a0828;">🎤</div>
+        <div><div class="post-name">Too Hunnit <span class="post-badge">PRO</span></div><div class="post-meta">2 hours ago · Hip-Hop · Atlanta, GA</div></div>
+      </div>
+      <div class="post-body">Just dropped my new cover art using StudioSound.ai 🔥 The AI understood the vibe immediately — dark, moody, cinematic. Generated in under 10 seconds. This platform is built different.</div>
+      <div class="post-img"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit cover art"/></div>
+      <div class="post-actions">
+        <div class="post-action"><i class="ti ti-heart"></i> 48</div>
+        <div class="post-action"><i class="ti ti-message-circle"></i> 12</div>
+        <div class="post-action"><i class="ti ti-share"></i> Share</div>
+        <div class="post-action"><i class="ti ti-bookmark"></i> Save</div>
+      </div>
+      <div class="comment-box">
+        <input class="comment-input" placeholder="Leave a comment..."/>
+        <button class="comment-btn">Post</button>
+      </div>
+    </div>
+    <div class="post">
+      <div class="post-top">
+        <div class="avatar" style="background:#0f3a1f;">🎵</div>
+        <div><div class="post-name">NVRSFE <span class="post-badge">PRO</span></div><div class="post-meta">5 hours ago · R&B · Miami, FL</div></div>
+      </div>
+      <div class="post-body">The release plan from StudioSound hit different. Had my whole 30-day campaign mapped out in minutes. Post times, playlist pitches, pre-save — everything. Independent but moving like a major 💯</div>
+      <div class="post-actions">
+        <div class="post-action"><i class="ti ti-heart"></i> 31</div>
+        <div class="post-action"><i class="ti ti-message-circle"></i> 7</div>
+        <div class="post-action"><i class="ti ti-share"></i> Share</div>
+        <div class="post-action"><i class="ti ti-bookmark"></i> Save</div>
+      </div>
+      <div class="comment-box">
+        <input class="comment-input" placeholder="Leave a comment..."/>
+        <button class="comment-btn">Post</button>
+      </div>
+    </div>
+    <div class="post">
+      <div class="post-top">
+        <div class="avatar" style="background:#1a0808;">🎸</div>
+        <div><div class="post-name">Space Jawz <span class="post-badge">FREE</span></div><div class="post-meta">1 day ago · Electronic · New York, NY</div></div>
+      </div>
+      <div class="post-body">Just tried the merch mockup tool for the first time. Had hoodie and tee mockups ready in seconds. The cost breakdown alone saved me hours of research 🙌</div>
+      <div class="post-img"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz cover art"/></div>
+      <div class="post-actions">
+        <div class="post-action"><i class="ti ti-heart"></i> 19</div>
+        <div class="post-action"><i class="ti ti-message-circle"></i> 4</div>
+        <div class="post-action"><i class="ti ti-share"></i> Share</div>
+        <div class="post-action"><i class="ti ti-bookmark"></i> Save</div>
+      </div>
+      <div class="comment-box">
+        <input class="comment-input" placeholder="Leave a comment..."/>
+        <button class="comment-btn">Post</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
