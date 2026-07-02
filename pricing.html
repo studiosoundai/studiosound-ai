@@ -73,16 +73,21 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .pf.no i{color:#3a3a52;font-size:14px;flex-shrink:0;margin-top:1px;}
 .pf.hl{color:var(--neon);font-weight:700;}
 .pf.hl i{color:var(--neon);font-size:14px;flex-shrink:0;margin-top:1px;}
-.partners{padding:0 32px 56px;text-align:center;}
-.partners-title{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:6px;}
+.partners{padding:0 0 56px;text-align:center;}
+.partners-title{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:6px;padding:0 32px;}
 .partners-title .neon{color:var(--neon);}
-.partners-sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
-.partners-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:720px;margin:0 auto;}
-.partner-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;transition:border-color 0.2s,transform 0.15s;}
-.partner-card:hover{border-color:var(--neon);transform:translateY(-2px);}
-.partner-icon{font-size:24px;margin-bottom:6px;}
-.partner-name{color:#fff;font-size:11px;font-weight:700;margin-bottom:2px;}
-.partner-by{color:var(--muted);font-size:10px;font-weight:500;}
+.partners-sub{color:var(--muted);font-size:13px;margin-bottom:28px;padding:0 32px;}
+.partners-scroll{overflow:hidden;position:relative;}
+.partners-scroll::before,.partners-scroll::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
+.partners-scroll::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
+.partners-scroll::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.partners-track{display:flex;gap:14px;animation:partnerscroll 28s linear infinite;white-space:nowrap;padding:8px 0;}
+@keyframes partnerscroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.partner-card{flex-shrink:0;background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px 24px;text-align:center;transition:border-color 0.2s;display:inline-block;min-width:140px;}
+.partner-card:hover{border-color:var(--neon);}
+.partner-icon{font-size:32px;margin-bottom:8px;}
+.partner-name{color:#fff;font-size:13px;font-weight:700;margin-bottom:3px;}
+.partner-by{color:var(--muted);font-size:10px;font-weight:600;letter-spacing:0.04em;}
 .steps-sec{padding:0 32px 56px;text-align:center;}
 .sec-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px;color:#fff;}
 .sec-title .neon{color:var(--neon);}
