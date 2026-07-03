@@ -60,7 +60,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tool-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
 .tool-badge.live{background:#00FFD120;color:var(--neon);border:0.5px solid var(--neon);}
 .tool-badge.soon{background:#1a1a28;color:#5a5a72;}
-.generator{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+
+/* GENERATOR LAYOUT */
+.generator{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .gen-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;}
 .gen-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;}
 .gen-sub{color:var(--muted);font-size:11px;margin-bottom:16px;}
@@ -69,7 +71,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .form-input{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;}
 .form-input:focus{border-color:var(--neon);}
 .form-input::placeholder{color:#5a5a72;}
-.form-textarea{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;resize:none;min-height:80px;}
+.form-textarea{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;resize:none;min-height:100px;}
 .form-textarea:focus{border-color:var(--neon);}
 .form-textarea::placeholder{color:#5a5a72;}
 .form-select{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;font-family:'Sora',sans-serif;}
@@ -77,10 +79,35 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .gen-btn{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;transition:opacity 0.15s;}
 .gen-btn:hover{opacity:0.9;}
 .gen-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* IMAGE UPLOAD */
+.img-upload-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.img-upload-btn{display:flex;align-items:center;gap:6px;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:border-color 0.15s;white-space:nowrap;}
+.img-upload-btn:hover{border-color:var(--neon);color:#fff;}
+.img-upload-btn i{font-size:15px;color:var(--neon);}
+.img-preview-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid var(--neon);display:none;}
+.img-upload-hint{color:#5a5a72;font-size:10px;line-height:1.4;}
+
+/* PROMPT EXAMPLES */
+.examples-section{margin-bottom:24px;}
+.examples-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.examples-label i{color:var(--neon);font-size:14px;}
+.examples-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.example-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
+.example-card:hover{border-color:var(--neon);transform:translateY(-2px);}
+.example-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;}
+.example-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.example-badge{position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);color:var(--neon);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.example-body{padding:10px 12px 12px;}
+.example-prompt{color:#e0e0f0;font-size:11px;font-weight:500;line-height:1.5;margin-bottom:6px;}
+.example-use{color:var(--neon);font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.example-use i{font-size:12px;}
+
+/* RESULT */
 .result-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
 .result-placeholder{flex:1;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;margin-bottom:12px;}
 .result-placeholder i{font-size:40px;color:#2a2a3a;margin-bottom:8px;}
-.result-placeholder p{color:#3a3a52;font-size:12px;font-weight:500;}
+.result-placeholder p{color:#3a3a52;font-size:12px;font-weight:500;text-align:center;padding:0 20px;line-height:1.6;}
 .result-img{width:100%;border-radius:10px;object-fit:cover;margin-bottom:12px;}
 .result-actions{display:flex;gap:8px;}
 .result-btn{flex:1;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:border-color 0.15s;}
@@ -91,7 +118,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .loading-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{color:var(--muted);font-size:12px;font-weight:500;}
-.plan-timeline{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;margin-bottom:12px;}
+.plan-timeline{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:12px;}
 .plan-item{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;}
 .plan-date{color:var(--neon);font-size:10px;font-weight:700;margin-bottom:3px;}
 .plan-task{color:#fff;font-size:12px;font-weight:600;margin-bottom:2px;}
@@ -106,6 +133,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .recent-meta{color:var(--muted);font-size:9px;}
 .hidden{display:none;}
 .error-msg{color:#ff6b6b;font-size:11px;text-align:center;padding:8px;}
+.merch-cost{background:#0f0f1a;border-radius:10px;padding:14px;margin-top:10px;}
+.merch-cost-title{color:var(--neon);font-size:11px;font-weight:700;margin-bottom:8px;}
+.merch-cost-row{display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;margin-bottom:4px;}
+.merch-cost-row.highlight{color:var(--neon);font-weight:700;}
 </style>
 </head>
 <body>
@@ -165,7 +196,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="welcome">
       <div>
         <div class="welcome-title">Welcome to <span>StudioSound.ai</span> 👋</div>
-        <div class="welcome-sub">Pick a tool below and start creating professional content in seconds.</div>
+        <div class="welcome-sub">Pick a tool and start creating. Don't worry — we'll guide you every step of the way.</div>
         <div class="welcome-pills">
           <div class="wpill"><i class="ti ti-disc"></i> Cover Art Live</div>
           <div class="wpill"><i class="ti ti-rocket"></i> Release Planner Live</div>
@@ -208,198 +239,332 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       </div>
     </div>
 
-    <!-- COVER ART GENERATOR -->
-    <div id="tool-art" class="generator">
-      <div class="gen-panel">
-        <div class="gen-title">🎨 Cover Art Generator</div>
-        <div class="gen-sub">Describe your vision and let AI create it in seconds</div>
-        <div class="form-group">
-          <label class="form-label">Song or Project Title</label>
-          <input class="form-input" id="art-title" placeholder="e.g. Midnight Static"/>
-        </div>
-        <div class="form-row">
+    <!-- COVER ART TOOL -->
+    <div id="tool-art">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🎨 Cover Art Generator</div>
+          <div class="gen-sub">Describe your vision below — be as detailed as you want. The more you describe, the better the result.</div>
           <div class="form-group">
-            <label class="form-label">Genre</label>
-            <select class="form-select" id="art-genre">
-              <option>Hip-Hop</option>
-              <option>R&B</option>
-              <option>Trap</option>
-              <option>Pop</option>
-              <option>Gospel</option>
-              <option>Afrobeats</option>
-              <option>Electronic</option>
-              <option>Country</option>
-              <option>Reggaeton</option>
-              <option>Latin</option>
-            </select>
+            <label class="form-label">Song or Project Title</label>
+            <input class="form-input" id="art-title" placeholder="e.g. Midnight Static"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <select class="form-select" id="art-genre">
+                <option>Hip-Hop</option>
+                <option>Drill</option>
+                <option>Trap</option>
+                <option>R&B</option>
+                <option>R&B Soul</option>
+                <option>Pop</option>
+                <option>Gospel</option>
+                <option>Afrobeats</option>
+                <option>Electronic</option>
+                <option>Country</option>
+                <option>Reggaeton</option>
+                <option>Latin</option>
+                <option>Jazz</option>
+                <option>Neo Soul</option>
+                <option>Lo-Fi</option>
+                <option>Punk</option>
+                <option>Rock</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mood</label>
+              <select class="form-select" id="art-mood">
+                <option>Dark & Moody</option>
+                <option>Aggressive</option>
+                <option>Cinematic</option>
+                <option>Energetic</option>
+                <option>Emotional</option>
+                <option>Uplifting</option>
+                <option>Dreamy</option>
+                <option>Nostalgic</option>
+                <option>Romantic</option>
+                <option>Mysterious</option>
+                <option>Raw & Gritty</option>
+                <option>Luxurious</option>
+                <option>Spiritual</option>
+                <option>Playful</option>
+                <option>Melancholic</option>
+              </select>
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Mood</label>
-            <select class="form-select" id="art-mood">
-              <option>Dark & Moody</option>
-              <option>Energetic</option>
-              <option>Emotional</option>
-              <option>Aggressive</option>
-              <option>Uplifting</option>
-              <option>Cinematic</option>
-              <option>Dreamy</option>
-              <option>Nostalgic</option>
-            </select>
+            <label class="form-label">Describe Your Vision <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="art-prompt" placeholder="Tell the AI exactly what you want to see. Example: A dark hooded figure standing alone under a flickering streetlight in the rain. The background is a blurred city at night with blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Add a Reference Image (optional)</label>
+            <div class="img-upload-row">
+              <div class="img-upload-btn" onclick="document.getElementById('art-img-upload').click()">
+                <i class="ti ti-photo-plus"></i> Add Image
+              </div>
+              <img class="img-preview-thumb" id="art-img-thumb" src="" alt=""/>
+              <div class="img-upload-hint">Upload a photo for visual reference — style, color, vibe</div>
+              <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb')"/>
+            </div>
+          </div>
+          <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate Cover Art</button>
+        </div>
+        <div class="gen-panel result-panel">
+          <div class="gen-title">Your Result</div>
+          <div class="gen-sub">Your generated cover art will appear here</div>
+          <div class="result-placeholder" id="art-placeholder">
+            <i class="ti ti-photo"></i>
+            <p>Describe your vision on the left and hit Generate — your professional cover art will appear here in seconds.</p>
+          </div>
+          <div class="loading" id="art-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Creating your cover art...</div>
+          </div>
+          <img class="result-img hidden" id="art-result" alt="Generated cover art"/>
+          <div class="error-msg hidden" id="art-error"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generateArt()"><i class="ti ti-refresh"></i> Regenerate</button>
+            <button class="result-btn primary" onclick="downloadArt()"><i class="ti ti-download"></i> Download</button>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Additional Details (optional)</label>
-          <input class="form-input" id="art-details" placeholder="e.g. neon lights, rain, city skyline at night"/>
-        </div>
-        <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate Cover Art</button>
       </div>
-      <div class="gen-panel">
-        <div class="gen-title">Your Result</div>
-        <div class="gen-sub">Your generated cover art will appear here</div>
-        <div class="result-placeholder" id="art-placeholder">
-          <i class="ti ti-photo"></i>
-          <p>Generate your first cover art</p>
-        </div>
-        <div class="loading" id="art-loading">
-          <div class="loading-spinner"></div>
-          <div class="loading-text">Creating your cover art...</div>
-        </div>
-        <img class="result-img hidden" id="art-result" alt="Generated cover art"/>
-        <div class="error-msg hidden" id="art-error"></div>
-        <div class="result-actions">
-          <button class="result-btn" onclick="generateArt()"><i class="ti ti-refresh"></i> Regenerate</button>
-          <button class="result-btn primary" id="art-download" onclick="downloadArt()"><i class="ti ti-download"></i> Download</button>
+
+      <!-- COVER ART EXAMPLES -->
+      <div class="examples-section">
+        <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE PROMPTS — Click any to use it</div>
+        <div class="examples-grid">
+          <div class="example-card" onclick="useExample('art','A dark hooded figure standing alone under a flickering streetlight in the rain. Blurred city at night, blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);">🌧️<div class="example-badge">Hip-Hop · Dark</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"A dark hooded figure standing alone under a flickering streetlight in the rain. Blue and purple neon reflections on wet pavement. Cinematic, dramatic."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
+          <div class="example-card" onclick="useExample('art','A woman silhouette standing against a breathtaking sunset, arms stretched out. Warm orange, gold and purple gradient sky. Emotional, soulful, empowering. Soft dreamy glow, no text.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#2a0f08,#3a1a05);">🌅<div class="example-badge">R&B Soul · Emotional</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"A woman silhouette against a breathtaking sunset, arms stretched out. Orange, gold and purple gradient sky. Emotional, soulful, empowering."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
+          <div class="example-card" onclick="useExample('art','Stacks of cash, gold chains, diamonds and luxury watches arranged on a black marble surface with dramatic studio lighting. Rich, luxurious, aggressive energy. Dark background, gold and black tones, no text.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#1a1408,#2a2010);">💰<div class="example-badge">Trap · Luxury</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"Stacks of cash, gold chains and diamonds on black marble. Dramatic studio lighting. Rich, luxurious, aggressive. Gold and black tones."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- RELEASE PLANNER -->
-    <div id="tool-plan" class="generator hidden">
-      <div class="gen-panel">
-        <div class="gen-title">🚀 Release Plan Generator</div>
-        <div class="gen-sub">Get a personalized 30-day release strategy built around your drop</div>
-        <div class="form-group">
-          <label class="form-label">Project Name</label>
-          <input class="form-input" id="plan-name" placeholder="e.g. Midnight Static EP"/>
-        </div>
-        <div class="form-row">
+    <!-- RELEASE PLANNER TOOL -->
+    <div id="tool-plan" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🚀 Release Plan Generator</div>
+          <div class="gen-sub">Tell us about your project and we'll build you a personalized 30-day release strategy.</div>
           <div class="form-group">
-            <label class="form-label">Release Date</label>
-            <input class="form-input" id="plan-date" type="date"/>
+            <label class="form-label">Project Name <span style="color:var(--neon);">*</span></label>
+            <input class="form-input" id="plan-name" placeholder="e.g. Midnight Static EP"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Release Date <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-date" type="date"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <select class="form-select" id="plan-genre">
+                <option>Hip-Hop</option>
+                <option>Drill</option>
+                <option>Trap</option>
+                <option>R&B</option>
+                <option>R&B Soul</option>
+                <option>Pop</option>
+                <option>Gospel</option>
+                <option>Afrobeats</option>
+                <option>Electronic</option>
+                <option>Country</option>
+                <option>Reggaeton</option>
+                <option>Latin</option>
+                <option>Neo Soul</option>
+                <option>Lo-Fi</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Career Stage</label>
+              <select class="form-select" id="plan-stage">
+                <option>Just Starting Out</option>
+                <option>Emerging Artist</option>
+                <option>Independent Artist</option>
+                <option>Established Artist</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your City <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-city" placeholder="e.g. Atlanta, GA"/>
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Genre</label>
-            <select class="form-select" id="plan-genre">
-              <option>Hip-Hop</option>
-              <option>R&B</option>
-              <option>Trap</option>
-              <option>Pop</option>
-              <option>Gospel</option>
-              <option>Afrobeats</option>
-              <option>Electronic</option>
-            </select>
+            <label class="form-label">Tell us more about your project <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="plan-details" placeholder="Describe your project. Example: I'm dropping a 6-track EP called Midnight Static. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP to build hype. My budget for promotion is around $200."></textarea>
+          </div>
+          <button class="gen-btn" id="plan-btn" onclick="generatePlan()"><i class="ti ti-sparkles"></i> Generate My Release Plan</button>
+        </div>
+        <div class="gen-panel result-panel">
+          <div class="gen-title">Your 30-Day Plan</div>
+          <div class="gen-sub">Your personalized release strategy will appear here</div>
+          <div class="result-placeholder" id="plan-placeholder">
+            <i class="ti ti-calendar"></i>
+            <p>Fill in your project details on the left and hit Generate — your custom release plan will be ready in seconds.</p>
+          </div>
+          <div class="loading" id="plan-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Building your release plan...</div>
+          </div>
+          <div class="plan-timeline hidden" id="plan-result"></div>
+          <div class="error-msg hidden" id="plan-error"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generatePlan()"><i class="ti ti-refresh"></i> Regenerate</button>
+            <button class="result-btn primary"><i class="ti ti-download"></i> Download PDF</button>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Career Stage</label>
-            <select class="form-select" id="plan-stage">
-              <option>Emerging Artist</option>
-              <option>Independent Artist</option>
-              <option>Established Artist</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Your City</label>
-            <input class="form-input" id="plan-city" placeholder="e.g. Atlanta, GA"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Additional Details (optional)</label>
-          <input class="form-input" id="plan-details" placeholder="e.g. dropping a single before the EP, have 5K IG followers"/>
-        </div>
-        <button class="gen-btn" id="plan-btn" onclick="generatePlan()"><i class="ti ti-sparkles"></i> Generate Release Plan</button>
       </div>
-      <div class="gen-panel">
-        <div class="gen-title">Your 30-Day Plan</div>
-        <div class="gen-sub">Your personalized release strategy will appear here</div>
-        <div class="result-placeholder" id="plan-placeholder">
-          <i class="ti ti-calendar"></i>
-          <p>Generate your release plan</p>
-        </div>
-        <div class="loading" id="plan-loading">
-          <div class="loading-spinner"></div>
-          <div class="loading-text">Building your release plan...</div>
-        </div>
-        <div class="plan-timeline hidden" id="plan-result"></div>
-        <div class="error-msg hidden" id="plan-error"></div>
-        <div class="result-actions">
-          <button class="result-btn" onclick="generatePlan()"><i class="ti ti-refresh"></i> Regenerate</button>
-          <button class="result-btn primary"><i class="ti ti-download"></i> Download PDF</button>
+
+      <!-- RELEASE PLAN EXAMPLES -->
+      <div class="examples-section">
+        <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE DESCRIPTIONS — Click any to use it</div>
+        <div class="examples-grid">
+          <div class="example-card" onclick="useExample('plan','I am dropping a 6-track Hip-Hop EP called Midnight Static. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP to build hype. My budget for promotion is around $200.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🎤<div class="example-badge">Hip-Hop EP</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"6-track Hip-Hop EP. 2K IG followers, 500 TikTok. Want to drop a single 2 weeks before. $200 promotion budget."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
+          <div class="example-card" onclick="useExample('plan','I am releasing my first R&B Soul single called Forever Mine. I am a brand new artist with less than 500 followers. I have no budget right now but I have good content creation skills and can post daily on TikTok and Instagram.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#2a0f08,#3a1a05);">🎵<div class="example-badge">R&B · New Artist</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"First R&B single, brand new artist, under 500 followers, no budget, good at content creation, can post daily."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
+          <div class="example-card" onclick="useExample('plan','I am dropping a Gospel album called Higher Ground with 10 tracks. I have 10,000 church community followers and 5,000 on Facebook. I want to focus on church outreach, Christian radio, and gospel playlist placements. Budget is $500.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);">🙏<div class="example-badge">Gospel Album</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"Gospel album, 10K church community followers, 5K Facebook. Focus on church outreach and Christian radio. $500 budget."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MERCH MOCKUPS -->
-    <div id="tool-merch" class="generator hidden">
-      <div class="gen-panel">
-        <div class="gen-title">👕 Merch Mockup Studio</div>
-        <div class="gen-sub">Upload your cover art and see it on real products instantly</div>
-        <div class="form-group">
-          <label class="form-label">Upload Your Cover Art</label>
-          <div style="border:1px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('merch-upload').click()">
-            <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
-            <div style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload</div>
-            <div style="color:var(--muted);font-size:10px;">PNG or JPG, max 10MB</div>
-            <input type="file" id="merch-upload" accept="image/*" style="display:none;" onchange="previewMerch(this)"/>
+    <!-- MERCH MOCKUP TOOL -->
+    <div id="tool-merch" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">👕 Merch Mockup Studio</div>
+          <div class="gen-sub">Upload your cover art or design, describe what you want, and see it on real products instantly.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Design or Cover Art <span style="color:var(--neon);">*</span></label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;transition:border-color 0.15s;" onclick="document.getElementById('merch-upload').click()" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='var(--border)'">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload your art</div>
+              <div style="color:var(--muted);font-size:10px;">PNG or JPG · Max 10MB · Best results with square images</div>
+              <input type="file" id="merch-upload" accept="image/*" style="display:none;" onchange="previewMerch(this)"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Product Type</label>
+              <select class="form-select" id="merch-type" onchange="updateMerchEmoji()">
+                <option>T-Shirt</option>
+                <option>Hoodie</option>
+                <option>Hat / Cap</option>
+                <option>Phone Case</option>
+                <option>Poster</option>
+                <option>Tote Bag</option>
+                <option>Sweatpants</option>
+                <option>Jacket</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Color</label>
+              <select class="form-select" id="merch-color">
+                <option>Black</option>
+                <option>White</option>
+                <option>Navy</option>
+                <option>Grey</option>
+                <option>Red</option>
+                <option>Forest Green</option>
+                <option>Burgundy</option>
+                <option>Vintage Wash</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Describe Your Merch Vision <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="merch-prompt" placeholder="Tell us more about what you want. Example: I want my cover art centered on the front chest area of a black oversized hoodie. The design should look clean and minimal, like something you would see at a major label merch table at a concert."></textarea>
+          </div>
+          <button class="gen-btn" onclick="generateMerch()"><i class="ti ti-sparkles"></i> Generate Mockup</button>
+        </div>
+        <div class="gen-panel result-panel">
+          <div class="gen-title">Your Mockup</div>
+          <div class="gen-sub">Your merch mockup and pricing breakdown will appear here</div>
+          <div class="result-placeholder" id="merch-placeholder">
+            <i class="ti ti-shirt"></i>
+            <p>Upload your art and describe your vision on the left — your mockup will be ready instantly.</p>
+          </div>
+          <div id="merch-preview" class="hidden" style="margin-bottom:12px;">
+            <div style="background:#0f0f1a;border-radius:10px;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:160px;">
+              <div style="font-size:64px;" id="merch-emoji">👕</div>
+              <img id="merch-art-preview" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:2px solid var(--neon);" src="" alt=""/>
+              <div style="color:#fff;font-size:13px;font-weight:700;" id="merch-label">Black T-Shirt Mockup</div>
+            </div>
+            <div class="merch-cost">
+              <div class="merch-cost-title">COST BREAKDOWN</div>
+              <div class="merch-cost-row"><span>Print on Demand (Printful)</span><span id="merch-pod">$18-22</span></div>
+              <div class="merch-cost-row"><span>Bulk Order (50 units)</span><span id="merch-bulk">$8-12 each</span></div>
+              <div class="merch-cost-row highlight"><span>Suggested Retail Price</span><span id="merch-retail">$35-45</span></div>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generateMerch()"><i class="ti ti-refresh"></i> Try Another</button>
+            <button class="result-btn primary"><i class="ti ti-download"></i> Download</button>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Select Product Type</label>
-          <select class="form-select" id="merch-type">
-            <option>T-Shirt</option>
-            <option>Hoodie</option>
-            <option>Hat / Cap</option>
-            <option>Phone Case</option>
-            <option>Poster</option>
-            <option>Tote Bag</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Color</label>
-          <select class="form-select" id="merch-color">
-            <option>Black</option>
-            <option>White</option>
-            <option>Navy</option>
-            <option>Grey</option>
-            <option>Red</option>
-          </select>
-        </div>
-        <button class="gen-btn" onclick="generateMerch()"><i class="ti ti-sparkles"></i> Generate Mockup</button>
       </div>
-      <div class="gen-panel">
-        <div class="gen-title">Your Mockup</div>
-        <div class="gen-sub">Your merch mockup will appear here</div>
-        <div class="result-placeholder" id="merch-placeholder">
-          <i class="ti ti-shirt"></i>
-          <p>Upload your art to get started</p>
-        </div>
-        <div id="merch-preview" class="hidden" style="margin-bottom:12px;">
-          <div style="background:#0f0f1a;border-radius:10px;padding:20px;text-align:center;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
-            <div style="font-size:60px;" id="merch-emoji">👕</div>
-            <img id="merch-art-preview" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--neon);" src="" alt=""/>
-            <div style="color:#fff;font-size:12px;font-weight:700;" id="merch-label">Black T-Shirt Mockup</div>
+
+      <!-- MERCH EXAMPLES -->
+      <div class="examples-section">
+        <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE DESCRIPTIONS — Click any to use it</div>
+        <div class="examples-grid">
+          <div class="example-card" onclick="useExample('merch','I want my cover art centered on the front chest area of a black oversized hoodie. The design should look clean and minimal like something you would see at a major label merch table at a sold out concert.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1a1a1a);">🧥<div class="example-badge">Hoodie · Clean</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"Cover art centered on front chest of black oversized hoodie. Clean and minimal, like major label merch at a sold out show."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
           </div>
-          <div style="background:#0f0f1a;border-radius:10px;padding:14px;margin-top:10px;">
-            <div style="color:var(--neon);font-size:11px;font-weight:700;margin-bottom:8px;">COST BREAKDOWN</div>
-            <div style="display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;margin-bottom:4px;"><span>Print on Demand (Printful)</span><span>$18-22</span></div>
-            <div style="display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;margin-bottom:4px;"><span>Bulk Order (50 units)</span><span>$8-12 each</span></div>
-            <div style="display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;"><span>Suggested Retail Price</span><span style="color:var(--neon);font-weight:700;">$35-45</span></div>
+          <div class="example-card" onclick="useExample('merch','I want my logo printed large across the back of a white vintage wash t-shirt with my artist name in small text on the left chest. Streetwear style, like something from a high end fashion brand.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#1a1a18,#2a2a28);">👕<div class="example-badge">T-Shirt · Streetwear</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"Logo large across back of white vintage wash tee, artist name small on left chest. High end streetwear style."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
           </div>
-        </div>
-        <div class="result-actions">
-          <button class="result-btn"><i class="ti ti-refresh"></i> Try Another</button>
-          <button class="result-btn primary"><i class="ti ti-download"></i> Download</button>
+          <div class="example-card" onclick="useExample('merch','I want a full print poster of my album cover art in 18x24 inch size. Gallery quality, suitable for framing. Something fans would actually want to hang on their wall.')">
+            <div class="example-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🖼️<div class="example-badge">Poster · Gallery</div></div>
+            <div class="example-body">
+              <div class="example-prompt">"Full print album cover poster 18x24 inch. Gallery quality, suitable for framing. Something fans would hang on their wall."</div>
+              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -451,14 +616,34 @@ function setToolActive(el) {
   el.classList.add('active');
 }
 
+// USE EXAMPLE PROMPT
+function useExample(tool, text) {
+  const ids = {art:'art-prompt', plan:'plan-details', merch:'merch-prompt'};
+  const el = document.getElementById(ids[tool]);
+  if(el) { el.value = text; el.focus(); }
+}
+
+// IMAGE PREVIEW
+function previewImg(input, thumbId) {
+  if(!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const thumb = document.getElementById(thumbId);
+    thumb.src = e.target.result;
+    thumb.style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
 // COVER ART GENERATOR
 async function generateArt() {
   const title = document.getElementById('art-title').value.trim();
   const genre = document.getElementById('art-genre').value;
   const mood = document.getElementById('art-mood').value;
-  const details = document.getElementById('art-details').value.trim();
+  const userPrompt = document.getElementById('art-prompt').value.trim();
   if(!title) { alert('Please enter a song or project title'); return; }
-  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${details}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual artistic interpretation. Dark dramatic lighting, cinematic quality.`;
+  if(!userPrompt) { alert('Please describe your vision in the prompt box'); return; }
+  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality, 3000x3000 pixels.`;
   document.getElementById('art-placeholder').classList.add('hidden');
   document.getElementById('art-result').classList.add('hidden');
   document.getElementById('art-error').classList.add('hidden');
@@ -477,9 +662,7 @@ async function generateArt() {
       img.classList.remove('hidden');
       document.getElementById('art-loading').classList.remove('active');
       addRecent('🎨', title, 'Cover Art');
-    } else {
-      throw new Error('No image returned');
-    }
+    } else { throw new Error('No image returned'); }
   } catch(e) {
     document.getElementById('art-loading').classList.remove('active');
     document.getElementById('art-placeholder').classList.remove('hidden');
@@ -509,6 +692,7 @@ async function generatePlan() {
   const details = document.getElementById('plan-details').value.trim();
   if(!name) { alert('Please enter your project name'); return; }
   if(!date) { alert('Please enter your release date'); return; }
+  if(!details) { alert('Please tell us more about your project'); return; }
   document.getElementById('plan-placeholder').classList.add('hidden');
   document.getElementById('plan-result').classList.add('hidden');
   document.getElementById('plan-error').classList.add('hidden');
@@ -533,9 +717,7 @@ async function generatePlan() {
       container.classList.remove('hidden');
       document.getElementById('plan-loading').classList.remove('active');
       addRecent('🚀', name, 'Release Plan');
-    } else {
-      throw new Error('No plan returned');
-    }
+    } else { throw new Error('No plan returned'); }
   } catch(e) {
     document.getElementById('plan-loading').classList.remove('active');
     document.getElementById('plan-placeholder').classList.remove('hidden');
@@ -547,6 +729,23 @@ async function generatePlan() {
 }
 
 // MERCH MOCKUP
+const merchData = {
+  'T-Shirt':{emoji:'👕',pod:'$18-22',bulk:'$8-12 each',retail:'$35-45'},
+  'Hoodie':{emoji:'🧥',pod:'$28-34',bulk:'$14-18 each',retail:'$65-85'},
+  'Hat / Cap':{emoji:'🧢',pod:'$18-22',bulk:'$7-10 each',retail:'$35-45'},
+  'Phone Case':{emoji:'📱',pod:'$12-16',bulk:'$5-8 each',retail:'$25-35'},
+  'Poster':{emoji:'🖼️',pod:'$8-12',bulk:'$3-5 each',retail:'$20-30'},
+  'Tote Bag':{emoji:'👜',pod:'$12-16',bulk:'$5-8 each',retail:'$25-35'},
+  'Sweatpants':{emoji:'👖',pod:'$32-40',bulk:'$16-22 each',retail:'$75-95'},
+  'Jacket':{emoji:'🧣',pod:'$45-60',bulk:'$22-30 each',retail:'$95-125'},
+};
+
+function updateMerchEmoji() {
+  const type = document.getElementById('merch-type').value;
+  const d = merchData[type] || merchData['T-Shirt'];
+  document.getElementById('merch-emoji').textContent = d.emoji;
+}
+
 function previewMerch(input) {
   if(!input.files || !input.files[0]) return;
   const reader = new FileReader();
@@ -559,15 +758,18 @@ function previewMerch(input) {
 function generateMerch() {
   const type = document.getElementById('merch-type').value;
   const color = document.getElementById('merch-color').value;
-  const emojis = {'T-Shirt':'👕','Hoodie':'🧥','Hat / Cap':'🧢','Phone Case':'📱','Poster':'🖼️','Tote Bag':'👜'};
-  document.getElementById('merch-emoji').textContent = emojis[type] || '👕';
+  const d = merchData[type] || merchData['T-Shirt'];
+  document.getElementById('merch-emoji').textContent = d.emoji;
   document.getElementById('merch-label').textContent = `${color} ${type} Mockup`;
+  document.getElementById('merch-pod').textContent = d.pod;
+  document.getElementById('merch-bulk').textContent = d.bulk;
+  document.getElementById('merch-retail').textContent = d.retail;
   document.getElementById('merch-placeholder').classList.add('hidden');
   document.getElementById('merch-preview').classList.remove('hidden');
-  addRecent(emojis[type] || '👕', `${color} ${type}`, 'Merch Mockup');
+  addRecent(d.emoji, `${color} ${type}`, 'Merch Mockup');
 }
 
-// RECENT GENERATIONS
+// RECENT
 let recentItems = [];
 function addRecent(icon, name, type) {
   recentItems.unshift({icon, name, type});
