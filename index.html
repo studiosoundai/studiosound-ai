@@ -304,7 +304,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
                 <i class="ti ti-photo-plus"></i> Add Image
               </div>
               <img class="img-preview-thumb" id="art-img-thumb" src="" alt=""/>
-              <div class="img-upload-hint">Upload a photo for visual reference — style, color, vibe</div>
+              <div class="img-upload-hint">Upload a photo of yourself or reference image — AI will incorporate you into the cover art</div>
               <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb')"/>
             </div>
           </div>
@@ -643,17 +643,30 @@ async function generateArt() {
   const userPrompt = document.getElementById('art-prompt').value.trim();
   if(!title) { alert('Please enter a song or project title'); return; }
   if(!userPrompt) { alert('Please describe your vision in the prompt box'); return; }
-  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality, 3000x3000 pixels.`;
+
+  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality.`;
+
+  // Check if artist uploaded a reference photo
+  const imgUpload = document.getElementById('art-img-upload');
+  let imageData = null;
+  if(imgUpload.files && imgUpload.files[0]) {
+    imageData = await toBase64(imgUpload.files[0]);
+  }
+
   document.getElementById('art-placeholder').classList.add('hidden');
   document.getElementById('art-result').classList.add('hidden');
   document.getElementById('art-error').classList.add('hidden');
   document.getElementById('art-loading').classList.add('active');
+  document.getElementById('art-loading').querySelector('.loading-text').textContent = imageData 
+    ? 'Incorporating your photo into the cover art...' 
+    : 'Creating your cover art...';
   document.getElementById('art-btn').disabled = true;
+
   try {
     const res = await fetch('/api/generate-art', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt})
+      body: JSON.stringify({prompt, imageData})
     });
     const data = await res.json();
     if(data.data && data.data[0]) {
@@ -671,6 +684,16 @@ async function generateArt() {
     err.classList.remove('hidden');
   }
   document.getElementById('art-btn').disabled = false;
+}
+
+// Convert file to base64
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function downloadArt() {
