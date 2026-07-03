@@ -3,590 +3,583 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudioSound.ai — The AI Studio for Independent Artists</title> 
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>StudioSound.ai — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0c0c0e; color: #fafafa; -webkit-font-smoothing: antialiased; }
-.app { display: flex; min-height: 100vh; }
-.sidebar { width: 240px; background: #0c0c0e; border-right: 1px solid #1f1f23; padding: 1.5rem 1rem; position: fixed; height: 100vh; overflow-y: auto; }
-.logo { display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; }
-.logo-icon { width: 38px; height: 38px; background: #2dd4bf; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-.logo-text { color: #fafafa; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
-.nav-label { color: #52525b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; padding: 0 8px; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: #a1a1aa; font-size: 13px; cursor: pointer; margin-bottom: 2px; transition: all 0.15s; text-decoration: none; }
-.nav-item:hover { background: #131316; color: #fafafa; }
-.nav-item.active { background: #0f2b27; color: #5eead4; }
-.nav-section { margin-bottom: 1.5rem; }
-.upgrade-card { background: #0f2b27; border-radius: 10px; padding: 1rem; margin-top: 1rem; }
-.upgrade-card p { color: #5eead4; font-size: 12px; margin-bottom: 8px; line-height: 1.5; }
-.upgrade-btn { background: #2dd4bf; color: #052e2b; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; cursor: pointer; width: 100%; font-weight: 600; }
-.upgrade-btn:hover { background: #14b8a6; }
-.main { flex: 1; margin-left: 240px; padding: 2rem; }
-.page { display: none; max-width: 900px; }
-.page.active { display: block; }
-.page-tag { color: #2dd4bf; font-size: 12px; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.05em; }
-.page-title { color: #fafafa; font-size: 32px; font-weight: 700; margin-bottom: 8px; line-height: 1.15; letter-spacing: -0.02em; }
-.page-sub { color: #a1a1aa; font-size: 15px; font-weight: 500; margin-bottom: 2rem; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.card { background: #131316; border: 1px solid #232328; border-radius: 12px; padding: 1.5rem; }
-.card-title { color: #fafafa; font-size: 14px; font-weight: 600; margin-bottom: 1rem; }
-.form-group { margin-bottom: 1rem; }
-.form-label { color: #c4c4c9; font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
-.form-input, .form-select { width: 100%; background: #1a1a1e; border: 1px solid #28282d; border-radius: 8px; padding: 10px 12px; color: #fafafa; font-size: 13px; outline: none; transition: border 0.15s; font-family: inherit; }
-.form-input:focus, .form-select:focus { border-color: #2dd4bf; }
-.form-select { appearance: none; cursor: pointer; }
-.btn-primary { background: #2dd4bf; color: #052e2b; border: none; border-radius: 8px; padding: 11px 16px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; font-family: inherit; }
-.btn-primary:hover { background: #14b8a6; }
-.btn-secondary { background: transparent; color: #2dd4bf; border: 1px solid #2dd4bf; border-radius: 8px; padding: 9px 16px; font-size: 13px; cursor: pointer; width: 100%; font-family: inherit; margin-top: 8px; }
-.btn-secondary:hover { background: #0f2b27; }
-.gen-box { background: #0f0f12; border: 1px solid #1f1f23; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
-.gen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.gen-label { color: #71717a; font-size: 12px; }
-.gen-badge { background: #0f2b27; color: #5eead4; font-size: 11px; padding: 2px 10px; border-radius: 20px; }
-.gen-count { font-size: 24px; font-weight: 600; color: #fafafa; }
-.gen-total { color: #52525b; font-size: 13px; }
-.progress-bar { background: #1f1f23; border-radius: 4px; height: 4px; margin-top: 10px; }
-.progress-fill { background: #2dd4bf; border-radius: 4px; height: 4px; transition: width 0.3s; }
-.upgrade-link { color: #2dd4bf; font-size: 12px; cursor: pointer; margin-top: 8px; display: inline-block; }
-.section-title { color: #fafafa; font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-.section-sub { color: #a1a1aa; font-size: 13px; font-weight: 500; margin-bottom: 1rem; }
-.art-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
-.art-item { background: #1a1a1e; border: 1px solid #28282d; border-radius: 10px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer; }
-.art-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-.art-placeholder { text-align: center; padding: 1rem; }
-.art-placeholder .icon { font-size: 32px; color: #3f3f46; display: block; margin-bottom: 8px; }
-.art-placeholder p { color: #52525b; font-size: 11px; line-height: 1.4; }
-.art-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); padding: 10px; display: none; justify-content: space-around; }
-.art-item:hover .art-overlay { display: flex; }
-.art-btn { color: #5eead4; font-size: 11px; cursor: pointer; background: none; border: none; font-family: inherit; }
-.generating { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem; text-align: center; }
-.generating.show { display: flex; }
-.spinner { width: 44px; height: 44px; border: 3px solid #1f1f23; border-top-color: #2dd4bf; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 1rem; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.generating p { color: #71717a; font-size: 13px; }
-.generated-image { width: 100%; border-radius: 10px; display: none; margin-top: 1rem; }
-.generated-image.show { display: block; }
-.merch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-.merch-item { background: #131316; border: 1px solid #232328; border-radius: 10px; padding: 1rem; text-align: center; }
-.merch-icon { width: 48px; height: 48px; background: #1a1a1e; border-radius: 8px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-.merch-name { color: #fafafa; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-.merch-pod { color: #2dd4bf; font-size: 11px; margin-bottom: 2px; }
-.merch-bulk { color: #52525b; font-size: 10px; }
-.vendor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.vendor-item { background: #0f0f12; border-radius: 8px; padding: 10px 12px; }
-.vendor-name { color: #fafafa; font-size: 12px; font-weight: 600; margin-bottom: 3px; }
-.vendor-desc { color: #52525b; font-size: 11px; }
-.timeline { display: flex; flex-direction: column; gap: 0; }
-.timeline-item { display: flex; gap: 14px; }
-.timeline-left { display: flex; flex-direction: column; align-items: center; }
-.timeline-dot { width: 12px; height: 12px; background: #2dd4bf; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
-.timeline-line { width: 1px; background: #232328; flex: 1; min-height: 40px; }
-.timeline-content { padding-bottom: 1.5rem; flex: 1; }
-.timeline-date { color: #2dd4bf; font-size: 11px; font-weight: 600; margin-bottom: 3px; }
-.timeline-task { color: #fafafa; font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-.timeline-detail { color: #71717a; font-size: 11px; line-height: 1.5; }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-.stat-card { background: #131316; border: 1px solid #232328; border-radius: 12px; padding: 1rem; }
-.stat-label { color: #71717a; font-size: 11px; margin-bottom: 6px; }
-.stat-value { color: #fafafa; font-size: 26px; font-weight: 600; }
-.stat-note { color: #2dd4bf; font-size: 11px; margin-top: 4px; }
-.plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.plan-card { background: #131316; border: 1px solid #232328; border-radius: 12px; padding: 1.5rem; }
-.plan-card.featured { border-color: #2dd4bf; }
-.plan-badge { background: #0f2b27; color: #5eead4; font-size: 10px; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; font-weight: 600; }
-.plan-name { color: #fafafa; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-.plan-price { color: #2dd4bf; font-size: 26px; font-weight: 700; margin-bottom: 1.25rem; }
-.plan-price span { color: #52525b; font-size: 13px; font-weight: 400; }
-.plan-feature { color: #a1a1aa; font-size: 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.plan-feature::before { content: '✓'; color: #2dd4bf; font-weight: 700; flex-shrink: 0; }
-.plan-btn { background: transparent; border: 1px solid #2dd4bf; color: #2dd4bf; border-radius: 8px; padding: 9px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 1.25rem; font-family: inherit; font-weight: 500; }
-.plan-btn:hover { background: #0f2b27; }
-.plan-btn.filled { background: #2dd4bf; color: #052e2b; }
-.plan-btn.filled:hover { background: #14b8a6; }
-.upload-zone { background: #0f0f12; border: 2px dashed #28282d; border-radius: 10px; padding: 2.5rem; text-align: center; cursor: pointer; margin-bottom: 1.5rem; transition: border 0.15s; }
-.upload-zone:hover { border-color: #2dd4bf; }
-.upload-icon { font-size: 36px; color: #3f3f46; display: block; margin-bottom: 10px; }
-.upload-text { color: #71717a; font-size: 13px; }
-.upload-hint { color: #3f3f46; font-size: 11px; margin-top: 4px; }
-.alert { background: #0f2b27; border: 1px solid #115e59; border-radius: 8px; padding: 12px 16px; margin-bottom: 1rem; color: #5eead4; font-size: 13px; line-height: 1.5; }
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main { margin-left: 0; padding: 1rem; }
-  .grid-2, .plan-grid, .merch-grid, .stats-grid { grid-template-columns: 1fr; }
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;}
+.app{display:flex;height:100vh;}
+.sidebar{width:220px;flex-shrink:0;background:#07070f;border-right:0.5px solid var(--border);display:flex;flex-direction:column;}
+.sidebar-logo{display:flex;align-items:center;gap:8px;padding:16px 20px;border-bottom:0.5px solid var(--border);text-decoration:none;}
+.logodot{width:26px;height:26px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logodot i{font-size:13px;color:#05050a;}
+.logoname{font-size:13px;font-weight:800;color:#fff;}
+.sidebar-section{padding:16px 12px 8px;}
+.sidebar-label{color:#5a5a72;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:0 8px;margin-bottom:6px;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-bottom:2px;border:none;background:transparent;width:100%;text-align:left;font-family:'Sora',sans-serif;}
+.sidebar-item:hover{background:var(--card);color:#fff;}
+.sidebar-item.active{background:#00FFD115;color:var(--neon);}
+.sidebar-item i{font-size:16px;flex-shrink:0;}
+.badge{background:var(--neon);color:#05050a;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;margin-left:auto;}
+.soon{background:#1a1a28;color:#5a5a72;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:auto;}
+.sidebar-bottom{margin-top:auto;padding:12px;border-top:0.5px solid var(--border);}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border-radius:10px;border:0.5px solid var(--border);}
+.user-av{width:32px;height:32px;background:#00FFD120;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.user-name{color:#fff;font-size:12px;font-weight:700;}
+.user-plan{color:var(--neon);font-size:10px;font-weight:600;}
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.topbar-title{font-size:16px;font-weight:800;color:#fff;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.topbar-btn{display:flex;align-items:center;gap:6px;background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+.notif{width:32px;height:32px;background:var(--card);border:0.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.notif i{font-size:16px;color:var(--muted);}
+.content{padding:24px;}
+.welcome{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:16px;padding:24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.welcome-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:4px;}
+.welcome-title span{color:var(--neon);}
+.welcome-sub{color:var(--muted);font-size:12px;font-weight:500;margin-bottom:16px;}
+.welcome-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.wpill{display:flex;align-items:center;gap:5px;background:#00FFD110;border:0.5px solid var(--neon);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--neon);font-weight:600;}
+.wpill i{font-size:12px;}
+.welcome-right{text-align:right;flex-shrink:0;}
+.usage-label{color:var(--muted);font-size:10px;font-weight:600;margin-bottom:6px;}
+.usage-bar{width:140px;height:6px;background:#1a1a28;border-radius:3px;margin-bottom:4px;margin-left:auto;}
+.usage-fill{height:100%;background:var(--neon);border-radius:3px;width:30%;}
+.usage-text{color:var(--muted);font-size:10px;}
+.section-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.06em;margin-bottom:12px;}
+.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.tool-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;text-align:left;}
+.tool-card:hover{border-color:var(--neon);transform:translateY(-2px);}
+.tool-card.active{border-color:var(--neon);background:#00FFD108;}
+.tool-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:20px;}
+.tool-name{color:#fff;font-size:12px;font-weight:700;margin-bottom:3px;}
+.tool-desc{color:var(--muted);font-size:10px;font-weight:500;line-height:1.5;}
+.tool-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
+.tool-badge.live{background:#00FFD120;color:var(--neon);border:0.5px solid var(--neon);}
+.tool-badge.soon{background:#1a1a28;color:#5a5a72;}
+.generator{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.gen-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;}
+.gen-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;}
+.gen-sub{color:var(--muted);font-size:11px;margin-bottom:16px;}
+.form-group{margin-bottom:12px;}
+.form-label{color:#e0e0f0;font-size:11px;font-weight:700;margin-bottom:5px;display:block;}
+.form-input{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;}
+.form-input:focus{border-color:var(--neon);}
+.form-input::placeholder{color:#5a5a72;}
+.form-textarea{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;resize:none;min-height:80px;}
+.form-textarea:focus{border-color:var(--neon);}
+.form-textarea::placeholder{color:#5a5a72;}
+.form-select{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;font-family:'Sora',sans-serif;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.gen-btn{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;transition:opacity 0.15s;}
+.gen-btn:hover{opacity:0.9;}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.result-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+.result-placeholder{flex:1;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;margin-bottom:12px;}
+.result-placeholder i{font-size:40px;color:#2a2a3a;margin-bottom:8px;}
+.result-placeholder p{color:#3a3a52;font-size:12px;font-weight:500;}
+.result-img{width:100%;border-radius:10px;object-fit:cover;margin-bottom:12px;}
+.result-actions{display:flex;gap:8px;}
+.result-btn{flex:1;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:border-color 0.15s;}
+.result-btn:hover{border-color:var(--neon);}
+.result-btn.primary{background:var(--neon);border:none;color:#05050a;}
+.loading{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:220px;margin-bottom:12px;}
+.loading.active{display:flex;}
+.loading-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{color:var(--muted);font-size:12px;font-weight:500;}
+.plan-timeline{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;margin-bottom:12px;}
+.plan-item{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;}
+.plan-date{color:var(--neon);font-size:10px;font-weight:700;margin-bottom:3px;}
+.plan-task{color:#fff;font-size:12px;font-weight:600;margin-bottom:2px;}
+.plan-detail{color:var(--muted);font-size:11px;line-height:1.5;}
+.recent-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+.recent-item{background:var(--card);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
+.recent-item:hover{border-color:var(--neon);}
+.recent-thumb{height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.recent-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.recent-info{padding:8px 10px;}
+.recent-name{color:#fff;font-size:10px;font-weight:700;margin-bottom:2px;}
+.recent-meta{color:var(--muted);font-size:9px;}
+.hidden{display:none;}
+.error-msg{color:#ff6b6b;font-size:11px;text-align:center;padding:8px;}
 </style>
-
 </head>
 <body>
-
 <div class="app">
-  <div class="sidebar">
-    <div class="logo">
-      <div class="logo-icon">🎵</div>
-      <span class="logo-text">StudioSound.ai</span>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <a class="sidebar-logo" href="/landing.html">
+    <div class="logodot"><i class="ti ti-waveform"></i></div>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="sidebar-section">
+    <div class="sidebar-label">TOOLS</div>
+    <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
+    <button class="sidebar-item"><i class="ti ti-video"></i> Lyric Videos <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">MARKETING</div>
+    <button class="sidebar-item"><i class="ti ti-chart-bar"></i> AI Ad Manager <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-scissors"></i> Video Clipping <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-calendar"></i> Auto Posting <span class="soon">SOON</span></button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">ACCOUNT</div>
+    <button class="sidebar-item"><i class="ti ti-folder"></i> My Assets</button>
+    <button class="sidebar-item"><i class="ti ti-settings"></i> Settings</button>
+    <button class="sidebar-item" onclick="window.location.href='/pricing.html'"><i class="ti ti-crown"></i> Upgrade Plan</button>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-av">🎤</div>
+      <div>
+        <div class="user-name">Artist</div>
+        <div class="user-plan">Free Plan</div>
+      </div>
     </div>
-    <div class="nav-section">
-      <div class="nav-label">Create</div>
-      <div class="nav-item active" onclick="showPage('cover', this)">🎨 Cover Art</div>
-      <div class="nav-item" onclick="showPage('merch', this)">👕 Merch Mockups</div>
-      <div class="nav-item" onclick="showPage('release', this)">🚀 Release Plan</div>
-      <div class="nav-item" onclick="showPage('assets', this)">📁 My Assets</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Account</div>
-      <div class="nav-item" onclick="showPage('subscription', this)">💳 Subscription</div>
-    </div>
-    <div class="upgrade-card">
-      <p>Unlock unlimited cover art, mockups, and release plans.</p>
-      <button class="upgrade-btn" onclick="showPage('subscription', null)">Upgrade — $24.99/mo</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
+    <div class="topbar-right">
+      <div class="notif"><i class="ti ti-bell"></i></div>
+      <button class="topbar-btn" onclick="window.location.href='/pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
     </div>
   </div>
 
-  <div class="main">
+  <div class="content">
 
-    <div class="page active" id="page-cover">
-      <div class="page-tag">AI COVER ART STUDIO</div>
-      <div class="page-title">Design cover art that hits as hard as the track.</div>
-      <div class="page-sub">Type in your song, pick a vibe, and let StudioSound.ai render label-quality artwork in seconds.</div>
-      <div class="grid-2">
-        <div>
-          <div class="gen-box">
-            <div class="gen-header">
-              <span class="gen-label">Generations Used</span>
-              <span class="gen-badge" id="tierBadge">Free</span>
-            </div>
-            <div><span class="gen-count" id="genCount">0</span> <span class="gen-total">/ 3 this month</span></div>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-            <span class="upgrade-link" onclick="showPage('subscription', null)">Need more? Upgrade plan →</span>
-          </div>
-          <div class="card">
-            <div class="card-title">Generator</div>
-            <div class="alert">⚡ Add your OpenAI API key in Settings to generate real cover art.</div>
-            <div class="form-group">
-              <label class="form-label">Song Title</label>
-              <input class="form-input" id="songTitle" placeholder="e.g. Midnight Static" type="text" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Genre</label>
-              <select class="form-select" id="genre">
-                <option value="">Select a genre</option>
-                <option>Hip-Hop</option>
-                <option>R&B</option>
-                <option>Pop</option>
-                <option>Trap</option>
-                <option>Gospel</option>
-                <option>Electronic</option>
-                <option>Reggaeton</option>
-                <option>Afrobeats</option>
-                <option>Country</option>
-                <option>Rock</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Mood</label>
-              <select class="form-select" id="mood">
-                <option value="">Pick a mood</option>
-                <option>Dark &amp; Moody</option>
-                <option>Energetic</option>
-                <option>Chill &amp; Laid Back</option>
-                <option>Romantic</option>
-                <option>Aggressive</option>
-                <option>Uplifting</option>
-                <option>Mysterious</option>
-                <option>Nostalgic</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Additional Details (optional)</label>
-              <input class="form-input" id="details" placeholder="e.g. city skyline, gold chains, roses" type="text" />
-            </div>
-            <button class="btn-primary" onclick="generateArt()">✨ Generate Cover Art</button>
-          </div>
+    <!-- WELCOME -->
+    <div class="welcome">
+      <div>
+        <div class="welcome-title">Welcome to <span>StudioSound.ai</span> 👋</div>
+        <div class="welcome-sub">Pick a tool below and start creating professional content in seconds.</div>
+        <div class="welcome-pills">
+          <div class="wpill"><i class="ti ti-disc"></i> Cover Art Live</div>
+          <div class="wpill"><i class="ti ti-rocket"></i> Release Planner Live</div>
+          <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups Live</div>
         </div>
-        <div>
-          <div class="section-title">Latest Generations</div>
-          <div class="section-sub">Preview, save, or download your artwork below.</div>
-          <div id="generating" class="generating">
-            <div class="spinner"></div>
-            <p>Generating your cover art...<br/>This takes about 10 seconds</p>
-          </div>
-          <img id="generatedImage" class="generated-image" alt="Generated cover art" />
-          <div class="art-grid" id="artGrid">
-            <div class="art-item">
-              <div class="art-placeholder">
-                <span class="icon">🎨</span>
-                <p>Your generated art<br/>will appear here</p>
-              </div>
-            </div>
-            <div class="art-item">
-              <div class="art-placeholder">
-                <span class="icon">🎨</span>
-                <p>Generate your first<br/>cover art now</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
+      <div class="welcome-right">
+        <div class="usage-label">MONTHLY USAGE</div>
+        <div class="usage-bar"><div class="usage-fill"></div></div>
+        <div class="usage-text">Free plan — 3 generations</div>
       </div>
     </div>
 
-    <div class="page" id="page-merch">
-      <div class="page-tag">MERCH MOCKUP STUDIO</div>
-      <div class="page-title">Turn your art into merch in seconds.</div>
-      <div class="page-sub">Upload your cover art and see it on premium merch with real cost breakdowns and vendor recommendations.</div>
-      <div class="upload-zone" onclick="document.getElementById('merchUpload').click()">
-        <span class="upload-icon">⬆️</span>
-        <div class="upload-text">Drop your cover art here or click to upload</div>
-        <div class="upload-hint">PNG, JPG up to 10MB · 3000x3000 recommended</div>
-        <input type="file" id="merchUpload" style="display:none" accept="image/*" onchange="previewMerch(event)" />
+    <!-- TOOLS -->
+    <div class="section-label">YOUR TOOLS</div>
+    <div class="tools-grid">
+      <div class="tool-card active" onclick="switchTool('art',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon" style="background:#0f1f3a;">🎨</div>
+        <div class="tool-name">Cover Art Generator</div>
+        <div class="tool-desc">Generate label-quality artwork in seconds</div>
       </div>
-      <div class="section-title" style="margin-bottom:1rem;">Mockup Preview &amp; Pricing</div>
-      <div class="merch-grid">
-        <div class="merch-item">
-          <div class="merch-icon">👕</div>
-          <div class="merch-name">T-Shirt</div>
-          <div class="merch-pod">POD: $12–15/unit</div>
-          <div class="merch-bulk">Bulk 100+: $5–7/unit</div>
-        </div>
-        <div class="merch-item">
-          <div class="merch-icon">🧥</div>
-          <div class="merch-name">Hoodie</div>
-          <div class="merch-pod">POD: $22–28/unit</div>
-          <div class="merch-bulk">Bulk 100+: $14–18/unit</div>
-        </div>
-        <div class="merch-item">
-          <div class="merch-icon">🧢</div>
-          <div class="merch-name">Hat</div>
-          <div class="merch-pod">POD: $10–14/unit</div>
-          <div class="merch-bulk">Bulk 100+: $6–9/unit</div>
-        </div>
-        <div class="merch-item">
-          <div class="merch-icon">📱</div>
-          <div class="merch-name">Phone Case</div>
-          <div class="merch-pod">POD: $8–12/unit</div>
-          <div class="merch-bulk">Bulk 100+: $4–6/unit</div>
-        </div>
-        <div class="merch-item">
-          <div class="merch-icon">🖼️</div>
-          <div class="merch-name">Poster</div>
-          <div class="merch-pod">POD: $6–10/unit</div>
-          <div class="merch-bulk">Bulk 100+: $3–5/unit</div>
-        </div>
-        <div class="merch-item">
-          <div class="merch-icon">👜</div>
-          <div class="merch-name">Tote Bag</div>
-          <div class="merch-pod">POD: $8–12/unit</div>
-          <div class="merch-bulk">Bulk 100+: $5–7/unit</div>
-        </div>
+      <div class="tool-card" onclick="switchTool('plan',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon" style="background:#1f0f3a;">🚀</div>
+        <div class="tool-name">Release Planner</div>
+        <div class="tool-desc">Your personalized 30-day roadmap</div>
       </div>
-      <div class="card">
-        <div class="card-title">Recommended Vendors</div>
-        <div class="vendor-grid">
-          <div class="vendor-item">
-            <div class="vendor-name">Printful</div>
-            <div class="vendor-desc">Best for beginners · Shopify &amp; Etsy integration · Ships worldwide</div>
-          </div>
-          <div class="vendor-item">
-            <div class="vendor-name">Printify</div>
-            <div class="vendor-desc">Lowest rates · Wide product range · Great for scaling</div>
-          </div>
-          <div class="vendor-item">
-            <div class="vendor-name">CustomInk</div>
-            <div class="vendor-desc">Best bulk quality · US based · Great for events</div>
-          </div>
-          <div class="vendor-item">
-            <div class="vendor-name">Merch by Amazon</div>
-            <div class="vendor-desc">Massive reach · No upfront cost · Royalty based</div>
-          </div>
-        </div>
+      <div class="tool-card" onclick="switchTool('merch',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon" style="background:#0f3a1f;">👕</div>
+        <div class="tool-name">Merch Mockups</div>
+        <div class="tool-desc">See your art on real products instantly</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-badge soon">SOON</div>
+        <div class="tool-icon" style="background:#3a1f0f;">🎬</div>
+        <div class="tool-name">Lyric Video Creator</div>
+        <div class="tool-desc">Professional lyric videos fast</div>
       </div>
     </div>
 
-    <div class="page" id="page-release">
-      <div class="page-tag">RELEASE PLAN GENERATOR</div>
-      <div class="page-title">Your release. Perfectly planned.</div>
-      <div class="page-sub">Input your project details and get a detailed 30-day marketing schedule built for your career stage.</div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Project Details</div>
+    <!-- COVER ART GENERATOR -->
+    <div id="tool-art" class="generator">
+      <div class="gen-panel">
+        <div class="gen-title">🎨 Cover Art Generator</div>
+        <div class="gen-sub">Describe your vision and let AI create it in seconds</div>
+        <div class="form-group">
+          <label class="form-label">Song or Project Title</label>
+          <input class="form-input" id="art-title" placeholder="e.g. Midnight Static"/>
+        </div>
+        <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Project Name</label>
-            <input class="form-input" id="projectName" placeholder="e.g. Summer EP" type="text" />
+            <label class="form-label">Genre</label>
+            <select class="form-select" id="art-genre">
+              <option>Hip-Hop</option>
+              <option>R&B</option>
+              <option>Trap</option>
+              <option>Pop</option>
+              <option>Gospel</option>
+              <option>Afrobeats</option>
+              <option>Electronic</option>
+              <option>Country</option>
+              <option>Reggaeton</option>
+              <option>Latin</option>
+            </select>
           </div>
+          <div class="form-group">
+            <label class="form-label">Mood</label>
+            <select class="form-select" id="art-mood">
+              <option>Dark & Moody</option>
+              <option>Energetic</option>
+              <option>Emotional</option>
+              <option>Aggressive</option>
+              <option>Uplifting</option>
+              <option>Cinematic</option>
+              <option>Dreamy</option>
+              <option>Nostalgic</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Additional Details (optional)</label>
+          <input class="form-input" id="art-details" placeholder="e.g. neon lights, rain, city skyline at night"/>
+        </div>
+        <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate Cover Art</button>
+      </div>
+      <div class="gen-panel">
+        <div class="gen-title">Your Result</div>
+        <div class="gen-sub">Your generated cover art will appear here</div>
+        <div class="result-placeholder" id="art-placeholder">
+          <i class="ti ti-photo"></i>
+          <p>Generate your first cover art</p>
+        </div>
+        <div class="loading" id="art-loading">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Creating your cover art...</div>
+        </div>
+        <img class="result-img hidden" id="art-result" alt="Generated cover art"/>
+        <div class="error-msg hidden" id="art-error"></div>
+        <div class="result-actions">
+          <button class="result-btn" onclick="generateArt()"><i class="ti ti-refresh"></i> Regenerate</button>
+          <button class="result-btn primary" id="art-download" onclick="downloadArt()"><i class="ti ti-download"></i> Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELEASE PLANNER -->
+    <div id="tool-plan" class="generator hidden">
+      <div class="gen-panel">
+        <div class="gen-title">🚀 Release Plan Generator</div>
+        <div class="gen-sub">Get a personalized 30-day release strategy built around your drop</div>
+        <div class="form-group">
+          <label class="form-label">Project Name</label>
+          <input class="form-input" id="plan-name" placeholder="e.g. Midnight Static EP"/>
+        </div>
+        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Release Date</label>
-            <input class="form-input" id="releaseDate" type="date" />
+            <input class="form-input" id="plan-date" type="date"/>
           </div>
           <div class="form-group">
             <label class="form-label">Genre</label>
-            <select class="form-select" id="releaseGenre">
+            <select class="form-select" id="plan-genre">
               <option>Hip-Hop</option>
               <option>R&B</option>
-              <option>Pop</option>
               <option>Trap</option>
+              <option>Pop</option>
               <option>Gospel</option>
+              <option>Afrobeats</option>
               <option>Electronic</option>
             </select>
           </div>
+        </div>
+        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Career Stage</label>
-            <select class="form-select" id="careerStage">
-              <option>Just Starting Out</option>
-              <option>Growing (1k–10k followers)</option>
-              <option>Established (10k–100k)</option>
-              <option>Major (100k+)</option>
+            <select class="form-select" id="plan-stage">
+              <option>Emerging Artist</option>
+              <option>Independent Artist</option>
+              <option>Established Artist</option>
             </select>
           </div>
-        <div class="form-group">
-  <label class="form-label">Your City</label>
-  <input class="form-input" id="city" placeholder="e.g. Atlanta, GA" type="text" />
-</div>
-<div class="form-group">
-  <label class="form-label">Tell us more about this release (optional)</label>
-  <textarea class="form-input" id="releaseDetails" rows="3" placeholder="e.g. This is my first EP, I want to focus on TikTok growth, I have a small but engaged fanbase, I'm collabing with a local artist..." style="resize:vertical;font-family:inherit;"></textarea>
-</div>
-<button class="btn-primary" onclick="generatePlan()">🚀 Generate Release Plan</button>
-        </div>
-        <div>
-          <div class="section-title">Your 30-Day Release Timeline</div>
-          <div class="section-sub">A detailed schedule built around your release date</div>
-          <div class="timeline" id="timeline">
-            <div class="timeline-item">
-              <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-              <div class="timeline-content">
-                <div class="timeline-date">4 weeks out</div>
-                <div class="timeline-task">Announce the project</div>
-                <div class="timeline-detail">Post teaser on IG &amp; TikTok · Best time: 7PM local · Use countdown sticker</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-              <div class="timeline-content">
-                <div class="timeline-date">3 weeks out</div>
-                <div class="timeline-task">Launch pre-save campaign</div>
-                <div class="timeline-detail">Create DistroKid pre-save link · Pin to all profiles · Add to bio</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-              <div class="timeline-content">
-                <div class="timeline-date">2 weeks out</div>
-                <div class="timeline-task">Submit to playlist curators</div>
-                <div class="timeline-detail">SubmitHub · Groover · Direct IG DM outreach to playlist pages</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-              <div class="timeline-content">
-                <div class="timeline-date">1 week out</div>
-                <div class="timeline-task">Content push begins</div>
-                <div class="timeline-detail">Daily posts · Behind the scenes · Snippet videos · Press release</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
-              <div class="timeline-content">
-                <div class="timeline-date">Release Day 🎉</div>
-                <div class="timeline-task">Drop everything at midnight</div>
-                <div class="timeline-detail">Post on all platforms · Go live on IG · Launch paid Meta ads · Text your list</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-left"><div class="timeline-dot"></div></div>
-              <div class="timeline-content">
-                <div class="timeline-date">1 week after</div>
-                <div class="timeline-task">Keep momentum going</div>
-                <div class="timeline-detail">Lyric videos · Fan reaction content · Performance clips · Run retargeting ads</div>
-              </div>
-            </div>
+          <div class="form-group">
+            <label class="form-label">Your City</label>
+            <input class="form-input" id="plan-city" placeholder="e.g. Atlanta, GA"/>
           </div>
         </div>
+        <div class="form-group">
+          <label class="form-label">Additional Details (optional)</label>
+          <input class="form-input" id="plan-details" placeholder="e.g. dropping a single before the EP, have 5K IG followers"/>
+        </div>
+        <button class="gen-btn" id="plan-btn" onclick="generatePlan()"><i class="ti ti-sparkles"></i> Generate Release Plan</button>
       </div>
-    </div>
-
-    <div class="page" id="page-assets">
-      <div class="page-tag">MY ASSETS</div>
-      <div class="page-title">Everything you've created. All in one place.</div>
-      <div class="page-sub">Access, download, and manage all your generated content.</div>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Cover Arts Generated</div>
-          <div class="stat-value" id="assetCount">0</div>
-          <div class="stat-note">this month</div>
+      <div class="gen-panel">
+        <div class="gen-title">Your 30-Day Plan</div>
+        <div class="gen-sub">Your personalized release strategy will appear here</div>
+        <div class="result-placeholder" id="plan-placeholder">
+          <i class="ti ti-calendar"></i>
+          <p>Generate your release plan</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Merch Mockups</div>
-          <div class="stat-value">0</div>
-          <div class="stat-note">Upload art to generate</div>
+        <div class="loading" id="plan-loading">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Building your release plan...</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Release Plans</div>
-          <div class="stat-value" id="planCount">0</div>
-          <div class="stat-note">Create your first plan</div>
-        </div>
-      </div>
-      <div class="section-title">Recent Cover Art</div>
-      <div class="art-grid" id="assetsGrid">
-        <div class="art-item">
-          <div class="art-placeholder"><span class="icon">🎨</span><p>No assets yet.<br/>Generate your first cover art!</p></div>
+        <div class="plan-timeline hidden" id="plan-result"></div>
+        <div class="error-msg hidden" id="plan-error"></div>
+        <div class="result-actions">
+          <button class="result-btn" onclick="generatePlan()"><i class="ti ti-refresh"></i> Regenerate</button>
+          <button class="result-btn primary"><i class="ti ti-download"></i> Download PDF</button>
         </div>
       </div>
     </div>
 
-    <div class="page" id="page-subscription">
-      <div class="page-tag">SUBSCRIPTION</div>
-      <div class="page-title">Choose your plan.</div>
-      <div class="page-sub">Scale your creative output with the right plan for your career stage.</div>
-      <div class="plan-grid">
-        <div class="plan-card">
-          <div class="plan-name">Free</div>
-          <div class="plan-price">$0 <span>/month</span></div>
-          <div class="plan-feature">3 cover arts per month</div>
-          <div class="plan-feature">1 release plan</div>
-          <div class="plan-feature">2 merch mockups</div>
-          <div class="plan-feature">Watermarked lyric video</div>
-          <button class="plan-btn">Current Plan</button>
+    <!-- MERCH MOCKUPS -->
+    <div id="tool-merch" class="generator hidden">
+      <div class="gen-panel">
+        <div class="gen-title">👕 Merch Mockup Studio</div>
+        <div class="gen-sub">Upload your cover art and see it on real products instantly</div>
+        <div class="form-group">
+          <label class="form-label">Upload Your Cover Art</label>
+          <div style="border:1px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('merch-upload').click()">
+            <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+            <div style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload</div>
+            <div style="color:var(--muted);font-size:10px;">PNG or JPG, max 10MB</div>
+            <input type="file" id="merch-upload" accept="image/*" style="display:none;" onchange="previewMerch(this)"/>
+          </div>
         </div>
-        <div class="plan-card featured">
-          <div class="plan-badge">Most Popular</div>
-          <div class="plan-name">Pro</div>
-          <div class="plan-price">$9.99 <span>/month</span></div>
-          <div class="plan-feature">Unlimited cover art</div>
-          <div class="plan-feature">Unlimited release plans</div>
-          <div class="plan-feature">Full merch mockup suite</div>
-          <div class="plan-feature">5 lyric videos per month</div>
-          <div class="plan-feature">3 song generations per month</div>
-          <button class="plan-btn filled">Upgrade to Pro</button>
+        <div class="form-group">
+          <label class="form-label">Select Product Type</label>
+          <select class="form-select" id="merch-type">
+            <option>T-Shirt</option>
+            <option>Hoodie</option>
+            <option>Hat / Cap</option>
+            <option>Phone Case</option>
+            <option>Poster</option>
+            <option>Tote Bag</option>
+          </select>
         </div>
-        <div class="plan-card">
-          <div class="plan-name">Premium</div>
-          <div class="plan-price">$24.99 <span>/month</span></div>
-          <div class="plan-feature">Everything in Pro</div>
-          <div class="plan-feature">Unlimited lyric videos</div>
-          <div class="plan-feature">Unlimited song generation</div>
-          <div class="plan-feature">Music video generation</div>
-          <div class="plan-feature">AI ad creation</div>
-          <div class="plan-feature">Meta and Google ad manager</div>
-          <button class="plan-btn">Upgrade to Premium</button>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <select class="form-select" id="merch-color">
+            <option>Black</option>
+            <option>White</option>
+            <option>Navy</option>
+            <option>Grey</option>
+            <option>Red</option>
+          </select>
         </div>
+        <button class="gen-btn" onclick="generateMerch()"><i class="ti ti-sparkles"></i> Generate Mockup</button>
+      </div>
+      <div class="gen-panel">
+        <div class="gen-title">Your Mockup</div>
+        <div class="gen-sub">Your merch mockup will appear here</div>
+        <div class="result-placeholder" id="merch-placeholder">
+          <i class="ti ti-shirt"></i>
+          <p>Upload your art to get started</p>
+        </div>
+        <div id="merch-preview" class="hidden" style="margin-bottom:12px;">
+          <div style="background:#0f0f1a;border-radius:10px;padding:20px;text-align:center;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+            <div style="font-size:60px;" id="merch-emoji">👕</div>
+            <img id="merch-art-preview" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--neon);" src="" alt=""/>
+            <div style="color:#fff;font-size:12px;font-weight:700;" id="merch-label">Black T-Shirt Mockup</div>
+          </div>
+          <div style="background:#0f0f1a;border-radius:10px;padding:14px;margin-top:10px;">
+            <div style="color:var(--neon);font-size:11px;font-weight:700;margin-bottom:8px;">COST BREAKDOWN</div>
+            <div style="display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;margin-bottom:4px;"><span>Print on Demand (Printful)</span><span>$18-22</span></div>
+            <div style="display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;margin-bottom:4px;"><span>Bulk Order (50 units)</span><span>$8-12 each</span></div>
+            <div style="display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;"><span>Suggested Retail Price</span><span style="color:var(--neon);font-weight:700;">$35-45</span></div>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="result-btn"><i class="ti ti-refresh"></i> Try Another</button>
+          <button class="result-btn primary"><i class="ti ti-download"></i> Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <div class="section-label">RECENT GENERATIONS</div>
+    <div class="recent-grid" id="recent-grid">
+      <div class="recent-item">
+        <div class="recent-thumb" style="background:linear-gradient(135deg,#1a0828,#2d1045);">🎨</div>
+        <div class="recent-info"><div class="recent-name">Your generations</div><div class="recent-meta">will appear here</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🚀</div>
+        <div class="recent-info"><div class="recent-name">Release Plans</div><div class="recent-meta">saved automatically</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div>
+        <div class="recent-info"><div class="recent-name">Merch Mockups</div><div class="recent-meta">saved automatically</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb" style="background:linear-gradient(135deg,#1a0808,#2a0f0f);">🎨</div>
+        <div class="recent-info"><div class="recent-name">Cover Art</div><div class="recent-meta">ready to download</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb" style="background:linear-gradient(135deg,#1a1808,#2a2008);">⭐</div>
+        <div class="recent-info"><div class="recent-name">Start creating</div><div class="recent-meta">to fill this row</div></div>
       </div>
     </div>
 
   </div>
 </div>
+</div>
 
 <script>
-let genCount = 0;
-let planCount = 0;
-
-
-function showPage(page, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  if (el) el.classList.add('active');
-}
-
-async function generateArt() {
-  const title = document.getElementById('songTitle').value.trim();
-  const genre = document.getElementById('genre').value;
-  const mood = document.getElementById('mood').value;
-  const details = document.getElementById('details').value.trim();
-
-  if (!title) { alert('Please enter a song title'); return; }
-  if (!genre) { alert('Please select a genre'); return; }
-  if (!mood) { alert('Please select a mood'); return; }
-  if (genCount >= 3) { alert('Free plan limit reached. Upgrade to Pro for unlimited generations!'); showPage('subscription', null); return; }
-
-  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${details ? 'Visual elements: ' + details + '.' : ''} Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual artistic interpretation. Dark dramatic lighting, cinematic quality.`;
-
-  document.getElementById('generating').classList.add('show');
-  document.getElementById('artGrid').style.opacity = '0.3';
-  document.getElementById('generatedImage').classList.remove('show');
-
-
-
-  try {
-    const response = await fetch('/api/generate-art', {
-     method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-   body: JSON.stringify({ prompt: prompt })
-}); 
-    const data = await response.json();
-    if (data.data && data.data[0].url) {
-      const imgUrl = data.data[0].url;
-      const img = document.getElementById('generatedImage');
-      img.src = imgUrl;
-      img.classList.add('show');
-      genCount++;
-      document.getElementById('genCount').textContent = genCount;
-      document.getElementById('progressFill').style.width = (genCount / 3 * 100) + '%';
-      document.getElementById('assetCount').textContent = genCount;
-      const newItem = document.createElement('div');
-      newItem.className = 'art-item';
-      newItem.innerHTML = `<img src="${imgUrl}" alt="${title} cover art" /><div class="art-overlay"><button class="art-btn" onclick="downloadImage('${imgUrl}', '${title}')">⬇ Download</button></div>`;
-      document.getElementById('artGrid').prepend(newItem);
-      document.getElementById('assetsGrid').innerHTML = '';
-      document.getElementById('assetsGrid').prepend(newItem.cloneNode(true));
-    } else {
-      alert('Error: ' + (data.error?.message || 'Something went wrong'));
-    }
-  } catch (err) {
-    alert('Connection error. Check your API key and try again.');
+// TOOL SWITCHING
+function switchTool(tool, sidebarBtn) {
+  document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
+  document.getElementById('tool-' + tool).classList.remove('hidden');
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio'};
+  document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
+  if(sidebarBtn) {
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    sidebarBtn.classList.add('active');
   }
-  document.getElementById('generating').classList.remove('show');
-  document.getElementById('artGrid').style.opacity = '1';
 }
 
-function downloadImage(url, title) {
+function setToolActive(el) {
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// COVER ART GENERATOR
+async function generateArt() {
+  const title = document.getElementById('art-title').value.trim();
+  const genre = document.getElementById('art-genre').value;
+  const mood = document.getElementById('art-mood').value;
+  const details = document.getElementById('art-details').value.trim();
+  if(!title) { alert('Please enter a song or project title'); return; }
+  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${details}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual artistic interpretation. Dark dramatic lighting, cinematic quality.`;
+  document.getElementById('art-placeholder').classList.add('hidden');
+  document.getElementById('art-result').classList.add('hidden');
+  document.getElementById('art-error').classList.add('hidden');
+  document.getElementById('art-loading').classList.add('active');
+  document.getElementById('art-btn').disabled = true;
+  try {
+    const res = await fetch('/api/generate-art', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt})
+    });
+    const data = await res.json();
+    if(data.data && data.data[0]) {
+      const img = document.getElementById('art-result');
+      img.src = data.data[0].url;
+      img.classList.remove('hidden');
+      document.getElementById('art-loading').classList.remove('active');
+      addRecent('🎨', title, 'Cover Art');
+    } else {
+      throw new Error('No image returned');
+    }
+  } catch(e) {
+    document.getElementById('art-loading').classList.remove('active');
+    document.getElementById('art-placeholder').classList.remove('hidden');
+    const err = document.getElementById('art-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.classList.remove('hidden');
+  }
+  document.getElementById('art-btn').disabled = false;
+}
+
+function downloadArt() {
+  const img = document.getElementById('art-result');
+  if(!img.src || img.classList.contains('hidden')) { alert('Generate an image first'); return; }
   const a = document.createElement('a');
-  a.href = url;
-  a.download = title.replace(/\s+/g, '-').toLowerCase() + '-cover-art.jpg';
+  a.href = img.src;
+  a.download = 'studiosound-cover-art.png';
   a.click();
 }
 
+// RELEASE PLAN GENERATOR
 async function generatePlan() {
-  const projectName = document.getElementById('projectName').value || 'Your Project';
-  const releaseDate = document.getElementById('releaseDate').value;
-  const genre = document.getElementById('releaseGenre').value;
-  const careerStage = document.getElementById('careerStage').value;
-  const city = document.getElementById('city').value || 'your area';
-  const details = document.getElementById('releaseDetails').value;
-
-  if (!releaseDate) { alert('Please select a release date'); return; }
-
-  const timelineEl = document.getElementById('timeline');
-  timelineEl.innerHTML = '<div class="generating show" style="display:flex;"><div class="spinner"></div><p>Building your personalized release plan...</p></div>';
-
+  const name = document.getElementById('plan-name').value.trim();
+  const date = document.getElementById('plan-date').value;
+  const genre = document.getElementById('plan-genre').value;
+  const stage = document.getElementById('plan-stage').value;
+  const city = document.getElementById('plan-city').value.trim();
+  const details = document.getElementById('plan-details').value.trim();
+  if(!name) { alert('Please enter your project name'); return; }
+  if(!date) { alert('Please enter your release date'); return; }
+  document.getElementById('plan-placeholder').classList.add('hidden');
+  document.getElementById('plan-result').classList.add('hidden');
+  document.getElementById('plan-error').classList.add('hidden');
+  document.getElementById('plan-loading').classList.add('active');
+  document.getElementById('plan-btn').disabled = true;
   try {
-    const response = await fetch('/api/generate-plan', {
+    const res = await fetch('/api/generate-plan', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ projectName, releaseDate, genre, careerStage, city, details })
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details})
     });
-    const data = await response.json();
-    if (data.error) {
-      alert('Error: ' + data.error);
-      return;
+    const data = await res.json();
+    if(data.timeline && data.timeline.length > 0) {
+      const container = document.getElementById('plan-result');
+      container.innerHTML = data.timeline.map(item => `
+        <div class="plan-item">
+          <div class="plan-date">${item.date}</div>
+          <div class="plan-task">${item.task}</div>
+          <div class="plan-detail">${item.detail}</div>
+        </div>
+      `).join('');
+      container.classList.remove('hidden');
+      document.getElementById('plan-loading').classList.remove('active');
+      addRecent('🚀', name, 'Release Plan');
+    } else {
+      throw new Error('No plan returned');
     }
-    planCount++;
-    document.getElementById('planCount').textContent = planCount;
-    let html = '';
-    data.timeline.forEach((item, i) => {
-      const isLast = i === data.timeline.length - 1;
-      html += `<div class="timeline-item"><div class="timeline-left"><div class="timeline-dot"></div>${isLast ? '' : '<div class="timeline-line"></div>'}</div><div class="timeline-content"><div class="timeline-date">${item.date}</div><div class="timeline-task">${item.task}</div><div class="timeline-detail">${item.detail}</div></div></div>`;
-    });
-    timelineEl.innerHTML = html;
-  } catch (err) {
-    alert('Something went wrong generating your plan. Please try again.');
+  } catch(e) {
+    document.getElementById('plan-loading').classList.remove('active');
+    document.getElementById('plan-placeholder').classList.remove('hidden');
+    const err = document.getElementById('plan-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.classList.remove('hidden');
   }
+  document.getElementById('plan-btn').disabled = false;
 }
 
-function previewMerch(event) {
-  const file = event.target.files[0];
-  if (file) {
-    alert('Merch mockup generation coming soon! Your design has been uploaded.');
-  }
+// MERCH MOCKUP
+function previewMerch(input) {
+  if(!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('merch-art-preview').src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function generateMerch() {
+  const type = document.getElementById('merch-type').value;
+  const color = document.getElementById('merch-color').value;
+  const emojis = {'T-Shirt':'👕','Hoodie':'🧥','Hat / Cap':'🧢','Phone Case':'📱','Poster':'🖼️','Tote Bag':'👜'};
+  document.getElementById('merch-emoji').textContent = emojis[type] || '👕';
+  document.getElementById('merch-label').textContent = `${color} ${type} Mockup`;
+  document.getElementById('merch-placeholder').classList.add('hidden');
+  document.getElementById('merch-preview').classList.remove('hidden');
+  addRecent(emojis[type] || '👕', `${color} ${type}`, 'Merch Mockup');
+}
+
+// RECENT GENERATIONS
+let recentItems = [];
+function addRecent(icon, name, type) {
+  recentItems.unshift({icon, name, type});
+  if(recentItems.length > 5) recentItems = recentItems.slice(0,5);
+  const grid = document.getElementById('recent-grid');
+  const colors = ['#1a0828','#0f1f3a','#0f3a1f','#1a0808','#1a1808'];
+  grid.innerHTML = recentItems.map((item,i) => `
+    <div class="recent-item">
+      <div class="recent-thumb" style="background:linear-gradient(135deg,${colors[i]},${colors[i]}88);">${item.icon}</div>
+      <div class="recent-info"><div class="recent-name">${item.name}</div><div class="recent-meta">${item.type} · just now</div></div>
+    </div>
+  `).join('');
 }
 </script>
 </body>
