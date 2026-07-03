@@ -1,33 +1,66 @@
+import OpenAI, { toFile } from 'openai';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  const prompt = req.body?.prompt;
-  if (!prompt) {
-    return res.status(400).json({ error: 'No prompt provided' });
-  }
+
   try {
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
-      },
-      body: JSON.stringify({ 
-        model: 'gpt-image-1', 
+    const { prompt, imageData } = req.body;
+
+    if (!prompt) {
+      return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    let response;
+
+    if (imageData) {
+      // Image-to-image: artist uploaded a reference photo
+      // Convert base64 to buffer
+      const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      const imageFile = await toFile(buffer, 'reference.png', { type: 'image/png' });
+
+      response = await openai.images.edit({
+        model: 'gpt-image-1',
+        image: imageFile,
         prompt: prompt,
         n: 1,
-        size: '3000x3000'
-      })
-    });
-    const data = await response.json();
-    if (data.error) {
-      return res.status(400).json({ error: data.error.message });
+        size: '1024x1024',
+      });
+    } else {
+      // Text-to-image: no reference photo
+      response = await openai.images.generate({
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024',
+      });
     }
-    const b64 = data.data[0].b64_json;
-    const imageUrl = `data:image/png;base64,${b64}`;
-    return res.status(200).json({ data: [{ url: imageUrl }] });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    const imageResult = response.data[0];
+
+    if (imageResult.b64_json) {
+      return res.status(200).json({
+        data: [{ url: `data:image/png;base64,${imageResult.b64_json}` }]
+      });
+    } else if (imageResult.url) {
+      return res.status(200).json({
+        data: [{ url: imageResult.url }]
+      });
+    } else {
+      throw new Error('No image data returned');
+    }
+
+  } catch (error) {
+    console.error('Generate art error:', error);
+    return res.status(500).json({ 
+      error: 'Failed to generate image',
+      details: error.message 
+    });
   }
 }
