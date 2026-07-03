@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         image: imageFile,
         prompt: prompt,
         n: 1,
-        size: '1024x1024',
+        size: '3000x3000',
       });
     } else {
       // Text-to-image: no reference photo
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         model: 'gpt-image-1',
         prompt: prompt,
         n: 1,
-        size: '1024x1024',
+        size: '3000x3000',
       });
     }
 
