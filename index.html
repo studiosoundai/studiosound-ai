@@ -674,7 +674,7 @@ async function generateArt() {
       img.src = data.data[0].url;
       img.classList.remove('hidden');
       document.getElementById('art-loading').classList.remove('active');
-      addRecent('🎨', title, 'Cover Art');
+    addRecent('🎨', title, 'Cover Art', data.data[0].url);
     } else { throw new Error('No image returned'); }
   } catch(e) {
     document.getElementById('art-loading').classList.remove('active');
@@ -794,17 +794,44 @@ function generateMerch() {
 
 // RECENT
 let recentItems = [];
-function addRecent(icon, name, type) {
-  recentItems.unshift({icon, name, type});
+
+function addRecent(icon, name, type, imageUrl) {
+  recentItems.unshift({icon, name, type, imageUrl});
   if(recentItems.length > 5) recentItems = recentItems.slice(0,5);
+  renderRecent();
+}
+
+function renderRecent() {
   const grid = document.getElementById('recent-grid');
   const colors = ['#1a0828','#0f1f3a','#0f3a1f','#1a0808','#1a1808'];
+  if(recentItems.length === 0) return;
   grid.innerHTML = recentItems.map((item,i) => `
-    <div class="recent-item">
-      <div class="recent-thumb" style="background:linear-gradient(135deg,${colors[i]},${colors[i]}88);">${item.icon}</div>
-      <div class="recent-info"><div class="recent-name">${item.name}</div><div class="recent-meta">${item.type} · just now</div></div>
+    <div class="recent-item" onclick="loadRecent(${i})">
+      ${item.imageUrl 
+        ? `<div class="recent-thumb"><img src="${item.imageUrl}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;display:block;"/></div>`
+        : `<div class="recent-thumb" style="background:linear-gradient(135deg,${colors[i]},${colors[i]}88);">${item.icon}</div>`
+      }
+      <div class="recent-info">
+        <div class="recent-name">${item.name}</div>
+        <div class="recent-meta">${item.type} · just now</div>
+      </div>
     </div>
   `).join('');
+}
+
+function loadRecent(index) {
+  const item = recentItems[index];
+  if(!item) return;
+  if(item.type === 'Cover Art' && item.imageUrl) {
+    switchTool('art', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+    const img = document.getElementById('art-result');
+    img.src = item.imageUrl;
+    img.classList.remove('hidden');
+    document.getElementById('art-placeholder').classList.add('hidden');
+    document.getElementById('art-loading').classList.remove('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
 }
 </script>
 </body>
