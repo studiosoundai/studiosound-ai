@@ -683,23 +683,38 @@ function toBase64(file) {
 let selectedArtUrl = null;
 
 function selectArt(source) {
-  selectedArtUrl = document.getElementById('art-' + source).src;
-  document.querySelectorAll('.dual-result-img').forEach(img => img.classList.remove('selected'));
-  document.querySelectorAll('.dual-select-btn').forEach(btn => btn.classList.remove('selected'));
-  document.getElementById('art-' + source).classList.add('selected');
-  document.getElementById('btn-' + source).classList.add('selected');
-  document.getElementById('btn-' + source).textContent = '✓ Selected';
-  const other = source === 'openai' ? 'gemini' : 'openai';
-  document.getElementById('btn-' + other).textContent = 'Use This One';
+  const imgId = source === 'openai' ? 'art-style-a' : 'art-style-b';
+  const btnId = source === 'openai' ? 'btn-style-a' : 'btn-style-b';
+  const otherId = source === 'openai' ? 'art-style-b' : 'art-style-a';
+  const otherBtnId = source === 'openai' ? 'btn-style-b' : 'btn-style-a';
+
+  selectedArtUrl = document.getElementById(imgId).src;
+
+  document.getElementById(imgId).classList.add('selected');
+  document.getElementById(otherId).classList.remove('selected');
+  document.getElementById(btnId).textContent = '✓ Selected';
+  document.getElementById(btnId).classList.add('selected');
+  document.getElementById(otherBtnId).textContent = 'Use This One';
+  document.getElementById(otherBtnId).classList.remove('selected');
+
+  // Update recents immediately
+  if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
+    recentItems[0].imageUrl = selectedArtUrl;
+    renderRecent();
+  }
 }
 
 function downloadArt() {
-  const url = selectedArtUrl;
-  if(!url) { alert('Please generate and select an image first'); return; }
+  if(!selectedArtUrl) { alert('Please generate and select an image first'); return; }
   const a = document.createElement('a');
-  a.href = url;
+  a.href = selectedArtUrl;
   a.download = 'studiosound-cover-art.png';
   a.click();
+  // Update recent with selected image
+  if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
+    recentItems[0].imageUrl = selectedArtUrl;
+    renderRecent();
+  }
 }
 
 async function generateArt() {
