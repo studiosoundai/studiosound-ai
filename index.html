@@ -758,7 +758,7 @@ async function generateArt() {
       document.getElementById('art-gemini').classList.remove('selected');
       document.getElementById('art-dual').classList.add('show');
       selectedArtUrl = openaiUrl;
-      addRecent('🎨', title, 'Cover Art', openaiUrl);
+     addRecent('🎨', title, 'Cover Art', openaiUrl || geminiUrl);
     } else if(openaiUrl || geminiUrl) {
       const url = openaiUrl || geminiUrl;
       document.getElementById('art-single-img').src = url;
