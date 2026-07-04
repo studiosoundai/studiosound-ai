@@ -637,6 +637,25 @@ function previewImg(input, thumbId) {
 }
 
 // COVER ART GENERATOR
+let selectedArtUrl = null;
+
+function selectArt(source) {
+  const img = document.getElementById(source === 'openai' ? 'art-result-openai' : 'art-result-gemini');
+  selectedArtUrl = img.src;
+  // Highlight selected
+  document.querySelectorAll('#art-results-grid img').forEach(i => i.style.border = '0.5px solid var(--border)');
+  img.style.border = '2px solid var(--neon)';
+}
+
+function downloadArt() {
+  const url = selectedArtUrl || document.getElementById('art-result').src;
+  if(!url || url === window.location.href) { alert('Generate an image first'); return; }
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'studiosound-cover-art.png';
+  a.click();
+}
+
 async function generateArt() {
   const title = document.getElementById('art-title').value.trim();
   const genre = document.getElementById('art-genre').value;
@@ -647,7 +666,6 @@ async function generateArt() {
 
   const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality.`;
 
-  // Check if artist uploaded a reference photo
   const imgUpload = document.getElementById('art-img-upload');
   let imageData = null;
   if(imgUpload.files && imgUpload.files[0]) {
@@ -657,26 +675,64 @@ async function generateArt() {
   document.getElementById('art-placeholder').classList.add('hidden');
   document.getElementById('art-result').classList.add('hidden');
   document.getElementById('art-error').classList.add('hidden');
+  document.getElementById('art-results-grid').style.display = 'none';
+  document.getElementById('art-results-grid').classList.add('hidden');
   document.getElementById('art-loading').classList.add('active');
-  document.getElementById('art-loading').querySelector('.loading-text').textContent = imageData 
-    ? 'Incorporating your photo into the cover art...' 
-    : 'Creating your cover art...';
+  document.getElementById('art-loading-text').textContent = imageData
+    ? 'Incorporating your photo with both AIs...'
+    : 'Generating with OpenAI and Gemini...';
   document.getElementById('art-btn').disabled = true;
+  selectedArtUrl = null;
 
   try {
-    const res = await fetch('/api/generate-art', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt, imageData})
-    });
-    const data = await res.json();
-    if(data.data && data.data[0]) {
-      const img = document.getElementById('art-result');
-      img.src = data.data[0].url;
-      img.classList.remove('hidden');
-      document.getElementById('art-loading').classList.remove('active');
-    addRecent('🎨', title, 'Cover Art', data.data[0].url);
-    } else { throw new Error('No image returned'); }
+    // Call both APIs simultaneously
+    const [openaiRes, geminiRes] = await Promise.allSettled([
+      fetch('/api/generate-art', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt, imageData})
+      }).then(r => r.json()),
+      fetch('/api/generate-art-gemini', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt})
+      }).then(r => r.json())
+    ]);
+
+    document.getElementById('art-loading').classList.remove('active');
+
+    let openaiUrl = null;
+    let geminiUrl = null;
+
+    if(openaiRes.status === 'fulfilled' && openaiRes.value.data && openaiRes.value.data[0]) {
+      openaiUrl = openaiRes.value.data[0].url;
+    }
+    if(geminiRes.status === 'fulfilled' && geminiRes.value.data && geminiRes.value.data[0]) {
+      geminiUrl = geminiRes.value.data[0].url;
+    }
+
+    if(openaiUrl || geminiUrl) {
+      const grid = document.getElementById('art-results-grid');
+
+      if(openaiUrl && geminiUrl) {
+        // Show both results
+        document.getElementById('art-result-openai').src = openaiUrl;
+        document.getElementById('art-result-gemini').src = geminiUrl;
+        grid.style.display = 'grid';
+        grid.classList.remove('hidden');
+        selectedArtUrl = openaiUrl; // default to OpenAI
+      } else {
+        // Only one result — show single
+        const url = openaiUrl || geminiUrl;
+        const img = document.getElementById('art-result');
+        img.src = url;
+        img.classList.remove('hidden');
+        selectedArtUrl = url;
+      }
+      addRecent('🎨', title, 'Cover Art', openaiUrl || geminiUrl);
+    } else {
+      throw new Error('Both APIs failed');
+    }
   } catch(e) {
     document.getElementById('art-loading').classList.remove('active');
     document.getElementById('art-placeholder').classList.remove('hidden');
@@ -686,6 +742,8 @@ async function generateArt() {
   }
   document.getElementById('art-btn').disabled = false;
 }
+
+ 
 
 // Convert file to base64
 function toBase64(file) {
