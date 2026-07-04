@@ -43,7 +43,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .welcome-sub{color:var(--muted);font-size:12px;font-weight:500;margin-bottom:16px;}
 .welcome-pills{display:flex;gap:8px;flex-wrap:wrap;}
 .wpill{display:flex;align-items:center;gap:5px;background:#00FFD110;border:0.5px solid var(--neon);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--neon);font-weight:600;}
-.wpill i{font-size:12px;}
 .welcome-right{text-align:right;flex-shrink:0;}
 .usage-label{color:var(--muted);font-size:10px;font-weight:600;margin-bottom:6px;}
 .usage-bar{width:140px;height:6px;background:#1a1a28;border-radius:3px;margin-bottom:4px;margin-left:auto;}
@@ -61,7 +60,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tool-badge.live{background:#00FFD120;color:var(--neon);border:0.5px solid var(--neon);}
 .tool-badge.soon{background:#1a1a28;color:#5a5a72;}
 .generator{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.gen-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;}
+.gen-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
 .gen-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;}
 .gen-sub{color:var(--muted);font-size:11px;margin-bottom:16px;}
 .form-group{margin-bottom:12px;}
@@ -74,7 +73,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .form-textarea::placeholder{color:#5a5a72;}
 .form-select{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;font-family:'Sora',sans-serif;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.gen-btn{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;transition:opacity 0.15s;}
+.gen-btn{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto;transition:opacity 0.15s;}
 .gen-btn:hover{opacity:0.9;}
 .gen-btn:disabled{opacity:0.5;cursor:not-allowed;}
 .img-upload-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
@@ -83,32 +82,30 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .img-upload-btn i{font-size:15px;color:var(--neon);}
 .img-preview-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid var(--neon);display:none;}
 .img-upload-hint{color:#5a5a72;font-size:10px;line-height:1.4;}
-.result-panel{display:flex;flex-direction:column;}
-.result-placeholder{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;margin-bottom:12px;padding:20px;text-align:center;}
+.result-placeholder{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;margin-bottom:12px;padding:20px;text-align:center;flex:1;}
 .result-placeholder i{font-size:40px;color:#2a2a3a;margin-bottom:8px;}
 .result-placeholder p{color:#3a3a52;font-size:12px;font-weight:500;line-height:1.6;}
-.loading{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:220px;margin-bottom:12px;}
+.loading{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:200px;margin-bottom:12px;}
 .loading.active{display:flex;}
 .loading-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{color:var(--muted);font-size:12px;font-weight:500;text-align:center;}
-.dual-results{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.dual-results.show{display:grid;}
-.dual-result-label{font-size:10px;font-weight:700;margin-bottom:6px;text-align:center;}
-.dual-result-img{width:100%;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;display:block;}
-.dual-result-img:hover{border-color:var(--neon);}
-.dual-result-img.selected{border-color:var(--neon);}
-.dual-select-btn{width:100%;margin-top:6px;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.15s;}
-.dual-select-btn:hover{border-color:var(--neon);color:var(--neon);}
-.dual-select-btn.selected{background:var(--neon);color:#05050a;border-color:var(--neon);}
+.dual-results{display:none;gap:10px;margin-bottom:12px;}
+.dual-results.show{display:grid;grid-template-columns:1fr 1fr;}
+.style-label{font-size:10px;font-weight:700;margin-bottom:6px;text-align:center;color:var(--neon);}
+.style-img{width:100%;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;display:block;}
+.style-img.selected{border-color:var(--neon);}
+.style-btn{width:100%;margin-top:6px;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:4px;}
+.style-btn:hover{border-color:var(--neon);color:var(--neon);}
+.style-btn.selected{background:var(--neon);color:#05050a;border-color:var(--neon);}
 .single-result{display:none;margin-bottom:12px;}
 .single-result img{width:100%;border-radius:10px;}
-.result-actions{display:flex;gap:8px;margin-top:auto;}
+.error-msg{color:#ff6b6b;font-size:11px;text-align:center;padding:8px;display:none;}
+.result-actions{display:flex;gap:8px;margin-top:8px;}
 .result-btn{flex:1;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:border-color 0.15s;}
 .result-btn:hover{border-color:var(--neon);}
 .result-btn.primary{background:var(--neon);border:none;color:#05050a;}
-.error-msg{color:#ff6b6b;font-size:11px;text-align:center;padding:8px;display:none;}
-.plan-timeline{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:12px;display:none;}
+.plan-timeline{display:none;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:12px;}
 .plan-timeline.show{display:flex;}
 .plan-item{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;}
 .plan-date{color:var(--neon);font-size:10px;font-weight:700;margin-bottom:3px;}
@@ -132,14 +129,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .example-body{padding:10px 12px 12px;}
 .example-prompt{color:#e0e0f0;font-size:11px;font-weight:500;line-height:1.5;margin-bottom:6px;}
 .example-use{color:var(--neon);font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px;}
-.example-use i{font-size:12px;}
 .recent-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
 .recent-item{background:var(--card);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
 .recent-item:hover{border-color:var(--neon);}
 .recent-thumb{height:80px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;}
 .recent-thumb img{width:100%;height:80px;object-fit:cover;display:block;}
 .recent-info{padding:8px 10px;}
-.recent-name{color:#fff;font-size:10px;font-weight:700;margin-bottom:2px;}
+.recent-name{color:#fff;font-size:10px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .recent-meta{color:var(--muted);font-size:9px;}
 .hidden{display:none;}
 </style>
@@ -244,13 +240,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       </div>
     </div>
 
-    <!-- ====== COVER ART TOOL ====== -->
+    <!-- COVER ART TOOL -->
     <div id="tool-art">
       <div class="generator">
-        <!-- LEFT: FORM -->
         <div class="gen-panel">
           <div class="gen-title">🎨 Cover Art Generator</div>
-          <div class="gen-sub">Describe your vision — the more detail you give, the better the result.</div>
+          <div class="gen-sub">Describe your vision — the more detail, the better the result. We generate two unique versions so you can pick your favorite.</div>
           <div class="form-group">
             <label class="form-label">Song or Project Title <span style="color:var(--neon);">*</span></label>
             <input class="form-input" id="art-title" placeholder="e.g. Midnight Static"/>
@@ -259,49 +254,28 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
             <div class="form-group">
               <label class="form-label">Genre</label>
               <select class="form-select" id="art-genre">
-                <option>Hip-Hop</option>
-                <option>Drill</option>
-                <option>Trap</option>
-                <option>R&B</option>
-                <option>R&B Soul</option>
-                <option>Neo Soul</option>
-                <option>Pop</option>
-                <option>Gospel</option>
-                <option>Afrobeats</option>
-                <option>Electronic</option>
-                <option>Country</option>
-                <option>Reggaeton</option>
-                <option>Latin</option>
-                <option>Jazz</option>
-                <option>Lo-Fi</option>
-                <option>Punk</option>
-                <option>Rock</option>
+                <option>Hip-Hop</option><option>Drill</option><option>Trap</option>
+                <option>R&B</option><option>R&B Soul</option><option>Neo Soul</option>
+                <option>Pop</option><option>Gospel</option><option>Afrobeats</option>
+                <option>Electronic</option><option>Country</option><option>Reggaeton</option>
+                <option>Latin</option><option>Jazz</option><option>Lo-Fi</option>
+                <option>Punk</option><option>Rock</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">Mood</label>
               <select class="form-select" id="art-mood">
-                <option>Dark & Moody</option>
-                <option>Aggressive</option>
-                <option>Cinematic</option>
-                <option>Energetic</option>
-                <option>Emotional</option>
-                <option>Uplifting</option>
-                <option>Dreamy</option>
-                <option>Nostalgic</option>
-                <option>Romantic</option>
-                <option>Mysterious</option>
-                <option>Raw & Gritty</option>
-                <option>Luxurious</option>
-                <option>Spiritual</option>
-                <option>Playful</option>
-                <option>Melancholic</option>
+                <option>Dark & Moody</option><option>Aggressive</option><option>Cinematic</option>
+                <option>Energetic</option><option>Emotional</option><option>Uplifting</option>
+                <option>Dreamy</option><option>Nostalgic</option><option>Romantic</option>
+                <option>Mysterious</option><option>Raw & Gritty</option><option>Luxurious</option>
+                <option>Spiritual</option><option>Playful</option><option>Melancholic</option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Describe Your Vision <span style="color:var(--neon);">*</span></label>
-            <textarea class="form-textarea" id="art-prompt" placeholder="Tell the AI exactly what you want to see. Example: A dark hooded figure standing alone under a flickering streetlight in the rain. The background is a blurred city at night with blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text."></textarea>
+            <textarea class="form-textarea" id="art-prompt" placeholder="Tell the AI exactly what you want to see. Example: A dark hooded figure standing alone under a flickering streetlight in the rain. Blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text."></textarea>
           </div>
           <div class="form-group">
             <label class="form-label">Add Your Photo (optional)</label>
@@ -310,89 +284,77 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
                 <i class="ti ti-photo-plus"></i> Add Image
               </div>
               <img class="img-preview-thumb" id="art-img-thumb" src="" alt=""/>
-              <div class="img-upload-hint">Upload a photo of yourself or reference image — AI will incorporate you into the cover art</div>
+              <div class="img-upload-hint">Upload a photo of yourself — AI will incorporate you into the cover art</div>
               <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb')"/>
             </div>
           </div>
-          <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate Cover Art — OpenAI + Gemini</button>
+          <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate — 2 Unique Versions</button>
         </div>
 
-        <!-- RIGHT: RESULTS -->
-        <div class="gen-panel result-panel">
+        <!-- RESULT PANEL -->
+        <div class="gen-panel">
           <div class="gen-title">Your Results</div>
-          <div class="gen-sub">We generate with both OpenAI and Gemini — pick your favorite</div>
+          <div class="gen-sub">Two unique AI versions — pick your favorite then download</div>
 
-          <!-- Placeholder -->
           <div class="result-placeholder" id="art-placeholder">
             <i class="ti ti-photo"></i>
-            <p>Describe your vision on the left and hit Generate.<br/>We'll show you two AI results side by side so you can pick the best one.</p>
+            <p>Describe your vision and hit Generate.<br/>You'll get two unique versions to choose from.</p>
           </div>
 
-          <!-- Loading -->
           <div class="loading" id="art-loading">
             <div class="loading-spinner"></div>
-            <div class="loading-text" id="art-loading-text">Generating with OpenAI and Gemini...</div>
+            <div class="loading-text" id="art-loading-text">Generating two unique versions...</div>
           </div>
 
-          <!-- Dual Results -->
+          <!-- DUAL RESULTS — no AI branding -->
           <div class="dual-results" id="art-dual">
             <div>
-              <div class="dual-result-label" style="color:var(--neon);">✦ OPENAI</div>
-              <img class="dual-result-img" id="art-openai" src="" alt="OpenAI result" onclick="selectArt('openai')"/>
-              <button class="dual-select-btn" id="btn-openai" onclick="selectArt('openai')">Use This One</button>
+              <div class="style-label">✦ VERSION A</div>
+              <img class="style-img" id="art-version-a" src="" alt="Version A" onclick="selectVersion('a')"/>
+              <button class="style-btn" id="btn-version-a" onclick="selectVersion('a')"><i class="ti ti-check"></i> Select Version A</button>
             </div>
             <div>
-              <div class="dual-result-label" style="color:#4285f4;">✦ GEMINI</div>
-              <img class="dual-result-img" id="art-gemini" src="" alt="Gemini result" onclick="selectArt('gemini')"/>
-              <button class="dual-select-btn" id="btn-gemini" onclick="selectArt('gemini')">Use This One</button>
+              <div class="style-label">✦ VERSION B</div>
+              <img class="style-img" id="art-version-b" src="" alt="Version B" onclick="selectVersion('b')"/>
+              <button class="style-btn" id="btn-version-b" onclick="selectVersion('b')"><i class="ti ti-check"></i> Select Version B</button>
             </div>
           </div>
 
-          <!-- Single Result fallback -->
+          <!-- SINGLE RESULT fallback -->
           <div class="single-result" id="art-single">
-            <img id="art-single-img" src="" alt="Generated cover art" style="width:100%;border-radius:10px;"/>
+            <img id="art-single-img" src="" alt="Generated" style="width:100%;border-radius:10px;"/>
           </div>
 
-          <!-- Error -->
           <div class="error-msg" id="art-error"></div>
 
           <div class="result-actions">
             <button class="result-btn" onclick="generateArt()"><i class="ti ti-refresh"></i> Regenerate</button>
-            <button class="result-btn primary" onclick="downloadArt()"><i class="ti ti-download"></i> Download</button>
+            <button class="result-btn primary" onclick="downloadArt()"><i class="ti ti-download"></i> Download Selected</button>
           </div>
         </div>
       </div>
 
-      <!-- COVER ART EXAMPLES -->
+      <!-- EXAMPLES -->
       <div class="examples-section">
         <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE PROMPTS — Click any to use it</div>
         <div class="examples-grid">
           <div class="example-card" onclick="useExample('art','A dark hooded figure standing alone under a flickering streetlight in the rain. Blurred city at night, blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);">🌧️<div class="example-badge">Hip-Hop · Dark</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Dark hooded figure under a flickering streetlight in the rain. Blue and purple neon reflections. Cinematic."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Dark hooded figure under a streetlight in the rain. Blue and purple neon reflections. Cinematic."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('art','A woman silhouette standing against a breathtaking sunset, arms stretched out. Warm orange, gold and purple gradient sky. Emotional, soulful, empowering. Soft dreamy glow, no text.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#2a0f08,#3a1a05);">🌅<div class="example-badge">R&B Soul · Emotional</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Woman silhouette against a sunset, arms stretched out. Orange, gold and purple sky. Emotional, soulful."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Woman silhouette against a sunset, arms stretched. Orange, gold and purple sky. Emotional, soulful."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('art','Stacks of cash, gold chains, diamonds and luxury watches arranged on a black marble surface with dramatic studio lighting. Rich, luxurious, aggressive energy. Dark background, gold and black tones, no text.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#1a1408,#2a2010);">💰<div class="example-badge">Trap · Luxury</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Cash, gold chains and diamonds on black marble. Dramatic lighting. Rich, luxurious, aggressive."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Cash, gold chains and diamonds on black marble. Dramatic lighting. Rich, luxurious, aggressive."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ====== RELEASE PLANNER TOOL ====== -->
+    <!-- RELEASE PLANNER TOOL -->
     <div id="tool-plan" class="hidden">
       <div class="generator">
         <div class="gen-panel">
@@ -410,20 +372,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
             <div class="form-group">
               <label class="form-label">Genre</label>
               <select class="form-select" id="plan-genre">
-                <option>Hip-Hop</option>
-                <option>Drill</option>
-                <option>Trap</option>
-                <option>R&B</option>
-                <option>R&B Soul</option>
-                <option>Neo Soul</option>
-                <option>Pop</option>
-                <option>Gospel</option>
-                <option>Afrobeats</option>
-                <option>Electronic</option>
-                <option>Country</option>
-                <option>Reggaeton</option>
-                <option>Latin</option>
-                <option>Lo-Fi</option>
+                <option>Hip-Hop</option><option>Drill</option><option>Trap</option>
+                <option>R&B</option><option>R&B Soul</option><option>Neo Soul</option>
+                <option>Pop</option><option>Gospel</option><option>Afrobeats</option>
+                <option>Electronic</option><option>Country</option><option>Reggaeton</option>
+                <option>Latin</option><option>Lo-Fi</option>
               </select>
             </div>
           </div>
@@ -431,10 +384,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
             <div class="form-group">
               <label class="form-label">Career Stage</label>
               <select class="form-select" id="plan-stage">
-                <option>Just Starting Out</option>
-                <option>Emerging Artist</option>
-                <option>Independent Artist</option>
-                <option>Established Artist</option>
+                <option>Just Starting Out</option><option>Emerging Artist</option>
+                <option>Independent Artist</option><option>Established Artist</option>
               </select>
             </div>
             <div class="form-group">
@@ -444,16 +395,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
           </div>
           <div class="form-group">
             <label class="form-label">Tell us about your project <span style="color:var(--neon);">*</span></label>
-            <textarea class="form-textarea" id="plan-details" placeholder="Describe your project. Example: I am dropping a 6-track EP. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP. My budget for promotion is around $200."></textarea>
+            <textarea class="form-textarea" id="plan-details" placeholder="Describe your project. Example: I am dropping a 6-track EP. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP. My budget is around $200."></textarea>
           </div>
           <button class="gen-btn" id="plan-btn" onclick="generatePlan()"><i class="ti ti-sparkles"></i> Generate My Release Plan</button>
         </div>
-        <div class="gen-panel result-panel">
+        <div class="gen-panel">
           <div class="gen-title">Your 30-Day Plan</div>
           <div class="gen-sub">Your personalized release strategy will appear here</div>
           <div class="result-placeholder" id="plan-placeholder">
             <i class="ti ti-calendar"></i>
-            <p>Fill in your project details on the left and hit Generate — your custom release plan will be ready in seconds.</p>
+            <p>Fill in your project details and hit Generate — your custom release plan will be ready in seconds.</p>
           </div>
           <div class="loading" id="plan-loading">
             <div class="loading-spinner"></div>
@@ -472,30 +423,21 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="examples-grid">
           <div class="example-card" onclick="useExample('plan','I am dropping a 6-track Hip-Hop EP. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP to build hype. My budget for promotion is around $200.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🎤<div class="example-badge">Hip-Hop EP</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"6-track Hip-Hop EP. 2K IG followers, 500 TikTok. Single 2 weeks before. $200 budget."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"6-track Hip-Hop EP. 2K IG followers, 500 TikTok. Single 2 weeks before. $200 budget."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
-          <div class="example-card" onclick="useExample('plan','I am releasing my first R&B Soul single. I am a brand new artist with less than 500 followers. I have no budget but I can post daily on TikTok and Instagram. I want to focus on building an organic fanbase.')">
+          <div class="example-card" onclick="useExample('plan','I am releasing my first R&B Soul single. I am a brand new artist with less than 500 followers. I have no budget but I can post daily on TikTok and Instagram. I want to build an organic fanbase.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#2a0f08,#3a1a05);">🎵<div class="example-badge">R&B · New Artist</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"First R&B single, new artist, under 500 followers, no budget, can post daily on socials."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"First R&B single, new artist, under 500 followers, no budget, can post daily on socials."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
-          <div class="example-card" onclick="useExample('plan','I am dropping a Gospel album with 10 tracks. I have 10,000 church community followers and 5,000 on Facebook. I want to focus on church outreach, Christian radio, and gospel playlist placements. Budget is $500.')">
+          <div class="example-card" onclick="useExample('plan','I am dropping a Gospel album with 10 tracks. I have 10,000 church community followers and 5,000 on Facebook. Focus on church outreach and Christian radio. Budget is $500.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);">🙏<div class="example-badge">Gospel Album</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Gospel album, 10K church followers, 5K Facebook. Church outreach and Christian radio focus. $500 budget."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Gospel album, 10K church followers, 5K Facebook. Church outreach and Christian radio. $500 budget."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ====== MERCH MOCKUP TOOL ====== -->
+    <!-- MERCH MOCKUP TOOL -->
     <div id="tool-merch" class="hidden">
       <div class="generator">
         <div class="gen-panel">
@@ -514,27 +456,17 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
             <div class="form-group">
               <label class="form-label">Product Type</label>
               <select class="form-select" id="merch-type">
-                <option>T-Shirt</option>
-                <option>Hoodie</option>
-                <option>Hat / Cap</option>
-                <option>Phone Case</option>
-                <option>Poster</option>
-                <option>Tote Bag</option>
-                <option>Sweatpants</option>
-                <option>Jacket</option>
+                <option>T-Shirt</option><option>Hoodie</option><option>Hat / Cap</option>
+                <option>Phone Case</option><option>Poster</option><option>Tote Bag</option>
+                <option>Sweatpants</option><option>Jacket</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">Color</label>
               <select class="form-select" id="merch-color">
-                <option>Black</option>
-                <option>White</option>
-                <option>Navy</option>
-                <option>Grey</option>
-                <option>Red</option>
-                <option>Forest Green</option>
-                <option>Burgundy</option>
-                <option>Vintage Wash</option>
+                <option>Black</option><option>White</option><option>Navy</option>
+                <option>Grey</option><option>Red</option><option>Forest Green</option>
+                <option>Burgundy</option><option>Vintage Wash</option>
               </select>
             </div>
           </div>
@@ -544,19 +476,19 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
           </div>
           <button class="gen-btn" id="merch-btn" onclick="generateMerch()"><i class="ti ti-sparkles"></i> Generate Mockup</button>
         </div>
-        <div class="gen-panel result-panel">
+        <div class="gen-panel">
           <div class="gen-title">Your Mockup</div>
           <div class="gen-sub">Your AI-generated merch mockup will appear here</div>
           <div class="result-placeholder" id="merch-placeholder">
             <i class="ti ti-shirt"></i>
-            <p>Upload your art and describe your vision on the left — your real mockup will be generated instantly.</p>
+            <p>Upload your art and describe your vision — your real mockup will be generated instantly.</p>
           </div>
           <div class="loading" id="merch-loading">
             <div class="loading-spinner"></div>
             <div class="loading-text">Generating your mockup...</div>
           </div>
           <div class="merch-result" id="merch-result">
-            <img id="merch-result-img" src="" alt="Merch mockup" style="width:100%;border-radius:10px;margin-bottom:10px;"/>
+            <img id="merch-result-img" src="" alt="Merch mockup"/>
             <div class="merch-cost">
               <div class="merch-cost-title">COST BREAKDOWN</div>
               <div class="merch-cost-row"><span>Print on Demand (Printful)</span><span id="merch-pod">$18-22</span></div>
@@ -576,24 +508,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="examples-grid">
           <div class="example-card" onclick="useExample('merch','I want my cover art centered on the front chest area of a black oversized hoodie. Clean and minimal, like something you would see at a major label merch table at a sold out concert.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1a1a1a);">🧥<div class="example-badge">Hoodie · Clean</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Cover art centered on front chest of black oversized hoodie. Clean, minimal, major label feel."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Cover art centered on front chest of black oversized hoodie. Clean, minimal, major label feel."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('merch','I want my logo printed large across the back of a white vintage wash t-shirt with my artist name in small text on the left chest. Streetwear style, like a high end fashion brand.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#1a1a18,#2a2a28);">👕<div class="example-badge">T-Shirt · Streetwear</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Logo large across back of white vintage wash tee, artist name small on left chest. High end streetwear."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Logo large across back of white vintage wash tee, artist name small on left chest. High end streetwear."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('merch','I want a full print poster of my album cover art in 18x24 inch size. Gallery quality, suitable for framing. Something fans would actually want to hang on their wall.')">
             <div class="example-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🖼️<div class="example-badge">Poster · Gallery</div></div>
-            <div class="example-body">
-              <div class="example-prompt">"Full print album cover poster 18x24 inch. Gallery quality, suitable for framing."</div>
-              <div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div>
-            </div>
+            <div class="example-body"><div class="example-prompt">"Full print album cover poster 18x24 inch. Gallery quality, suitable for framing."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
         </div>
       </div>
@@ -629,6 +552,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 </div>
 
 <script>
+// ====== GLOBALS ======
+let selectedArtUrl = null;
+let versionAUrl = null;
+let versionBUrl = null;
+let recentItems = [];
+
 // ====== TOOL SWITCHING ======
 function switchTool(tool, sidebarBtn) {
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
@@ -667,7 +596,7 @@ function previewImg(input, thumbId) {
 
 function previewMerch(input) {
   if(!input.files || !input.files[0]) return;
-  document.getElementById('merch-upload-label').textContent = input.files[0].name;
+  document.getElementById('merch-upload-label').textContent = '✓ ' + input.files[0].name;
 }
 
 function toBase64(file) {
@@ -679,44 +608,39 @@ function toBase64(file) {
   });
 }
 
-// ====== COVER ART ======
-let selectedArtUrl = null;
+// ====== VERSION SELECTION ======
+function selectVersion(version) {
+  // Update selected URL
+  selectedArtUrl = version === 'a' ? versionAUrl : versionBUrl;
 
-function selectArt(source) {
-  const imgId = source === 'openai' ? 'art-style-a' : 'art-style-b';
-  const btnId = source === 'openai' ? 'btn-style-a' : 'btn-style-b';
-  const otherId = source === 'openai' ? 'art-style-b' : 'art-style-a';
-  const otherBtnId = source === 'openai' ? 'btn-style-b' : 'btn-style-a';
+  // Update image borders
+  document.getElementById('art-version-a').classList.toggle('selected', version === 'a');
+  document.getElementById('art-version-b').classList.toggle('selected', version === 'b');
 
-  selectedArtUrl = document.getElementById(imgId).src;
+  // Update buttons
+  const btnA = document.getElementById('btn-version-a');
+  const btnB = document.getElementById('btn-version-b');
 
-  document.getElementById(imgId).classList.add('selected');
-  document.getElementById(otherId).classList.remove('selected');
-  document.getElementById(btnId).textContent = '✓ Selected';
-  document.getElementById(btnId).classList.add('selected');
-  document.getElementById(otherBtnId).textContent = 'Use This One';
-  document.getElementById(otherBtnId).classList.remove('selected');
+  if(version === 'a') {
+    btnA.innerHTML = '<i class="ti ti-check"></i> ✓ Selected';
+    btnA.classList.add('selected');
+    btnB.innerHTML = '<i class="ti ti-check"></i> Select Version B';
+    btnB.classList.remove('selected');
+  } else {
+    btnB.innerHTML = '<i class="ti ti-check"></i> ✓ Selected';
+    btnB.classList.add('selected');
+    btnA.innerHTML = '<i class="ti ti-check"></i> Select Version A';
+    btnA.classList.remove('selected');
+  }
 
-  // Update recents immediately
+  // Update recents with selected image
   if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
     recentItems[0].imageUrl = selectedArtUrl;
     renderRecent();
   }
 }
 
-function downloadArt() {
-  if(!selectedArtUrl) { alert('Please generate and select an image first'); return; }
-  const a = document.createElement('a');
-  a.href = selectedArtUrl;
-  a.download = 'studiosound-cover-art.png';
-  a.click();
-  // Update recent with selected image
-  if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
-    recentItems[0].imageUrl = selectedArtUrl;
-    renderRecent();
-  }
-}
-
+// ====== COVER ART GENERATOR ======
 async function generateArt() {
   const title = document.getElementById('art-title').value.trim();
   const genre = document.getElementById('art-genre').value;
@@ -725,7 +649,7 @@ async function generateArt() {
   if(!title) { alert('Please enter a song or project title'); return; }
   if(!userPrompt) { alert('Please describe your vision in the prompt box'); return; }
 
-  const prompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality.`;
+  const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality.`;
 
   const imgUpload = document.getElementById('art-img-upload');
   let imageData = null;
@@ -740,48 +664,56 @@ async function generateArt() {
   document.getElementById('art-error').style.display = 'none';
   document.getElementById('art-loading').classList.add('active');
   document.getElementById('art-loading-text').textContent = imageData
-    ? 'Incorporating your photo with both AIs...'
-    : 'Generating with OpenAI and Gemini simultaneously...';
+    ? 'Incorporating your photo into two unique versions...'
+    : 'Generating two unique versions...';
   document.getElementById('art-btn').disabled = true;
   selectedArtUrl = null;
+  versionAUrl = null;
+  versionBUrl = null;
+
+  // Reset buttons
+  document.getElementById('btn-version-a').innerHTML = '<i class="ti ti-check"></i> Select Version A';
+  document.getElementById('btn-version-b').innerHTML = '<i class="ti ti-check"></i> Select Version B';
+  document.getElementById('btn-version-a').classList.remove('selected');
+  document.getElementById('btn-version-b').classList.remove('selected');
+  document.getElementById('art-version-a').classList.remove('selected');
+  document.getElementById('art-version-b').classList.remove('selected');
 
   try {
-    const [openaiRes, geminiRes] = await Promise.allSettled([
+    const [resA, resB] = await Promise.allSettled([
       fetch('/api/generate-art', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({prompt, imageData})
+        body: JSON.stringify({prompt: basePrompt, imageData})
       }).then(r => r.json()),
       fetch('/api/generate-art-gemini', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({prompt})
+        body: JSON.stringify({prompt: basePrompt})
       }).then(r => r.json())
     ]);
 
     document.getElementById('art-loading').classList.remove('active');
 
-    const openaiUrl = (openaiRes.status === 'fulfilled' && openaiRes.value.data?.[0]?.url) ? openaiRes.value.data[0].url : null;
-    const geminiUrl = (geminiRes.status === 'fulfilled' && geminiRes.value.data?.[0]?.url) ? geminiRes.value.data[0].url : null;
+    versionAUrl = (resA.status === 'fulfilled' && resA.value.data?.[0]?.url) ? resA.value.data[0].url : null;
+    versionBUrl = (resB.status === 'fulfilled' && resB.value.data?.[0]?.url) ? resB.value.data[0].url : null;
 
-    if(openaiUrl && geminiUrl) {
-      document.getElementById('art-openai').src = openaiUrl;
-      document.getElementById('art-gemini').src = geminiUrl;
-      document.getElementById('btn-openai').textContent = 'Use This One';
-      document.getElementById('btn-gemini').textContent = 'Use This One';
-      document.getElementById('art-openai').classList.remove('selected');
-      document.getElementById('art-gemini').classList.remove('selected');
+    if(versionAUrl && versionBUrl) {
+      document.getElementById('art-version-a').src = versionAUrl;
+      document.getElementById('art-version-b').src = versionBUrl;
       document.getElementById('art-dual').classList.add('show');
-      selectedArtUrl = openaiUrl;
-     addRecent('🎨', title, 'Cover Art', openaiUrl || geminiUrl);
-    } else if(openaiUrl || geminiUrl) {
-      const url = openaiUrl || geminiUrl;
+      // Auto select version A
+      selectedArtUrl = versionAUrl;
+      selectVersion('a');
+      addRecent('🎨', title, 'Cover Art', versionAUrl);
+    } else if(versionAUrl || versionBUrl) {
+      const url = versionAUrl || versionBUrl;
       document.getElementById('art-single-img').src = url;
       document.getElementById('art-single').style.display = 'block';
       selectedArtUrl = url;
       addRecent('🎨', title, 'Cover Art', url);
     } else {
-      throw new Error('Both APIs failed to return results');
+      throw new Error('Both versions failed to generate');
     }
   } catch(e) {
     document.getElementById('art-loading').classList.remove('active');
@@ -792,6 +724,19 @@ async function generateArt() {
     console.error(e);
   }
   document.getElementById('art-btn').disabled = false;
+}
+
+function downloadArt() {
+  if(!selectedArtUrl) { alert('Please generate an image first'); return; }
+  const a = document.createElement('a');
+  a.href = selectedArtUrl;
+  a.download = 'studiosound-cover-art.png';
+  a.click();
+  // Save selected to recents
+  if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
+    recentItems[0].imageUrl = selectedArtUrl;
+    renderRecent();
+  }
 }
 
 // ====== RELEASE PLAN ======
@@ -862,7 +807,6 @@ async function generateMerch() {
   const color = document.getElementById('merch-color').value;
   const prompt = document.getElementById('merch-prompt').value.trim();
   const upload = document.getElementById('merch-upload');
-
   if(!upload.files || !upload.files[0]) { alert('Please upload your design or cover art first'); return; }
   if(!prompt) { alert('Please describe your merch vision'); return; }
 
@@ -898,7 +842,7 @@ async function generateMerch() {
     document.getElementById('merch-loading').classList.remove('active');
     document.getElementById('merch-placeholder').style.display = 'flex';
     const err = document.getElementById('merch-error');
-    err.textContent = 'Something went wrong generating your mockup. Please try again.';
+    err.textContent = 'Something went wrong. Please try again.';
     err.style.display = 'block';
     console.error(e);
   }
@@ -915,8 +859,6 @@ function downloadMerch() {
 }
 
 // ====== RECENT GENERATIONS ======
-let recentItems = [];
-
 function addRecent(icon, name, type, imageUrl) {
   recentItems.unshift({icon, name, type, imageUrl});
   if(recentItems.length > 5) recentItems = recentItems.slice(0,5);
