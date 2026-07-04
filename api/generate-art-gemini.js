@@ -7,16 +7,13 @@ export default async function handler(req, res) {
     const { prompt } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Prompt is required' });
 
-    // Add distinct style to make it visually different from OpenAI
-    const styledPrompt = `${prompt} Style: bold graphic art, high contrast colors, painterly artistic interpretation, vibrant and striking, editorial illustration style, unique artistic vision.`;
-
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${process.env.GOOGLE_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          instances: [{ prompt: styledPrompt }],
+          instances: [{ prompt }],
           parameters: {
             sampleCount: 1,
             aspectRatio: '1:1',
@@ -36,14 +33,14 @@ export default async function handler(req, res) {
       });
     }
 
-    // Fallback to gemini-2.5-flash-image
+    // Fallback to gemini-2.5-flash-image if Imagen 4 fails
     const fallback = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${process.env.GOOGLE_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: styledPrompt }] }],
+          contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
         }),
       }
