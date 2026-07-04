@@ -778,20 +778,81 @@ function previewMerch(input) {
   };
   reader.readAsDataURL(input.files[0]);
 }
-
-function generateMerch() {
+async function generateMerch() {
   const type = document.getElementById('merch-type').value;
   const color = document.getElementById('merch-color').value;
+  const prompt = document.getElementById('merch-prompt').value.trim();
+  const upload = document.getElementById('merch-upload');
+
+  if(!upload.files || !upload.files[0]) {
+    alert('Please upload your design or cover art first');
+    return;
+  }
+  if(!prompt) {
+    alert('Please describe your merch vision');
+    return;
+  }
+
+  const imageData = await toBase64(upload.files[0]);
   const d = merchData[type] || merchData['T-Shirt'];
-  document.getElementById('merch-emoji').textContent = d.emoji;
-  document.getElementById('merch-label').textContent = `${color} ${type} Mockup`;
-  document.getElementById('merch-pod').textContent = d.pod;
-  document.getElementById('merch-bulk').textContent = d.bulk;
-  document.getElementById('merch-retail').textContent = d.retail;
+
   document.getElementById('merch-placeholder').classList.add('hidden');
-  document.getElementById('merch-preview').classList.remove('hidden');
-  addRecent(d.emoji, `${color} ${type}`, 'Merch Mockup');
+  document.getElementById('merch-preview').classList.add('hidden');
+
+  // Show loading
+  const panel = document.querySelector('#tool-merch .result-panel');
+  let loadingEl = document.getElementById('merch-loading');
+  if(!loadingEl) {
+    loadingEl = document.createElement('div');
+    loadingEl.id = 'merch-loading';
+    loadingEl.className = 'loading active';
+    loadingEl.innerHTML = '<div class="loading-spinner"></div><div class="loading-text">Generating your mockup...</div>';
+    panel.insertBefore(loadingEl, panel.querySelector('.result-actions'));
+  } else {
+    loadingEl.classList.add('active');
+  }
+
+  try {
+    const res = await fetch('/api/generate-merch', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        imageData,
+        productType: type,
+        color,
+        prompt
+      })
+    });
+
+    const data = await res.json();
+    loadingEl.classList.remove('active');
+
+    if(data.data && data.data[0]) {
+      // Show real mockup image
+      document.getElementById('merch-placeholder').classList.add('hidden');
+      const preview = document.getElementById('merch-preview');
+      preview.innerHTML = `
+        <img src="${data.data[0].url}" alt="${color} ${type} mockup" style="width:100%;border-radius:10px;margin-bottom:12px;"/>
+        <div class="merch-cost">
+          <div class="merch-cost-title">COST BREAKDOWN</div>
+          <div class="merch-cost-row"><span>Print on Demand (Printful)</span><span>${d.pod}</span></div>
+          <div class="merch-cost-row"><span>Bulk Order (50 units)</span><span>${d.bulk}</span></div>
+          <div class="merch-cost-row highlight"><span>Suggested Retail Price</span><span>${d.retail}</span></div>
+        </div>
+      `;
+      preview.classList.remove('hidden');
+      addRecent(d.emoji, `${color} ${type}`, 'Merch Mockup', data.data[0].url);
+    } else {
+      throw new Error('No mockup returned');
+    }
+  } catch(e) {
+    loadingEl.classList.remove('active');
+    document.getElementById('merch-placeholder').classList.remove('hidden');
+    alert('Something went wrong generating your mockup. Please try again.');
+    console.error(e);
+  }
 }
+
 
 // RECENT
 let recentItems = [];
