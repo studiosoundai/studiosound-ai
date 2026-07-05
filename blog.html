@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — StudioSound.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logodot i{font-size:14px;color:#05050a;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;}
+.navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
+.navlink:hover{opacity:1;background:#0d0d14;}
+.navlink.active{opacity:1;color:var(--neon);}
+.navbtns{display:flex;gap:8px;}
+.btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.btn-ghost:hover{border-color:var(--neon);}
+.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+
+/* HERO */
+.hero{padding:72px 32px 56px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
+.hero-label{color:var(--neon);font-size:11px;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;}
+.hero-title{font-size:48px;font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:14px;color:#fff;}
+.hero-title .neon{color:var(--neon);}
+.hero-sub{color:var(--muted);font-size:15px;font-weight:500;max-width:480px;margin:0 auto;line-height:1.7;}
+
+/* CATEGORIES */
+.categories{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 32px 40px;}
+.cat-btn{background:var(--card);border:0.5px solid var(--border);border-radius:24px;padding:8px 18px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:'Sora',sans-serif;}
+.cat-btn:hover{border-color:var(--neon);color:#fff;}
+.cat-btn.active{background:var(--neon);color:#05050a;border-color:var(--neon);}
+
+/* FEATURED POST */
+.featured{padding:0 32px 48px;}
+.featured-inner{background:var(--card);border:0.5px solid var(--border);border-radius:22px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;cursor:pointer;transition:border-color 0.2s;}
+.featured-inner:hover{border-color:var(--neon);}
+.featured-visual{background:linear-gradient(135deg,#0f1f3a,#162b50);min-height:320px;display:flex;align-items:center;justify-content:center;font-size:100px;position:relative;}
+.featured-visual::after{content:'FEATURED';position:absolute;top:16px;left:16px;background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;font-family:'Sora',sans-serif;}
+.featured-content{padding:40px;}
+.post-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:10px;}
+.featured-title{font-size:26px;font-weight:900;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.3;}
+.featured-excerpt{color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:20px;}
+.post-meta{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px;font-weight:500;margin-bottom:20px;}
+.post-meta i{font-size:13px;}
+.read-btn{display:inline-flex;align-items:center;gap:6px;color:var(--neon);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;}
+
+/* BLOG GRID */
+.blog-section{padding:0 32px 72px;}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.blog-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
+.blog-card:hover{border-color:var(--neon);transform:translateY(-3px);}
+.blog-visual{height:180px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;}
+.blog-content{padding:20px;}
+.blog-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
+.blog-title{color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:8px;line-height:1.4;}
+.blog-excerpt{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:14px;}
+.blog-meta{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:500;}
+.blog-read{color:var(--neon);font-size:10px;font-weight:700;}
+
+/* NEWSLETTER */
+.newsletter{padding:0 32px 72px;}
+.newsletter-inner{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:48px;text-align:center;}
+.newsletter-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;color:#fff;}
+.newsletter-title .neon{color:var(--neon);}
+.newsletter-sub{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7;}
+.newsletter-form{display:flex;gap:10px;max-width:480px;margin:0 auto;}
+.newsletter-input{flex:1;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:12px 16px;color:#fff;font-size:13px;outline:none;font-family:'Sora',sans-serif;}
+.newsletter-input:focus{border-color:var(--neon);}
+.newsletter-input::placeholder{color:#5a5a72;}
+.newsletter-btn{background:var(--neon);color:#05050a;border:none;border-radius:10px;padding:12px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;}
+.newsletter-note{color:#5a5a72;font-size:11px;margin-top:12px;}
+
+/* FOOTER */
+.footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;}
+.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
+.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoname{font-size:13px;font-weight:800;color:#fff;}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;}
+.footer-link:hover{color:var(--neon);}
+.footer-social{display:flex;gap:12px;}
+.footer-social-link{color:#c0c0d8;font-size:20px;text-decoration:none;transition:color 0.15s;display:inline-flex;}
+.footer-social-link:hover{color:var(--neon);}
+.footer-copy{color:#6b6b80;font-size:11px;text-align:center;border-top:0.5px solid var(--border);padding-top:14px;}
+
+@media(max-width:768px){
+.navlinks{display:none;}
+.hero{padding:48px 16px 36px;}
+.hero-title{font-size:32px;}
+.featured{padding:0 16px 36px;}
+.featured-inner{grid-template-columns:1fr;}
+.featured-visual{min-height:200px;}
+.blog-section,.newsletter{padding-left:16px;padding-right:16px;}
+.blog-grid{grid-template-columns:1fr;}
+.newsletter-form{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="logo" href="/landing.html">
+    <div class="logodot"><i class="ti ti-waveform"></i></div>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="navlinks">
+    <span class="navlink">Studio Suite</span>
+    <span class="navlink">AI Playground</span>
+    <span class="navlink" onclick="window.location.href='/features.html'">Features</span>
+    <span class="navlink" onclick="window.location.href='/community.html'">Community</span>
+    <span class="navlink">Distribution</span>
+    <span class="navlink active">Blog</span>
+    <span class="navlink" onclick="window.location.href='/pricing.html'">Pricing</span>
+    <span class="navlink" onclick="window.location.href='/contact.html'">Contact Us</span>
+  </div>
+  <div class="navbtns">
+    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">THE BLOG</div>
+  <h1 class="hero-title">Tips, strategies and <span class="neon">insights</span><br>for independent artists.</h1>
+  <p class="hero-sub">Music marketing, AI tools, release strategies, and everything else you need to drop like a major.</p>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories">
+  <button class="cat-btn active" onclick="setcat(this)">All</button>
+  <button class="cat-btn" onclick="setcat(this)">Music Marketing</button>
+  <button class="cat-btn" onclick="setcat(this)">AI Tools</button>
+  <button class="cat-btn" onclick="setcat(this)">Release Strategy</button>
+  <button class="cat-btn" onclick="setcat(this)">Artist Tips</button>
+  <button class="cat-btn" onclick="setcat(this)">Merch & Products</button>
+  <button class="cat-btn" onclick="setcat(this)">Industry News</button>
+</div>
+
+<!-- FEATURED POST -->
+<div class="featured">
+  <div class="featured-inner">
+    <div class="featured-visual" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🎨</div>
+    <div class="featured-content">
+      <div class="post-cat">AI TOOLS</div>
+      <h2 class="featured-title">How to Generate Professional Cover Art in Under 30 Seconds Using AI</h2>
+      <p class="featured-excerpt">Independent artists used to spend $50-200 on Fiverr for a single cover art — and wait 3-5 days to get it back. StudioSound.ai changes everything. Here's exactly how to use the Cover Art Generator to create label-quality artwork that gets your music taken seriously on every streaming platform.</p>
+      <div class="post-meta">
+        <span><i class="ti ti-user"></i> StudioSound Team</span>
+        <span><i class="ti ti-calendar"></i> July 1, 2026</span>
+        <span><i class="ti ti-clock"></i> 5 min read</span>
+      </div>
+      <span class="read-btn"><i class="ti ti-arrow-right"></i> Read Article</span>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG GRID -->
+<div class="blog-section">
+  <div class="blog-grid">
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">🚀</div>
+      <div class="blog-content">
+        <div class="blog-cat">RELEASE STRATEGY</div>
+        <div class="blog-title">The 30-Day Release Plan: How Independent Artists Can Launch Like a Major Label</div>
+        <div class="blog-excerpt">Most independent artists drop music with zero strategy. Here's the exact 30-day roadmap that gets your music on playlists, in press, and in front of new fans.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 2, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div>
+      <div class="blog-content">
+        <div class="blog-cat">MERCH & PRODUCTS</div>
+        <div class="blog-title">Print on Demand vs Bulk Orders: What Every Independent Artist Needs to Know</div>
+        <div class="blog-excerpt">Should you use Printful for print on demand or order 50 hoodies upfront? We break down the real numbers so you can make the right call for your fanbase size.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 3, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">🎵</div>
+      <div class="blog-content">
+        <div class="blog-cat">MUSIC MARKETING</div>
+        <div class="blog-title">TikTok vs Instagram Reels: Where Should Independent Artists Post in 2026?</div>
+        <div class="blog-excerpt">Both platforms can blow up your music — but they work completely differently. Here's where to focus your energy based on your genre and fanbase.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 4, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);">🤖</div>
+      <div class="blog-content">
+        <div class="blog-cat">AI TOOLS</div>
+        <div class="blog-title">OpenAI vs Google Imagen: Which AI Makes Better Music Cover Art?</div>
+        <div class="blog-excerpt">We tested both AI models with 50 different cover art prompts across every genre. The results might surprise you — and StudioSound.ai lets you use both at once.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 8 min read · July 5, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0828,#2d1045);">🎤</div>
+      <div class="blog-content">
+        <div class="blog-cat">ARTIST TIPS</div>
+        <div class="blog-title">How to Write the Perfect AI Prompt for Your Music Cover Art</div>
+        <div class="blog-excerpt">The difference between a generic AI image and a stunning cover art is 90% in the prompt. Here are the exact words and phrases that get the best results every time.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 4 min read · July 6, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);">📊</div>
+      <div class="blog-content">
+        <div class="blog-cat">MUSIC MARKETING</div>
+        <div class="blog-title">How to Run Your First Music Ad on Meta for Under $50</div>
+        <div class="blog-excerpt">Meta ads don't have to be expensive or complicated. Here's a step-by-step guide to running your first music promotion campaign and actually getting streams.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 9 min read · July 7, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#2a1808,#3a2010);">💿</div>
+      <div class="blog-content">
+        <div class="blog-cat">INDUSTRY NEWS</div>
+        <div class="blog-title">The State of Independent Music in 2026: What the Numbers Say</div>
+        <div class="blog-excerpt">Independent artists now earn more than ever before — but the competition is fiercer too. Here's what the data says about where the industry is heading.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 8, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0a1828,#102040);">🎸</div>
+      <div class="blog-content">
+        <div class="blog-cat">ARTIST TIPS</div>
+        <div class="blog-title">Pre-Save Campaigns: The Underrated Tool That Gets Your Music on Playlists</div>
+        <div class="blog-excerpt">A strong pre-save campaign signals to Spotify's algorithm that your release deserves playlist placement. Here's how to run one that actually works.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 9, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0f28,#251540);">🌍</div>
+      <div class="blog-content">
+        <div class="blog-cat">RELEASE STRATEGY</div>
+        <div class="blog-title">How to Get Your Music on Spotify Editorial Playlists as an Independent Artist</div>
+        <div class="blog-excerpt">Editorial playlist placement can change your career overnight. Here's the honest truth about what it takes and exactly how to pitch your music the right way.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 10, 2026</span><span class="blog-read">Read →</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="newsletter-inner">
+    <h2 class="newsletter-title">Get the latest tips delivered<br>to your <span class="neon">inbox weekly.</span></h2>
+    <p class="newsletter-sub">Join 1,800+ independent artists getting music marketing tips, AI tool updates, and release strategy guides every week. Free — no spam ever.</p>
+    <div class="newsletter-form">
+      <input class="newsletter-input" placeholder="Enter your email address" type="email" id="newsletter-email"/>
+      <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe Free</button>
+    </div>
+    <div class="newsletter-note">No spam. Unsubscribe anytime. We respect your inbox.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <span class="footer-logoname">StudioSound.ai</span>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/landing.html">Home</a>
+      <a class="footer-link" href="/features.html">Features</a>
+      <a class="footer-link" href="/pricing.html">Pricing</a>
+      <a class="footer-link" href="/community.html">Community</a>
+      <a class="footer-link" href="/blog.html">Blog</a>
+      <a class="footer-link" href="/contact.html">Contact</a>
+    </div>
+    <div class="footer-social">
+      <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
+      <a class="footer-social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
+      <a class="footer-social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
+      <a class="footer-social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-twitter"></i></a>
+      <a class="footer-social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
+</footer>
+
+<script>
+function setcat(el) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function subscribeNewsletter() {
+  const email = document.getElementById('newsletter-email').value.trim();
+  if(!email) { alert('Please enter your email address'); return; }
+  if(!email.includes('@')) { alert('Please enter a valid email address'); return; }
+  window.location.href = `mailto:hello@studiosound.ai?subject=Newsletter Subscription&body=Please add ${email} to the StudioSound.ai newsletter.`;
+  document.getElementById('newsletter-email').value = '';
+  alert('Thanks for subscribing! Welcome to the StudioSound community 🎵');
+}
+</script>
+</body>
+</html>
