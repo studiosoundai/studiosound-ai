@@ -76,15 +76,74 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .success-msg i{font-size:20px;display:block;margin-bottom:6px;}
 
 /* FAQ TEASER */
-.faq-teaser{padding:0 32px 72px;max-width:1100px;margin:0 auto;}
-.faq-teaser-inner{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:48px 32px;text-align:center;}
-.faq-teaser-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;color:#fff;}
-.faq-teaser-title .neon{color:var(--neon);}
-.faq-teaser-sub{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.7;}
-.faq-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
-.faq-pill{background:var(--card);border:0.5px solid var(--border);border-radius:24px;padding:8px 18px;color:#e0e0f0;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;}
-.faq-pill:hover{border-color:var(--neon);color:var(--neon);}
-.btn-hero{background:var(--neon);color:#05050a;border:none;border-radius:28px;padding:13px 28px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:8px;}
+<!-- FAQ TEASER -->
+<div class="faq-teaser">
+  <div class="faq-teaser-inner">
+    <h2 class="faq-teaser-title">Looking for quick <span class="neon">answers?</span></h2>
+    <p class="faq-teaser-sub">Everything you need to know before reaching out.</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>How do I generate cover art?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Go to your dashboard, click Cover Art Generator, enter your song title, pick your genre and mood, describe your vision, and hit Generate. You'll get two unique AI versions in under 30 seconds. Pick your favorite and download instantly — no watermark on paid plans.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>Who owns the content I generate?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">You do — 100%. Everything you generate on StudioSound.ai belongs to you. Use it commercially, upload to DSPs, print on merch, run ads — no restrictions whatsoever. Your art is yours the moment it's generated.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>How do I cancel my subscription?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Go to Settings in your dashboard, click Billing, and click Cancel Subscription. You keep full access until the end of your current billing period. No cancellation fees, no questions asked.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>What file size is the cover art?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Every cover art is automatically sized to 3000×3000 pixels JPEG — the exact standard required by Spotify, Apple Music, Tidal, Amazon Music, and most major DSPs. Download and upload directly without any resizing needed.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>Is there a free plan?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Yes — completely free, no credit card needed. The free plan includes 3 cover arts, 1 release plan, and 2 merch mockups every month. Upgrade to Pro for $9.99/month to unlock unlimited generations.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>How does the Release Planner work?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Enter your project name, release date, genre, city, and tell us about your project. Our AI builds a personalized 30-day marketing roadmap with specific dates, post times optimized for your timezone, playlist pitch contacts, pre-save campaign steps, and press outreach timeline.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>Can I upload my own photo for cover art?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Yes! Click "Add Image" in the Cover Art Generator and upload a photo of yourself or any reference image. Our AI will incorporate you directly into the cover art based on your description. This is one of our most powerful features — put yourself on your own label-quality cover art in seconds.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>What is the merch mockup tool?</span>
+          <i class="ti ti-plus"></i>
+        </div>
+        <div class="faq-a">Upload your cover art or design, pick a product type (t-shirt, hoodie, hat, poster, phone case, and more), describe what you want, and our AI generates a real photorealistic mockup with your art on the product. We also show you a full cost breakdown — print on demand pricing vs bulk order pricing — so you know exactly what it costs to sell merch.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <button class="btn-hero" onclick="window.location.href='/pricing.html'"><i class="ti ti-help-circle"></i> View Pricing & More FAQs</button>
+    </div>
+  </div>
+</div>
 
 /* FOOTER */
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
@@ -108,6 +167,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .contact-grid{grid-template-columns:1fr;padding:0 16px 48px;}
 .form-row{grid-template-columns:1fr;}
 .faq-teaser{padding:0 16px 48px;}
+.faq-list{max-width:720px;margin:0 auto;text-align:left;}
+.faq-item{border-bottom:0.5px solid var(--border);overflow:hidden;}
+.faq-item:first-child{border-top:0.5px solid var(--border);}
+.faq-q{padding:16px 4px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:#fff;font-size:13px;font-weight:600;gap:16px;transition:color 0.15s;}
+.faq-q:hover{color:var(--neon);}
+.faq-q i{color:var(--neon);font-size:16px;flex-shrink:0;transition:transform 0.2s;}
+.faq-a{color:var(--muted);font-size:12px;line-height:1.8;padding:0 4px 16px;display:none;}
+.faq-item.open .faq-a{display:block;}
+.faq-item.open .faq-q i{transform:rotate(45deg);}
+.faq-item.open .faq-q{color:var(--neon);} 
 }
 </style>
 </head>
@@ -301,6 +370,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 </footer>
 
 <script>
+ function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+} 
 function submitForm() {
   const first = document.getElementById('contact-first').value.trim();
   const last = document.getElementById('contact-last').value.trim();
