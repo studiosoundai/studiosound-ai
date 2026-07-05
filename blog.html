@@ -23,49 +23,60 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
 .btn-ghost:hover{border-color:var(--neon);}
 .btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
-
-/* HERO */
 .hero{padding:72px 32px 56px;text-align:center;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
 .hero-label{color:var(--neon);font-size:11px;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;}
 .hero-title{font-size:48px;font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:14px;color:#fff;}
 .hero-title .neon{color:var(--neon);}
 .hero-sub{color:var(--muted);font-size:15px;font-weight:500;max-width:480px;margin:0 auto;line-height:1.7;}
-
-/* CATEGORIES */
 .categories{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 32px 40px;}
 .cat-btn{background:var(--card);border:0.5px solid var(--border);border-radius:24px;padding:8px 18px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:'Sora',sans-serif;}
 .cat-btn:hover{border-color:var(--neon);color:#fff;}
 .cat-btn.active{background:var(--neon);color:#05050a;border-color:var(--neon);}
-
-/* FEATURED POST */
 .featured{padding:0 32px 48px;}
-.featured-inner{background:var(--card);border:0.5px solid var(--border);border-radius:22px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;cursor:pointer;transition:border-color 0.2s;}
+.featured-inner{background:var(--card);border:0.5px solid var(--border);border-radius:22px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
 .featured-inner:hover{border-color:var(--neon);}
+.featured-grid{display:grid;grid-template-columns:1fr 1fr;}
 .featured-visual{background:linear-gradient(135deg,#0f1f3a,#162b50);min-height:320px;display:flex;align-items:center;justify-content:center;font-size:100px;position:relative;}
 .featured-visual::after{content:'FEATURED';position:absolute;top:16px;left:16px;background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;font-family:'Sora',sans-serif;}
-.featured-content{padding:40px;}
+.featured-content{padding:40px;display:flex;flex-direction:column;justify-content:center;}
 .post-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:10px;}
-.featured-title{font-size:26px;font-weight:900;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.3;}
-.featured-excerpt{color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:20px;}
-.post-meta{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px;font-weight:500;margin-bottom:20px;}
+.featured-title{font-size:24px;font-weight:900;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.3;}
+.featured-excerpt{color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:16px;}
+.post-meta{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px;font-weight:500;margin-bottom:16px;}
 .post-meta i{font-size:13px;}
-.read-btn{display:inline-flex;align-items:center;gap:6px;color:var(--neon);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;}
-
-/* BLOG GRID */
+.read-btn{display:inline-flex;align-items:center;gap:6px;color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;}
+.article-full{display:none;padding:0 40px 40px;border-top:0.5px solid var(--border);margin-top:20px;}
+.article-full.open{display:block;}
+.article-full p{color:#e0e0f0;font-size:13px;line-height:1.9;margin-bottom:16px;}
+.article-full h3{color:#fff;font-size:16px;font-weight:800;margin-bottom:10px;margin-top:24px;}
+.article-full ul{margin:0 0 16px 20px;}
+.article-full ul li{color:#e0e0f0;font-size:13px;line-height:1.9;margin-bottom:6px;}
+.article-full .tip-box{background:#00FFD110;border:0.5px solid var(--neon);border-radius:10px;padding:16px;margin:16px 0;}
+.article-full .tip-box p{color:var(--neon);font-weight:600;margin:0;}
+.collapse-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;margin-top:16px;}
+.collapse-btn:hover{color:#fff;}
 .blog-section{padding:0 32px 72px;}
 .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.blog-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
-.blog-card:hover{border-color:var(--neon);transform:translateY(-3px);}
-.blog-visual{height:180px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;}
+.blog-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s;}
+.blog-card:hover{border-color:var(--neon);}
+.blog-card.hidden{display:none;}
+.blog-visual{height:160px;display:flex;align-items:center;justify-content:center;font-size:56px;}
 .blog-content{padding:20px;}
 .blog-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
-.blog-title{color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:8px;line-height:1.4;}
-.blog-excerpt{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:14px;}
-.blog-meta{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:500;}
-.blog-read{color:var(--neon);font-size:10px;font-weight:700;}
-
-/* NEWSLETTER */
+.blog-title{color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.01em;margin-bottom:8px;line-height:1.4;}
+.blog-excerpt{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:12px;}
+.blog-meta{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:500;margin-bottom:12px;}
+.blog-read-btn{display:inline-flex;align-items:center;gap:4px;color:var(--neon);font-size:11px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;}
+.blog-article{display:none;border-top:0.5px solid var(--border);padding-top:16px;margin-top:4px;}
+.blog-article.open{display:block;}
+.blog-article p{color:#e0e0f0;font-size:12px;line-height:1.9;margin-bottom:12px;}
+.blog-article h3{color:#fff;font-size:13px;font-weight:800;margin-bottom:8px;margin-top:16px;}
+.blog-article ul{margin:0 0 12px 16px;}
+.blog-article ul li{color:#e0e0f0;font-size:12px;line-height:1.8;margin-bottom:4px;}
+.blog-article .tip{background:#00FFD110;border:0.5px solid var(--neon);border-radius:8px;padding:12px;margin:12px 0;}
+.blog-article .tip p{color:var(--neon);font-weight:600;margin:0;font-size:11px;}
+.blog-collapse{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;margin-top:12px;}
 .newsletter{padding:0 32px 72px;}
 .newsletter-inner{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:48px;text-align:center;}
 .newsletter-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;color:#fff;}
@@ -77,8 +88,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .newsletter-input::placeholder{color:#5a5a72;}
 .newsletter-btn{background:var(--neon);color:#05050a;border:none;border-radius:10px;padding:12px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;}
 .newsletter-note{color:#5a5a72;font-size:11px;margin-top:12px;}
-
-/* FOOTER */
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
@@ -92,23 +101,22 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer-social-link{color:#c0c0d8;font-size:20px;text-decoration:none;transition:color 0.15s;display:inline-flex;}
 .footer-social-link:hover{color:var(--neon);}
 .footer-copy{color:#6b6b80;font-size:11px;text-align:center;border-top:0.5px solid var(--border);padding-top:14px;}
-
 @media(max-width:768px){
 .navlinks{display:none;}
 .hero{padding:48px 16px 36px;}
 .hero-title{font-size:32px;}
 .featured{padding:0 16px 36px;}
-.featured-inner{grid-template-columns:1fr;}
+.featured-grid{grid-template-columns:1fr;}
 .featured-visual{min-height:200px;}
 .blog-section,.newsletter{padding-left:16px;padding-right:16px;}
 .blog-grid{grid-template-columns:1fr;}
 .newsletter-form{flex-direction:column;}
+.article-full{padding:0 20px 20px;}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <a class="logo" href="/landing.html">
     <div class="logodot"><i class="ti ti-waveform"></i></div>
@@ -130,38 +138,59 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-label">THE BLOG</div>
   <h1 class="hero-title">Tips, strategies and <span class="neon">insights</span><br>for independent artists.</h1>
-  <p class="hero-sub">Music marketing, AI tools, release strategies, and everything else you need to drop like a major.</p>
+  <p class="hero-sub">Music marketing, AI tools, release strategies, and everything you need to drop like a major.</p>
 </div>
 
-<!-- CATEGORIES -->
 <div class="categories">
-  <button class="cat-btn active" onclick="setcat(this)">All</button>
-  <button class="cat-btn" onclick="setcat(this)">Music Marketing</button>
-  <button class="cat-btn" onclick="setcat(this)">AI Tools</button>
-  <button class="cat-btn" onclick="setcat(this)">Release Strategy</button>
-  <button class="cat-btn" onclick="setcat(this)">Artist Tips</button>
-  <button class="cat-btn" onclick="setcat(this)">Merch & Products</button>
-  <button class="cat-btn" onclick="setcat(this)">Industry News</button>
+  <button class="cat-btn active" onclick="filterCat('all',this)">All</button>
+  <button class="cat-btn" onclick="filterCat('Music Marketing',this)">Music Marketing</button>
+  <button class="cat-btn" onclick="filterCat('AI Tools',this)">AI Tools</button>
+  <button class="cat-btn" onclick="filterCat('Release Strategy',this)">Release Strategy</button>
+  <button class="cat-btn" onclick="filterCat('Artist Tips',this)">Artist Tips</button>
+  <button class="cat-btn" onclick="filterCat('Merch & Products',this)">Merch & Products</button>
+  <button class="cat-btn" onclick="filterCat('Industry News',this)">Industry News</button>
 </div>
 
-<!-- FEATURED POST -->
+<!-- FEATURED -->
 <div class="featured">
   <div class="featured-inner">
-    <div class="featured-visual" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🎨</div>
-    <div class="featured-content">
-      <div class="post-cat">AI TOOLS</div>
-      <h2 class="featured-title">How to Generate Professional Cover Art in Under 30 Seconds Using AI</h2>
-      <p class="featured-excerpt">Independent artists used to spend $50-200 on Fiverr for a single cover art — and wait 3-5 days to get it back. StudioSound.ai changes everything. Here's exactly how to use the Cover Art Generator to create label-quality artwork that gets your music taken seriously on every streaming platform.</p>
-      <div class="post-meta">
-        <span><i class="ti ti-user"></i> StudioSound Team</span>
-        <span><i class="ti ti-calendar"></i> July 1, 2026</span>
-        <span><i class="ti ti-clock"></i> 5 min read</span>
+    <div class="featured-grid">
+      <div class="featured-visual">🎨</div>
+      <div class="featured-content">
+        <div class="post-cat">AI TOOLS</div>
+        <h2 class="featured-title">How to Generate Professional Cover Art in Under 30 Seconds Using AI</h2>
+        <p class="featured-excerpt">Independent artists used to spend $50-200 on Fiverr for a single cover art and wait days. Here's exactly how to use AI to create label-quality artwork instantly.</p>
+        <div class="post-meta">
+          <span><i class="ti ti-user"></i> StudioSound Team</span>
+          <span><i class="ti ti-calendar"></i> July 1, 2026</span>
+          <span><i class="ti ti-clock"></i> 5 min read</span>
+        </div>
+        <button class="read-btn" onclick="toggleFeatured(this)"><i class="ti ti-arrow-right"></i> Read Full Article</button>
       </div>
-      <span class="read-btn"><i class="ti ti-arrow-right"></i> Read Article</span>
+    </div>
+    <div class="article-full" id="featured-article">
+      <h3>The Old Way Was Expensive and Slow</h3>
+      <p>Before AI, independent artists had two options for cover art: spend $50-200 on Fiverr and wait 3-5 days, or use Canva and end up with something that screamed "I made this myself." Neither option was great. Major labels had in-house design teams. Independent artists had... nothing.</p>
+      <p>That gap is now completely closed. With StudioSound.ai's Cover Art Generator, you can generate two unique, label-quality cover arts in under 30 seconds. No design skills. No waiting. No paying a stranger on the internet.</p>
+      <h3>How to Write a Great Cover Art Prompt</h3>
+      <p>The key to stunning AI cover art is in the prompt. Here's the formula that works every time:</p>
+      <ul>
+        <li><strong>Setting:</strong> Where is the scene? (city at night, empty highway, studio, rooftop)</li>
+        <li><strong>Lighting:</strong> What's the light like? (neon lights, golden hour, dramatic shadows, moonlight)</li>
+        <li><strong>Mood:</strong> How should it feel? (dark and mysterious, energetic, emotional, luxurious)</li>
+        <li><strong>Colors:</strong> What palette? (gold and black, purple and blue, warm oranges)</li>
+        <li><strong>Style:</strong> Cinematic? Abstract? Photorealistic? Illustrated?</li>
+      </ul>
+      <div class="tip-box"><p>💡 Pro tip: Always end your prompt with "no text, no words, purely visual" — this prevents the AI from adding random letters to your artwork.</p></div>
+      <h3>Using Your Own Photo</h3>
+      <p>StudioSound.ai lets you upload a photo of yourself and incorporate it into the cover art. Click "Add Image" in the generator, upload your photo, then describe the scene around you. The AI will place you in the cover art environment you describe. This is how major artists get that cinematic look — now you can do it in seconds.</p>
+      <h3>Version A vs Version B</h3>
+      <p>One of StudioSound.ai's biggest advantages is that every generation gives you two completely different results from two different AI models. Version A tends to be more photorealistic and cinematic. Version B is more artistic, painterly, and graphic. You pick whichever one fits your vision — or generate again until you get exactly what you want.</p>
+      <p>Ready to try it? <a href="/signup.html" style="color:var(--neon);font-weight:700;">Create your free account</a> and generate your first cover art in the next 2 minutes.</p>
+      <button class="collapse-btn" onclick="toggleFeatured(this)"><i class="ti ti-chevron-up"></i> Collapse Article</button>
     </div>
   </div>
 </div>
@@ -170,93 +199,267 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <div class="blog-section">
   <div class="blog-grid">
 
-    <div class="blog-card">
+    <!-- ARTICLE 1 -->
+    <div class="blog-card" data-cat="Release Strategy">
       <div class="blog-visual" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">🚀</div>
       <div class="blog-content">
         <div class="blog-cat">RELEASE STRATEGY</div>
-        <div class="blog-title">The 30-Day Release Plan: How Independent Artists Can Launch Like a Major Label</div>
-        <div class="blog-excerpt">Most independent artists drop music with zero strategy. Here's the exact 30-day roadmap that gets your music on playlists, in press, and in front of new fans.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 2, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-title">The 30-Day Release Plan: How to Launch Like a Major Label</div>
+        <div class="blog-excerpt">Most independent artists drop music with zero strategy. Here's the exact 30-day roadmap that gets your music on playlists and in front of new fans.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 2, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>Why Most Independent Releases Fail</h3>
+          <p>The number one reason independent releases underperform isn't the music — it's the lack of strategy. Most artists finish a song, upload it to DistroKid, post it on Instagram, and wonder why nobody listened. Major labels don't operate this way. They plan releases 8-12 weeks in advance with a specific strategy for every platform.</p>
+          <h3>The 30-Day Roadmap</h3>
+          <ul>
+            <li><strong>Day 30-21 before release:</strong> Lock your artwork, set up pre-save, pitch to Spotify editorial playlists</li>
+            <li><strong>Day 20-14 before release:</strong> Start teaser content on TikTok and Instagram, reach out to music blogs</li>
+            <li><strong>Day 13-7 before release:</strong> Drop a snippet, run a pre-save campaign, contact playlist curators</li>
+            <li><strong>Day 6-1 before release:</strong> Full promotional push, announce release date everywhere</li>
+            <li><strong>Release day:</strong> Post everywhere simultaneously, go live on Instagram, thank your fans</li>
+            <li><strong>Week 1 after release:</strong> Keep posting daily, respond to comments, pitch to more playlists</li>
+          </ul>
+          <div class="tip"><p>💡 Use StudioSound.ai's Release Planner to get a personalized version of this roadmap built around your specific genre, city, and release date.</p></div>
+          <h3>The Most Overlooked Step</h3>
+          <p>Playlist pitching is where most artists drop the ball. Spotify for Artists lets you pitch ONE unreleased song to editorial playlists — but you have to do it at least 7 days before release. Most artists miss this window entirely. Set a reminder right now.</p>
+          <p>Ready to build your release plan? <a href="/" style="color:var(--neon);font-weight:700;">Try the Release Planner free →</a></p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 2 -->
+    <div class="blog-card" data-cat="Merch & Products">
       <div class="blog-visual" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div>
       <div class="blog-content">
         <div class="blog-cat">MERCH & PRODUCTS</div>
-        <div class="blog-title">Print on Demand vs Bulk Orders: What Every Independent Artist Needs to Know</div>
-        <div class="blog-excerpt">Should you use Printful for print on demand or order 50 hoodies upfront? We break down the real numbers so you can make the right call for your fanbase size.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 3, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-title">Print on Demand vs Bulk Orders: What Every Artist Needs to Know</div>
+        <div class="blog-excerpt">Should you use Printful for print on demand or order 50 hoodies upfront? We break down the real numbers for every fanbase size.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 3, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>Print on Demand — The Safe Starting Point</h3>
+          <p>Print on demand (POD) means you list your merch online, someone orders it, the printer makes it and ships it directly to your fan. You never touch inventory. The cost is higher per item — a hoodie costs $28-34 through Printful — but you have zero upfront cost and zero risk.</p>
+          <p>POD is perfect if you have under 1,000 followers or you're releasing merch for the first time. Test what designs and products your fans actually want before investing in bulk.</p>
+          <h3>Bulk Orders — When It Makes Sense</h3>
+          <p>Once you know a design sells, bulk ordering drops your cost dramatically. A hoodie that costs $30 through POD might cost $14-18 each in bulk orders of 50+ units. That's a margin jump from about 30% to 60-70%.</p>
+          <ul>
+            <li>Under 500 followers: Stick with print on demand</li>
+            <li>500-2,000 followers: Test with small POD runs first</li>
+            <li>2,000-10,000 followers: Consider bulk for your best-selling items</li>
+            <li>10,000+ followers: Bulk orders almost always make more financial sense</li>
+          </ul>
+          <div class="tip"><p>💡 Use StudioSound.ai's Merch Mockup Studio to see exactly what your design looks like on any product before you spend a single dollar. The cost breakdown is built right in.</p></div>
+          <h3>The Real Numbers</h3>
+          <p>A black hoodie with your cover art: POD cost $30, retail $65 = $35 profit per sale. Bulk cost $16, retail $65 = $49 profit per sale. At 50 hoodies sold that's $700 more profit just from switching to bulk. The math is clear — but only when you know the design will sell.</p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 3 -->
+    <div class="blog-card" data-cat="Music Marketing">
       <div class="blog-visual" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">🎵</div>
       <div class="blog-content">
         <div class="blog-cat">MUSIC MARKETING</div>
         <div class="blog-title">TikTok vs Instagram Reels: Where Should Independent Artists Post in 2026?</div>
-        <div class="blog-excerpt">Both platforms can blow up your music — but they work completely differently. Here's where to focus your energy based on your genre and fanbase.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 4, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-excerpt">Both platforms can blow up your music — but they work completely differently. Here's where to focus your energy based on your genre.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 4, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>TikTok — The Discovery Engine</h3>
+          <p>TikTok's algorithm is the most powerful music discovery tool ever built. A song can go from zero to a million streams in 48 hours if the right video lands. The key is TikTok shows your content to people who don't follow you — which means real organic reach for new artists.</p>
+          <p>TikTok works best for: Hip-Hop, Drill, Pop, Afrobeats, Electronic, and any genre with a hook that hits in the first 3 seconds. If your song has a viral moment — a line, a beat drop, a vocal run — TikTok is where you push it.</p>
+          <h3>Instagram Reels — The Fanbase Builder</h3>
+          <p>Instagram Reels reach is lower than TikTok but the fans you build there are more loyal. Instagram is where your core fanbase lives, engages, and buys. If TikTok is for discovery, Instagram is for converting that discovery into real fans.</p>
+          <ul>
+            <li>Post to TikTok first — use it as your discovery platform</li>
+            <li>Cross-post your best TikToks to Instagram Reels</li>
+            <li>Use Instagram Stories to build deeper connection with existing fans</li>
+            <li>Post on both at least 3-4 times per week minimum</li>
+          </ul>
+          <div class="tip"><p>💡 The best strategy in 2026: Create content natively for TikTok, then repurpose to Reels. Never just download and repost — always re-export without the TikTok watermark.</p></div>
+          <h3>The Genre Factor</h3>
+          <p>Gospel, R&B Soul, and Country artists tend to build stronger fanbases on Instagram and Facebook. Hip-Hop, Drill, and Electronic artists tend to explode faster on TikTok. Know your genre and put your energy where your audience actually is.</p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 4 -->
+    <div class="blog-card" data-cat="AI Tools">
       <div class="blog-visual" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);">🤖</div>
       <div class="blog-content">
         <div class="blog-cat">AI TOOLS</div>
-        <div class="blog-title">OpenAI vs Google Imagen: Which AI Makes Better Music Cover Art?</div>
-        <div class="blog-excerpt">We tested both AI models with 50 different cover art prompts across every genre. The results might surprise you — and StudioSound.ai lets you use both at once.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 8 min read · July 5, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-title">How to Write the Perfect AI Prompt for Your Music Cover Art</div>
+        <div class="blog-excerpt">The difference between a generic AI image and a stunning cover art is 90% in the prompt. Here are the exact words that get the best results.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 4 min read · July 5, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>Why Most AI Cover Arts Look Generic</h3>
+          <p>When artists first use AI for cover art they type something like "hip hop album cover" and get something that looks like a stock photo. The AI needs direction. The more specific you are, the better the result — every single time.</p>
+          <h3>The Perfect Prompt Formula</h3>
+          <p>Use this structure for every cover art prompt:</p>
+          <ul>
+            <li><strong>Subject:</strong> Who or what is the main focus? (a lone figure, a city skyline, floating objects)</li>
+            <li><strong>Environment:</strong> Where is it set? (dark alley, rooftop at sunset, underwater)</li>
+            <li><strong>Lighting:</strong> What's the light source? (neon signs, moonlight, golden hour, studio strobes)</li>
+            <li><strong>Color palette:</strong> What colors dominate? (dark blues and purples, gold and black, warm earth tones)</li>
+            <li><strong>Mood:</strong> One or two words describing the feeling</li>
+            <li><strong>Style:</strong> Cinematic, photorealistic, illustrated, abstract, gritty</li>
+            <li><strong>Ending:</strong> Always add "no text, no words, no letters, purely visual"</li>
+          </ul>
+          <div class="tip"><p>💡 Example: "A hooded figure standing at the edge of a rooftop overlooking a rainy city at night. Neon purple and blue reflections on wet streets below. Cinematic, dramatic, moody atmosphere. No text, no words, purely visual."</p></div>
+          <h3>Genre-Specific Tips</h3>
+          <p>For Trap and Drill: Use words like "luxury," "gold," "marble," "dramatic studio lighting," "high contrast." For R&B and Soul: Use "soft glow," "warm tones," "silhouette," "sunset," "emotional." For Gospel: Use "light beams," "heavenly," "golden," "uplifting," "radiant."</p>
+          <p>Try generating right now — <a href="/" style="color:var(--neon);font-weight:700;">open the Cover Art Generator →</a></p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 5 -->
+    <div class="blog-card" data-cat="Artist Tips">
       <div class="blog-visual" style="background:linear-gradient(135deg,#1a0828,#2d1045);">🎤</div>
       <div class="blog-content">
         <div class="blog-cat">ARTIST TIPS</div>
-        <div class="blog-title">How to Write the Perfect AI Prompt for Your Music Cover Art</div>
-        <div class="blog-excerpt">The difference between a generic AI image and a stunning cover art is 90% in the prompt. Here are the exact words and phrases that get the best results every time.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 4 min read · July 6, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-title">Pre-Save Campaigns: The Underrated Tool That Gets Your Music on Playlists</div>
+        <div class="blog-excerpt">A strong pre-save campaign signals to Spotify's algorithm that your release deserves playlist placement. Here's how to run one that works.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 6, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>What Is a Pre-Save Campaign?</h3>
+          <p>A pre-save campaign lets fans save your upcoming release to their Spotify library before it drops. On release day, all pre-saves automatically add the song to their library and notify them — which creates a spike in streams in the first 24-48 hours. That spike tells Spotify's algorithm your song deserves more exposure.</p>
+          <h3>Why Pre-Saves Matter</h3>
+          <p>Spotify's Release Radar playlist — which goes out to every artist's followers every Friday — is the most powerful free promotional tool on the platform. Pre-saves increase the chance your song gets pushed harder. More pre-saves = stronger first-day performance = better algorithmic placement.</p>
+          <ul>
+            <li>Set up your pre-save link at least 2-3 weeks before release</li>
+            <li>Use free tools like ToneDen, Feature.fm, or SubmitHub for pre-save links</li>
+            <li>Post your pre-save link daily in your stories starting 2 weeks out</li>
+            <li>Offer something in return — exclusive content, early access, a shoutout</li>
+            <li>DM your most engaged fans directly and ask them to pre-save</li>
+          </ul>
+          <div class="tip"><p>💡 Even 50 pre-saves can make a real difference for an emerging artist. Don't sleep on this step — it's completely free and takes 10 minutes to set up.</p></div>
+          <h3>What to Post</h3>
+          <p>Post your cover art with the pre-save link. Use the caption "Drop saved? 🔗 in bio" and update your bio link to the pre-save page. Pin the post. Put it in every story. Make it impossible to miss. The more urgency you create around the pre-save, the more fans will actually do it.</p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 6 -->
+    <div class="blog-card" data-cat="Music Marketing">
       <div class="blog-visual" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);">📊</div>
       <div class="blog-content">
         <div class="blog-cat">MUSIC MARKETING</div>
         <div class="blog-title">How to Run Your First Music Ad on Meta for Under $50</div>
         <div class="blog-excerpt">Meta ads don't have to be expensive or complicated. Here's a step-by-step guide to running your first music promotion campaign and actually getting streams.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 9 min read · July 7, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 9 min read · July 7, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>Why Meta Ads Work for Music</h3>
+          <p>Meta's ad platform lets you target people by music taste, age, location, and behavior. You can show your music to people who follow artists similar to you — people who are already proven fans of your genre. No other platform offers targeting this specific for this cheap.</p>
+          <h3>Setting Up Your First Campaign</h3>
+          <ul>
+            <li><strong>Step 1:</strong> Go to business.facebook.com and create an ad account</li>
+            <li><strong>Step 2:</strong> Choose "Traffic" as your campaign objective — send people to your Spotify link</li>
+            <li><strong>Step 3:</strong> Set your budget to $5/day for 10 days = $50 total</li>
+            <li><strong>Step 4:</strong> Target: Ages 18-34, your genre interests, your city first then expand</li>
+            <li><strong>Step 5:</strong> Use your cover art as the ad image with a simple caption</li>
+          </ul>
+          <div class="tip"><p>💡 The best performing music ads use a 15-30 second video clip of the most viral moment in your song — the hook, the drop, the line that gets stuck in your head. Start there.</p></div>
+          <h3>What to Expect</h3>
+          <p>With $50 and good targeting you can realistically get 200-500 link clicks to your Spotify. Not every click converts to a stream but even a 30% conversion rate is 60-150 new streams. More importantly you're building brand awareness and data — after your first campaign you'll know exactly who responds to your music and you can target more precisely next time.</p>
+          <h3>The Creative Is Everything</h3>
+          <p>Your ad creative — the image or video — determines whether people stop scrolling. Use your StudioSound.ai cover art as the image. Make sure it looks professional. A great image with a mediocre song will outperform a bad image with a great song every time in paid advertising.</p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 7 -->
+    <div class="blog-card" data-cat="Industry News">
       <div class="blog-visual" style="background:linear-gradient(135deg,#2a1808,#3a2010);">💿</div>
       <div class="blog-content">
         <div class="blog-cat">INDUSTRY NEWS</div>
         <div class="blog-title">The State of Independent Music in 2026: What the Numbers Say</div>
         <div class="blog-excerpt">Independent artists now earn more than ever before — but the competition is fiercer too. Here's what the data says about where the industry is heading.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 8, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 8, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>Independent Music Is Winning</h3>
+          <p>For the first time in music history, independent artists and labels account for more than 40% of global music consumption. The tools that used to be exclusive to major labels — distribution, marketing, production, design — are now accessible to anyone with an internet connection and $10/month.</p>
+          <h3>The Numbers</h3>
+          <ul>
+            <li>Over 100,000 songs are uploaded to Spotify every single day</li>
+            <li>Independent artists earned $3.8 billion in streaming revenue in 2025</li>
+            <li>The average independent artist earns 82% of their streaming revenue — vs 16% on a major label deal</li>
+            <li>TikTok has broken more independent artists in the last 3 years than radio did in 30</li>
+          </ul>
+          <div class="tip"><p>💡 The opportunity has never been bigger. But the competition has never been fiercer either. The artists who win in 2026 are the ones who treat their music like a business — with strategy, consistency, and professional presentation.</p></div>
+          <h3>What This Means for You</h3>
+          <p>The playing field has never been more level. A bedroom artist with the right tools, the right strategy, and consistent execution can compete directly with major label releases. The barrier to entry is essentially zero. The barrier to success is execution — and that's where StudioSound.ai comes in.</p>
+          <p>The artists winning right now aren't necessarily the most talented — they're the most consistent and the most strategic. Pick your tools, build your plan, and execute every single day.</p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
-    <div class="blog-card">
+    <!-- ARTICLE 8 -->
+    <div class="blog-card" data-cat="Release Strategy">
       <div class="blog-visual" style="background:linear-gradient(135deg,#0a1828,#102040);">🎸</div>
-      <div class="blog-content">
-        <div class="blog-cat">ARTIST TIPS</div>
-        <div class="blog-title">Pre-Save Campaigns: The Underrated Tool That Gets Your Music on Playlists</div>
-        <div class="blog-excerpt">A strong pre-save campaign signals to Spotify's algorithm that your release deserves playlist placement. Here's how to run one that actually works.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 9, 2026</span><span class="blog-read">Read →</span></div>
-      </div>
-    </div>
-
-    <div class="blog-card">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0f28,#251540);">🌍</div>
       <div class="blog-content">
         <div class="blog-cat">RELEASE STRATEGY</div>
         <div class="blog-title">How to Get Your Music on Spotify Editorial Playlists as an Independent Artist</div>
-        <div class="blog-excerpt">Editorial playlist placement can change your career overnight. Here's the honest truth about what it takes and exactly how to pitch your music the right way.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 10, 2026</span><span class="blog-read">Read →</span></div>
+        <div class="blog-excerpt">Editorial playlist placement can change your career overnight. Here's the honest truth about what it takes and how to pitch the right way.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 9, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>What Are Editorial Playlists?</h3>
+          <p>Spotify editorial playlists — like RapCaviar, New Music Friday, and Today's Top Hits — are curated by Spotify's in-house editorial team. Getting on one can mean millions of streams overnight. They're the most coveted placement in the streaming era, and yes, independent artists can get on them.</p>
+          <h3>The Pitch Process</h3>
+          <p>Spotify for Artists gives you ONE pitch per unreleased song — and you must submit it at least 7 days before release. Here's how to make your pitch count:</p>
+          <ul>
+            <li>Fill out every field in the pitch form — genre, mood, instrumentation, city</li>
+            <li>Write a compelling description of the song in 500 characters or less</li>
+            <li>Be specific about what makes this song unique and who it's for</li>
+            <li>Select the most accurate mood and genre tags — these determine which editors see your pitch</li>
+            <li>Submit early — the earlier before release, the more time editors have to listen</li>
+          </ul>
+          <div class="tip"><p>💡 Spotify editors listen to every pitch. But they're listening for quality, authenticity, and fit for their specific playlist. Don't pitch RapCaviar if you make Gospel. Know your lane and pitch accordingly.</p></div>
+          <h3>What Actually Gets You Placed</h3>
+          <p>Editorial placement comes down to three things: song quality, listener data, and timing. Songs with strong pre-save numbers, high completion rates (people listening all the way through), and early streaming momentum are more likely to get editorial support. This is why your release strategy — starting weeks before the drop — directly impacts your chances of editorial placement.</p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTICLE 9 -->
+    <div class="blog-card" data-cat="Artist Tips">
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0f28,#251540);">🌍</div>
+      <div class="blog-content">
+        <div class="blog-cat">ARTIST TIPS</div>
+        <div class="blog-title">Building Your Brand as an Independent Artist: The Complete Guide</div>
+        <div class="blog-excerpt">Your music is the product. Your brand is why people choose you over everyone else. Here's how to build an artist brand that stands out in 2026.</div>
+        <div class="blog-meta"><span><i class="ti ti-clock"></i> 8 min read · July 10, 2026</span></div>
+        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
+        <div class="blog-article">
+          <h3>What Is an Artist Brand?</h3>
+          <p>Your artist brand is everything people think and feel when they hear your name. It's your visual identity, your sound, your personality online, the energy you bring to every post and every release. Strong brands are immediately recognizable — you know a Drake release before you even hear it. That level of brand consistency is what you're building toward.</p>
+          <h3>The Four Pillars of Artist Branding</h3>
+          <ul>
+            <li><strong>Visual Identity:</strong> Consistent colors, fonts, and aesthetic across all platforms. Your cover art, your Instagram grid, your TikTok thumbnails should all feel like they belong to the same world.</li>
+            <li><strong>Sound Identity:</strong> What genre and sonic territory do you own? The clearer your sound, the easier it is for people to recommend you to others.</li>
+            <li><strong>Personality:</strong> How do you show up online? Mysterious? Vulnerable? Funny? Raw? Pick a lane and be consistent.</li>
+            <li><strong>Story:</strong> Why do you make music? What are you trying to say? People connect with stories more than songs.</li>
+          </ul>
+          <div class="tip"><p>💡 Your cover art is often the first impression someone has of your music. Make it count. A consistent visual style across all your releases builds brand recognition faster than almost anything else.</p></div>
+          <h3>Consistency Beats Perfection</h3>
+          <p>The biggest mistake independent artists make is waiting until everything is perfect before posting. Post consistently, even when you don't feel ready. The artists who win in 2026 are the ones who show up every single day — not the ones who post one perfect thing every three months. Volume and consistency beat perfection every time.</p>
+          <p>Start building your visual brand today — <a href="/signup.html" style="color:var(--neon);font-weight:700;">generate your first cover art free →</a></p>
+          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
+        </div>
       </div>
     </div>
 
@@ -303,9 +506,49 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 </footer>
 
 <script>
-function setcat(el) {
+function filterCat(cat, el) {
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
+  document.querySelectorAll('.blog-card').forEach(card => {
+    if(cat === 'all') {
+      card.classList.remove('hidden');
+    } else {
+      const cardCat = card.getAttribute('data-cat');
+      card.classList.toggle('hidden', cardCat !== cat);
+    }
+  });
+}
+
+function toggleFeatured(btn) {
+  const article = document.getElementById('featured-article');
+  const isOpen = article.classList.contains('open');
+  article.classList.toggle('open', !isOpen);
+  if(!isOpen) {
+    btn.innerHTML = '<i class="ti ti-chevron-up"></i> Collapse Article';
+    article.scrollIntoView({behavior:'smooth', block:'start'});
+  } else {
+    btn.innerHTML = '<i class="ti ti-arrow-right"></i> Read Full Article';
+  }
+}
+
+function toggleArticle(btn) {
+  const article = btn.nextElementSibling || btn.parentElement.querySelector('.blog-article');
+  const blogArticle = btn.classList.contains('blog-read-btn')
+    ? btn.parentElement.querySelector('.blog-article')
+    : btn.closest('.blog-article');
+
+  if(btn.classList.contains('blog-read-btn')) {
+    const isOpen = blogArticle.classList.contains('open');
+    blogArticle.classList.toggle('open', !isOpen);
+    btn.innerHTML = isOpen
+      ? '<i class="ti ti-arrow-right"></i> Read More'
+      : '<i class="ti ti-chevron-up"></i> Reading...';
+    if(!isOpen) blogArticle.scrollIntoView({behavior:'smooth', block:'start'});
+  } else {
+    blogArticle.classList.remove('open');
+    const readBtn = blogArticle.parentElement.querySelector('.blog-read-btn');
+    if(readBtn) readBtn.innerHTML = '<i class="ti ti-arrow-right"></i> Read More';
+  }
 }
 
 function subscribeNewsletter() {
