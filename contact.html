@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — StudioSound.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logodot i{font-size:14px;color:#05050a;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;}
+.navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
+.navlink:hover{opacity:1;background:#0d0d14;}
+.navlink.active{opacity:1;color:var(--neon);}
+.navbtns{display:flex;gap:8px;}
+.btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.btn-ghost:hover{border-color:var(--neon);}
+.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+
+/* HERO */
+.hero{padding:72px 32px 56px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
+.hero-label{color:var(--neon);font-size:11px;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;}
+.hero-title{font-size:48px;font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:14px;color:#fff;}
+.hero-title .neon{color:var(--neon);}
+.hero-sub{color:var(--muted);font-size:15px;font-weight:500;max-width:480px;margin:0 auto;line-height:1.7;}
+
+/* CONTACT GRID */
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:32px;padding:0 32px 72px;max-width:1100px;margin:0 auto;}
+
+/* LEFT INFO */
+.contact-info{}
+.info-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:8px;}
+.info-sub{color:var(--muted);font-size:13px;font-weight:500;line-height:1.7;margin-bottom:32px;}
+.info-item{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px;}
+.info-icon{width:44px;height:44px;background:#00FFD115;border:0.5px solid var(--neon);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.info-icon i{font-size:20px;color:var(--neon);}
+.info-label{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;}
+.info-value{color:#fff;font-size:13px;font-weight:600;}
+.info-value a{color:#fff;text-decoration:none;}
+.info-value a:hover{color:var(--neon);}
+.social-row{margin-top:32px;}
+.social-label{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.04em;margin-bottom:12px;}
+.social-links{display:flex;gap:10px;}
+.social-link{width:40px;height:40px;background:var(--card);border:0.5px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:18px;text-decoration:none;transition:all 0.15s;}
+.social-link:hover{border-color:var(--neon);color:var(--neon);}
+.hours-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;margin-top:28px;}
+.hours-title{color:var(--neon);font-size:11px;font-weight:700;letter-spacing:0.04em;margin-bottom:12px;}
+.hours-row{display:flex;justify-content:space-between;color:#e0e0f0;font-size:12px;margin-bottom:8px;}
+.hours-row:last-child{margin-bottom:0;}
+
+/* RIGHT FORM */
+.contact-form{background:var(--card);border:0.5px solid var(--border);border-radius:18px;padding:32px;}
+.form-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:6px;}
+.form-sub{color:var(--muted);font-size:12px;font-weight:500;margin-bottom:24px;}
+.form-group{margin-bottom:16px;}
+.form-label{color:#e0e0f0;font-size:12px;font-weight:700;margin-bottom:6px;display:block;}
+.form-input{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;}
+.form-input:focus{border-color:var(--neon);}
+.form-input::placeholder{color:#5a5a72;}
+.form-textarea{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;resize:none;min-height:140px;}
+.form-textarea:focus{border-color:var(--neon);}
+.form-textarea::placeholder{color:#5a5a72;}
+.form-select{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;outline:none;font-family:'Sora',sans-serif;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.submit-btn{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:10px;padding:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.15s;margin-top:8px;}
+.submit-btn:hover{opacity:0.9;}
+.success-msg{display:none;background:#00FFD115;border:0.5px solid var(--neon);border-radius:10px;padding:16px;text-align:center;color:var(--neon);font-size:13px;font-weight:600;margin-top:16px;}
+.success-msg i{font-size:20px;display:block;margin-bottom:6px;}
+
+/* FAQ TEASER */
+.faq-teaser{padding:0 32px 72px;max-width:1100px;margin:0 auto;}
+.faq-teaser-inner{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:48px 32px;text-align:center;}
+.faq-teaser-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;color:#fff;}
+.faq-teaser-title .neon{color:var(--neon);}
+.faq-teaser-sub{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.7;}
+.faq-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+.faq-pill{background:var(--card);border:0.5px solid var(--border);border-radius:24px;padding:8px 18px;color:#e0e0f0;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.faq-pill:hover{border-color:var(--neon);color:var(--neon);}
+.btn-hero{background:var(--neon);color:#05050a;border:none;border-radius:28px;padding:13px 28px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:8px;}
+
+/* FOOTER */
+.footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;}
+.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
+.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoname{font-size:13px;font-weight:800;color:#fff;}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;cursor:pointer;}
+.footer-link:hover{color:var(--neon);}
+.footer-social{display:flex;gap:12px;}
+.footer-social-link{color:#c0c0d8;font-size:20px;text-decoration:none;transition:color 0.15s;display:inline-flex;}
+.footer-social-link:hover{color:var(--neon);}
+.footer-copy{color:#6b6b80;font-size:11px;text-align:center;border-top:0.5px solid var(--border);padding-top:14px;}
+
+@media(max-width:768px){
+.navlinks{display:none;}
+.hero{padding:48px 16px 36px;}
+.hero-title{font-size:32px;}
+.contact-grid{grid-template-columns:1fr;padding:0 16px 48px;}
+.form-row{grid-template-columns:1fr;}
+.faq-teaser{padding:0 16px 48px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="/landing.html">
+    <div class="logodot"><i class="ti ti-waveform"></i></div>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="navlinks">
+    <span class="navlink">Studio Suite</span>
+    <span class="navlink">AI Playground</span>
+    <span class="navlink" onclick="window.location.href='/features.html'">Features</span>
+    <span class="navlink" onclick="window.location.href='/community.html'">Community</span>
+    <span class="navlink">Distribution</span>
+    <span class="navlink" onclick="window.location.href='/blog.html'">Blog</span>
+    <span class="navlink" onclick="window.location.href='/pricing.html'">Pricing</span>
+    <span class="navlink active">Contact Us</span>
+  </div>
+  <div class="navbtns">
+    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">CONTACT US</div>
+  <h1 class="hero-title">We're here to <span class="neon">help you create.</span></h1>
+  <p class="hero-sub">Have a question, feedback, or just want to say what's up? We respond to every message within 24 hours.</p>
+</div>
+
+<!-- CONTACT GRID -->
+<div class="contact-grid">
+
+  <!-- LEFT INFO -->
+  <div class="contact-info">
+    <div class="info-title">Get in touch</div>
+    <div class="info-sub">Whether you're an artist with a question, a label interested in partnership, or a developer — we want to hear from you.</div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="ti ti-mail"></i></div>
+      <div>
+        <div class="info-label">EMAIL US</div>
+        <div class="info-value"><a href="mailto:hello@studiosound.ai">hello@studiosound.ai</a></div>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="ti ti-headphones"></i></div>
+      <div>
+        <div class="info-label">ARTIST SUPPORT</div>
+        <div class="info-value"><a href="mailto:support@studiosound.ai">support@studiosound.ai</a></div>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="ti ti-brand-discord"></i></div>
+      <div>
+        <div class="info-label">JOIN OUR DISCORD</div>
+        <div class="info-value"><a href="https://discord.gg/YOUR_DISCORD_LINK" target="_blank">discord.gg/studiosound</a></div>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="ti ti-map-pin"></i></div>
+      <div>
+        <div class="info-label">BASED IN</div>
+        <div class="info-value">United States 🇺🇸</div>
+      </div>
+    </div>
+
+    <div class="social-row">
+      <div class="social-label">FOLLOW US</div>
+      <div class="social-links">
+        <a class="social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
+        <a class="social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
+        <a class="social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
+        <a class="social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-twitter"></i></a>
+        <a class="social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+      </div>
+    </div>
+
+    <div class="hours-card">
+      <div class="hours-title">RESPONSE TIMES</div>
+      <div class="hours-row"><span>General Inquiries</span><span style="color:var(--neon);">Within 24 hours</span></div>
+      <div class="hours-row"><span>Artist Support</span><span style="color:var(--neon);">Within 12 hours</span></div>
+      <div class="hours-row"><span>Partnership Inquiries</span><span style="color:var(--neon);">Within 48 hours</span></div>
+      <div class="hours-row"><span>Technical Issues</span><span style="color:var(--neon);">Within 6 hours</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="contact-form">
+    <div class="form-title">Send us a message</div>
+    <div class="form-sub">Fill out the form below and we'll get back to you as soon as possible.</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input class="form-input" id="contact-first" placeholder="Your first name" type="text"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" id="contact-last" placeholder="Your last name" type="text"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" id="contact-email" placeholder="you@email.com" type="email"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Subject</label>
+      <select class="form-select" id="contact-subject">
+        <option>General Question</option>
+        <option>Artist Support</option>
+        <option>Cover Art Help</option>
+        <option>Release Planner Help</option>
+        <option>Merch Mockup Help</option>
+        <option>Billing & Subscription</option>
+        <option>Partnership Inquiry</option>
+        <option>Feature Request</option>
+        <option>Bug Report</option>
+        <option>Press & Media</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Artist Name (optional)</label>
+      <input class="form-input" id="contact-artist" placeholder="Your artist or stage name" type="text"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <textarea class="form-textarea" id="contact-message" placeholder="Tell us how we can help. The more detail you give, the better we can assist you..."></textarea>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()"><i class="ti ti-send"></i> Send Message</button>
+
+    <div class="success-msg" id="success-msg">
+      <i class="ti ti-circle-check"></i>
+      Message sent! We'll get back to you at your email within 24 hours. 🎵
+    </div>
+  </div>
+</div>
+
+<!-- FAQ TEASER -->
+<div class="faq-teaser">
+  <div class="faq-teaser-inner">
+    <h2 class="faq-teaser-title">Looking for quick <span class="neon">answers?</span></h2>
+    <p class="faq-teaser-sub">Check out our most common questions before reaching out — you might find your answer instantly.</p>
+    <div class="faq-pills">
+      <div class="faq-pill">How do I generate cover art?</div>
+      <div class="faq-pill">Who owns my generated content?</div>
+      <div class="faq-pill">How do I cancel my subscription?</div>
+      <div class="faq-pill">What file size is the cover art?</div>
+      <div class="faq-pill">Is there a free plan?</div>
+    </div>
+    <button class="btn-hero" onclick="window.location.href='/pricing.html#faq'"><i class="ti ti-help-circle"></i> View All FAQs</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <span class="footer-logoname">StudioSound.ai</span>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/landing.html">Home</a>
+      <a class="footer-link" href="/features.html">Features</a>
+      <a class="footer-link" href="/pricing.html">Pricing</a>
+      <a class="footer-link" href="/community.html">Community</a>
+      <a class="footer-link" href="/blog.html">Blog</a>
+      <a class="footer-link" href="/contact.html">Contact</a>
+    </div>
+    <div class="footer-social">
+      <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
+      <a class="footer-social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
+      <a class="footer-social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
+      <a class="footer-social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-twitter"></i></a>
+      <a class="footer-social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
+</footer>
+
+<script>
+function submitForm() {
+  const first = document.getElementById('contact-first').value.trim();
+  const last = document.getElementById('contact-last').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+
+  if(!first) { alert('Please enter your first name'); return; }
+  if(!email) { alert('Please enter your email address'); return; }
+  if(!message) { alert('Please enter your message'); return; }
+
+  // Build mailto link
+  const subject = document.getElementById('contact-subject').value;
+  const artist = document.getElementById('contact-artist').value.trim();
+  const body = `Name: ${first} ${last}\nEmail: ${email}\nArtist Name: ${artist || 'Not provided'}\nSubject: ${subject}\n\nMessage:\n${message}`;
+  
+  const mailtoLink = `mailto:hello@studiosound.ai?subject=${encodeURIComponent('[StudioSound] ' + subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
+
+  // Show success
+  document.getElementById('success-msg').style.display = 'block';
+  
+  // Clear form
+  document.getElementById('contact-first').value = '';
+  document.getElementById('contact-last').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-artist').value = '';
+  document.getElementById('contact-message').value = '';
+}
+</script>
+</body>
+</html>
