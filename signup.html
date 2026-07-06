@@ -132,7 +132,7 @@ async function doSignUp() {
 
   if (data.session) {
     // Email confirmation disabled — user is logged in immediately
-    window.location.href = 'index.html';
+    window.location.href = 'app.html';
   } else {
     // Email confirmation required
     showMsg('Account created! Check your email (' + email + ') for a confirmation link, then sign in. Check spam if you don\'t see it.', 'success');
@@ -141,7 +141,7 @@ async function doSignUp() {
 
 // If already logged in, skip this page
 sb.auth.getSession().then(({ data }) => {
-  if (data.session) window.location.href = 'index.html';
+  if (data.session) window.location.href = 'app.html';
 });
 </script>
 </body>
