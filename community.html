@@ -12,8 +12,7 @@
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:14px;color:#05050a;}
+.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;}
 .navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
@@ -106,8 +105,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:16px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logodot{width:24px;height:24px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;}
-.footer-logodot i{font-size:12px;color:#05050a;}
+.footer-logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
 .footer-logoname{font-size:14px;font-weight:800;color:#fff;}
 .footer-links{display:flex;gap:20px;flex-wrap:wrap;}
 .footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;}
@@ -131,23 +129,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <body>
 
 <nav class="nav">
-  <a class="logo" href="/landing.html">
-    <div class="logodot"><i class="ti ti-waveform"></i></div>
+  <a class="logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
     <span class="navlink drop">Studio Suite</span>
     <span class="navlink drop">AI Playground</span>
-    <span class="navlink">Features</span>
+    <span class="navlink" onclick="window.location.href='features.html'">Features</span>
     <span class="navlink active">Community</span>
     <span class="navlink">Distribution</span>
-    <span class="navlink">Blog</span>
-    <span class="navlink">Pricing</span>
-    <span class="navlink">Contact Us</span>
+    <span class="navlink" onclick="window.location.href='blog.html'">Blog</span>
+    <span class="navlink" onclick="window.location.href='pricing.html'">Pricing</span>
+    <span class="navlink" onclick="window.location.href='contact.html'">Contact Us</span>
   </div>
   <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
 </nav>
 
@@ -189,18 +187,18 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="creator-grid">
     <div class="creator-card">
       <div class="creator-thumb">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/>
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/>
         <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
         <div class="creator-badge">NEW DROP</div>
       </div>
-      <div class="creator-body"><div class="creator-name">Too Hunnit — In Due Time</div><div class="creator-genre">Hip-Hop · ATL</div><div class="creator-views">12.4K views</div></div>
+      <div class="creator-body"><div class="creator-name">Troopin N Atlanta</div><div class="creator-genre">Hip-Hop · ATL</div><div class="creator-views">12.4K views</div></div>
     </div>
     <div class="creator-card">
       <div class="creator-thumb">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/>
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-luxury.png.png" alt="Latin Luxury"/>
         <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
       </div>
-      <div class="creator-body"><div class="creator-name">Poor Little Richh Vol 2</div><div class="creator-genre">Trap · LA</div><div class="creator-views">8.7K views</div></div>
+      <div class="creator-body"><div class="creator-name">Latin Luxury</div><div class="creator-genre">Latin Trap · LA</div><div class="creator-views">8.7K views</div></div>
     </div>
     <div class="creator-card">
       <div class="creator-thumb">
@@ -212,10 +210,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     </div>
     <div class="creator-card">
       <div class="creator-thumb">
-        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/>
+        <img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="Beaches"/>
         <div class="creator-thumb-overlay"><div class="play-btn"><i class="ti ti-player-play"></i></div></div>
       </div>
-      <div class="creator-body"><div class="creator-name">Space Jawz Vol 2</div><div class="creator-genre">Electronic · NY</div><div class="creator-views">6.3K views</div></div>
+      <div class="creator-body"><div class="creator-name">Beaches</div><div class="creator-genre">Summer Pop · Miami</div><div class="creator-views">6.3K views</div></div>
     </div>
   </div>
 </div>
@@ -320,7 +318,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="reel-card">
       <div class="reel-thumb" style="background:linear-gradient(135deg,#0a1a10,#0f2a18);">
         <div class="play-btn"><i class="ti ti-player-play"></i></div>
-        <div class="reel-overlay"><div class="reel-title">Artist spotlight ft. Too Hunnit</div><div class="reel-likes"><i class="ti ti-heart" style="font-size:12px;"></i> 4.7K likes</div></div>
+        <div class="reel-overlay"><div class="reel-title">Artist spotlight ft. Troopin N Atlanta</div><div class="reel-likes"><i class="ti ti-heart" style="font-size:12px;"></i> 4.7K likes</div></div>
       </div>
     </div>
   </div>
@@ -342,10 +340,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="post">
       <div class="post-top">
         <div class="avatar" style="background:#1a0828;">🎤</div>
-        <div><div class="post-name">Too Hunnit <span class="post-badge">PRO</span></div><div class="post-meta">2 hours ago · Hip-Hop · Atlanta, GA</div></div>
+        <div><div class="post-name">Troopin N Atlanta <span class="post-badge">PRO</span></div><div class="post-meta">2 hours ago · Hip-Hop · Atlanta, GA</div></div>
       </div>
-      <div class="post-body">Just dropped my new cover art using StudioSound.ai 🔥 The AI understood the vibe immediately — dark, moody, cinematic. Generated in under 10 seconds. This platform is built different.</div>
-      <div class="post-img"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit cover art"/></div>
+      <div class="post-body">Just dropped my new cover art using StudioSound.ai 🔥 The AI understood the vibe immediately — gritty, moody, cinematic. Generated in under 10 seconds. This platform is built different.</div>
+      <div class="post-img"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="Latin Gritty cover art"/></div>
       <div class="post-actions">
         <div class="post-action"><i class="ti ti-heart"></i> 48</div>
         <div class="post-action"><i class="ti ti-message-circle"></i> 12</div>
@@ -377,10 +375,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="post">
       <div class="post-top">
         <div class="avatar" style="background:#1a0808;">🎸</div>
-        <div><div class="post-name">Space Jawz <span class="post-badge">FREE</span></div><div class="post-meta">1 day ago · Electronic · New York, NY</div></div>
+        <div><div class="post-name">Beaches <span class="post-badge">FREE</span></div><div class="post-meta">1 day ago · Summer Pop · Miami, FL</div></div>
       </div>
       <div class="post-body">Just tried the merch mockup tool for the first time. Had hoodie and tee mockups ready in seconds. The cost breakdown alone saved me hours of research 🙌</div>
-      <div class="post-img"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz cover art"/></div>
+      <div class="post-img"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="Beaches cover art"/></div>
       <div class="post-actions">
         <div class="post-action"><i class="ti ti-heart"></i> 19</div>
         <div class="post-action"><i class="ti ti-message-circle"></i> 4</div>
@@ -398,24 +396,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">
-      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="footer-logoname">StudioSound.ai</span>
     </div>
     <div class="footer-links">
-      <a class="footer-link" href="#">About Us</a>
-      <a class="footer-link" href="#">Terms of Use</a>
-      <a class="footer-link" href="#">Privacy Policy</a>
-      <a class="footer-link" href="#">Security</a>
-      <a class="footer-link" href="#">Contact Us</a>
-      <a class="footer-link" href="/pricing.html">Pricing</a>
-      <a class="footer-link" href="/community.html">Community</a>
+      <a class="footer-link" href="index.html">Home</a>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact Us</a>
     </div>
     <div class="footer-social">
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-facebook"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-twitter"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-instagram"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-youtube"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-tiktok"></i></a>
+      <a class="footer-social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+      <a class="footer-social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-twitter"></i></a>
+      <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
+      <a class="footer-social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
+      <a class="footer-social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
     </div>
   </div>
   <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
