@@ -13,8 +13,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);height
 .page{display:flex;height:100vh;}
 .left{width:480px;flex-shrink:0;background:var(--bg);padding:48px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;}
 .auth-logo{display:flex;align-items:center;gap:8px;margin-bottom:36px;text-decoration:none;}
-.auth-logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.auth-logodot i{font-size:14px;color:#05050a;}
+.auth-logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .auth-logoname{font-size:15px;font-weight:800;color:#fff;}
 .auth-title{font-size:30px;font-weight:900;letter-spacing:-0.03em;margin-bottom:8px;color:#fff;}
 .auth-sub{color:var(--muted);font-size:13px;font-weight:500;margin-bottom:32px;line-height:1.6;}
@@ -50,8 +49,8 @@ body{overflow-y:auto;}
 <body>
 <div class="page">
   <div class="left">
-    <a class="auth-logo" href="/landing.html">
-      <div class="auth-logodot"><i class="ti ti-waveform"></i></div>
+    <a class="auth-logo" href="index.html">
+      <img class="auth-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="auth-logoname">StudioSound.ai</span>
     </a>
     <div class="auth-title">Create your account</div>
@@ -63,17 +62,17 @@ body{overflow-y:auto;}
     <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" placeholder="you@email.com" type="email"/></div>
     <div class="form-group"><label class="form-label">Password</label><input class="form-input" placeholder="Min 8 characters" type="password"/></div>
     <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" placeholder="Repeat your password" type="password"/></div>
-    <button class="btn-submit" onclick="window.location.href='/'"><i class="ti ti-sparkles"></i> Create Free Account</button>
+    <button class="btn-submit" onclick="window.location.href='index.html'"><i class="ti ti-sparkles"></i> Create Free Account</button>
     <div class="terms">By signing up you agree to our <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a></div>
-    <div class="auth-footer">Already have an account? <a href="/signin.html">Sign in</a></div>
+    <div class="auth-footer">Already have an account? <a href="signin.html">Sign in</a></div>
   </div>
   <div class="right">
-    <img class="right-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE AI generated cover art"/>
+    <img class="right-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/studio-sound-sign-up.png.png" alt="StudioSound.ai — AI generated artwork"/>
     <div class="right-overlay"></div>
     <div class="right-content">
       <div class="right-badge"><i class="ti ti-sparkles"></i> AI Generated on StudioSound.ai</div>
       <div class="right-quote">"From idea to release day — StudioSound handles everything."</div>
-      <div class="right-attr">Independent Artist · StudioSound.ai</div>
+      <div class="right-attr">StudioSound.ai — Create. Release. Elevate.</div>
     </div>
   </div>
 </div>
