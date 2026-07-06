@@ -12,8 +12,7 @@
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:14px;color:#05050a;}
+.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;}
 .navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
@@ -86,8 +85,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
-.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
 .footer-logoname{font-size:13px;font-weight:800;color:#fff;}
 .footer-links{display:flex;gap:18px;flex-wrap:wrap;}
 .footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;cursor:pointer;}
@@ -105,29 +103,30 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .faq-section{padding:0 16px 48px;}
 .faq-section-inner{padding:32px 20px;}
 }
+.sicon{width:18px;height:18px;object-fit:contain;display:inline-block;vertical-align:middle;}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="logo" href="/landing.html">
-    <div class="logodot"><i class="ti ti-waveform"></i></div>
+  <a class="logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
     <span class="navlink">Studio Suite</span>
     <span class="navlink">AI Playground</span>
-    <span class="navlink" onclick="window.location.href='/features.html'">Features</span>
-    <span class="navlink" onclick="window.location.href='/community.html'">Community</span>
+    <span class="navlink" onclick="window.location.href='features.html'">Features</span>
+    <span class="navlink" onclick="window.location.href='community.html'">Community</span>
     <span class="navlink">Distribution</span>
-    <span class="navlink" onclick="window.location.href='/blog.html'">Blog</span>
-    <span class="navlink" onclick="window.location.href='/pricing.html'">Pricing</span>
+    <span class="navlink" onclick="window.location.href='blog.html'">Blog</span>
+    <span class="navlink" onclick="window.location.href='pricing.html'">Pricing</span>
     <span class="navlink active">Contact Us</span>
   </div>
   <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
 </nav>
 
@@ -176,11 +175,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="social-row">
       <div class="social-label">FOLLOW US</div>
       <div class="social-links">
-        <a class="social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
-        <a class="social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
-        <a class="social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
-        <a class="social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-twitter"></i></a>
-        <a class="social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+        <a class="social-link" href="https://www.instagram.com/studiosoundai/" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt="Instagram"/></a>
+        <a class="social-link" href="https://www.tiktok.com/@studiosoundai?lang=en" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt="TikTok"/></a>
+        <a class="social-link" href="https://www.youtube.com/@StudioSoundAi" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt="YouTube"/></a>
+        <a class="social-link" href="https://x.com/Studiosoundai" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="X" style="filter:invert(1);"/></a>
+        <a class="social-link" href="https://www.facebook.com/share/1HHte5Nyzp/?mibextid=wwXIfr" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt="Facebook"/></a>
       </div>
     </div>
     <div class="hours-card">
@@ -282,11 +281,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)"><span>What AI models power StudioSound.ai?</span><i class="ti ti-plus"></i></div>
-        <div class="faq-a">StudioSound.ai uses the best AI models available — including OpenAI's latest image generation model and Google's Imagen 4 for cover art. When you generate, you get two unique versions from both models side by side so you can pick the best result. We're always upgrading to the latest models as they become available.</div>
+        <div class="faq-a">StudioSound.ai is partnered with the world's leading AI companies, and we manage all of that technology behind the scenes so you never have to. Every time you generate, you get two unique versions from two different AI partners side by side — pick the one that fits your vision. As better models are released, we upgrade automatically. You always create with the best, without ever thinking about what's under the hood.</div>
       </div>
     </div>
     <div class="faq-cta">
-      <button class="btn-hero" onclick="window.location.href='/pricing.html'"><i class="ti ti-help-circle"></i> View Pricing & More FAQs</button>
+      <button class="btn-hero" onclick="window.location.href='pricing.html'"><i class="ti ti-help-circle"></i> View Pricing & More FAQs</button>
     </div>
   </div>
 </div>
@@ -295,23 +294,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">
-      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="footer-logoname">StudioSound.ai</span>
     </div>
     <div class="footer-links">
-      <a class="footer-link" href="/landing.html">Home</a>
-      <a class="footer-link" href="/features.html">Features</a>
-      <a class="footer-link" href="/pricing.html">Pricing</a>
-      <a class="footer-link" href="/community.html">Community</a>
-      <a class="footer-link" href="/blog.html">Blog</a>
-      <a class="footer-link" href="/contact.html">Contact</a>
+      <a class="footer-link" href="index.html">Home</a>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact</a>
     </div>
     <div class="footer-social">
-      <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
-      <a class="footer-social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
-      <a class="footer-social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
-      <a class="footer-social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-twitter"></i></a>
-      <a class="footer-social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+      <a class="footer-social-link" href="https://www.instagram.com/studiosoundai/" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt="Instagram"/></a>
+      <a class="footer-social-link" href="https://www.tiktok.com/@studiosoundai?lang=en" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt="TikTok"/></a>
+      <a class="footer-social-link" href="https://www.youtube.com/@StudioSoundAi" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt="YouTube"/></a>
+      <a class="footer-social-link" href="https://x.com/Studiosoundai" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="X" style="filter:invert(1);"/></a>
+      <a class="footer-social-link" href="https://www.facebook.com/share/1HHte5Nyzp/?mibextid=wwXIfr" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt="Facebook"/></a>
     </div>
   </div>
   <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
