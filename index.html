@@ -14,7 +14,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 /* NAV */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logoimg{width:28px;height:28px;border-radius:7px;object-fit:cover;display:block;}
+.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;align-items:center;}
 .navlink-wrap{position:relative;display:inline-block;}
@@ -145,6 +145,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .logoitem:hover{color:var(--text);}
 .logobadge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
 .logobadge i{font-size:15px;}
+.logoicon{width:26px;height:26px;object-fit:contain;display:block;}
 .sp{background:#1DB954;color:#000;}
 .am{background:#fc3c44;color:#fff;}
 .yt{background:#FF0000;color:#fff;}
@@ -225,7 +226,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:40px 32px 20px;}
 .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;}
 .footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.footer-logoimg{width:26px;height:26px;border-radius:6px;object-fit:cover;display:block;}
+.footer-logoimg{height:38px;width:auto;max-width:120px;border-radius:8px;object-fit:contain;display:block;}
 .footer-logoname{font-size:14px;font-weight:800;color:#fff;}
 .footer-desc{color:#8080a0;font-size:12px;line-height:1.7;max-width:220px;margin-bottom:16px;}
 .footer-social{display:flex;gap:10px;}
@@ -266,7 +267,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <!-- NAV -->
 <nav class="nav">
   <a class="logo" href="landing.html">
-    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/studiosound-logo.png" alt="StudioSound.ai"/>
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
@@ -467,30 +468,30 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <div class="logoslider">
   <div class="logoslider-label">DISTRIBUTE AND PROMOTE EVERYWHERE YOUR FANS ARE</div>
   <div class="logotrack">
-    <span class="logoitem"><div class="logobadge sp"><i class="ti ti-brand-spotify"></i></div>Spotify</span>
-    <span class="logoitem"><div class="logobadge am"><i class="ti ti-brand-apple"></i></div>Apple Music</span>
-    <span class="logoitem"><div class="logobadge yt"><i class="ti ti-brand-youtube"></i></div>YouTube</span>
-    <span class="logoitem"><div class="logobadge tt"><i class="ti ti-brand-tiktok"></i></div>TikTok</span>
-    <span class="logoitem"><div class="logobadge ig"><i class="ti ti-brand-instagram"></i></div>Instagram</span>
-    <span class="logoitem"><div class="logobadge fb"><i class="ti ti-brand-facebook"></i></div>Facebook</span>
-    <span class="logoitem"><div class="logobadge td"><i class="ti ti-brand-tidal"></i></div>Tidal</span>
-    <span class="logoitem"><div class="logobadge az"><i class="ti ti-brand-amazon"></i></div>Amazon Music</span>
-    <span class="logoitem"><div class="logobadge dz"><i class="ti ti-brand-deezer"></i></div>Deezer</span>
-    <span class="logoitem"><div class="logobadge sc"><i class="ti ti-brand-soundcloud"></i></div>SoundCloud</span>
-    <span class="logoitem"><div class="logobadge sn"><i class="ti ti-brand-snapchat"></i></div>Snapchat</span>
-    <span class="logoitem"><div class="logobadge tw"><i class="ti ti-brand-x"></i></div>X / Twitter</span>
-    <span class="logoitem"><div class="logobadge sp"><i class="ti ti-brand-spotify"></i></div>Spotify</span>
-    <span class="logoitem"><div class="logobadge am"><i class="ti ti-brand-apple"></i></div>Apple Music</span>
-    <span class="logoitem"><div class="logobadge yt"><i class="ti ti-brand-youtube"></i></div>YouTube</span>
-    <span class="logoitem"><div class="logobadge tt"><i class="ti ti-brand-tiktok"></i></div>TikTok</span>
-    <span class="logoitem"><div class="logobadge ig"><i class="ti ti-brand-instagram"></i></div>Instagram</span>
-    <span class="logoitem"><div class="logobadge fb"><i class="ti ti-brand-facebook"></i></div>Facebook</span>
-    <span class="logoitem"><div class="logobadge td"><i class="ti ti-brand-tidal"></i></div>Tidal</span>
-    <span class="logoitem"><div class="logobadge az"><i class="ti ti-brand-amazon"></i></div>Amazon Music</span>
-    <span class="logoitem"><div class="logobadge dz"><i class="ti ti-brand-deezer"></i></div>Deezer</span>
-    <span class="logoitem"><div class="logobadge sc"><i class="ti ti-brand-soundcloud"></i></div>SoundCloud</span>
-    <span class="logoitem"><div class="logobadge sn"><i class="ti ti-brand-snapchat"></i></div>Snapchat</span>
-    <span class="logoitem"><div class="logobadge tw"><i class="ti ti-brand-x"></i></div>X / Twitter</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/spotify.png.png" alt="Spotify" loading="lazy">Spotify</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/apple-music.png.png" alt="Apple Music" loading="lazy">Apple Music</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt="YouTube" loading="lazy">YouTube</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt="TikTok" loading="lazy">TikTok</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt="Instagram" loading="lazy">Instagram</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt="Facebook" loading="lazy">Facebook</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tidal.png.png" alt="Tidal" loading="lazy">Tidal</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/amazon-music.png.png" alt="Amazon Music" loading="lazy">Amazon Music</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/deezer.png.png" alt="Deezer" loading="lazy">Deezer</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/soundcloud.png.png" alt="SoundCloud" loading="lazy">SoundCloud</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/snapchat.png.png" alt="Snapchat" loading="lazy">Snapchat</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="X / Twitter" loading="lazy" style="filter:invert(1);">X / Twitter</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/spotify.png.png" alt="Spotify" loading="lazy">Spotify</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/apple-music.png.png" alt="Apple Music" loading="lazy">Apple Music</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt="YouTube" loading="lazy">YouTube</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt="TikTok" loading="lazy">TikTok</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt="Instagram" loading="lazy">Instagram</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt="Facebook" loading="lazy">Facebook</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tidal.png.png" alt="Tidal" loading="lazy">Tidal</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/amazon-music.png.png" alt="Amazon Music" loading="lazy">Amazon Music</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/deezer.png.png" alt="Deezer" loading="lazy">Deezer</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/soundcloud.png.png" alt="SoundCloud" loading="lazy">SoundCloud</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/snapchat.png.png" alt="Snapchat" loading="lazy">Snapchat</span>
+    <span class="logoitem"><img class="logoicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="X / Twitter" loading="lazy" style="filter:invert(1);">X / Twitter</span>
   </div>
 </div>
 
@@ -569,7 +570,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="footer-top">
     <div>
       <div class="footer-logo">
-        <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/studiosound-logo.png" alt="StudioSound.ai"/>
+        <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
         <span class="footer-logoname">StudioSound.ai</span>
       </div>
       <p class="footer-desc">The AI studio built exclusively for independent music artists. Create. Release. Drop like a major.</p>
