@@ -6,6 +6,7 @@
 <title>Sign In — StudioSound.ai</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#07070f;--border:#2a2a3a;--text:#ffffff;--muted:#c0c0d8;}
@@ -27,8 +28,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);height
 .forgot a:hover{text-decoration:underline;}
 .btn-submit{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.15s;}
 .btn-submit:hover{transform:scale(1.02);}
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
 .auth-footer{text-align:center;margin-top:24px;color:var(--muted);font-size:13px;font-weight:500;}
 .auth-footer a{color:var(--neon);font-weight:700;cursor:pointer;text-decoration:none;}
+.msg{display:none;border-radius:10px;padding:12px 14px;font-size:12px;font-weight:600;line-height:1.6;margin-bottom:16px;}
+.msg.error{display:block;background:#ff6b6b18;border:0.5px solid #ff6b6b;color:#ff9b9b;}
+.msg.success{display:block;background:#00FFD115;border:0.5px solid var(--neon);color:var(--neon);}
+.reset-panel{display:none;}
+.reset-panel.show{display:block;}
+.signin-panel.hide{display:none;}
 .right{flex:1;position:relative;overflow:hidden;}
 .right-img{width:100%;height:100%;object-fit:cover;display:block;}
 .right-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(7,7,15,0.6),rgba(7,7,15,0.05));}
@@ -50,13 +58,29 @@ body{overflow-y:auto;}
       <img class="auth-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="auth-logoname">StudioSound.ai</span>
     </a>
-    <div class="auth-title">Welcome back</div>
-    <div class="auth-sub">Sign in to your StudioSound.ai account and keep creating.</div>
-    <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" placeholder="you@email.com" type="email"/></div>
-    <div class="form-group"><label class="form-label">Password</label><input class="form-input" placeholder="Your password" type="password"/></div>
-    <div class="forgot"><a href="#">Forgot your password?</a></div>
-    <button class="btn-submit" onclick="window.location.href='index.html'"><i class="ti ti-login"></i> Sign In to StudioSound</button>
-    <div class="auth-footer">Don't have an account? <a href="signup.html">Sign up free →</a></div>
+
+    <!-- SIGN IN PANEL -->
+    <div class="signin-panel" id="signin-panel">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your StudioSound.ai account and keep creating.</div>
+      <div class="msg" id="auth-msg"></div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="si-email" placeholder="you@email.com" type="email"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="si-pass" placeholder="Your password" type="password"/></div>
+      <div class="forgot"><a onclick="sendReset()">Forgot your password?</a></div>
+      <button class="btn-submit" id="si-btn" onclick="doSignIn()"><i class="ti ti-login"></i> Sign In to StudioSound</button>
+      <div class="auth-footer">Don't have an account? <a href="signup.html">Sign up free →</a></div>
+    </div>
+
+    <!-- SET NEW PASSWORD PANEL (shows after clicking reset link in email) -->
+    <div class="reset-panel" id="reset-panel">
+      <div class="auth-title">Set a new password</div>
+      <div class="auth-sub">Enter your new password below and you'll be signed in.</div>
+      <div class="msg" id="reset-msg"></div>
+      <div class="form-group"><label class="form-label">New Password</label><input class="form-input" id="rp-pass" placeholder="Min 8 characters" type="password"/></div>
+      <div class="form-group"><label class="form-label">Confirm New Password</label><input class="form-input" id="rp-pass2" placeholder="Repeat your password" type="password"/></div>
+      <button class="btn-submit" id="rp-btn" onclick="doUpdatePassword()"><i class="ti ti-lock"></i> Save New Password</button>
+    </div>
+
   </div>
   <div class="right">
     <img class="right-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/studio-sound-sign-in.png.png" alt="StudioSound.ai — AI generated artwork"/>
@@ -68,5 +92,97 @@ body{overflow-y:auto;}
     </div>
   </div>
 </div>
+
+<script>
+const sb = supabase.createClient(
+  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+);
+
+let recoveryMode = false;
+
+function showMsg(text, type, id) {
+  const m = document.getElementById(id || 'auth-msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+}
+
+async function doSignIn() {
+  const email = document.getElementById('si-email').value.trim();
+  const pass = document.getElementById('si-pass').value;
+  if (!email || !email.includes('@')) { showMsg('Please enter a valid email address.', 'error'); return; }
+  if (!pass) { showMsg('Please enter your password.', 'error'); return; }
+
+  const btn = document.getElementById('si-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'Signing you in...';
+
+  const { data, error } = await sb.auth.signInWithPassword({ email: email, password: pass });
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-login"></i> Sign In to StudioSound';
+
+  if (error) {
+    if (error.message.toLowerCase().includes('email not confirmed')) {
+      showMsg('Please confirm your email first — check your inbox for the confirmation link.', 'error');
+    } else if (error.message.toLowerCase().includes('invalid login')) {
+      showMsg('Wrong email or password. Try again or use "Forgot your password?"', 'error');
+    } else {
+      showMsg(error.message, 'error');
+    }
+    return;
+  }
+
+  window.location.href = 'index.html';
+}
+
+async function sendReset() {
+  const email = document.getElementById('si-email').value.trim();
+  if (!email || !email.includes('@')) {
+    showMsg('Type your email in the box above first, then click "Forgot your password?" again.', 'error');
+    return;
+  }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/signin.html'
+  });
+  if (error) { showMsg(error.message, 'error'); return; }
+  showMsg('Password reset link sent to ' + email + '. Check your inbox (and spam).', 'success');
+}
+
+async function doUpdatePassword() {
+  const pass = document.getElementById('rp-pass').value;
+  const pass2 = document.getElementById('rp-pass2').value;
+  if (pass.length < 8) { showMsg('Password must be at least 8 characters.', 'error', 'reset-msg'); return; }
+  if (pass !== pass2) { showMsg('Passwords do not match.', 'error', 'reset-msg'); return; }
+
+  const btn = document.getElementById('rp-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'Saving...';
+
+  const { error } = await sb.auth.updateUser({ password: pass });
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-lock"></i> Save New Password';
+
+  if (error) { showMsg(error.message, 'error', 'reset-msg'); return; }
+  window.location.href = 'index.html';
+}
+
+// Detect password-recovery link from email and show the reset panel
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    recoveryMode = true;
+    document.getElementById('signin-panel').classList.add('hide');
+    document.getElementById('reset-panel').classList.add('show');
+  }
+});
+
+// If already logged in (and not resetting a password), skip this page
+sb.auth.getSession().then(({ data }) => {
+  if (data.session && !recoveryMode && !window.location.hash.includes('type=recovery')) {
+    window.location.href = 'index.html';
+  }
+});
+</script>
 </body>
 </html>
