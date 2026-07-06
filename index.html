@@ -14,8 +14,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 /* NAV */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:14px;color:#05050a;}
+.logoimg{width:28px;height:28px;border-radius:7px;object-fit:cover;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;align-items:center;}
 .navlink-wrap{position:relative;display:inline-block;}
@@ -72,7 +71,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tscroll::-webkit-scrollbar{display:none;}
 .tcard{flex-shrink:0;width:188px;border-radius:12px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
 .tcard:hover{border-color:var(--neon);transform:translateY(-3px);}
-.tcimg{height:130px;display:flex;align-items:center;justify-content:center;font-size:44px;}
+.tcimg{height:130px;display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden;background:radial-gradient(circle at 50% 42%,#00FFD114 0%,transparent 72%),#08080f;}
+.tcimg img{width:100%;height:100%;object-fit:contain;display:block;}
 .tcbody{padding:10px 12px 12px;}
 .tcdesc{color:#8080a0;font-size:10px;margin-bottom:3px;}
 .tcname{color:#fff;font-size:12px;font-weight:700;margin-bottom:3px;}
@@ -99,7 +99,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .marquee{overflow:hidden;padding:16px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);}
 .marqinner{display:flex;gap:44px;animation:marq 22s linear infinite;white-space:nowrap;}
 @keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.marqitem{color:#252535;font-size:11px;font-weight:700;letter-spacing:0.07em;display:inline-flex;align-items:center;gap:12px;}
+.marqitem{color:#ffffff;font-size:11px;font-weight:700;letter-spacing:0.07em;display:inline-flex;align-items:center;gap:12px;}
 .marqitem::before{content:'✦';color:var(--neon);font-size:9px;}
 
 /* STATS */
@@ -141,9 +141,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .logoslider-label{text-align:center;color:#8080a0;font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:18px;}
 .logotrack{display:flex;gap:52px;animation:logoscroll 30s linear infinite;white-space:nowrap;align-items:center;}
 @keyframes logoscroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.logoitem{display:inline-flex;align-items:center;gap:8px;color:#3a3a52;font-size:13px;font-weight:700;flex-shrink:0;transition:color 0.2s;cursor:pointer;}
+.logoitem{display:inline-flex;align-items:center;gap:8px;color:#ffffff;font-size:13px;font-weight:700;flex-shrink:0;transition:color 0.2s;cursor:pointer;}
 .logoitem:hover{color:var(--text);}
 .logobadge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+.logobadge i{font-size:15px;}
 .sp{background:#1DB954;color:#000;}
 .am{background:#fc3c44;color:#fff;}
 .yt{background:#FF0000;color:#fff;}
@@ -172,20 +173,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .toolcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;transition:opacity 0.2s;}
 .toolcard{border-radius:14px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
 .toolcard:hover{border-color:var(--neon);transform:translateY(-4px);}
-.toolcard-img{height:200px;display:flex;align-items:center;justify-content:center;}
+.toolcard-img{height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.toolcard-img img{width:100%;height:100%;object-fit:contain;display:block;}
 .toolcard-img .fallback{font-size:72px;}
 .toolcard-body{padding:12px 14px 14px;}
 .toolcard-desc{color:#8080a0;font-size:10px;margin-bottom:4px;}
 .toolcard-name{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.02em;}
 .toolcard-link{color:var(--neon);font-size:11px;font-weight:600;}
-.tc1{background:linear-gradient(135deg,#0f1f3a,#162b50);}
-.tc2{background:linear-gradient(135deg,#1a0828,#2d1045);}
-.tc3{background:linear-gradient(135deg,#0f3a1f,#1a5030);}
-.tc4{background:linear-gradient(135deg,#3a0f1f,#501a2a);}
-.tc5{background:linear-gradient(135deg,#3a1f0f,#502a1a);}
-.tc6{background:linear-gradient(135deg,#0f0f3a,#1a1a50);}
-.tc7{background:linear-gradient(135deg,#2a0f3a,#3a1a50);}
-.tc8{background:linear-gradient(135deg,#1a2a0f,#2a3a1a);}
+.tc1,.tc2,.tc3,.tc4,.tc5,.tc6,.tc7,.tc8{background:radial-gradient(circle at 50% 42%,#00FFD114 0%,transparent 72%),#08080f;}
 
 /* PRICING */
 .pricesec{padding:0 32px 56px;}
@@ -230,8 +225,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:40px 32px 20px;}
 .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;}
 .footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.footer-logodot{width:26px;height:26px;background:var(--neon);border-radius:6px;display:flex;align-items:center;justify-content:center;}
-.footer-logodot i{font-size:13px;color:#05050a;}
+.footer-logoimg{width:26px;height:26px;border-radius:6px;object-fit:cover;display:block;}
 .footer-logoname{font-size:14px;font-weight:800;color:#fff;}
 .footer-desc{color:#8080a0;font-size:12px;line-height:1.7;max-width:220px;margin-bottom:16px;}
 .footer-social{display:flex;gap:10px;}
@@ -271,8 +265,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="logo" href="/landing.html">
-    <div class="logodot"><i class="ti ti-waveform"></i></div>
+  <a class="logo" href="landing.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/studiosound-logo.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
@@ -311,7 +305,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         </a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-footer">
-          <a class="dropdown-footer-link" href="/features.html"><i class="ti ti-arrow-right"></i> View all features</a>
+          <a class="dropdown-footer-link" href="features.html"><i class="ti ti-arrow-right"></i> View all features</a>
         </div>
       </div>
     </div>
@@ -346,21 +340,21 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         </a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-footer">
-          <a class="dropdown-footer-link" href="/signup.html"><i class="ti ti-arrow-right"></i> Start creating free</a>
+          <a class="dropdown-footer-link" href="signup.html"><i class="ti ti-arrow-right"></i> Start creating free</a>
         </div>
       </div>
     </div>
 
-    <a class="navlink" href="/features.html">Features</a>
-    <a class="navlink" href="/community.html">Community</a>
+    <a class="navlink" href="features.html">Features</a>
+    <a class="navlink" href="community.html">Community</a>
     <a class="navlink" href="#">Distribution</a>
-    <a class="navlink" href="/blog.html">Blog</a>
-    <a class="navlink" href="/pricing.html">Pricing</a>
-    <a class="navlink" href="/contact.html">Contact Us</a>
+    <a class="navlink" href="blog.html">Blog</a>
+    <a class="navlink" href="pricing.html">Pricing</a>
+    <a class="navlink" href="contact.html">Contact Us</a>
   </div>
   <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
 </nav>
 
@@ -371,17 +365,17 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <h1 class="herotitle">Create.<br>Release.<br><span class="neon">Drop like a major.</span></h1>
     <p class="herosub">Cover art, merch mockups, release plans, lyric videos, and song generation — all powered by AI.</p>
     <div class="herobtns">
-      <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+      <button class="btn-hero" onclick="window.location.href='signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
       <button class="btn-hero2" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">See how it works →</button>
     </div>
     <p class="herosmall">Free trial <span>·</span> Cancel anytime <span>·</span> No credit card needed</p>
   </div>
   <div class="heroright">
     <div class="herogrid">
-      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/></div>
-      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/></div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/></div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-luxury.png.png" alt="Latin Luxury cover art"/></div>
       <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/></div>
-      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/></div>
+      <div class="herogriditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="Beaches cover art"/></div>
     </div>
   </div>
 </section>
@@ -392,16 +386,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="toolsleft">
       <div class="tleftitle">START<br>CREATING<br>WITH<br><span class="neon">THESE<br>TOOLS</span></div>
       <p class="tleftdesc">Create authentic music content with professional quality and easy style</p>
-      <button class="btn-exp" onclick="window.location.href='/features.html'">Explore all tools →</button>
+      <button class="btn-exp" onclick="window.location.href='features.html'">Explore all tools →</button>
     </div>
     <div class="tscroll">
-      <div class="tcard" onclick="window.location.href='/signup.html'"><div class="tcimg" style="background:linear-gradient(135deg,#0f1f3a,#1a2b50);">🎨</div><div class="tcbody"><div class="tcdesc">Generate label-quality artwork</div><div class="tcname">Cover Art Generator</div><div class="tclink">Generate now →</div></div></div>
-      <div class="tcard" onclick="window.location.href='/signup.html'"><div class="tcimg" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">🚀</div><div class="tcbody"><div class="tcdesc">30-day personalized strategy</div><div class="tcname">Release Planner</div><div class="tclink">Plan your drop →</div></div></div>
-      <div class="tcard" onclick="window.location.href='/signup.html'"><div class="tcimg" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div><div class="tcbody"><div class="tcdesc">See your art on real products</div><div class="tcname">Merch Mockup Studio</div><div class="tclink">Create mockups →</div></div></div>
-      <div class="tcard" onclick="window.location.href='/signup.html'"><div class="tcimg" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">🎬</div><div class="tcbody"><div class="tcdesc">Professional lyric videos fast</div><div class="tcname">Lyric Video Creator</div><div class="tclink">Coming soon →</div></div></div>
-      <div class="tcard"><div class="tcimg" style="background:linear-gradient(135deg,#0f0f3a,#1a1a50);">🎵</div><div class="tcbody"><div class="tcdesc">Turn ideas into full tracks</div><div class="tcname">AI Song Generator</div><div class="tclink">Coming soon →</div></div></div>
-      <div class="tcard"><div class="tcimg" style="background:linear-gradient(135deg,#2a0f3a,#3a1a50);">📊</div><div class="tcbody"><div class="tcdesc">Launch Meta and Google ads</div><div class="tcname">AI Ad Manager</div><div class="tclink">Coming soon →</div></div></div>
-      <div class="tcard"><div class="tcimg" style="background:linear-gradient(135deg,#1a2a0f,#2a3a1a);">✂️</div><div class="tcbody"><div class="tcdesc">Auto clip and post your videos</div><div class="tcname">Video Clipping</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art Generator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Generate label-quality artwork</div><div class="tcname">Cover Art Generator</div><div class="tclink">Generate now →</div></div></div>
+      <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Planner" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">30-day personalized strategy</div><div class="tcname">Release Planner</div><div class="tclink">Plan your drop →</div></div></div>
+      <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="Merch Mockup Studio" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">See your art on real products</div><div class="tcname">Merch Mockup Studio</div><div class="tclink">Create mockups →</div></div></div>
+      <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Video Creator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Professional lyric videos fast</div><div class="tcname">Lyric Video Creator</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/music-video-generator.png.png" alt="AI Song Generator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Turn ideas into full tracks</div><div class="tcname">AI Song Generator</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ad-creator.png.png" alt="AI Ad Manager" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Launch Meta and Google ads</div><div class="tcname">AI Ad Manager</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok-video-maker.png.png" alt="Video Clipping" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Auto clip and post your videos</div><div class="tcname">Video Clipping</div><div class="tclink">Coming soon →</div></div></div>
     </div>
   </div>
 </div>
@@ -410,20 +404,20 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <div class="gallerysec">
   <div class="galleryhead">
     <p class="gallerylabel">AI-GENERATED ARTWORK FROM INDEPENDENT ARTISTS</p>
-    <span class="gallerylink" onclick="window.location.href='/community.html'">View all →</span>
+    <span class="gallerylink" onclick="window.location.href='community.html'">View all →</span>
   </div>
   <div class="maingrid">
-    <div class="griditem tall"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt="Too Hunnit"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit — In Due Time</div></div></div>
+    <div class="griditem tall"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-luxury.png.png" alt="Latin Luxury cover art"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Latin Luxury</div></div></div>
     <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Troopin N Atlanta</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt="Poor Little Richh"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh Vol 2</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt="Space Jawz"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz Vol 2</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="Latin Gritty cover art"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Latin Gritty</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="Beaches cover art"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Beaches</div></div></div>
     <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
   </div>
   <div class="grow2">
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/6EF79294-FD83-46C0-A5BA-FF51FF9F98E1.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Too Hunnit</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/poor%20Richh%202%20cover.jpg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Poor Little Richh</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
-    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/image1-2.jpeg" alt=""/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Space Jawz</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="Latin Gritty cover art" loading="lazy"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Latin Gritty</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="Beaches cover art" loading="lazy"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Beaches</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Cover%20Arts-42.jpg" alt="NVRSFE" loading="lazy"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">NVRSFE</div></div></div>
+    <div class="griditem"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/Gemini_Generated_Image_ioqa9iioqa9iioqa.png" alt="Troopin N Atlanta" loading="lazy"/><div class="gover"><div class="gtag">COVER ART</div><div class="gname">Troopin N Atlanta</div></div></div>
   </div>
 </div>
 
@@ -473,30 +467,30 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <div class="logoslider">
   <div class="logoslider-label">DISTRIBUTE AND PROMOTE EVERYWHERE YOUR FANS ARE</div>
   <div class="logotrack">
-    <span class="logoitem"><div class="logobadge sp">♪</div>Spotify</span>
-    <span class="logoitem"><div class="logobadge am">♫</div>Apple Music</span>
-    <span class="logoitem"><div class="logobadge yt">▶</div>YouTube</span>
-    <span class="logoitem"><div class="logobadge tt">♪</div>TikTok</span>
-    <span class="logoitem"><div class="logobadge ig">📷</div>Instagram</span>
-    <span class="logoitem"><div class="logobadge fb">f</div>Facebook</span>
-    <span class="logoitem"><div class="logobadge td">T</div>Tidal</span>
-    <span class="logoitem"><div class="logobadge az">a</div>Amazon Music</span>
-    <span class="logoitem"><div class="logobadge dz">D</div>Deezer</span>
-    <span class="logoitem"><div class="logobadge sc">☁</div>SoundCloud</span>
-    <span class="logoitem"><div class="logobadge sn">👻</div>Snapchat</span>
-    <span class="logoitem"><div class="logobadge tw">𝕏</div>X / Twitter</span>
-    <span class="logoitem"><div class="logobadge sp">♪</div>Spotify</span>
-    <span class="logoitem"><div class="logobadge am">♫</div>Apple Music</span>
-    <span class="logoitem"><div class="logobadge yt">▶</div>YouTube</span>
-    <span class="logoitem"><div class="logobadge tt">♪</div>TikTok</span>
-    <span class="logoitem"><div class="logobadge ig">📷</div>Instagram</span>
-    <span class="logoitem"><div class="logobadge fb">f</div>Facebook</span>
-    <span class="logoitem"><div class="logobadge td">T</div>Tidal</span>
-    <span class="logoitem"><div class="logobadge az">a</div>Amazon Music</span>
-    <span class="logoitem"><div class="logobadge dz">D</div>Deezer</span>
-    <span class="logoitem"><div class="logobadge sc">☁</div>SoundCloud</span>
-    <span class="logoitem"><div class="logobadge sn">👻</div>Snapchat</span>
-    <span class="logoitem"><div class="logobadge tw">𝕏</div>X / Twitter</span>
+    <span class="logoitem"><div class="logobadge sp"><i class="ti ti-brand-spotify"></i></div>Spotify</span>
+    <span class="logoitem"><div class="logobadge am"><i class="ti ti-brand-apple"></i></div>Apple Music</span>
+    <span class="logoitem"><div class="logobadge yt"><i class="ti ti-brand-youtube"></i></div>YouTube</span>
+    <span class="logoitem"><div class="logobadge tt"><i class="ti ti-brand-tiktok"></i></div>TikTok</span>
+    <span class="logoitem"><div class="logobadge ig"><i class="ti ti-brand-instagram"></i></div>Instagram</span>
+    <span class="logoitem"><div class="logobadge fb"><i class="ti ti-brand-facebook"></i></div>Facebook</span>
+    <span class="logoitem"><div class="logobadge td"><i class="ti ti-brand-tidal"></i></div>Tidal</span>
+    <span class="logoitem"><div class="logobadge az"><i class="ti ti-brand-amazon"></i></div>Amazon Music</span>
+    <span class="logoitem"><div class="logobadge dz"><i class="ti ti-brand-deezer"></i></div>Deezer</span>
+    <span class="logoitem"><div class="logobadge sc"><i class="ti ti-brand-soundcloud"></i></div>SoundCloud</span>
+    <span class="logoitem"><div class="logobadge sn"><i class="ti ti-brand-snapchat"></i></div>Snapchat</span>
+    <span class="logoitem"><div class="logobadge tw"><i class="ti ti-brand-x"></i></div>X / Twitter</span>
+    <span class="logoitem"><div class="logobadge sp"><i class="ti ti-brand-spotify"></i></div>Spotify</span>
+    <span class="logoitem"><div class="logobadge am"><i class="ti ti-brand-apple"></i></div>Apple Music</span>
+    <span class="logoitem"><div class="logobadge yt"><i class="ti ti-brand-youtube"></i></div>YouTube</span>
+    <span class="logoitem"><div class="logobadge tt"><i class="ti ti-brand-tiktok"></i></div>TikTok</span>
+    <span class="logoitem"><div class="logobadge ig"><i class="ti ti-brand-instagram"></i></div>Instagram</span>
+    <span class="logoitem"><div class="logobadge fb"><i class="ti ti-brand-facebook"></i></div>Facebook</span>
+    <span class="logoitem"><div class="logobadge td"><i class="ti ti-brand-tidal"></i></div>Tidal</span>
+    <span class="logoitem"><div class="logobadge az"><i class="ti ti-brand-amazon"></i></div>Amazon Music</span>
+    <span class="logoitem"><div class="logobadge dz"><i class="ti ti-brand-deezer"></i></div>Deezer</span>
+    <span class="logoitem"><div class="logobadge sc"><i class="ti ti-brand-soundcloud"></i></div>SoundCloud</span>
+    <span class="logoitem"><div class="logobadge sn"><i class="ti ti-brand-snapchat"></i></div>Snapchat</span>
+    <span class="logoitem"><div class="logobadge tw"><i class="ti ti-brand-x"></i></div>X / Twitter</span>
   </div>
 </div>
 
@@ -515,10 +509,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     </div>
     <div class="toolkit-right">
       <div class="toolcards" id="toolcards">
-        <div class="toolcard" onclick="window.location.href='/signup.html'"><div class="toolcard-img tc1"><span class="fallback">🎨</span></div><div class="toolcard-body"><div class="toolcard-desc">Generate label-quality artwork</div><div class="toolcard-name">Cover Art Generator</div><div class="toolcard-link">Generate now →</div></div></div>
-        <div class="toolcard" onclick="window.location.href='/signup.html'"><div class="toolcard-img tc2"><span class="fallback">🖼️</span></div><div class="toolcard-body"><div class="toolcard-desc">Sized for YouTube channels</div><div class="toolcard-name">YouTube Thumbnail Maker</div><div class="toolcard-link">Coming soon →</div></div></div>
-        <div class="toolcard" onclick="window.location.href='/signup.html'"><div class="toolcard-img tc3"><span class="fallback">📱</span></div><div class="toolcard-body"><div class="toolcard-desc">Perfect for IG and stories</div><div class="toolcard-name">Instagram Cover Art</div><div class="toolcard-link">Coming soon →</div></div></div>
-        <div class="toolcard" onclick="window.location.href='/signup.html'"><div class="toolcard-img tc4"><span class="fallback">🎭</span></div><div class="toolcard-body"><div class="toolcard-desc">Full project artwork</div><div class="toolcard-name">EP & Album Art</div><div class="toolcard-link">Coming soon →</div></div></div>
+        <div class="toolcard" onclick="window.location.href='signup.html'"><div class="toolcard-img tc1"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art Generator" loading="lazy"/></div><div class="toolcard-body"><div class="toolcard-desc">Generate label-quality artwork</div><div class="toolcard-name">Cover Art Generator</div><div class="toolcard-link">Generate now →</div></div></div>
+        <div class="toolcard" onclick="window.location.href='signup.html'"><div class="toolcard-img tc2"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube-thumbnail-maker.png.png" alt="YouTube Thumbnail Maker" loading="lazy"/></div><div class="toolcard-body"><div class="toolcard-desc">Sized for YouTube channels</div><div class="toolcard-name">YouTube Thumbnail Maker</div><div class="toolcard-link">Coming soon →</div></div></div>
+        <div class="toolcard" onclick="window.location.href='signup.html'"><div class="toolcard-img tc3"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram-cover-art.png.png" alt="Instagram Cover Art" loading="lazy"/></div><div class="toolcard-body"><div class="toolcard-desc">Perfect for IG and stories</div><div class="toolcard-name">Instagram Cover Art</div><div class="toolcard-link">Coming soon →</div></div></div>
+        <div class="toolcard" onclick="window.location.href='signup.html'"><div class="toolcard-img tc4"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ep-album-art.png.png" alt="EP &amp; Album Art" loading="lazy"/></div><div class="toolcard-body"><div class="toolcard-desc">Full project artwork</div><div class="toolcard-name">EP & Album Art</div><div class="toolcard-link">Coming soon →</div></div></div>
       </div>
     </div>
   </div>
@@ -530,9 +524,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <h2 class="sectitle">Start free. <span class="neon">Scale when ready.</span></h2>
   <p class="secsub">No contracts. No lock-in. Cancel anytime.</p>
   <div class="pricegrid">
-    <div class="pricecard"><div class="ptier">FREE</div><div class="pnum">$0 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>3 cover arts per month</div><div class="pfeat"><i class="ti ti-check"></i>1 release plan</div><div class="pfeat"><i class="ti ti-check"></i>2 merch mockups</div><div class="pfeat"><i class="ti ti-check"></i>Watermarked lyric video</div><button class="pbtn out" onclick="window.location.href='/signup.html'">Start for free</button></div>
-    <div class="pricecard hot"><div class="hotbadge">MOST POPULAR</div><div class="ptier">PRO</div><div class="pnum">$9.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Unlimited cover art</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited release plans</div><div class="pfeat"><i class="ti ti-check"></i>Full merch mockup suite</div><div class="pfeat"><i class="ti ti-check"></i>5 lyric videos per month</div><div class="pfeat"><i class="ti ti-check"></i>3 song generations</div><button class="pbtn fill" onclick="window.location.href='/signup.html'">Upgrade to Pro</button></div>
-    <div class="pricecard"><div class="ptier">PREMIUM</div><div class="pnum">$24.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Everything in Pro</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited lyric videos</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited song generation</div><div class="pfeat"><i class="ti ti-check"></i>Music video generation</div><div class="pfeat"><i class="ti ti-check"></i>AI ad creation and management</div><button class="pbtn out" onclick="window.location.href='/signup.html'">Upgrade to Premium</button></div>
+    <div class="pricecard"><div class="ptier">FREE</div><div class="pnum">$0 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>3 cover arts per month</div><div class="pfeat"><i class="ti ti-check"></i>1 release plan</div><div class="pfeat"><i class="ti ti-check"></i>2 merch mockups</div><div class="pfeat"><i class="ti ti-check"></i>Watermarked lyric video</div><button class="pbtn out" onclick="window.location.href='signup.html'">Start for free</button></div>
+    <div class="pricecard hot"><div class="hotbadge">MOST POPULAR</div><div class="ptier">PRO</div><div class="pnum">$9.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Unlimited cover art</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited release plans</div><div class="pfeat"><i class="ti ti-check"></i>Full merch mockup suite</div><div class="pfeat"><i class="ti ti-check"></i>5 lyric videos per month</div><div class="pfeat"><i class="ti ti-check"></i>3 song generations</div><button class="pbtn fill" onclick="window.location.href='signup.html'">Upgrade to Pro</button></div>
+    <div class="pricecard"><div class="ptier">PREMIUM</div><div class="pnum">$24.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Everything in Pro</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited lyric videos</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited song generation</div><div class="pfeat"><i class="ti ti-check"></i>Music video generation</div><div class="pfeat"><i class="ti ti-check"></i>AI ad creation and management</div><button class="pbtn out" onclick="window.location.href='signup.html'">Upgrade to Premium</button></div>
   </div>
 </div>
 
@@ -555,7 +549,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="ctabox">
     <h2 class="ctatitle">Talent should be the only<br>barrier to success in music.</h2>
     <p class="ctasub">Not money. Not connections. Not technical knowledge.<br>StudioSound.ai removes every other barrier.</p>
-    <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+    <button class="btn-hero" onclick="window.location.href='signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
   </div>
 </div>
 
@@ -575,7 +569,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="footer-top">
     <div>
       <div class="footer-logo">
-        <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+        <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/studiosound-logo.png" alt="StudioSound.ai"/>
         <span class="footer-logoname">StudioSound.ai</span>
       </div>
       <p class="footer-desc">The AI studio built exclusively for independent music artists. Create. Release. Drop like a major.</p>
@@ -598,11 +592,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     </div>
     <div>
       <div class="footer-col-title">COMPANY</div>
-      <a class="footer-link" href="/features.html">Features</a>
-      <a class="footer-link" href="/pricing.html">Pricing</a>
-      <a class="footer-link" href="/community.html">Community</a>
-      <a class="footer-link" href="/blog.html">Blog</a>
-      <a class="footer-link" href="/contact.html">Contact Us</a>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact Us</a>
       <a class="footer-link" href="#">Distribution</a>
     </div>
     <div>
@@ -619,7 +613,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="footer-bottom-links">
       <a class="footer-bottom-link" href="#">Privacy</a>
       <a class="footer-bottom-link" href="#">Terms</a>
-      <a class="footer-bottom-link" href="/contact.html">Contact</a>
+      <a class="footer-bottom-link" href="contact.html">Contact</a>
     </div>
   </div>
 </footer>
@@ -629,42 +623,43 @@ function countUp(el,target,suffix,duration){let start=0;const inc=target/60;cons
 const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){countUp(document.getElementById('s1'),1800,'+',2000);countUp(document.getElementById('s2'),12000,'+',2000);obs.disconnect();}});},{threshold:0.3});
 const sb=document.querySelector('.statsbar');if(sb)obs.observe(sb);
 
+const IMG='https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/';
 const cats={
   cover:[
-    {icon:'🎨',desc:'Generate label-quality artwork',name:'Cover Art Generator',link:'Generate now →',bg:'tc1'},
-    {icon:'🖼️',desc:'Sized for YouTube channels',name:'YouTube Thumbnail Maker',link:'Coming soon →',bg:'tc2'},
-    {icon:'📱',desc:'Perfect for IG and stories',name:'Instagram Cover Art',link:'Coming soon →',bg:'tc3'},
-    {icon:'🎭',desc:'Full project artwork',name:'EP & Album Art',link:'Coming soon →',bg:'tc4'},
+    {img:'cover-art-generator.png.png',desc:'Generate label-quality artwork',name:'Cover Art Generator',link:'Generate now →',bg:'tc1'},
+    {img:'youtube-thumbnail-maker.png.png',desc:'Sized for YouTube channels',name:'YouTube Thumbnail Maker',link:'Coming soon →',bg:'tc2'},
+    {img:'instagram-cover-art.png.png',desc:'Perfect for IG and stories',name:'Instagram Cover Art',link:'Coming soon →',bg:'tc3'},
+    {img:'ep-album-art.png.png',desc:'Full project artwork',name:'EP & Album Art',link:'Coming soon →',bg:'tc4'},
   ],
   video:[
-    {icon:'🎬',desc:'Sync lyrics to your beat',name:'Lyric Video Creator',link:'Coming soon →',bg:'tc1'},
-    {icon:'🎥',desc:'AI cinematic music videos',name:'Music Video Generator',link:'Coming soon →',bg:'tc2'},
-    {icon:'📱',desc:'Vertical short form content',name:'TikTok Video Maker',link:'Coming soon →',bg:'tc3'},
-    {icon:'✂️',desc:'Auto clip your long videos',name:'AI Video Clipping',link:'Coming soon →',bg:'tc4'},
+    {img:'lyric-video-creator.png.png',desc:'Sync lyrics to your beat',name:'Lyric Video Creator',link:'Coming soon →',bg:'tc1'},
+    {img:'music-video-generator.png.png',desc:'AI cinematic music videos',name:'Music Video Generator',link:'Coming soon →',bg:'tc2'},
+    {img:'tiktok-video-maker.png.png',desc:'Vertical short form content',name:'TikTok Video Maker',link:'Coming soon →',bg:'tc3'},
+    {img:'release-trailer-maker.png.png',desc:'Cinematic trailers for your drop',name:'Release Trailer Maker',link:'Coming soon →',bg:'tc4'},
   ],
   merch:[
-    {icon:'👕',desc:'See your art on a tee',name:'T-Shirt Mockup',link:'Create now →',bg:'tc1'},
-    {icon:'🧥',desc:'Premium hoodies',name:'Hoodie Mockup',link:'Create now →',bg:'tc2'},
-    {icon:'🧢',desc:'Fitted and snapbacks',name:'Hat Mockup',link:'Create now →',bg:'tc3'},
-    {icon:'📱',desc:'Custom phone cases',name:'Phone Case Mockup',link:'Create now →',bg:'tc4'},
+    {img:'tshirt-mockup.png.png',desc:'See your art on a tee',name:'T-Shirt Mockup',link:'Create now →',bg:'tc1'},
+    {img:'hoodie-mockup.png.png',desc:'Premium hoodies',name:'Hoodie Mockup',link:'Create now →',bg:'tc2'},
+    {img:'hat-mockup.png.png',desc:'Fitted and snapbacks',name:'Hat Mockup',link:'Create now →',bg:'tc3'},
+    {img:'phone-case-mockup.png.png',desc:'Custom phone cases',name:'Phone Case Mockup',link:'Create now →',bg:'tc4'},
   ],
   marketing:[
-    {icon:'📊',desc:'Targeted Facebook and IG ads',name:'Meta Ad Creator',link:'Coming soon →',bg:'tc1'},
-    {icon:'🎯',desc:'Search and display ads',name:'Google Ad Creator',link:'Coming soon →',bg:'tc2'},
-    {icon:'📱',desc:'Short form ad videos',name:'TikTok Ad Maker',link:'Coming soon →',bg:'tc3'},
-    {icon:'✍️',desc:'AI writes your ad copy',name:'Ad Copy Writer',link:'Coming soon →',bg:'tc4'},
+    {img:'meta-ad-creator.png.png',desc:'Targeted Facebook and IG ads',name:'Meta Ad Creator',link:'Coming soon →',bg:'tc1'},
+    {img:'google-ad-creator.png.png',desc:'Search and display ads',name:'Google Ad Creator',link:'Coming soon →',bg:'tc2'},
+    {img:'tiktok-ad-maker.png.png',desc:'Short form ad videos',name:'TikTok Ad Maker',link:'Coming soon →',bg:'tc3'},
+    {img:'ad-copy-writer.png.png',desc:'AI writes your ad copy',name:'Ad Copy Writer',link:'Coming soon →',bg:'tc4'},
   ],
   release:[
-    {icon:'🚀',desc:'30-day marketing roadmap',name:'Release Plan Generator',link:'Plan now →',bg:'tc1'},
-    {icon:'📅',desc:'Optimal post times by city',name:'Post Schedule Builder',link:'Coming soon →',bg:'tc2'},
-    {icon:'🎵',desc:'Get fans hyped early',name:'Pre-Save Campaign',link:'Coming soon →',bg:'tc3'},
-    {icon:'📧',desc:'Professional press kit',name:'Press Kit Generator',link:'Coming soon →',bg:'tc4'},
+    {img:'release-plan-generator.png.png',desc:'30-day marketing roadmap',name:'Release Plan Generator',link:'Plan now →',bg:'tc1'},
+    {img:'post-schedule-builder.png.png',desc:'Optimal post times by city',name:'Post Schedule Builder',link:'Coming soon →',bg:'tc2'},
+    {img:'pre-save-campaign.png.png',desc:'Get fans hyped early',name:'Pre-Save Campaign',link:'Coming soon →',bg:'tc3'},
+    {img:'press-kit-generator.png.png',desc:'Professional press kit',name:'Press Kit Generator',link:'Coming soon →',bg:'tc4'},
   ],
   social:[
-    {icon:'📱',desc:'Vertical story graphics',name:'Instagram Story Maker',link:'Coming soon →',bg:'tc1'},
-    {icon:'▶️',desc:'Channel art and thumbnails',name:'YouTube Thumbnail',link:'Coming soon →',bg:'tc2'},
-    {icon:'🎬',desc:'Trending content formats',name:'TikTok Content Maker',link:'Coming soon →',bg:'tc3'},
-    {icon:'🌟',desc:'Everything sized and ready',name:'Social Media Kit',link:'Coming soon →',bg:'tc4'},
+    {img:'instagram-story-maker.png.png',desc:'Vertical story graphics',name:'Instagram Story Maker',link:'Coming soon →',bg:'tc1'},
+    {img:'youtube-thumbnail.png.png',desc:'Channel art and thumbnails',name:'YouTube Thumbnail',link:'Coming soon →',bg:'tc2'},
+    {img:'tiktok-content-maker.png.png',desc:'Trending content formats',name:'TikTok Content Maker',link:'Coming soon →',bg:'tc3'},
+    {img:'social-media-kit.png.png',desc:'Everything sized and ready',name:'Social Media Kit',link:'Coming soon →',bg:'tc4'},
   ]
 };
 
@@ -675,8 +670,8 @@ function setcat(el,cat){
   cards.style.opacity='0';
   setTimeout(()=>{
     cards.innerHTML=cats[cat].map(t=>`
-      <div class="toolcard" onclick="window.location.href='/signup.html'">
-        <div class="toolcard-img ${t.bg}"><span class="fallback">${t.icon}</span></div>
+      <div class="toolcard" onclick="window.location.href='signup.html'">
+        <div class="toolcard-img ${t.bg}"><img src="${IMG+t.img}" alt="${t.name}" loading="lazy"></div>
         <div class="toolcard-body"><div class="toolcard-desc">${t.desc}</div><div class="toolcard-name">${t.name}</div><div class="toolcard-link">${t.link}</div></div>
       </div>`).join('');
     cards.style.opacity='1';
