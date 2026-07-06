@@ -133,7 +133,7 @@ async function doSignIn() {
     return;
   }
 
-  window.location.href = 'index.html';
+  window.location.href = 'app.html';
 }
 
 async function sendReset() {
@@ -165,7 +165,7 @@ async function doUpdatePassword() {
   btn.innerHTML = '<i class="ti ti-lock"></i> Save New Password';
 
   if (error) { showMsg(error.message, 'error', 'reset-msg'); return; }
-  window.location.href = 'index.html';
+  window.location.href = 'app.html';
 }
 
 // Detect password-recovery link from email and show the reset panel
@@ -180,7 +180,7 @@ sb.auth.onAuthStateChange((event, session) => {
 // If already logged in (and not resetting a password), skip this page
 sb.auth.getSession().then(({ data }) => {
   if (data.session && !recoveryMode && !window.location.hash.includes('type=recovery')) {
-    window.location.href = 'index.html';
+    window.location.href = 'app.html';
   }
 });
 </script>
