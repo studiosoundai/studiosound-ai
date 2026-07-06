@@ -55,7 +55,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tool-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;text-align:left;}
 .tool-card:hover{border-color:var(--neon);transform:translateY(-2px);}
 .tool-card.active{border-color:var(--neon);background:#00FFD108;}
-.tool-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:20px;}
+.tool-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:20px;overflow:hidden;}
+.tool-icon img{width:100%;height:100%;object-fit:cover;display:block;}
 .tool-name{color:#fff;font-size:12px;font-weight:700;margin-bottom:3px;}
 .tool-desc{color:var(--muted);font-size:10px;font-weight:500;line-height:1.5;}
 .tool-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
@@ -126,7 +127,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .examples-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .example-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
 .example-card:hover{border-color:var(--neon);transform:translateY(-2px);}
-.example-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;}
+.example-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;}
+.example-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 .example-badge{position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);color:var(--neon);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}
 .example-body{padding:10px 12px 12px;}
 .example-prompt{color:#e0e0f0;font-size:11px;font-weight:500;line-height:1.5;margin-bottom:6px;}
@@ -189,7 +191,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="topbar">
     <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
     <div class="topbar-right">
-      <div class="notif"><i class="ti ti-bell"></i></div>
       <button class="topbar-btn" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
     </div>
   </div>
@@ -219,25 +220,25 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="tools-grid">
       <div class="tool-card active" onclick="switchTool('art',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
-        <div class="tool-icon" style="background:#0f1f3a;">🎨</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art"/></div>
         <div class="tool-name">Cover Art Generator</div>
         <div class="tool-desc">Generate label-quality artwork in seconds</div>
       </div>
       <div class="tool-card" onclick="switchTool('plan',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
-        <div class="tool-icon" style="background:#1f0f3a;">🚀</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Planner"/></div>
         <div class="tool-name">Release Planner</div>
         <div class="tool-desc">Your personalized 30-day roadmap</div>
       </div>
       <div class="tool-card" onclick="switchTool('merch',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
-        <div class="tool-icon" style="background:#0f3a1f;">👕</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="Merch Mockups"/></div>
         <div class="tool-name">Merch Mockups</div>
         <div class="tool-desc">See your art on real products instantly</div>
       </div>
       <div class="tool-card">
         <div class="tool-badge soon">SOON</div>
-        <div class="tool-icon" style="background:#3a1f0f;">🎬</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Videos"/></div>
         <div class="tool-name">Lyric Video Creator</div>
         <div class="tool-desc">Professional lyric videos fast</div>
       </div>
@@ -342,15 +343,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE PROMPTS — Click any to use it</div>
         <div class="examples-grid">
           <div class="example-card" onclick="useExample('art','A dark hooded figure standing alone under a flickering streetlight in the rain. Blurred city at night, blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);">🌧️<div class="example-badge">Hip-Hop · Dark</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="" loading="lazy"/><div class="example-badge">Hip-Hop · Dark</div></div>
             <div class="example-body"><div class="example-prompt">"Dark hooded figure under a streetlight in the rain. Blue and purple neon reflections. Cinematic."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('art','A woman silhouette standing against a breathtaking sunset, arms stretched out. Warm orange, gold and purple gradient sky. Emotional, soulful, empowering. Soft dreamy glow, no text.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#2a0f08,#3a1a05);">🌅<div class="example-badge">R&B Soul · Emotional</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="" loading="lazy"/><div class="example-badge">R&B Soul · Emotional</div></div>
             <div class="example-body"><div class="example-prompt">"Woman silhouette against a sunset, arms stretched. Orange, gold and purple sky. Emotional, soulful."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('art','Stacks of cash, gold chains, diamonds and luxury watches arranged on a black marble surface with dramatic studio lighting. Rich, luxurious, aggressive energy. Dark background, gold and black tones, no text.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#1a1408,#2a2010);">💰<div class="example-badge">Trap · Luxury</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-luxury.png.png" alt="" loading="lazy"/><div class="example-badge">Trap · Luxury</div></div>
             <div class="example-body"><div class="example-prompt">"Cash, gold chains and diamonds on black marble. Dramatic lighting. Rich, luxurious, aggressive."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
         </div>
@@ -425,15 +426,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE DESCRIPTIONS — Click any to use it</div>
         <div class="examples-grid">
           <div class="example-card" onclick="useExample('plan','I am dropping a 6-track Hip-Hop EP. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP to build hype. My budget for promotion is around $200.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🎤<div class="example-badge">Hip-Hop EP</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="" loading="lazy"/><div class="example-badge">Hip-Hop EP</div></div>
             <div class="example-body"><div class="example-prompt">"6-track Hip-Hop EP. 2K IG followers, 500 TikTok. Single 2 weeks before. $200 budget."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('plan','I am releasing my first R&B Soul single. I am a brand new artist with less than 500 followers. I have no budget but I can post daily on TikTok and Instagram. I want to build an organic fanbase.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#2a0f08,#3a1a05);">🎵<div class="example-badge">R&B · New Artist</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/post-schedule-builder.png.png" alt="" loading="lazy"/><div class="example-badge">R&B · New Artist</div></div>
             <div class="example-body"><div class="example-prompt">"First R&B single, new artist, under 500 followers, no budget, can post daily on socials."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('plan','I am dropping a Gospel album with 10 tracks. I have 10,000 church community followers and 5,000 on Facebook. Focus on church outreach and Christian radio. Budget is $500.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);">🙏<div class="example-badge">Gospel Album</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/pre-save-campaign.png.png" alt="" loading="lazy"/><div class="example-badge">Gospel Album</div></div>
             <div class="example-body"><div class="example-prompt">"Gospel album, 10K church followers, 5K Facebook. Church outreach and Christian radio. $500 budget."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
         </div>
@@ -510,15 +511,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE DESCRIPTIONS — Click any to use it</div>
         <div class="examples-grid">
           <div class="example-card" onclick="useExample('merch','I want my cover art centered on the front chest area of a black oversized hoodie. Clean and minimal, like something you would see at a major label merch table at a sold out concert.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1a1a1a);">🧥<div class="example-badge">Hoodie · Clean</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/hoodie-mockup.png.png" alt="" loading="lazy"/><div class="example-badge">Hoodie · Clean</div></div>
             <div class="example-body"><div class="example-prompt">"Cover art centered on front chest of black oversized hoodie. Clean, minimal, major label feel."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('merch','I want my logo printed large across the back of a white vintage wash t-shirt with my artist name in small text on the left chest. Streetwear style, like a high end fashion brand.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#1a1a18,#2a2a28);">👕<div class="example-badge">T-Shirt · Streetwear</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="" loading="lazy"/><div class="example-badge">T-Shirt · Streetwear</div></div>
             <div class="example-body"><div class="example-prompt">"Logo large across back of white vintage wash tee, artist name small on left chest. High end streetwear."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
           <div class="example-card" onclick="useExample('merch','I want a full print poster of my album cover art in 18x24 inch size. Gallery quality, suitable for framing. Something fans would actually want to hang on their wall.')">
-            <div class="example-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">🖼️<div class="example-badge">Poster · Gallery</div></div>
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ep-album-art.png.png" alt="" loading="lazy"/><div class="example-badge">Poster · Gallery</div></div>
             <div class="example-body"><div class="example-prompt">"Full print album cover poster 18x24 inch. Gallery quality, suitable for framing."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
         </div>
@@ -529,23 +530,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="section-label">RECENT GENERATIONS</div>
     <div class="recent-grid" id="recent-grid">
       <div class="recent-item">
-        <div class="recent-thumb" style="background:linear-gradient(135deg,#1a0828,#2d1045);display:flex;align-items:center;justify-content:center;font-size:28px;">🎨</div>
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="" loading="lazy"/></div>
         <div class="recent-info"><div class="recent-name">Your generations</div><div class="recent-meta">will appear here</div></div>
       </div>
       <div class="recent-item">
-        <div class="recent-thumb" style="background:linear-gradient(135deg,#0f1f3a,#162b50);display:flex;align-items:center;justify-content:center;font-size:28px;">🚀</div>
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="" loading="lazy"/></div>
         <div class="recent-info"><div class="recent-name">Release Plans</div><div class="recent-meta">saved automatically</div></div>
       </div>
       <div class="recent-item">
-        <div class="recent-thumb" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);display:flex;align-items:center;justify-content:center;font-size:28px;">👕</div>
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="" loading="lazy"/></div>
         <div class="recent-info"><div class="recent-name">Merch Mockups</div><div class="recent-meta">saved automatically</div></div>
       </div>
       <div class="recent-item">
-        <div class="recent-thumb" style="background:linear-gradient(135deg,#1a0808,#2a0f0f);display:flex;align-items:center;justify-content:center;font-size:28px;">🎨</div>
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram-cover-art.png.png" alt="" loading="lazy"/></div>
         <div class="recent-info"><div class="recent-name">Cover Art</div><div class="recent-meta">ready to download</div></div>
       </div>
       <div class="recent-item">
-        <div class="recent-thumb" style="background:linear-gradient(135deg,#1a1808,#2a2008);display:flex;align-items:center;justify-content:center;font-size:28px;">⭐</div>
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png" alt="" loading="lazy"/></div>
         <div class="recent-info"><div class="recent-name">Start creating</div><div class="recent-meta">to fill this row</div></div>
       </div>
     </div>
