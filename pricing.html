@@ -86,6 +86,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .partner-card{flex-shrink:0;background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px 24px;text-align:center;transition:border-color 0.2s;display:inline-block;min-width:140px;}
 .partner-card:hover{border-color:var(--neon);}
 .partner-icon{font-size:32px;margin-bottom:8px;}
+.partner-logo{width:40px;height:40px;object-fit:contain;margin:0 auto 8px;display:block;}
 .partner-name{color:#fff;font-size:13px;font-weight:700;margin-bottom:3px;}
 .partner-by{color:var(--muted);font-size:10px;font-weight:600;letter-spacing:0.04em;}
 .steps-sec{padding:0 32px 56px;text-align:center;}
@@ -227,7 +228,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="pf yes"><i class="ti ti-check"></i>Full merch mockup suite</div>
     <div class="pf yes"><i class="ti ti-check"></i>5 lyric videos per month</div>
     <div class="pf yes"><i class="ti ti-check"></i>3 song generations per month</div>
-    <div class="pf yes"><i class="ti ti-check"></i>AI video clipping (Veed)</div>
+    <div class="pf yes"><i class="ti ti-check"></i>StudioSound AI Clipping</div>
     <div class="pf no"><i class="ti ti-x"></i>Music video generation</div>
     <div class="pf no"><i class="ti ti-x"></i>AI ad creation</div>
   </div>
@@ -242,7 +243,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="pf hl"><i class="ti ti-check"></i>Unlimited lyric videos</div>
     <div class="pf hl"><i class="ti ti-check"></i>Unlimited song generation</div>
     <div class="pf hl"><i class="ti ti-check"></i>Music video generation</div>
-    <div class="pf hl"><i class="ti ti-check"></i>AI video clipping (Veed + Opus)</div>
+    <div class="pf hl"><i class="ti ti-check"></i>Unlimited StudioSound AI Clipping</div>
     <div class="pf hl"><i class="ti ti-check"></i>AI ad creation</div>
     <div class="pf hl"><i class="ti ti-check"></i>Meta & Google ad manager</div>
     <div class="pf yes"><i class="ti ti-check"></i>Priority support</div>
@@ -250,31 +251,29 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 </div>
 
 <div class="partners">
-  <div class="partners-title">All the <span class="neon">best AI models</span> — one subscription</div>
-  <div class="partners-sub">Stop paying for each tool separately. StudioSound.ai unlocks every AI model you need.</div>
+  <div class="partners-title">Meet our <span class="neon">AI partners</span></div>
+  <div class="partners-sub">We handle the technology behind the scenes so you never have to. The world's best AI models — all working for you, inside one StudioSound subscription.</div>
   <div class="partners-scroll">
     <div class="partners-track">
-      <div class="partner-card"><div class="partner-icon">🎨</div><div class="partner-name">GPT Image</div><div class="partner-by">OPENAI</div></div>
-      <div class="partner-card"><div class="partner-icon">🎵</div><div class="partner-name">Suno AI</div><div class="partner-by">SONG GENERATION</div></div>
-      <div class="partner-card"><div class="partner-icon">🎬</div><div class="partner-name">Runway ML</div><div class="partner-by">VIDEO GENERATION</div></div>
-      <div class="partner-card"><div class="partner-icon">✂️</div><div class="partner-name">Veed.io</div><div class="partner-by">AI VIDEO CLIPS</div></div>
-      <div class="partner-card"><div class="partner-icon">🎯</div><div class="partner-name">Opus Clip</div><div class="partner-by">AI CLIPPING</div></div>
-      <div class="partner-card"><div class="partner-icon">📊</div><div class="partner-name">Meta Ads</div><div class="partner-by">META</div></div>
-      <div class="partner-card"><div class="partner-icon">🔍</div><div class="partner-name">Google Ads</div><div class="partner-by">GOOGLE</div></div>
-      <div class="partner-card"><div class="partner-icon">🖼️</div><div class="partner-name">Printful</div><div class="partner-by">MERCH MOCKUPS</div></div>
-      <div class="partner-card"><div class="partner-icon">🎤</div><div class="partner-name">ElevenLabs</div><div class="partner-by">AI VOICE</div></div>
-      <div class="partner-card"><div class="partner-icon">🌊</div><div class="partner-name">Stable Diffusion</div><div class="partner-by">IMAGE GEN</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/openai.png.png" alt="GPT Image" loading="lazy"/><div class="partner-name">GPT Image</div><div class="partner-by">OPENAI</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/gemini.png.png" alt="Gemini" loading="lazy"/><div class="partner-name">Gemini</div><div class="partner-by">GOOGLE</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/claude.png.png" alt="Claude" loading="lazy"/><div class="partner-name">Claude</div><div class="partner-by">ANTHROPIC</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/suno.png.png" alt="Suno AI" loading="lazy"/><div class="partner-name">Suno AI</div><div class="partner-by">SONG GENERATION</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/runway.png.png" alt="Runway ML" loading="lazy"/><div class="partner-name">Runway ML</div><div class="partner-by">VIDEO GENERATION</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/elevenlabs.png.png" alt="ElevenLabs" loading="lazy"/><div class="partner-name">ElevenLabs</div><div class="partner-by">AI VOICE</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ads.png.png" alt="Meta Ads" loading="lazy"/><div class="partner-name">Meta Ads</div><div class="partner-by">META</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/google-ads.png.png" alt="Google Ads" loading="lazy"/><div class="partner-name">Google Ads</div><div class="partner-by">GOOGLE</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/printful.png.png" alt="Printful" loading="lazy"/><div class="partner-name">Printful</div><div class="partner-by">MERCH MOCKUPS</div></div>
       <!-- duplicate for seamless loop -->
-      <div class="partner-card"><div class="partner-icon">🎨</div><div class="partner-name">GPT Image</div><div class="partner-by">OPENAI</div></div>
-      <div class="partner-card"><div class="partner-icon">🎵</div><div class="partner-name">Suno AI</div><div class="partner-by">SONG GENERATION</div></div>
-      <div class="partner-card"><div class="partner-icon">🎬</div><div class="partner-name">Runway ML</div><div class="partner-by">VIDEO GENERATION</div></div>
-      <div class="partner-card"><div class="partner-icon">✂️</div><div class="partner-name">Veed.io</div><div class="partner-by">AI VIDEO CLIPS</div></div>
-      <div class="partner-card"><div class="partner-icon">🎯</div><div class="partner-name">Opus Clip</div><div class="partner-by">AI CLIPPING</div></div>
-      <div class="partner-card"><div class="partner-icon">📊</div><div class="partner-name">Meta Ads</div><div class="partner-by">META</div></div>
-      <div class="partner-card"><div class="partner-icon">🔍</div><div class="partner-name">Google Ads</div><div class="partner-by">GOOGLE</div></div>
-      <div class="partner-card"><div class="partner-icon">🖼️</div><div class="partner-name">Printful</div><div class="partner-by">MERCH MOCKUPS</div></div>
-      <div class="partner-card"><div class="partner-icon">🎤</div><div class="partner-name">ElevenLabs</div><div class="partner-by">AI VOICE</div></div>
-      <div class="partner-card"><div class="partner-icon">🌊</div><div class="partner-name">Stable Diffusion</div><div class="partner-by">IMAGE GEN</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/openai.png.png" alt="GPT Image" loading="lazy"/><div class="partner-name">GPT Image</div><div class="partner-by">OPENAI</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/gemini.png.png" alt="Gemini" loading="lazy"/><div class="partner-name">Gemini</div><div class="partner-by">GOOGLE</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/claude.png.png" alt="Claude" loading="lazy"/><div class="partner-name">Claude</div><div class="partner-by">ANTHROPIC</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/suno.png.png" alt="Suno AI" loading="lazy"/><div class="partner-name">Suno AI</div><div class="partner-by">SONG GENERATION</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/runway.png.png" alt="Runway ML" loading="lazy"/><div class="partner-name">Runway ML</div><div class="partner-by">VIDEO GENERATION</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/elevenlabs.png.png" alt="ElevenLabs" loading="lazy"/><div class="partner-name">ElevenLabs</div><div class="partner-by">AI VOICE</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ads.png.png" alt="Meta Ads" loading="lazy"/><div class="partner-name">Meta Ads</div><div class="partner-by">META</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/google-ads.png.png" alt="Google Ads" loading="lazy"/><div class="partner-name">Google Ads</div><div class="partner-by">GOOGLE</div></div>
+      <div class="partner-card"><img class="partner-logo" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/printful.png.png" alt="Printful" loading="lazy"/><div class="partner-name">Printful</div><div class="partner-by">MERCH MOCKUPS</div></div>
     </div>
   </div>
 </div>
@@ -302,7 +301,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="sec-sub">Everything you need to know before subscribing.</div>
   <div class="faq-wrap">
     <div class="faq-item open"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's included in the free plan? <i class="ti ti-plus"></i></div><div class="faq-a">The free plan gives you 3 cover arts, 1 release plan, 2 merch mockups, and a watermarked lyric video every month. No credit card needed — ever.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is AI video clipping? <i class="ti ti-plus"></i></div><div class="faq-a">Using Veed and Opus Clip AI, StudioSound automatically finds the best moments in your long videos — performances, studio sessions, music videos — and turns them into short clips sized for TikTok, Reels, and YouTube Shorts. Captions included.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is AI video clipping? <i class="ti ti-plus"></i></div><div class="faq-a">StudioSound's AI Clipping tool watches your long videos — performances, studio sessions, music videos, live streams — finds the best moments automatically, and turns them into short clips sized for TikTok, Reels, and YouTube Shorts. Captions added automatically. Perfect for artists and streamers who want daily content without daily editing.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do I own the content I generate? <i class="ti ti-plus"></i></div><div class="faq-a">Yes. 100%. Everything you generate on StudioSound.ai belongs to you. Use it commercially, upload to DSPs, print on merch, run ads — no restrictions whatsoever.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's the difference between monthly and yearly? <i class="ti ti-plus"></i></div><div class="faq-a">Monthly gives you full flexibility. Yearly saves you 33% — that's 4 months free. Both plans include all the same features. You can switch anytime.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I cancel at any time? <i class="ti ti-plus"></i></div><div class="faq-a">Absolutely. No long-term contracts, no cancellation fees. Cancel anytime from your account settings and keep full access until the end of your billing period.</div></div>
