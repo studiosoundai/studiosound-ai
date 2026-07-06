@@ -12,8 +12,7 @@
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:14px;color:#05050a;}
+.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;}
 .navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
@@ -37,8 +36,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .featured-inner{background:var(--card);border:0.5px solid var(--border);border-radius:22px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
 .featured-inner:hover{border-color:var(--neon);}
 .featured-grid{display:grid;grid-template-columns:1fr 1fr;}
-.featured-visual{background:linear-gradient(135deg,#0f1f3a,#162b50);min-height:320px;display:flex;align-items:center;justify-content:center;font-size:100px;position:relative;}
-.featured-visual::after{content:'FEATURED';position:absolute;top:16px;left:16px;background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;font-family:'Sora',sans-serif;}
+.featured-visual{background:radial-gradient(circle at 50% 42%,#00FFD114 0%,transparent 72%),#08080f;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.featured-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.featured-visual::after{content:'FEATURED';position:absolute;top:16px;left:16px;background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;font-family:'Sora',sans-serif;z-index:2;}
 .featured-content{padding:40px;display:flex;flex-direction:column;justify-content:center;}
 .post-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:10px;}
 .featured-title{font-size:24px;font-weight:900;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.3;}
@@ -61,7 +61,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .blog-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s;}
 .blog-card:hover{border-color:var(--neon);}
 .blog-card.hidden{display:none;}
-.blog-visual{height:160px;display:flex;align-items:center;justify-content:center;font-size:56px;}
+.blog-visual{height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.blog-visual img{width:100%;height:100%;object-fit:cover;display:block;}
 .blog-content{padding:20px;}
 .blog-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
 .blog-title{color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.01em;margin-bottom:8px;line-height:1.4;}
@@ -91,8 +92,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
-.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
 .footer-logoname{font-size:13px;font-weight:800;color:#fff;}
 .footer-links{display:flex;gap:18px;flex-wrap:wrap;}
 .footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;}
@@ -118,23 +118,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <body>
 
 <nav class="nav">
-  <a class="logo" href="/landing.html">
-    <div class="logodot"><i class="ti ti-waveform"></i></div>
+  <a class="logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
     <span class="navlink">Studio Suite</span>
     <span class="navlink">AI Playground</span>
-    <span class="navlink" onclick="window.location.href='/features.html'">Features</span>
-    <span class="navlink" onclick="window.location.href='/community.html'">Community</span>
+    <span class="navlink" onclick="window.location.href='features.html'">Features</span>
+    <span class="navlink" onclick="window.location.href='community.html'">Community</span>
     <span class="navlink">Distribution</span>
     <span class="navlink active">Blog</span>
-    <span class="navlink" onclick="window.location.href='/pricing.html'">Pricing</span>
-    <span class="navlink" onclick="window.location.href='/contact.html'">Contact Us</span>
+    <span class="navlink" onclick="window.location.href='pricing.html'">Pricing</span>
+    <span class="navlink" onclick="window.location.href='contact.html'">Contact Us</span>
   </div>
   <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
 </nav>
 
@@ -158,7 +158,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <div class="featured">
   <div class="featured-inner">
     <div class="featured-grid">
-      <div class="featured-visual">🎨</div>
+      <div class="featured-visual"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art Generator"/></div>
       <div class="featured-content">
         <div class="post-cat">AI TOOLS</div>
         <h2 class="featured-title">How to Generate Professional Cover Art in Under 30 Seconds Using AI</h2>
@@ -189,7 +189,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       <p>StudioSound.ai lets you upload a photo of yourself and incorporate it into the cover art. Click "Add Image" in the generator, upload your photo, then describe the scene around you. The AI will place you in the cover art environment you describe. This is how major artists get that cinematic look — now you can do it in seconds.</p>
       <h3>Version A vs Version B</h3>
       <p>One of StudioSound.ai's biggest advantages is that every generation gives you two completely different results from two different AI models. Version A tends to be more photorealistic and cinematic. Version B is more artistic, painterly, and graphic. You pick whichever one fits your vision — or generate again until you get exactly what you want.</p>
-      <p>Ready to try it? <a href="/signup.html" style="color:var(--neon);font-weight:700;">Create your free account</a> and generate your first cover art in the next 2 minutes.</p>
+      <p>Ready to try it? <a href="signup.html" style="color:var(--neon);font-weight:700;">Create your free account</a> and generate your first cover art in the next 2 minutes.</p>
       <button class="collapse-btn" onclick="toggleFeatured(this)"><i class="ti ti-chevron-up"></i> Collapse Article</button>
     </div>
   </div>
@@ -201,7 +201,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 1 -->
     <div class="blog-card" data-cat="Release Strategy">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">🚀</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Plan Generator" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">RELEASE STRATEGY</div>
         <div class="blog-title">The 30-Day Release Plan: How to Launch Like a Major Label</div>
@@ -223,7 +223,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
           <div class="tip"><p>💡 Use StudioSound.ai's Release Planner to get a personalized version of this roadmap built around your specific genre, city, and release date.</p></div>
           <h3>The Most Overlooked Step</h3>
           <p>Playlist pitching is where most artists drop the ball. Spotify for Artists lets you pitch ONE unreleased song to editorial playlists — but you have to do it at least 7 days before release. Most artists miss this window entirely. Set a reminder right now.</p>
-          <p>Ready to build your release plan? <a href="/" style="color:var(--neon);font-weight:700;">Try the Release Planner free →</a></p>
+          <p>Ready to build your release plan? <a href="signup.html" style="color:var(--neon);font-weight:700;">Try the Release Planner free →</a></p>
           <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
         </div>
       </div>
@@ -231,7 +231,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 2 -->
     <div class="blog-card" data-cat="Merch & Products">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">👕</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/hoodie-mockup.png.png" alt="Hoodie Mockup" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">MERCH & PRODUCTS</div>
         <div class="blog-title">Print on Demand vs Bulk Orders: What Every Artist Needs to Know</div>
@@ -260,7 +260,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 3 -->
     <div class="blog-card" data-cat="Music Marketing">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">🎵</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok-content-maker.png.png" alt="TikTok Content Maker" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">MUSIC MARKETING</div>
         <div class="blog-title">TikTok vs Instagram Reels: Where Should Independent Artists Post in 2026?</div>
@@ -289,7 +289,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 4 -->
     <div class="blog-card" data-cat="AI Tools">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);">🤖</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="AI generated cover art example" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">AI TOOLS</div>
         <div class="blog-title">How to Write the Perfect AI Prompt for Your Music Cover Art</div>
@@ -313,7 +313,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
           <div class="tip"><p>💡 Example: "A hooded figure standing at the edge of a rooftop overlooking a rainy city at night. Neon purple and blue reflections on wet streets below. Cinematic, dramatic, moody atmosphere. No text, no words, purely visual."</p></div>
           <h3>Genre-Specific Tips</h3>
           <p>For Trap and Drill: Use words like "luxury," "gold," "marble," "dramatic studio lighting," "high contrast." For R&B and Soul: Use "soft glow," "warm tones," "silhouette," "sunset," "emotional." For Gospel: Use "light beams," "heavenly," "golden," "uplifting," "radiant."</p>
-          <p>Try generating right now — <a href="/" style="color:var(--neon);font-weight:700;">open the Cover Art Generator →</a></p>
+          <p>Try generating right now — <a href="signup.html" style="color:var(--neon);font-weight:700;">open the Cover Art Generator →</a></p>
           <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
         </div>
       </div>
@@ -321,7 +321,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 5 -->
     <div class="blog-card" data-cat="Artist Tips">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0828,#2d1045);">🎤</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0828,#2d1045);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/pre-save-campaign.png.png" alt="Pre-Save Campaign" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">ARTIST TIPS</div>
         <div class="blog-title">Pre-Save Campaigns: The Underrated Tool That Gets Your Music on Playlists</div>
@@ -350,7 +350,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 6 -->
     <div class="blog-card" data-cat="Music Marketing">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);">📊</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ad-creator.png.png" alt="Meta Ad Creator" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">MUSIC MARKETING</div>
         <div class="blog-title">How to Run Your First Music Ad on Meta for Under $50</div>
@@ -380,7 +380,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 7 -->
     <div class="blog-card" data-cat="Industry News">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#2a1808,#3a2010);">💿</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#2a1808,#3a2010);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ep-album-art.png.png" alt="EP and Album Art" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">INDUSTRY NEWS</div>
         <div class="blog-title">The State of Independent Music in 2026: What the Numbers Say</div>
@@ -408,7 +408,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 8 -->
     <div class="blog-card" data-cat="Release Strategy">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0a1828,#102040);">🎸</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#0a1828,#102040);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/press-kit-generator.png.png" alt="Press Kit Generator" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">RELEASE STRATEGY</div>
         <div class="blog-title">How to Get Your Music on Spotify Editorial Playlists as an Independent Artist</div>
@@ -437,7 +437,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
     <!-- ARTICLE 9 -->
     <div class="blog-card" data-cat="Artist Tips">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0f28,#251540);">🌍</div>
+      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0f28,#251540);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png" alt="Social Media Kit" loading="lazy"/></div>
       <div class="blog-content">
         <div class="blog-cat">ARTIST TIPS</div>
         <div class="blog-title">Building Your Brand as an Independent Artist: The Complete Guide</div>
@@ -457,7 +457,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
           <div class="tip"><p>💡 Your cover art is often the first impression someone has of your music. Make it count. A consistent visual style across all your releases builds brand recognition faster than almost anything else.</p></div>
           <h3>Consistency Beats Perfection</h3>
           <p>The biggest mistake independent artists make is waiting until everything is perfect before posting. Post consistently, even when you don't feel ready. The artists who win in 2026 are the ones who show up every single day — not the ones who post one perfect thing every three months. Volume and consistency beat perfection every time.</p>
-          <p>Start building your visual brand today — <a href="/signup.html" style="color:var(--neon);font-weight:700;">generate your first cover art free →</a></p>
+          <p>Start building your visual brand today — <a href="signup.html" style="color:var(--neon);font-weight:700;">generate your first cover art free →</a></p>
           <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
         </div>
       </div>
@@ -483,16 +483,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">
-      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="footer-logoname">StudioSound.ai</span>
     </div>
     <div class="footer-links">
-      <a class="footer-link" href="/landing.html">Home</a>
-      <a class="footer-link" href="/features.html">Features</a>
-      <a class="footer-link" href="/pricing.html">Pricing</a>
-      <a class="footer-link" href="/community.html">Community</a>
-      <a class="footer-link" href="/blog.html">Blog</a>
-      <a class="footer-link" href="/contact.html">Contact</a>
+      <a class="footer-link" href="index.html">Home</a>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact</a>
     </div>
     <div class="footer-social">
       <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
