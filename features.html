@@ -12,8 +12,7 @@
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:14px;color:#05050a;}
+.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;}
 .navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
@@ -76,9 +75,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tool-cta{display:inline-flex;align-items:center;gap:6px;color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;}
 .tool-cta:hover{text-decoration:underline;}
 .coming-soon-tag{background:#1a1a28;color:#5a5a72;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px;}
-.tool-feature-visual{background:#0f0f1a;border:0.5px solid var(--border);border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font-size:72px;position:relative;overflow:hidden;}
+.tool-feature-visual{background:radial-gradient(circle at 50% 42%,#00FFD114 0%,transparent 72%),#08080f;border:0.5px solid var(--border);border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;position:relative;overflow:hidden;padding:20px;}
+.visual-img{width:100%;max-height:320px;object-fit:contain;z-index:1;display:block;}
 .visual-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;background:radial-gradient(circle,#00FFD115 0%,transparent 70%);pointer-events:none;}
-.visual-label{font-size:11px;font-weight:700;color:var(--muted);z-index:1;}
+.visual-label{font-size:11px;font-weight:700;color:var(--muted);z-index:1;letter-spacing:0.06em;}
 
 /* DUAL AI SECTION */
 .dual-section{padding:0 32px 72px;}
@@ -89,6 +89,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .dual-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;max-width:700px;margin:0 auto 40px;}
 .dual-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:24px;text-align:center;}
 .dual-card-icon{font-size:40px;margin-bottom:12px;}
+.dual-card-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-bottom:12px;display:block;border:0.5px solid var(--border);}
+.dual-prompt{background:#08080f;border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px;text-align:left;}
+.dual-prompt-label{color:#ffffff;font-size:11px;font-weight:800;letter-spacing:0.06em;margin-bottom:6px;}
+.dual-prompt-text{color:#c0c0d8;font-size:11px;line-height:1.6;font-style:italic;}
 .dual-card-name{color:#fff;font-size:14px;font-weight:800;margin-bottom:6px;}
 .dual-card-desc{color:var(--muted);font-size:12px;line-height:1.6;}
 .vs-circle{width:48px;height:48px;background:var(--neon);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#05050a;font-size:13px;font-weight:900;flex-shrink:0;}
@@ -124,8 +128,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
-.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
 .footer-logoname{font-size:13px;font-weight:800;color:#fff;}
 .footer-links{display:flex;gap:18px;flex-wrap:wrap;}
 .footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;}
@@ -154,23 +157,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="logo" href="/landing.html">
-    <div class="logodot"><i class="ti ti-waveform"></i></div>
+  <a class="logo" href="landing.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
     <span class="navlink">Studio Suite</span>
     <span class="navlink">AI Playground</span>
     <span class="navlink active">Features</span>
-    <span class="navlink" onclick="window.location.href='/community.html'">Community</span>
+    <span class="navlink" onclick="window.location.href='community.html'">Community</span>
     <span class="navlink">Distribution</span>
-    <span class="navlink" onclick="window.location.href='/blog.html'">Blog</span>
-    <span class="navlink" onclick="window.location.href='/pricing.html'">Pricing</span>
-    <span class="navlink" onclick="window.location.href='/contact.html'">Contact Us</span>
+    <span class="navlink" onclick="window.location.href='blog.html'">Blog</span>
+    <span class="navlink" onclick="window.location.href='pricing.html'">Pricing</span>
+    <span class="navlink" onclick="window.location.href='contact.html'">Contact Us</span>
   </div>
   <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
 </nav>
 
@@ -180,8 +183,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <h1 class="hero-title">Everything you need to<br><span class="neon">drop like a major.</span></h1>
   <p class="hero-sub">Cover art, merch mockups, release plans, lyric videos, song generation, and AI ad management — all in one platform built exclusively for independent artists.</p>
   <div class="hero-btns">
-    <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
-    <button class="btn-outline" onclick="window.location.href='/pricing.html'">View Pricing →</button>
+    <button class="btn-hero" onclick="window.location.href='signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+    <button class="btn-outline" onclick="window.location.href='pricing.html'">View Pricing →</button>
   </div>
 </div>
 
@@ -238,11 +241,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="tool-bullet"><i class="ti ti-check"></i>17 genres and 15 moods to choose from</div>
         <div class="tool-bullet"><i class="ti ti-check"></i>Download instantly with no watermark on paid plans</div>
       </div>
-      <a class="tool-cta" href="/signup.html">Generate your first cover art →</a>
+      <a class="tool-cta" href="signup.html">Generate your first cover art →</a>
     </div>
-    <div class="tool-feature-visual" style="background:linear-gradient(135deg,#0f1f3a,#162b50);">
+    <div class="tool-feature-visual">
       <div class="visual-glow"></div>
-      <div style="font-size:80px;z-index:1;">🎨</div>
+      <img class="visual-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art Generator" loading="lazy"/>
       <div class="visual-label">COVER ART GENERATOR</div>
     </div>
   </div>
@@ -260,11 +263,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="tool-bullet"><i class="ti ti-check"></i>Adapts to your follower count and budget</div>
         <div class="tool-bullet"><i class="ti ti-check"></i>Works for singles, EPs, albums, and mixtapes</div>
       </div>
-      <a class="tool-cta" href="/signup.html">Build your release plan →</a>
+      <a class="tool-cta" href="signup.html">Build your release plan →</a>
     </div>
-    <div class="tool-feature-visual" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);">
+    <div class="tool-feature-visual">
       <div class="visual-glow"></div>
-      <div style="font-size:80px;z-index:1;">🚀</div>
+      <img class="visual-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Plan Generator" loading="lazy"/>
       <div class="visual-label">RELEASE PLAN GENERATOR</div>
     </div>
   </div>
@@ -282,11 +285,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="tool-bullet"><i class="ti ti-check"></i>8 product types, 8 color options</div>
         <div class="tool-bullet"><i class="ti ti-check"></i>Download high resolution mockups instantly</div>
       </div>
-      <a class="tool-cta" href="/signup.html">Create your first mockup →</a>
+      <a class="tool-cta" href="signup.html">Create your first mockup →</a>
     </div>
-    <div class="tool-feature-visual" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);">
+    <div class="tool-feature-visual">
       <div class="visual-glow"></div>
-      <div style="font-size:80px;z-index:1;">👕</div>
+      <img class="visual-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="Merch Mockup Studio" loading="lazy"/>
       <div class="visual-label">MERCH MOCKUP STUDIO</div>
     </div>
   </div>
@@ -304,11 +307,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="tool-bullet"><i class="ti ti-check"></i>Export as MP4 instantly</div>
         <div class="tool-bullet"><i class="ti ti-check"></i>Powered by Veed.io AI</div>
       </div>
-      <a class="tool-cta" href="/signup.html">Get notified when live →</a>
+      <a class="tool-cta" href="signup.html">Get notified when live →</a>
     </div>
-    <div class="tool-feature-visual" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);">
+    <div class="tool-feature-visual">
       <div class="visual-glow"></div>
-      <div style="font-size:80px;z-index:1;">🎬</div>
+      <img class="visual-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Video Creator" loading="lazy"/>
       <div class="visual-label">LYRIC VIDEO CREATOR</div>
     </div>
   </div>
@@ -326,11 +329,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="tool-bullet"><i class="ti ti-check"></i>Download as MP3 instantly</div>
         <div class="tool-bullet"><i class="ti ti-check"></i>100% original — no copyright issues</div>
       </div>
-      <a class="tool-cta" href="/signup.html">Get notified when live →</a>
+      <a class="tool-cta" href="signup.html">Get notified when live →</a>
     </div>
-    <div class="tool-feature-visual" style="background:linear-gradient(135deg,#0f0f3a,#1a1a50);">
+    <div class="tool-feature-visual">
       <div class="visual-glow"></div>
-      <div style="font-size:80px;z-index:1;">🎵</div>
+      <img class="visual-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/music-video-generator.png.png" alt="AI Song Generator" loading="lazy"/>
       <div class="visual-label">AI SONG GENERATOR</div>
     </div>
   </div>
@@ -348,11 +351,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         <div class="tool-bullet"><i class="ti ti-check"></i>Track performance in real time</div>
         <div class="tool-bullet"><i class="ti ti-check"></i>Built for music promotion — not generic ads</div>
       </div>
-      <a class="tool-cta" href="/signup.html">Get notified when live →</a>
+      <a class="tool-cta" href="signup.html">Get notified when live →</a>
     </div>
-    <div class="tool-feature-visual" style="background:linear-gradient(135deg,#2a0f3a,#3a1a50);">
+    <div class="tool-feature-visual">
       <div class="visual-glow"></div>
-      <div style="font-size:80px;z-index:1;">📊</div>
+      <img class="visual-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ad-creator.png.png" alt="AI Ad Manager" loading="lazy"/>
       <div class="visual-label">AI AD MANAGER</div>
     </div>
   </div>
@@ -366,15 +369,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <p class="dual-sub">No other music platform does this. When you generate cover art on StudioSound.ai we run your prompt through two different AI models simultaneously and show you both results side by side.</p>
     <div class="dual-grid">
       <div class="dual-card">
-        <div class="dual-card-icon">🎨</div>
+        <img class="dual-card-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="Version A cover art" loading="lazy"/>
         <div class="dual-card-name">Version A</div>
-        <div class="dual-card-desc">Ultra photorealistic, cinematic photography style, sharp professional details</div>
+        <div class="dual-prompt"><div class="dual-prompt-label">ONE PROMPT → 2 IMAGES</div><div class="dual-prompt-text">"I need to create a music cover art for my song that feels sunny on a beach with girls in bikinis playing volleyball, laying out tanning — make them all different ethnicities. And the title BEACHES in bold fluorescent colors to fit the image."</div></div>
       </div>
       <div class="vs-circle">VS</div>
       <div class="dual-card">
-        <div class="dual-card-icon">✨</div>
+        <img class="dual-card-img" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-b.png.png" alt="Version B cover art" loading="lazy"/>
         <div class="dual-card-name">Version B</div>
-        <div class="dual-card-desc">Bold graphic art, high contrast, painterly artistic interpretation</div>
+        <div class="dual-prompt"><div class="dual-prompt-label">ONE PROMPT → 2 IMAGES</div><div class="dual-prompt-text">"I need to create a music cover art for my song that feels sunny on a beach with girls in bikinis playing volleyball, laying out tanning — make them all different ethnicities. And the title BEACHES in bold fluorescent colors to fit the image."</div></div>
       </div>
     </div>
     <div class="dual-result">
@@ -425,8 +428,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <h2 class="cta-title">Talent should be the only<br><span class="neon">barrier to success in music.</span></h2>
     <p class="cta-sub">Not money. Not connections. Not technical knowledge.<br>StudioSound.ai removes every other barrier.</p>
     <div class="hero-btns">
-      <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
-      <button class="btn-outline" onclick="window.location.href='/pricing.html'">View Pricing →</button>
+      <button class="btn-hero" onclick="window.location.href='signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+      <button class="btn-outline" onclick="window.location.href='pricing.html'">View Pricing →</button>
     </div>
   </div>
 </div>
@@ -435,16 +438,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">
-      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="footer-logoname">StudioSound.ai</span>
     </div>
     <div class="footer-links">
-      <a class="footer-link" href="/landing.html">Home</a>
-      <a class="footer-link" href="/features.html">Features</a>
-      <a class="footer-link" href="/pricing.html">Pricing</a>
-      <a class="footer-link" href="/community.html">Community</a>
-      <a class="footer-link" href="/blog.html">Blog</a>
-      <a class="footer-link" href="/contact.html">Contact</a>
+      <a class="footer-link" href="landing.html">Home</a>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact</a>
     </div>
     <div class="footer-social">
       <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
