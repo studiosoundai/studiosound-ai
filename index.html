@@ -693,7 +693,7 @@ sbClient.auth.getSession().then(({ data }) => {
     const first = (data.session.user.user_metadata && data.session.user.user_metadata.first_name) || 'Artist';
     document.getElementById('navbtns').innerHTML =
       '<button class="btn-ghost" onclick="doSignOut()">Sign Out</button>' +
-      '<button class="btn-neon"><i class="ti ti-sparkles"></i> Hey, ' + first + '</button>';
+      '<button class="btn-neon" onclick="window.location.href=\'app.html\'"><i class="ti ti-sparkles"></i> Open Studio — ' + first + '</button>';
   }
 });
 
