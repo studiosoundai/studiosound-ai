@@ -6,6 +6,7 @@
 <title>StudioSound.ai — The AI Studio for Independent Artists</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#1a1a28;--text:#fafafa;--muted:#6b6b80;}
@@ -354,7 +355,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <a class="navlink" href="pricing.html">Pricing</a>
     <a class="navlink" href="contact.html">Contact Us</a>
   </div>
-  <div class="navbtns">
+  <div class="navbtns" id="navbtns">
     <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
     <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
@@ -678,6 +679,27 @@ function setcat(el,cat){
       </div>`).join('');
     cards.style.opacity='1';
   },150);
+}
+</script>
+
+<script>
+const sbClient = supabase.createClient(
+  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+);
+
+sbClient.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    const first = (data.session.user.user_metadata && data.session.user.user_metadata.first_name) || 'Artist';
+    document.getElementById('navbtns').innerHTML =
+      '<button class="btn-ghost" onclick="doSignOut()">Sign Out</button>' +
+      '<button class="btn-neon"><i class="ti ti-sparkles"></i> Hey, ' + first + '</button>';
+  }
+});
+
+async function doSignOut() {
+  await sbClient.auth.signOut();
+  window.location.reload();
 }
 </script>
 </body>
