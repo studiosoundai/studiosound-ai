@@ -12,8 +12,7 @@
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logodot{width:28px;height:28px;background:var(--neon);border-radius:7px;display:flex;align-items:center;justify-content:center;}
-.logodot i{font-size:14px;color:#05050a;}
+.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
 .logoname{font-size:15px;font-weight:800;color:#fff;}
 .navlinks{display:flex;gap:2px;}
 .navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
@@ -52,6 +51,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .pick-title .neon{color:var(--neon);}
 .pick-sub{color:var(--muted);font-size:13px;font-weight:500;}
 
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:28px 32px 56px;max-width:1080px;margin:0 auto;}
 .price-card{background:var(--card);border:0.5px solid var(--border);border-radius:18px;padding:26px;position:relative;transition:border-color 0.2s;}
 .price-card:hover{border-color:var(--neon);}
 .price-card.hot{border-color:var(--neon);}
@@ -122,8 +122,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logodot{width:22px;height:22px;background:var(--neon);border-radius:5px;display:flex;align-items:center;justify-content:center;}
-.footer-logodot i{font-size:11px;color:#05050a;}
+.footer-logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
 .footer-logoname{font-size:13px;font-weight:800;color:#fff;}
 .footer-links{display:flex;gap:18px;flex-wrap:wrap;}
 .footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;cursor:pointer;}
@@ -149,23 +148,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <body>
 
 <nav class="nav">
-  <a class="logo" href="/landing.html">
-    <div class="logodot"><i class="ti ti-waveform"></i></div>
+  <a class="logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
     <span class="navlink drop">Studio Suite</span>
     <span class="navlink drop">AI Playground</span>
-    <span class="navlink">Features</span>
-    <span class="navlink">Community</span>
+    <span class="navlink" onclick="window.location.href='features.html'">Features</span>
+    <span class="navlink" onclick="window.location.href='community.html'">Community</span>
     <span class="navlink">Distribution</span>
-    <span class="navlink">Blog</span>
+    <span class="navlink" onclick="window.location.href='blog.html'">Blog</span>
     <span class="navlink active">Pricing</span>
-    <span class="navlink">Contact Us</span>
+    <span class="navlink" onclick="window.location.href='contact.html'">Contact Us</span>
   </div>
   <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='/signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='/signup.html'">Sign Up Free</button>
+    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
+    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
 </nav>
 
@@ -174,7 +173,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <h1 class="hero-title">Unlimited creation.<br><span class="neon">Half the price</span> of a studio.</h1>
   <p class="hero-sub">Cover art, merch, release plans, lyric videos, AI clips and full songs.<br>Every tool. One subscription.</p>
   <div class="hero-btns">
-    <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+    <button class="btn-hero" onclick="window.location.href='signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
     <button class="btn-outline" onclick="document.querySelector('.price-grid').scrollIntoView({behavior:'smooth'})">See plans →</button>
   </div>
   <div class="trust-pills">
@@ -204,7 +203,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="price-name">Free</div>
     <div><span class="price-amount">$0</span></div>
     <div class="price-billing">Free forever · no card needed</div>
-    <button class="price-btn out" onclick="window.location.href='/signup.html'">Start Free</button>
+    <button class="price-btn out" onclick="window.location.href='signup.html'">Start Free</button>
     <div class="price-div"></div>
     <div class="pf yes"><i class="ti ti-check"></i>3 cover arts per month</div>
     <div class="pf yes"><i class="ti ti-check"></i>1 release plan per month</div>
@@ -221,7 +220,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="price-name">Pro</div>
     <div><span class="price-amount" id="pro-amt">$9.99</span><span class="price-period">/mo</span></div>
     <div class="price-billing" id="pro-bill">Billed monthly · cancel anytime</div>
-    <button class="price-btn fill" onclick="window.location.href='/signup.html'">Upgrade to Pro</button>
+    <button class="price-btn fill" onclick="window.location.href='signup.html'">Upgrade to Pro</button>
     <div class="price-div"></div>
     <div class="pf hl"><i class="ti ti-check"></i>Unlimited cover art</div>
     <div class="pf hl"><i class="ti ti-check"></i>Unlimited release plans</div>
@@ -237,7 +236,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="price-name">Premium</div>
     <div><span class="price-amount" id="prem-amt">$24.99</span><span class="price-period">/mo</span></div>
     <div class="price-billing" id="prem-bill">Billed monthly · cancel anytime</div>
-    <button class="price-btn out" onclick="window.location.href='/signup.html'">Upgrade to Premium</button>
+    <button class="price-btn out" onclick="window.location.href='signup.html'">Upgrade to Premium</button>
     <div class="price-div"></div>
     <div class="pf hl"><i class="ti ti-check"></i>Everything in Pro</div>
     <div class="pf hl"><i class="ti ti-check"></i>Unlimited lyric videos</div>
@@ -315,7 +314,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="cta-title">Ready to <span class="neon">create unlimited?</span></div>
   <div class="cta-sub">Start free. No card needed. Upgrade when you're ready to scale.</div>
   <div class="hero-btns">
-    <button class="btn-hero" onclick="window.location.href='/signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
+    <button class="btn-hero" onclick="window.location.href='signup.html'"><i class="ti ti-sparkles"></i> Start Creating for Free</button>
     <button class="btn-outline" onclick="document.querySelector('.price-grid').scrollIntoView({behavior:'smooth'})">See plans again →</button>
   </div>
 </div>
@@ -333,23 +332,24 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">
-      <div class="footer-logodot"><i class="ti ti-waveform"></i></div>
+      <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
       <span class="footer-logoname">StudioSound.ai</span>
     </div>
     <div class="footer-links">
-      <a class="footer-link" href="#">About Us</a>
+      <a class="footer-link" href="index.html">Home</a>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="contact.html">Contact Us</a>
       <a class="footer-link" href="#">Terms of Use</a>
       <a class="footer-link" href="#">Privacy Policy</a>
-      <a class="footer-link" href="#">Security</a>
-      <a class="footer-link" href="#">Contact Us</a>
-      <a class="footer-link" href="/community.html">Community</a>
     </div>
     <div class="footer-social">
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-facebook"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-x"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-instagram"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-youtube"></i></a>
-      <a class="footer-social-link" href="#"><i class="ti ti-brand-tiktok"></i></a>
+      <a class="footer-social-link" href="https://facebook.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+      <a class="footer-social-link" href="https://twitter.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-x"></i></a>
+      <a class="footer-social-link" href="https://instagram.com/StudioSoundAI" target="_blank"><i class="ti ti-brand-instagram"></i></a>
+      <a class="footer-social-link" href="https://youtube.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-youtube"></i></a>
+      <a class="footer-social-link" href="https://tiktok.com/@StudioSoundAI" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
     </div>
   </div>
   <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
