@@ -67,8 +67,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .tleftitle{font-size:26px;font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;color:#fff;}
 .tleftitle .neon{color:var(--neon);}
 .tleftdesc{color:#c0c0d8;font-size:11px;font-weight:500;line-height:1.6;margin-bottom:14px;}
-.btn-exp{background:var(--neon);color:#05050a;border:none;border-radius:22px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:6px;}
-.tscroll{flex:1;overflow-x:auto;scrollbar-width:none;display:flex;gap:10px;padding:0 16px 0 8px;}
+.btn-exp{background:var(--neon);color:#05050a;border:none;border-radius:22px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.tscroll{flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;display:flex;gap:10px;padding:0 16px 0 8px;width:100%;}
 .tscroll::-webkit-scrollbar{display:none;}
 .tcard{flex-shrink:0;width:188px;border-radius:12px;overflow:hidden;background:var(--card);border:0.5px solid var(--border);cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
 .tcard:hover{border-color:var(--neon);transform:translateY(-3px);}
@@ -98,7 +98,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 
 /* MARQUEE */
 .marquee{overflow:hidden;padding:16px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);}
-.marqinner{display:flex;gap:44px;animation:marq 22s linear infinite;white-space:nowrap;}
+.marqinner{display:flex;gap:44px;animation:marq 22s linear infinite;white-space:nowrap;width:max-content;will-change:transform;}
 @keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 .marqitem{color:#ffffff;font-size:11px;font-weight:700;letter-spacing:0.07em;display:inline-flex;align-items:center;gap:12px;}
 .marqitem::before{content:'✦';color:var(--neon);font-size:9px;}
@@ -140,7 +140,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .logoslider::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
 .logoslider::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
 .logoslider-label{text-align:center;color:#8080a0;font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:18px;}
-.logotrack{display:flex;gap:52px;animation:logoscroll 30s linear infinite;white-space:nowrap;align-items:center;}
+.logotrack{display:flex;gap:52px;animation:logoscroll 30s linear infinite;white-space:nowrap;align-items:center;width:max-content;will-change:transform;}
 @keyframes logoscroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 .logoitem{display:inline-flex;align-items:center;gap:8px;color:#ffffff;font-size:13px;font-weight:700;flex-shrink:0;transition:color 0.2s;cursor:pointer;}
 .logoitem:hover{color:var(--text);}
@@ -243,23 +243,41 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .footer-bottom-link:hover{color:#8080a0;}
 
 @media(max-width:768px){
+html,body{max-width:100vw;overflow-x:hidden;}
 .navlinks{display:none;}
+.nav{padding:0 14px;gap:8px;}
+.logoname{display:none;}
+.logoimg{height:36px;}
+.btn-ghost,.btn-neon{padding:7px 12px;font-size:11px;white-space:nowrap;}
 .hero{grid-template-columns:1fr;padding:40px 16px 32px;}
 .heroright{display:none;}
 .herotitle{font-size:42px;}
 .toolsrow-inner{flex-direction:column;gap:20px;}
 .toolsleft{width:100%;padding:0 16px;}
+.tleftitle br{display:none;}
+.tleftitle{font-size:22px;}
+.tscroll{padding:0 16px;}
+.tcard{width:170px;}
 .gallerysec,.featsec,.stepsec,.pricesec,.faqsec,.ctasec,.toolkit{padding-left:16px;padding-right:16px;}
 .maingrid{grid-template-columns:1fr 1fr;height:auto;}
-.griditem.tall{grid-row:span 1;}
-.statsbar{margin:32px 16px;grid-template-columns:repeat(2,1fr);}
+.griditem{aspect-ratio:1;}
+.griditem.tall{grid-row:span 1;aspect-ratio:1;}
+.grow2{grid-template-columns:repeat(2,1fr);}
+.grow2 .griditem{height:auto;aspect-ratio:1;}
+.statsbar{margin:32px 16px;grid-template-columns:repeat(2,1fr);padding:20px;}
+.statnum{font-size:26px;}
 .featgrid,.pricegrid{grid-template-columns:1fr;}
 .stepsrow{flex-direction:column;gap:20px;}
 .stepitem:not(:last-child)::after{display:none;}
 .toolcards{grid-template-columns:repeat(2,1fr);}
+.toolcard-img{height:150px;}
 .toolkit-inner{flex-direction:column;}
-.toolkit-left{width:100%;padding-right:0;border-right:none;border-bottom:0.5px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.toolkit-left{width:100%;padding-right:0;border-right:none;border-bottom:0.5px solid var(--border);padding-bottom:16px;margin-bottom:16px;display:flex;overflow-x:auto;gap:6px;scrollbar-width:none;}
+.toolkit-left .cat-item{flex-shrink:0;white-space:nowrap;border-left:none;}
 .footer-top{grid-template-columns:1fr 1fr;}
+.ctabox{padding:40px 20px;}
+.ctatitle{font-size:24px;}
+.herotitle{font-size:38px;}
 }
 .sicon{width:18px;height:18px;object-fit:contain;display:inline-block;vertical-align:middle;}
 </style>
@@ -527,9 +545,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <h2 class="sectitle">Start free. <span class="neon">Scale when ready.</span></h2>
   <p class="secsub">No contracts. No lock-in. Cancel anytime.</p>
   <div class="pricegrid">
-    <div class="pricecard"><div class="ptier">FREE</div><div class="pnum">$0 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>3 cover arts per month</div><div class="pfeat"><i class="ti ti-check"></i>1 release plan</div><div class="pfeat"><i class="ti ti-check"></i>2 merch mockups</div><div class="pfeat"><i class="ti ti-check"></i>Watermarked lyric video</div><button class="pbtn out" onclick="window.location.href='signup.html'">Start for free</button></div>
-    <div class="pricecard hot"><div class="hotbadge">MOST POPULAR</div><div class="ptier">PRO</div><div class="pnum">$9.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Unlimited cover art</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited release plans</div><div class="pfeat"><i class="ti ti-check"></i>Full merch mockup suite</div><div class="pfeat"><i class="ti ti-check"></i>5 lyric videos per month</div><div class="pfeat"><i class="ti ti-check"></i>3 song generations</div><button class="pbtn fill" onclick="window.location.href='signup.html'">Upgrade to Pro</button></div>
-    <div class="pricecard"><div class="ptier">PREMIUM</div><div class="pnum">$24.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Everything in Pro</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited lyric videos</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited song generation</div><div class="pfeat"><i class="ti ti-check"></i>Music video generation</div><div class="pfeat"><i class="ti ti-check"></i>AI ad creation and management</div><button class="pbtn out" onclick="window.location.href='signup.html'">Upgrade to Premium</button></div>
+    <div class="pricecard"><div class="ptier">FREE</div><div class="pnum">$0 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>3 cover generations — 2 versions each</div><div class="pfeat"><i class="ti ti-check"></i>1 release plan</div><div class="pfeat"><i class="ti ti-check"></i>2 merch mockups</div><div class="pfeat"><i class="ti ti-check"></i>Watermarked lyric video</div><button class="pbtn out" onclick="window.location.href='signup.html'">Start for free</button></div>
+    <div class="pricecard hot"><div class="hotbadge">MOST POPULAR</div><div class="ptier">PRO</div><div class="pnum">$9.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>100 cover generations — 2 versions each</div><div class="pfeat"><i class="ti ti-check"></i>Unlimited release plans</div><div class="pfeat"><i class="ti ti-check"></i>50 merch mockups per month</div><div class="pfeat"><i class="ti ti-check"></i>5 lyric videos per month</div><div class="pfeat"><i class="ti ti-check"></i>3 song generations</div><button class="pbtn fill" onclick="window.location.href='signup.html'">Upgrade to Pro</button></div>
+    <div class="pricecard"><div class="ptier">PREMIUM</div><div class="pnum">$24.99 <span class="pper">/month</span></div><div class="pdiv"></div><div class="pfeat"><i class="ti ti-check"></i>Everything in Pro</div><div class="pfeat"><i class="ti ti-check"></i>25 lyric videos per month</div><div class="pfeat"><i class="ti ti-check"></i>30 song generations per month</div><div class="pfeat"><i class="ti ti-check"></i>5 music videos per month</div><div class="pfeat"><i class="ti ti-check"></i>AI ad creation and management</div><button class="pbtn out" onclick="window.location.href='signup.html'">Upgrade to Premium</button></div>
   </div>
 </div>
 
