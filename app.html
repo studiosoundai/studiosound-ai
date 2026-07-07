@@ -170,8 +170,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   </div>
   <div class="sidebar-section">
     <div class="sidebar-label">ACCOUNT</div>
-    <button class="sidebar-item"><i class="ti ti-folder"></i> My Assets</button>
-    <button class="sidebar-item"><i class="ti ti-settings"></i> Settings</button>
+    <button class="sidebar-item" onclick="switchTool('assets',this)"><i class="ti ti-folder"></i> My Assets</button>
+    <button class="sidebar-item" onclick="switchTool('settings',this)"><i class="ti ti-settings"></i> Settings</button>
     <button class="sidebar-item" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade Plan</button>
   </div>
   <div class="sidebar-bottom">
@@ -526,6 +526,38 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       </div>
     </div>
 
+    <!-- MY ASSETS -->
+    <div id="tool-assets" class="hidden">
+      <div class="gen-panel" style="margin-bottom:16px;">
+        <div class="gen-title">📁 My Assets</div>
+        <div class="gen-sub">Everything you've generated, saved automatically to your account.</div>
+        <div class="recent-grid" id="assets-grid" style="grid-template-columns:repeat(4,1fr);">
+          <p style="color:var(--muted);font-size:12px;">Loading your assets...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tool-settings" class="hidden">
+      <div class="gen-panel" style="max-width:520px;margin-bottom:16px;">
+        <div class="gen-title">⚙️ Account Settings</div>
+        <div class="gen-sub">Manage your StudioSound.ai account.</div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="settings-email" disabled value=""/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Plan</label>
+          <input class="form-input" id="settings-plan" disabled value="Free"/>
+        </div>
+        <div class="result-actions" style="margin-top:4px;">
+          <button class="result-btn" onclick="sendPasswordChange()"><i class="ti ti-lock"></i> Change Password</button>
+          <button class="result-btn primary" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Manage Plan</button>
+        </div>
+        <div style="color:var(--muted);font-size:11px;margin-top:10px;" id="settings-msg"></div>
+      </div>
+    </div>
+
     <!-- RECENT GENERATIONS -->
     <div class="section-label">RECENT GENERATIONS</div>
     <div class="recent-grid" id="recent-grid">
@@ -562,16 +594,104 @@ const sbAuth = supabase.createClient(
   'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
 );
 
-sbAuth.auth.getSession().then(({ data }) => {
+let currentUser = null;
+let currentPlan = 'free';
+
+sbAuth.auth.getSession().then(async ({ data }) => {
   if (!data.session) {
     window.location.href = 'signin.html';
     return;
   }
-  const meta = data.session.user.user_metadata || {};
+  currentUser = data.session.user;
+  const meta = currentUser.user_metadata || {};
   const first = meta.first_name || 'Artist';
   document.getElementById('user-name').textContent = first + (meta.last_name ? ' ' + meta.last_name.charAt(0) + '.' : '');
   document.getElementById('welcome-title').innerHTML = 'Welcome back, <span>' + first + '</span> 👋';
+
+  // show real plan in sidebar
+  try {
+    const { data: prof } = await sbAuth.from('profiles').select('plan').single();
+    if (prof && prof.plan) {
+      currentPlan = prof.plan;
+      document.querySelector('.user-plan').textContent = prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' Plan';
+    }
+  } catch(e) {}
+
+  // load saved generations into Recent row
+  initRecent();
 });
+
+// ===== ASSET PERSISTENCE =====
+function toolIcon(tool) {
+  return {'Cover Art':'🎨','Release Plan':'🚀','Merch Mockup':'👕'}[tool] || '⭐';
+}
+
+async function saveAsset(tool, name, dataUrl) {
+  try {
+    if (!currentUser) return;
+    let publicUrl = null;
+    if (dataUrl) {
+      const blob = await (await fetch(dataUrl)).blob();
+      const path = currentUser.id + '/' + Date.now() + '.png';
+      const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'image/png' });
+      if (!upErr) {
+        publicUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+      } else { console.error('upload error', upErr); }
+    }
+    await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl });
+  } catch(e) { console.error('saveAsset', e); }
+}
+
+async function loadAssets() {
+  try {
+    const { data } = await sbAuth.from('assets').select('*').order('created_at', { ascending: false }).limit(60);
+    return data || [];
+  } catch(e) { return []; }
+}
+
+async function initRecent() {
+  const items = await loadAssets();
+  if (!items.length) return;
+  recentItems = items.slice(0, 5).map(a => ({ icon: toolIcon(a.tool), name: a.name || a.tool, type: a.tool, imageUrl: a.url }));
+  renderRecent();
+}
+
+async function showAssetsPanel() {
+  const grid = document.getElementById('assets-grid');
+  grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Loading your assets...</p>';
+  const items = await loadAssets();
+  if (!items.length) {
+    grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Nothing here yet — everything you generate is saved automatically and will appear here.</p>';
+    return;
+  }
+  grid.innerHTML = items.map(a => `
+    <div class="recent-item">
+      <div class="recent-thumb">${a.url
+        ? `<img src="${a.url}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>`
+        : `<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;background:#0f0f1a;">${toolIcon(a.tool)}</div>`}
+      </div>
+      <div class="recent-info">
+        <div class="recent-name">${a.name || a.tool}</div>
+        <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
+        ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function fillSettings() {
+  if (currentUser) document.getElementById('settings-email').value = currentUser.email || '';
+  document.getElementById('settings-plan').value = currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1) + ' Plan';
+}
+
+async function sendPasswordChange() {
+  if (!currentUser) return;
+  const { error } = await sbAuth.auth.resetPasswordForEmail(currentUser.email, {
+    redirectTo: window.location.origin + '/signin.html'
+  });
+  document.getElementById('settings-msg').textContent = error
+    ? 'Something went wrong — try again.'
+    : 'Password change link sent to ' + currentUser.email + ' — check your inbox.';
+}
 
 async function doSignOut() {
   await sbAuth.auth.signOut();
@@ -607,8 +727,10 @@ let recentItems = [];
 function switchTool(tool, sidebarBtn) {
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
+  if(tool === 'assets') showAssetsPanel();
+  if(tool === 'settings') fillSettings();
   if(sidebarBtn) {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
     sidebarBtn.classList.add('active');
@@ -745,12 +867,14 @@ async function generateArt() {
       selectedArtUrl = versionAUrl;
       selectVersion('a');
       addRecent('🎨', title, 'Cover Art', versionAUrl);
+      saveAsset('Cover Art', title, versionAUrl);
     } else if(versionAUrl || versionBUrl) {
       const url = versionAUrl || versionBUrl;
       document.getElementById('art-single-img').src = url;
       document.getElementById('art-single').style.display = 'block';
       selectedArtUrl = url;
       addRecent('🎨', title, 'Cover Art', url);
+      saveAsset('Cover Art', title, url);
     } else {
       const limitHit = (resA.status==='fulfilled' && resA.value.error==='limit_reached') ||
                        (resB.status==='fulfilled' && resB.value.error==='limit_reached');
@@ -830,6 +954,7 @@ async function generatePlan() {
       `).join('');
       container.classList.add('show');
       addRecent('🚀', name, 'Release Plan', null);
+      saveAsset('Release Plan', name, null);
     } else {
       throw new Error('No plan returned');
     }
@@ -895,6 +1020,7 @@ async function generateMerch() {
       document.getElementById('merch-retail').textContent = d.retail;
       document.getElementById('merch-result').classList.add('show');
       addRecent(d.emoji, `${color} ${type}`, 'Merch Mockup', data.data[0].url);
+      saveAsset('Merch Mockup', `${color} ${type}`, data.data[0].url);
     } else {
       throw new Error('No mockup returned');
     }
