@@ -619,6 +619,12 @@ sbAuth.auth.getSession().then(async ({ data }) => {
 
   // load saved generations into Recent row
   initRecent();
+
+  // Celebrate a successful upgrade
+  if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
+    document.querySelector('.welcome-sub').innerHTML = '🎉 <strong style="color:var(--neon);">Upgrade successful!</strong> Your new limits are live — go create.';
+    window.history.replaceState({}, '', 'app.html');
+  }
 });
 
 // ===== ASSET PERSISTENCE =====
