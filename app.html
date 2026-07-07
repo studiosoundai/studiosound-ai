@@ -578,6 +578,25 @@ async function doSignOut() {
   window.location.href = 'index.html';
 }
 
+// Attach the user's session token so the API knows who's asking
+async function authHeaders() {
+  const { data } = await sbAuth.auth.getSession();
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + (data.session ? data.session.access_token : '')
+  };
+}
+
+function limitMessage(toolLabel) {
+  return 'You\u2019ve used all your ' + toolLabel + ' for this month. Upgrade your plan to keep creating \u2192 ';
+}
+
+function showLimit(errId, toolLabel) {
+  const err = document.getElementById(errId);
+  err.innerHTML = limitMessage(toolLabel) + '<a href="pricing.html" style="color:var(--neon);font-weight:700;">View plans</a>';
+  err.style.display = 'block';
+}
+
 // ====== GLOBALS ======
 let selectedArtUrl = null;
 let versionAUrl = null;
@@ -700,15 +719,16 @@ async function generateArt() {
   document.getElementById('art-version-b').classList.remove('selected');
 
   try {
+    const hdrs = await authHeaders();
     const [resA, resB] = await Promise.allSettled([
       fetch('/api/generate-art', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: hdrs,
         body: JSON.stringify({prompt: basePrompt, imageData})
       }).then(r => r.json()),
       fetch('/api/generate-art-gemini', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: hdrs,
         body: JSON.stringify({prompt: basePrompt})
       }).then(r => r.json())
     ]);
@@ -732,6 +752,14 @@ async function generateArt() {
       selectedArtUrl = url;
       addRecent('🎨', title, 'Cover Art', url);
     } else {
+      const limitHit = (resA.status==='fulfilled' && resA.value.error==='limit_reached') ||
+                       (resB.status==='fulfilled' && resB.value.error==='limit_reached');
+      if(limitHit) {
+        document.getElementById('art-placeholder').style.display = 'flex';
+        showLimit('art-error','cover art generations');
+        document.getElementById('art-btn').disabled = false;
+        return;
+      }
       throw new Error('Both versions failed to generate');
     }
   } catch(e) {
@@ -778,11 +806,18 @@ async function generatePlan() {
   try {
     const res = await fetch('/api/generate-plan', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: await authHeaders(),
       body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details})
     });
     const data = await res.json();
     document.getElementById('plan-loading').classList.remove('active');
+
+    if(data.error === 'limit_reached') {
+      document.getElementById('plan-placeholder').style.display = 'flex';
+      showLimit('plan-error','release plans');
+      document.getElementById('plan-btn').disabled = false;
+      return;
+    }
 
     if(data.timeline && data.timeline.length > 0) {
       const container = document.getElementById('plan-result');
@@ -840,11 +875,18 @@ async function generateMerch() {
   try {
     const res = await fetch('/api/generate-merch', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: await authHeaders(),
       body: JSON.stringify({imageData, productType:type, color, prompt})
     });
     const data = await res.json();
     document.getElementById('merch-loading').classList.remove('active');
+
+    if(data.error === 'limit_reached') {
+      document.getElementById('merch-placeholder').style.display = 'flex';
+      showLimit('merch-error','merch mockups');
+      document.getElementById('merch-btn').disabled = false;
+      return;
+    }
 
     if(data.data && data.data[0]) {
       document.getElementById('merch-result-img').src = data.data[0].url;
