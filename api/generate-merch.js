@@ -1,18 +1,24 @@
+import { checkAndCount } from './_usage.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // ===== GATE: verify user + check/count monthly limit =====
+  const gate = await checkAndCount(req, 'merch');
+  if (!gate.ok) {
+    return res.status(gate.status).json({ error: gate.error, plan: gate.plan || null });
+  }
+  // ==========================================================
+
   try {
     const { prompt, imageData, productType, color } = req.body;
-
     if (!imageData) {
       return res.status(400).json({ error: 'Image is required' });
     }
-
     const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
-
     const formData = new FormData();
     const blob = new Blob([buffer], { type: 'image/png' });
     formData.append('image', blob, 'design.png');
@@ -20,7 +26,6 @@ export default async function handler(req, res) {
     formData.append('model', 'gpt-image-1');
     formData.append('n', '1');
     formData.append('size', '1024x1024');
-
     const fetchResponse = await fetch('https://api.openai.com/v1/images/edits', {
       method: 'POST',
       headers: {
@@ -28,9 +33,7 @@ export default async function handler(req, res) {
       },
       body: formData,
     });
-
     const result = await fetchResponse.json();
-
     if (result.data && result.data[0]) {
       const img = result.data[0];
       return res.status(200).json({
@@ -39,7 +42,6 @@ export default async function handler(req, res) {
     } else {
       throw new Error(result.error?.message || 'No image returned');
     }
-
   } catch (error) {
     console.error('Generate merch error:', error);
     return res.status(500).json({
