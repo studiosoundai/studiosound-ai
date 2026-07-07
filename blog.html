@@ -4,8 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog — StudioSound.ai</title>
+<meta name="description" content="Music marketing tips, AI tools, and release strategies for independent artists.">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<meta property="og:title" content="Blog — StudioSound.ai">
+<meta property="og:description" content="Music marketing tips, AI tools, and release strategies for independent artists.">
+<meta property="og:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<meta property="og:url" content="https://studiosound.ai/blog">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="StudioSound.ai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Blog — StudioSound.ai">
+<meta name="twitter:description" content="Music marketing tips, AI tools, and release strategies for independent artists.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
@@ -552,13 +566,34 @@ function toggleArticle(btn) {
   }
 }
 
-function subscribeNewsletter() {
-  const email = document.getElementById('newsletter-email').value.trim();
-  if(!email) { alert('Please enter your email address'); return; }
-  if(!email.includes('@')) { alert('Please enter a valid email address'); return; }
-  window.location.href = `mailto:hello@studiosound.ai?subject=Newsletter Subscription&body=Please add ${email} to the StudioSound.ai newsletter.`;
-  document.getElementById('newsletter-email').value = '';
-  alert('Thanks for subscribing! Welcome to the StudioSound community 🎵');
+const sbBlog = supabase.createClient(
+  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+);
+
+async function subscribeNewsletter() {
+  const input = document.getElementById('newsletter-email');
+  const note = document.querySelector('.newsletter-note');
+  const email = input.value.trim().toLowerCase();
+  if(!email || !email.includes('@') || !email.includes('.')) {
+    note.textContent = 'Please enter a valid email address.';
+    note.style.color = '#ff6b6b';
+    return;
+  }
+  const { error } = await sbBlog.from('newsletter_subscribers').insert({ email: email });
+  if(error) {
+    if(String(error.code) === '23505') {
+      note.textContent = "You're already on the list! 🎵";
+      note.style.color = 'var(--neon)';
+    } else {
+      note.textContent = 'Something went wrong — please try again.';
+      note.style.color = '#ff6b6b';
+    }
+    return;
+  }
+  input.value = '';
+  note.textContent = "You're in! Welcome to the StudioSound community 🎵";
+  note.style.color = 'var(--neon)';
 }
 </script>
 </body>
