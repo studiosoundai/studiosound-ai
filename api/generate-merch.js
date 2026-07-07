@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const formData = new FormData();
     const blob = new Blob([buffer], { type: 'image/png' });
     formData.append('image', blob, 'design.png');
-    formData.append('prompt', `Professional product mockup photography. Place this exact artwork design on the front of a ${color} ${productType}. Clean white background, studio lighting, high quality commercial photography, the design is centered and clearly visible on the product, realistic fabric texture, professional merch mockup.`);
+    formData.append('prompt', `Professional product mockup photography. Place this exact artwork design on a ${color} ${productType}. ${prompt ? 'Artist direction: ' + prompt + '.' : ''} Studio lighting, high quality commercial photography, the design clearly visible on the product, realistic fabric texture, professional merch mockup.`);
     formData.append('model', 'gpt-image-1');
     formData.append('n', '1');
     formData.append('size', '1024x1024');
