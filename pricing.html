@@ -6,6 +6,7 @@
 <title>Pricing — StudioSound.ai</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
@@ -189,14 +190,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="toggle-row">
     <span class="tlabel active" id="ml">Monthly</span>
     <div class="toggle" id="tog" onclick="toggleBilling()"><div class="toggle-dot"></div></div>
-    <span class="tlabel" id="yl">Yearly <span class="save-pill">Save 33%</span></span>
+    <span class="tlabel" id="yl">Yearly <span class="save-pill">Save 30%</span></span>
   </div>
-  <div class="toggle-sub">Switch to yearly and save 4 months of payments</div>
+  <div class="toggle-sub">Switch to yearly and save 30% — nearly 4 months free</div>
 </div>
 
 <div class="pick-sec">
   <div class="pick-title">Pick your <span class="neon">creative power</span></div>
-  <div class="pick-sub">Free to start. Pro to unlock everything. Yearly saves 33%.</div>
+  <div class="pick-sub">Free to start. Pro to unlock everything. Yearly saves 30%.</div>
 </div>
 
 <div class="price-grid">
@@ -207,7 +208,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="price-billing">Free forever · no card needed</div>
     <button class="price-btn out" onclick="window.location.href='signup.html'">Start Free</button>
     <div class="price-div"></div>
-    <div class="pf yes"><i class="ti ti-check"></i>3 cover arts per month</div>
+    <div class="pf yes"><i class="ti ti-check"></i>3 cover generations — 2 versions each</div>
     <div class="pf yes"><i class="ti ti-check"></i>1 release plan per month</div>
     <div class="pf yes"><i class="ti ti-check"></i>2 merch mockups</div>
     <div class="pf yes"><i class="ti ti-check"></i>Watermarked lyric video</div>
@@ -222,14 +223,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="price-name">Pro</div>
     <div><span class="price-amount" id="pro-amt">$9.99</span><span class="price-period">/mo</span></div>
     <div class="price-billing" id="pro-bill">Billed monthly · cancel anytime</div>
-    <button class="price-btn fill" onclick="window.location.href='signup.html'">Upgrade to Pro</button>
+    <button class="price-btn fill" id="btn-pro" onclick="startCheckout('pro',this)">Upgrade to Pro</button>
     <div class="price-div"></div>
-    <div class="pf hl"><i class="ti ti-check"></i>Unlimited cover art</div>
+    <div class="pf hl"><i class="ti ti-check"></i>100 cover generations — 2 versions each</div>
     <div class="pf hl"><i class="ti ti-check"></i>Unlimited release plans</div>
-    <div class="pf yes"><i class="ti ti-check"></i>Full merch mockup suite</div>
+    <div class="pf yes"><i class="ti ti-check"></i>50 merch mockups per month</div>
     <div class="pf yes"><i class="ti ti-check"></i>5 lyric videos per month</div>
     <div class="pf yes"><i class="ti ti-check"></i>3 song generations per month</div>
-    <div class="pf yes"><i class="ti ti-check"></i>StudioSound AI Clipping</div>
+    <div class="pf yes"><i class="ti ti-check"></i>10 StudioSound AI clips per month</div>
     <div class="pf no"><i class="ti ti-x"></i>Music video generation</div>
     <div class="pf no"><i class="ti ti-x"></i>AI ad creation</div>
   </div>
@@ -238,13 +239,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="price-name">Premium</div>
     <div><span class="price-amount" id="prem-amt">$24.99</span><span class="price-period">/mo</span></div>
     <div class="price-billing" id="prem-bill">Billed monthly · cancel anytime</div>
-    <button class="price-btn out" onclick="window.location.href='signup.html'">Upgrade to Premium</button>
+    <button class="price-btn out" id="btn-premium" onclick="startCheckout('premium',this)">Upgrade to Premium</button>
     <div class="price-div"></div>
     <div class="pf hl"><i class="ti ti-check"></i>Everything in Pro</div>
-    <div class="pf hl"><i class="ti ti-check"></i>Unlimited lyric videos</div>
-    <div class="pf hl"><i class="ti ti-check"></i>Unlimited song generation</div>
-    <div class="pf hl"><i class="ti ti-check"></i>Music video generation</div>
-    <div class="pf hl"><i class="ti ti-check"></i>Unlimited StudioSound AI Clipping</div>
+    <div class="pf hl"><i class="ti ti-check"></i>300 cover generations — 2 versions each</div>
+    <div class="pf hl"><i class="ti ti-check"></i>25 lyric videos per month</div>
+    <div class="pf hl"><i class="ti ti-check"></i>30 song generations per month</div>
+    <div class="pf hl"><i class="ti ti-check"></i>5 music video generations per month</div>
+    <div class="pf hl"><i class="ti ti-check"></i>50 StudioSound AI clips per month</div>
     <div class="pf hl"><i class="ti ti-check"></i>AI ad creation</div>
     <div class="pf hl"><i class="ti ti-check"></i>Meta & Google ad manager</div>
     <div class="pf yes"><i class="ti ti-check"></i>Priority support</div>
@@ -304,7 +306,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <div class="faq-item open"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's included in the free plan? <i class="ti ti-plus"></i></div><div class="faq-a">The free plan gives you 3 cover arts, 1 release plan, 2 merch mockups, and a watermarked lyric video every month. No credit card needed — ever.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is AI video clipping? <i class="ti ti-plus"></i></div><div class="faq-a">StudioSound's AI Clipping tool watches your long videos — performances, studio sessions, music videos, live streams — finds the best moments automatically, and turns them into short clips sized for TikTok, Reels, and YouTube Shorts. Captions added automatically. Perfect for artists and streamers who want daily content without daily editing.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do I own the content I generate? <i class="ti ti-plus"></i></div><div class="faq-a">Yes. 100%. Everything you generate on StudioSound.ai belongs to you. Use it commercially, upload to DSPs, print on merch, run ads — no restrictions whatsoever.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's the difference between monthly and yearly? <i class="ti ti-plus"></i></div><div class="faq-a">Monthly gives you full flexibility. Yearly saves you 33% — that's 4 months free. Both plans include all the same features. You can switch anytime.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's the difference between monthly and yearly? <i class="ti ti-plus"></i></div><div class="faq-a">Monthly gives you full flexibility. Yearly saves you 30% — nearly 4 months free. Both plans include all the same features. You can switch anytime.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I cancel at any time? <i class="ti ti-plus"></i></div><div class="faq-a">Absolutely. No long-term contracts, no cancellation fees. Cancel anytime from your account settings and keep full access until the end of your billing period.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is the cover art sized correctly for streaming platforms? <i class="ti ti-plus"></i></div><div class="faq-a">Yes. Every cover art is automatically sized to 3000×3000 pixels JPEG — the exact standard required by Spotify, Apple Music, Tidal, and most major DSPs.</div></div>
   </div>
@@ -362,10 +364,49 @@ function toggleBilling(){
   document.getElementById('tog').classList.toggle('on',yearly);
   document.getElementById('ml').classList.toggle('active',!yearly);
   document.getElementById('yl').classList.toggle('active',yearly);
-  document.getElementById('pro-amt').textContent=yearly?'$7.99':'$9.99';
+  document.getElementById('pro-amt').textContent=yearly?'$6.99':'$9.99';
   document.getElementById('prem-amt').textContent=yearly?'$16.99':'$24.99';
   document.getElementById('pro-bill').textContent=yearly?'Billed yearly · cancel anytime':'Billed monthly · cancel anytime';
   document.getElementById('prem-bill').textContent=yearly?'Billed yearly · cancel anytime':'Billed monthly · cancel anytime';
+}
+
+const sbPricing = supabase.createClient(
+  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+);
+
+async function startCheckout(plan, btn) {
+  const { data } = await sbPricing.auth.getSession();
+  if (!data.session) {
+    // Not signed in — create an account first, then come back
+    window.location.href = 'signup.html';
+    return;
+  }
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Opening secure checkout...';
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + data.session.access_token
+      },
+      body: JSON.stringify({ plan: plan, billing: yearly ? 'yearly' : 'monthly' })
+    });
+    const out = await res.json();
+    if (out.url) {
+      window.location.href = out.url;
+    } else {
+      alert(out.error || 'Could not start checkout — please try again.');
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  } catch(e) {
+    alert('Could not start checkout — please try again.');
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 </script>
 </body>
