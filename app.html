@@ -191,7 +191,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
   <div class="topbar">
     <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
     <div class="topbar-right">
-      <button class="topbar-btn" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
+      <button class="topbar-btn" id="topbar-upgrade" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
     </div>
   </div>
 
@@ -552,7 +552,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
         </div>
         <div class="result-actions" style="margin-top:4px;">
           <button class="result-btn" onclick="sendPasswordChange()"><i class="ti ti-lock"></i> Change Password</button>
-          <button class="result-btn primary" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Manage Plan</button>
+          <button class="result-btn primary" onclick="managePlan()"><i class="ti ti-crown"></i> Manage Plan</button>
         </div>
         <div style="color:var(--muted);font-size:11px;margin-top:10px;" id="settings-msg"></div>
       </div>
@@ -614,6 +614,12 @@ sbAuth.auth.getSession().then(async ({ data }) => {
     if (prof && prof.plan) {
       currentPlan = prof.plan;
       document.querySelector('.user-plan').textContent = prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' Plan';
+      if (prof.plan !== 'free') {
+        const tb = document.getElementById('topbar-upgrade');
+        tb.innerHTML = '<i class="ti ti-crown"></i> ' + prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' Member';
+        tb.onclick = openBillingPortal;
+        document.querySelector('.usage-text').textContent = prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' plan — limits raised';
+      }
     }
   } catch(e) {}
 
@@ -702,6 +708,23 @@ async function sendPasswordChange() {
 async function doSignOut() {
   await sbAuth.auth.signOut();
   window.location.href = 'index.html';
+}
+
+async function openBillingPortal() {
+  const { data } = await sbAuth.auth.getSession();
+  if (!data.session) return;
+  const res = await fetch('/api/create-portal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + data.session.access_token }
+  });
+  const out = await res.json();
+  if (out.url) window.location.href = out.url;
+  else alert(out.error || 'Could not open billing portal.');
+}
+
+function managePlan() {
+  if (currentPlan === 'free') window.location.href = 'pricing.html';
+  else openBillingPortal();
 }
 
 // Attach the user's session token so the API knows who's asking
