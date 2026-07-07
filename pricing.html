@@ -375,11 +375,53 @@ const sbPricing = supabase.createClient(
   'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
 );
 
+let myPlan = 'free';
+
+// On load: if logged in and already paying, adjust the buttons
+sbPricing.auth.getSession().then(async ({ data }) => {
+  if (!data.session) return;
+  try {
+    const { data: prof } = await sbPricing.from('profiles').select('plan').single();
+    if (prof && prof.plan) myPlan = prof.plan;
+  } catch(e) {}
+  if (myPlan === 'pro') {
+    const b = document.getElementById('btn-pro');
+    b.textContent = '✓ Your Current Plan';
+    b.onclick = openPortal;
+    document.getElementById('btn-premium').textContent = 'Switch to Premium';
+    document.getElementById('btn-premium').onclick = openPortal;
+  }
+  if (myPlan === 'premium') {
+    const b = document.getElementById('btn-premium');
+    b.textContent = '✓ Your Current Plan';
+    b.onclick = openPortal;
+    document.getElementById('btn-pro').textContent = 'Switch to Pro';
+    document.getElementById('btn-pro').onclick = openPortal;
+  }
+});
+
+async function openPortal() {
+  const { data } = await sbPricing.auth.getSession();
+  if (!data.session) { window.location.href = 'signin.html'; return; }
+  const res = await fetch('/api/create-portal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + data.session.access_token }
+  });
+  const out = await res.json();
+  if (out.url) window.location.href = out.url;
+  else alert(out.error || 'Could not open billing portal.');
+}
+
 async function startCheckout(plan, btn) {
   const { data } = await sbPricing.auth.getSession();
   if (!data.session) {
     // Not signed in — create an account first, then come back
     window.location.href = 'signup.html';
+    return;
+  }
+  if (myPlan !== 'free') {
+    // Already subscribed — manage/switch through the portal, never double-charge
+    openPortal();
     return;
   }
   const original = btn.textContent;
