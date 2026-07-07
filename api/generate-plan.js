@@ -1,7 +1,17 @@
+import { checkAndCount } from './_usage.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // ===== GATE: verify user + check/count monthly limit =====
+  const gate = await checkAndCount(req, 'release_plan');
+  if (!gate.ok) {
+    return res.status(gate.status).json({ error: gate.error, plan: gate.plan || null });
+  }
+  // ==========================================================
+
   const { projectName, releaseDate, genre, careerStage, city, details } = req.body;
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -26,12 +36,10 @@ export default async function handler(req, res) {
 - Career Stage: ${careerStage}
 - City: ${city}
 - Additional Details: ${details || 'None provided'}
-
 Return ONLY a JSON array of timeline items. Each item must have these exact fields:
 - "date": specific date or time reference (e.g. "June 15, 2026" or "4 weeks out")
 - "task": short action title
 - "detail": specific actionable details including platform names, best posting times for their city timezone, genre-specific tips
-
 Return exactly 8 timeline items covering pre-release through post-release. Format as valid JSON array only, no other text.`
           }
         ],
