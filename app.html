@@ -155,10 +155,34 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .recent-name{color:#fff;font-size:10px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .recent-meta{color:var(--muted);font-size:9px;}
 .hidden{display:none;}
+.menu-toggle{display:none;background:transparent;border:0.5px solid var(--border);border-radius:8px;width:36px;height:36px;color:#fff;font-size:18px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-right:10px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:290;}
+.sidebar-overlay.show{display:block;}
+@media(max-width:768px){
+html,body{max-width:100vw;}
+body{overflow:auto;height:auto;}
+.app{height:auto;min-height:100vh;}
+.sidebar{position:fixed;left:-250px;top:0;bottom:0;width:230px;z-index:300;transition:left 0.25s ease;overflow-y:auto;}
+.sidebar.open{left:0;box-shadow:20px 0 60px rgba(0,0,0,0.6);}
+.menu-toggle{display:flex;}
+.main{width:100%;}
+.topbar{padding:10px 14px;}
+.topbar-title{font-size:14px;}
+.content{padding:14px;}
+.welcome{flex-direction:column;align-items:flex-start;padding:18px;}
+.welcome-right{text-align:left;}
+.usage-bar{margin-left:0;}
+.generator{grid-template-columns:1fr;}
+.tools-grid{grid-template-columns:repeat(2,1fr);}
+.examples-grid{grid-template-columns:1fr;}
+.recent-grid{grid-template-columns:repeat(2,1fr);}
+#assets-grid{grid-template-columns:repeat(2,1fr) !important;}
+}
 </style>
 </head>
 <body>
 <div class="app">
+<div class="sidebar-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -171,8 +195,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
-    <button class="sidebar-item"><i class="ti ti-video"></i> Lyric Videos <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-video"></i> Lyric Videos <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
@@ -202,7 +226,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
+    <div style="display:flex;align-items:center;">
+      <button class="menu-toggle" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
+      <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
+    </div>
     <div class="topbar-right">
       <button class="topbar-btn" id="topbar-upgrade" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
     </div>
@@ -251,9 +278,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
       </div>
       <div class="tool-card">
         <div class="tool-badge soon">SOON</div>
-        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Videos"/></div>
-        <div class="tool-name">Lyric Video Creator</div>
-        <div class="tool-desc">Professional lyric videos fast</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/music-video-generator.png.png" alt="Song Generator"/></div>
+        <div class="tool-name">AI Song Generator</div>
+        <div class="tool-desc">Turn your ideas into full tracks</div>
       </div>
     </div>
 
@@ -793,7 +820,18 @@ let versionBUrl = null;
 let recentItems = [];
 
 // ====== TOOL SWITCHING ======
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+
 function switchTool(tool, sidebarBtn) {
+  closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
   const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings'};
