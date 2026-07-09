@@ -23,7 +23,8 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#1a1a28;--text:#fafafa;--muted:#6b6b80;}
-body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+html{overflow-x:hidden;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;position:relative;width:100%;}
 
 /* NAV */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
@@ -47,6 +48,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .dropdown-footer{padding:6px 12px 2px;}
 .dropdown-footer-link{color:var(--neon);font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;}
 .navbtns{display:flex;gap:8px;}
+.menu-btn{display:none;background:transparent;border:0.5px solid #3a3a52;border-radius:8px;width:36px;height:36px;color:#fff;font-size:18px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.mobilemenu{display:none;position:fixed;top:54px;left:0;right:0;background:#07070f;border-bottom:0.5px solid var(--border);z-index:99;padding:10px 16px 16px;box-shadow:0 20px 40px rgba(0,0,0,0.6);}
+.mobilemenu.open{display:block;}
+.mobilemenu a{display:block;color:#fff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 8px;border-bottom:0.5px solid #14141f;}
+.mobilemenu a:last-child{border-bottom:none;color:var(--neon);font-weight:800;}
 .btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:border-color 0.2s;}
 .btn-ghost:hover{border-color:var(--neon);}
 .btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
@@ -258,10 +264,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 @media(max-width:768px){
 html,body{max-width:100vw;overflow-x:hidden;}
 .navlinks{display:none;}
+.menu-btn{display:flex;}
 .nav{padding:0 14px;gap:8px;}
 .logoname{display:none;}
 .logoimg{height:36px;}
-.btn-ghost,.btn-neon{padding:7px 12px;font-size:11px;white-space:nowrap;}
+.btn-ghost{display:none;}
+.btn-neon{padding:7px 12px;font-size:11px;white-space:nowrap;}
 .hero{grid-template-columns:1fr;padding:40px 16px 32px;}
 .heroright{display:none;}
 .herotitle{font-size:42px;}
@@ -322,12 +330,12 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <div class="dropdown-desc">See your art on real products instantly</div>
         </a>
         <a class="dropdown-item" href="/">
-          <div class="dropdown-name">Lyric Video Creator</div>
-          <div class="dropdown-desc">Professional lyric videos — coming soon</div>
-        </a>
-        <a class="dropdown-item" href="/">
           <div class="dropdown-name">AI Song Generator</div>
           <div class="dropdown-desc">Turn ideas into full tracks — coming soon</div>
+        </a>
+        <a class="dropdown-item" href="/">
+          <div class="dropdown-name">Lyric Video Creator</div>
+          <div class="dropdown-desc">Professional lyric videos — coming soon</div>
         </a>
         <a class="dropdown-item" href="/">
           <div class="dropdown-name">AI Ad Manager</div>
@@ -390,7 +398,18 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
     <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
   </div>
+  <button class="menu-btn" onclick="document.getElementById('mobilemenu').classList.toggle('open')"><i class="ti ti-menu-2"></i></button>
 </nav>
+<div class="mobilemenu" id="mobilemenu">
+  <a href="features.html">Features</a>
+  <a href="community.html">Community</a>
+  <a href="distribution.html">Distribution</a>
+  <a href="blog.html">Blog</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="contact.html">Contact Us</a>
+  <a href="signin.html">Sign In</a>
+  <a href="signup.html">Sign Up Free →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -426,8 +445,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art Generator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Generate label-quality artwork</div><div class="tcname">Cover Art Generator</div><div class="tclink">Generate now →</div></div></div>
       <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Planner" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">30-day personalized strategy</div><div class="tcname">Release Planner</div><div class="tclink">Plan your drop →</div></div></div>
       <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="Merch Mockup Studio" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">See your art on real products</div><div class="tcname">Merch Mockup Studio</div><div class="tclink">Create mockups →</div></div></div>
-      <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Video Creator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Professional lyric videos fast</div><div class="tcname">Lyric Video Creator</div><div class="tclink">Coming soon →</div></div></div>
       <div class="tcard"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/music-video-generator.png.png" alt="AI Song Generator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Turn ideas into full tracks</div><div class="tcname">AI Song Generator</div><div class="tclink">Coming soon →</div></div></div>
+      <div class="tcard" onclick="window.location.href='signup.html'"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Video Creator" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Professional lyric videos fast</div><div class="tcname">Lyric Video Creator</div><div class="tclink">Coming soon →</div></div></div>
       <div class="tcard"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ad-creator.png.png" alt="AI Ad Manager" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Launch Meta and Google ads</div><div class="tcname">AI Ad Manager</div><div class="tclink">Coming soon →</div></div></div>
       <div class="tcard"><div class="tcimg"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok-video-maker.png.png" alt="Video Clipping" loading="lazy"/></div><div class="tcbody"><div class="tcdesc">Auto clip and post your videos</div><div class="tcname">Video Clipping</div><div class="tclink">Coming soon →</div></div></div>
     </div>
@@ -458,7 +477,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
 <!-- MARQUEE -->
 <div class="marquee">
   <div class="marqinner">
-    <span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">VIDEO CLIPPING</span><span class="marqitem">AUTO POSTING</span><span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">VIDEO CLIPPING</span><span class="marqitem">AUTO POSTING</span>
+    <span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">VIDEO CLIPPING</span><span class="marqitem">AUTO POSTING</span><span class="marqitem">AI COVER ART</span><span class="marqitem">MERCH MOCKUPS</span><span class="marqitem">RELEASE PLANS</span><span class="marqitem">SONG GENERATION</span><span class="marqitem">LYRIC VIDEOS</span><span class="marqitem">AI AD MANAGER</span><span class="marqitem">VIDEO CLIPPING</span><span class="marqitem">AUTO POSTING</span>
   </div>
 </div>
 
@@ -620,8 +639,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <a class="footer-link" href="/">Cover Art Generator</a>
       <a class="footer-link" href="/">Merch Mockup Studio</a>
       <a class="footer-link" href="/">AI Release Planner</a>
-      <a class="footer-link" href="/">Lyric Video Creator</a>
       <a class="footer-link" href="/">AI Song Generator</a>
+      <a class="footer-link" href="/">Lyric Video Creator</a>
       <a class="footer-link" href="/">AI Ad Manager</a>
     </div>
     <div>
