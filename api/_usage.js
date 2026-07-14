@@ -70,3 +70,21 @@ export async function checkAndCount(req, tool) {
 
   return { ok: true, userId: user.id, plan };
 }
+
+// Log every generation (inputs + outputs) — builds the StudioSound dataset
+export async function logGeneration(userId, tool, inputs, output) {
+  try {
+    const url = process.env.SUPABASE_URL;
+    const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    await fetch(`${url}/rest/v1/generations`, {
+      method: 'POST',
+      headers: {
+        apikey: service,
+        Authorization: `Bearer ${service}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify({ user_id: userId, tool: tool, inputs: inputs, output: output })
+    });
+  } catch (e) { console.error('logGeneration failed', e); }
+}
