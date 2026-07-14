@@ -440,13 +440,17 @@ body{overflow:auto;height:auto;}
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Artist Name + Handle</label>
-              <input class="form-input" id="plan-artist" placeholder="e.g. NVRSFE — @nvrsfe on IG/TikTok"/>
+              <label class="form-label">Artist Name (As on DSP's) <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-artist" placeholder="Exactly as spelled on Spotify/Apple"/>
             </div>
             <div class="form-group">
-              <label class="form-label">Promo Budget</label>
-              <input class="form-input" id="plan-budget" placeholder="e.g. $200"/>
+              <label class="form-label">Social Handle <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-handle" placeholder="@yourname (IG/TikTok)"/>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Promo Budget</label>
+            <input class="form-input" id="plan-budget" placeholder="e.g. $200"/>
           </div>
           <div class="form-group">
             <label class="form-label">Tell us about your project <span style="color:var(--neon);">*</span></label>
@@ -691,11 +695,16 @@ sbAuth.auth.getSession().then(async ({ data }) => {
 });
 
 // ===== ASSET PERSISTENCE =====
-function toolIcon(tool) {
-  return {'Cover Art':'🎨','Release Plan':'🚀','Merch Mockup':'👕'}[tool] || '⭐';
+const TOOL_THUMBS = {
+  'Cover Art': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png',
+  'Release Plan': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
+  'Merch Mockup': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png'
+};
+function toolThumb(tool) {
+  return TOOL_THUMBS[tool] || 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png';
 }
 
-async function saveAsset(tool, name, dataUrl) {
+async function saveAsset(tool, name, dataUrl, extraData) {
   try {
     if (!currentUser) return;
     let publicUrl = null;
@@ -707,7 +716,7 @@ async function saveAsset(tool, name, dataUrl) {
         publicUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
       } else { console.error('upload error', upErr); }
     }
-    await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl });
+    await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl, data: extraData || null });
   } catch(e) { console.error('saveAsset', e); }
 }
 
@@ -721,30 +730,43 @@ async function loadAssets() {
 async function initRecent() {
   const items = await loadAssets();
   if (!items.length) return;
-  recentItems = items.slice(0, 5).map(a => ({ icon: toolIcon(a.tool), name: a.name || a.tool, type: a.tool, imageUrl: a.url }));
+  recentItems = items.slice(0, 5).map(a => ({ icon: null, name: a.name || a.tool, type: a.tool, imageUrl: a.url, data: a.data || null }));
   renderRecent();
 }
+
+let assetsCache = [];
 
 async function showAssetsPanel() {
   const grid = document.getElementById('assets-grid');
   grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Loading your assets...</p>';
   const items = await loadAssets();
+  assetsCache = items;
   if (!items.length) {
     grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Nothing here yet — everything you generate is saved automatically and will appear here.</p>';
     return;
   }
-  grid.innerHTML = items.map(a => `
+  grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb">${a.url
-        ? `<img src="${a.url}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>`
-        : `<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;background:#0f0f1a;">${toolIcon(a.tool)}</div>`}
+      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : ''}>
+        <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
         <div class="recent-name">${a.name || a.tool}</div>
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
+        ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
       </div>
     </div>`).join('');
+}
+
+function openPlanAsset(i) {
+  const a = assetsCache[i];
+  if (!a || !a.data) return;
+  switchTool('plan', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+  document.getElementById('plan-name').value = a.name || '';
+  renderPlan(a.data);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function fillSettings() {
@@ -1039,6 +1061,32 @@ function downloadArt() {
 }
 
 // ====== RELEASE PLAN ======
+function renderPlan(data) {
+  lastPlanData = data;
+  document.getElementById('plan-placeholder').style.display = 'none';
+  const container = document.getElementById('plan-result');
+  let html = '';
+  if(data.summary) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">YOUR STRATEGY</div><div class="plan-detail" style="color:#e8e8f5;">${data.summary}</div></div>`;
+  if(data.artist_snapshot) html += `<div class="plan-item"><div class="plan-date">WHERE YOU STAND</div><div class="plan-detail">${data.artist_snapshot}</div></div>`;
+  if(data.budget_breakdown && data.budget_breakdown.length) {
+    html += `<div class="plan-item"><div class="plan-date">BUDGET BREAKDOWN</div>` +
+      data.budget_breakdown.map(b => `<div class="plan-detail" style="margin-bottom:4px;"><strong style="color:var(--neon);">${b.amount}</strong> — ${b.item}: ${b.why}</div>`).join('') + `</div>`;
+  }
+  if(data.trend_tactics && data.trend_tactics.length) {
+    html += `<div class="plan-item"><div class="plan-date">WORKING RIGHT NOW IN YOUR LANE</div>` +
+      data.trend_tactics.map(t => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${t}</div>`).join('') + `</div>`;
+  }
+  html += data.timeline.map(item => `
+    <div class="plan-item">
+      <div class="plan-date">${item.date}</div>
+      <div class="plan-task">${item.task}</div>
+      <div class="plan-detail">${item.detail}</div>
+    </div>
+  `).join('');
+  container.innerHTML = html;
+  container.classList.add('show');
+}
+
 async function generatePlan() {
   const name = document.getElementById('plan-name').value.trim();
   const date = document.getElementById('plan-date').value;
@@ -1047,8 +1095,11 @@ async function generatePlan() {
   const city = document.getElementById('plan-city').value.trim();
   const details = document.getElementById('plan-details').value.trim();
   const artistName = document.getElementById('plan-artist').value.trim();
+  const artistHandle = document.getElementById('plan-handle').value.trim();
   const budget = document.getElementById('plan-budget').value.trim();
   if(!name) { alert('Please enter your project name'); return; }
+  if(!artistName) { alert('Please enter your artist name exactly as it appears on Spotify/Apple'); return; }
+  if(!artistHandle) { alert('Please enter your social handle (like @yourname) so we research the right artist'); return; }
   if(!date) { alert('Please enter your release date'); return; }
   if(!details) { alert('Please tell us more about your project'); return; }
 
@@ -1062,7 +1113,7 @@ async function generatePlan() {
     const res = await fetch('/api/generate-plan', {
       method: 'POST',
       headers: await authHeaders(),
-      body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details, artistName, budget})
+      body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details, artistName, artistHandle, budget})
     });
     const data = await res.json();
     document.getElementById('plan-loading').classList.remove('active');
@@ -1075,30 +1126,9 @@ async function generatePlan() {
     }
 
     if(data.timeline && data.timeline.length > 0) {
-      lastPlanData = data;
-      const container = document.getElementById('plan-result');
-      let html = '';
-      if(data.summary) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">YOUR STRATEGY</div><div class="plan-detail" style="color:#e8e8f5;">${data.summary}</div></div>`;
-      if(data.artist_snapshot) html += `<div class="plan-item"><div class="plan-date">WHERE YOU STAND</div><div class="plan-detail">${data.artist_snapshot}</div></div>`;
-      if(data.budget_breakdown && data.budget_breakdown.length) {
-        html += `<div class="plan-item"><div class="plan-date">BUDGET BREAKDOWN</div>` +
-          data.budget_breakdown.map(b => `<div class="plan-detail" style="margin-bottom:4px;"><strong style="color:var(--neon);">${b.amount}</strong> — ${b.item}: ${b.why}</div>`).join('') + `</div>`;
-      }
-      if(data.trend_tactics && data.trend_tactics.length) {
-        html += `<div class="plan-item"><div class="plan-date">WORKING RIGHT NOW IN YOUR LANE</div>` +
-          data.trend_tactics.map(t => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${t}</div>`).join('') + `</div>`;
-      }
-      html += data.timeline.map(item => `
-        <div class="plan-item">
-          <div class="plan-date">${item.date}</div>
-          <div class="plan-task">${item.task}</div>
-          <div class="plan-detail">${item.detail}</div>
-        </div>
-      `).join('');
-      container.innerHTML = html;
-      container.classList.add('show');
-      addRecent('🚀', name, 'Release Plan', null);
-      saveAsset('Release Plan', name, null);
+      renderPlan(data);
+      addRecent(null, name, 'Release Plan', null, data);
+      saveAsset('Release Plan', name, null, data);
     } else {
       throw new Error('No plan returned');
     }
@@ -1189,8 +1219,8 @@ function downloadMerch() {
 }
 
 // ====== RECENT GENERATIONS ======
-function addRecent(icon, name, type, imageUrl) {
-  recentItems.unshift({icon, name, type, imageUrl});
+function addRecent(icon, name, type, imageUrl, planData) {
+  recentItems.unshift({icon, name, type, imageUrl, data: planData || null});
   if(recentItems.length > 5) recentItems = recentItems.slice(0,5);
   renderRecent();
 }
@@ -1201,10 +1231,7 @@ function renderRecent() {
   grid.innerHTML = recentItems.map((item,i) => `
     <div class="recent-item" onclick="loadRecent(${i})">
       <div class="recent-thumb">
-        ${item.imageUrl
-          ? `<img src="${item.imageUrl}" alt="${item.name}" style="width:100%;height:80px;object-fit:cover;display:block;"/>`
-          : `<div style="width:100%;height:80px;background:linear-gradient(135deg,${colors[i]},${colors[i]}88);display:flex;align-items:center;justify-content:center;font-size:28px;">${item.icon}</div>`
-        }
+        <img src="${item.imageUrl || toolThumb(item.type)}" alt="${item.name}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
         <div class="recent-name">${item.name}</div>
@@ -1216,7 +1243,16 @@ function renderRecent() {
 
 function loadRecent(index) {
   const item = recentItems[index];
-  if(!item || !item.imageUrl) return;
+  if(!item) return;
+  if(item.type === 'Release Plan' && item.data) {
+    switchTool('plan', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+    document.getElementById('plan-name').value = item.name || '';
+    renderPlan(item.data);
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+  if(!item.imageUrl) return;
   if(item.type === 'Cover Art') {
     switchTool('art', null);
     setToolActive(document.querySelector('.tool-card:nth-child(1)'));
