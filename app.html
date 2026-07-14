@@ -438,6 +438,16 @@ body{overflow:auto;height:auto;}
               <input class="form-input" id="plan-city" placeholder="e.g. Atlanta, GA"/>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Artist Name + Handle</label>
+              <input class="form-input" id="plan-artist" placeholder="e.g. NVRSFE — @nvrsfe on IG/TikTok"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Promo Budget</label>
+              <input class="form-input" id="plan-budget" placeholder="e.g. $200"/>
+            </div>
+          </div>
           <div class="form-group">
             <label class="form-label">Tell us about your project <span style="color:var(--neon);">*</span></label>
             <textarea class="form-textarea" id="plan-details" placeholder="Describe your project. Example: I am dropping a 6-track EP. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP. My budget is around $200."></textarea>
@@ -780,9 +790,13 @@ function downloadPlanPDF() {
   const name = document.getElementById('plan-name').value.trim() || 'My Release';
   let rows = '';
   items.forEach(i => {
+    const task = i.querySelector('.plan-task');
+    const details = i.querySelectorAll('.plan-detail');
+    let detailHtml = '';
+    details.forEach(d => { detailHtml += '<div class="detail">' + d.textContent + '</div>'; });
     rows += '<div class="item"><div class="date">' + i.querySelector('.plan-date').textContent +
-      '</div><div class="task">' + i.querySelector('.plan-task').textContent +
-      '</div><div class="detail">' + i.querySelector('.plan-detail').textContent + '</div></div>';
+      '</div>' + (task ? '<div class="task">' + task.textContent + '</div>' : '') +
+      detailHtml + '</div>';
   });
   const w = window.open('', '_blank');
   w.document.write('<html><head><title>' + name + ' — Release Plan</title><style>' +
@@ -822,6 +836,7 @@ function showLimit(errId, toolLabel) {
 
 // ====== GLOBALS ======
 let selectedArtUrl = null;
+let lastPlanData = null;
 let versionAUrl = null;
 let versionBUrl = null;
 let recentItems = [];
@@ -1031,6 +1046,8 @@ async function generatePlan() {
   const stage = document.getElementById('plan-stage').value;
   const city = document.getElementById('plan-city').value.trim();
   const details = document.getElementById('plan-details').value.trim();
+  const artistName = document.getElementById('plan-artist').value.trim();
+  const budget = document.getElementById('plan-budget').value.trim();
   if(!name) { alert('Please enter your project name'); return; }
   if(!date) { alert('Please enter your release date'); return; }
   if(!details) { alert('Please tell us more about your project'); return; }
@@ -1045,7 +1062,7 @@ async function generatePlan() {
     const res = await fetch('/api/generate-plan', {
       method: 'POST',
       headers: await authHeaders(),
-      body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details})
+      body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details, artistName, budget})
     });
     const data = await res.json();
     document.getElementById('plan-loading').classList.remove('active');
@@ -1058,14 +1075,27 @@ async function generatePlan() {
     }
 
     if(data.timeline && data.timeline.length > 0) {
+      lastPlanData = data;
       const container = document.getElementById('plan-result');
-      container.innerHTML = data.timeline.map(item => `
+      let html = '';
+      if(data.summary) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">YOUR STRATEGY</div><div class="plan-detail" style="color:#e8e8f5;">${data.summary}</div></div>`;
+      if(data.artist_snapshot) html += `<div class="plan-item"><div class="plan-date">WHERE YOU STAND</div><div class="plan-detail">${data.artist_snapshot}</div></div>`;
+      if(data.budget_breakdown && data.budget_breakdown.length) {
+        html += `<div class="plan-item"><div class="plan-date">BUDGET BREAKDOWN</div>` +
+          data.budget_breakdown.map(b => `<div class="plan-detail" style="margin-bottom:4px;"><strong style="color:var(--neon);">${b.amount}</strong> — ${b.item}: ${b.why}</div>`).join('') + `</div>`;
+      }
+      if(data.trend_tactics && data.trend_tactics.length) {
+        html += `<div class="plan-item"><div class="plan-date">WORKING RIGHT NOW IN YOUR LANE</div>` +
+          data.trend_tactics.map(t => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${t}</div>`).join('') + `</div>`;
+      }
+      html += data.timeline.map(item => `
         <div class="plan-item">
           <div class="plan-date">${item.date}</div>
           <div class="plan-task">${item.task}</div>
           <div class="plan-detail">${item.detail}</div>
         </div>
       `).join('');
+      container.innerHTML = html;
       container.classList.add('show');
       addRecent('🚀', name, 'Release Plan', null);
       saveAsset('Release Plan', name, null);
