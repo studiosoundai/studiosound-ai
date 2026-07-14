@@ -1,7 +1,7 @@
 import { checkAndCount, logGeneration } from './_usage.js';
 
 // STAGE 1 — Research the artist across the live web
-async function researchArtist(artistName, genre, city) {
+async function researchArtist(artistName, artistHandle, genre, city) {
   if (!artistName) return null;
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -16,7 +16,7 @@ async function researchArtist(artistName, genre, city) {
         messages: [
           {
             role: 'user',
-            content: `Research the independent music artist "${artistName}" (genre: ${genre}${city ? ', based in ' + city : ''}). If a social handle (@name) is included, use it to identify the EXACT artist — many artists share names, so match the handle across platforms to make sure every finding is about this specific person. Search the web and report concise bullet notes on:
+            content: `Research the independent music artist "${artistName}"${artistHandle ? ' (social handle: ' + artistHandle + ')' : ''} (genre: ${genre}${city ? ', based in ' + city : ''}). CRITICAL: many artists share the same name — use the social handle "${artistHandle}" to identify the EXACT artist by matching that handle across Instagram, TikTok, and other platforms, and make sure every finding is about this specific person only. Search the web and report concise bullet notes on:
 
 1. DSP PRESENCE: Do they appear on Spotify / Apple Music / SoundCloud / YouTube? Any follower counts, monthly listener numbers, or notable releases you can find.
 2. SOCIALS: Instagram / TikTok / X / YouTube handles and rough audience sizes if findable.
@@ -50,11 +50,11 @@ export default async function handler(req, res) {
   }
   // ==========================================================
 
-  const { projectName, releaseDate, genre, careerStage, city, details, artistName, budget } = req.body;
+  const { projectName, releaseDate, genre, careerStage, city, details, artistName, artistHandle, budget } = req.body;
 
   try {
     // STAGE 1: live web research on the artist + their lane
-    const research = await researchArtist(artistName, genre, city);
+    const research = await researchArtist(artistName, artistHandle, genre, city);
 
     const researchBlock = research
       ? `LIVE WEB RESEARCH ON THIS ARTIST AND THEIR LANE (gathered just now — build the plan around this):
@@ -86,7 +86,7 @@ PROJECT:
 - Career Stage: ${careerStage}
 - City: ${city}
 - Budget: ${budget || 'not specified — assume near-zero and prioritize organic'}
-- Artist name: ${artistName || 'not provided'}
+- Artist name: ${artistName || 'not provided'} (social: ${artistHandle || 'not provided'})
 - Artist's own description: ${details || 'None provided'}
 
 ${researchBlock}
@@ -118,7 +118,7 @@ Rules: 12-14 timeline items covering 4 weeks pre-release through 1 week post-rel
 
     // Log the full generation — inputs, research, and output — to the dataset
     logGeneration(gate.userId, 'release_plan',
-      { projectName, releaseDate, genre, careerStage, city, details, artistName, budget, research },
+      { projectName, releaseDate, genre, careerStage, city, details, artistName, artistHandle, budget, research },
       plan
     );
 
