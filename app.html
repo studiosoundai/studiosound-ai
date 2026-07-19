@@ -201,6 +201,11 @@ body{overflow:auto;height:auto;}
     <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
+    <div class="sidebar-label">UTILITIES</div>
+    <button class="sidebar-item" onclick="switchTool('resize',this)"><i class="ti ti-crop"></i> Cover Resizer <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('audio',this)"><i class="ti ti-file-music"></i> MP3 → WAV <span class="badge">FREE</span></button>
+  </div>
+  <div class="sidebar-section">
     <div class="sidebar-label">MARKETING</div>
     <button class="sidebar-item"><i class="ti ti-chart-bar"></i> AI Ad Manager <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-scissors"></i> Video Clipping <span class="soon">SOON</span></button>
@@ -294,6 +299,10 @@ body{overflow:auto;height:auto;}
           <div class="form-group">
             <label class="form-label">Song or Project Title <span style="color:var(--neon);">*</span></label>
             <input class="form-input" id="art-title" placeholder="e.g. Midnight Static"/>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
+              <input type="checkbox" id="art-title-toggle" checked style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
+              Include the title as text on the artwork
+            </label>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -582,6 +591,67 @@ body{overflow:auto;height:auto;}
             <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ep-album-art.png.png" alt="" loading="lazy"/><div class="example-badge">Poster · Gallery</div></div>
             <div class="example-body"><div class="example-prompt">"18x24 poster of my album cover. Gallery quality — something fans would actually frame."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COVER RESIZER -->
+    <div id="tool-resize" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">📐 Cover Art Resizer</div>
+          <div class="gen-sub">Got artwork from somewhere else? Resize it to the official 3000×3000 JPEG that Spotify, Apple Music, and every distributor require.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Artwork</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('resize-upload').click()">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="resize-label" style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload (PNG or JPG)</div>
+              <div style="color:var(--muted);font-size:10px;">Non-square images get centered and cropped automatically</div>
+              <input type="file" id="resize-upload" accept="image/*" style="display:none;" onchange="loadResizeImg(this)"/>
+            </div>
+          </div>
+          <div id="resize-info" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
+          <button class="gen-btn" id="resize-btn" onclick="downloadResized()" disabled><i class="ti ti-download"></i> Download 3000×3000 JPEG</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Preview</div>
+          <div class="gen-sub">Exactly how your cover will be cropped</div>
+          <div class="result-placeholder" id="resize-placeholder">
+            <i class="ti ti-crop"></i>
+            <p>Upload artwork to see the DSP-ready preview.</p>
+          </div>
+          <div class="single-result" id="resize-result">
+            <canvas id="resize-canvas" width="600" height="600" style="width:100%;border-radius:10px;display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO CONVERTER -->
+    <div id="tool-audio" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🎧 MP3 → WAV Converter</div>
+          <div class="gen-sub">Distributors want WAV. Convert your MP3 (or M4A) to studio-standard 16-bit / 44.1kHz WAV — right here, nothing gets uploaded to any server.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Audio</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('audio-upload').click()">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="audio-label" style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload (MP3, M4A, AAC...)</div>
+              <div style="color:var(--muted);font-size:10px;">Converted on your device — private and instant</div>
+              <input type="file" id="audio-upload" accept="audio/*" style="display:none;" onchange="convertAudio(this)"/>
+            </div>
+          </div>
+          <div id="audio-status" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
+          <button class="gen-btn" id="audio-btn" onclick="downloadWav()" disabled><i class="ti ti-download"></i> Download WAV</button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Heads up: converting MP3 to WAV meets distributor format requirements, but it can't restore quality lost in the original MP3. For best results, always export WAV directly from your recording session when you can.</div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Why WAV?</div>
+          <div class="gen-sub">The 10-second version</div>
+          <div class="plan-item"><div class="plan-date">DISTRIBUTORS REQUIRE IT</div><div class="plan-detail">Most distributors only accept WAV (16-bit or 24-bit, 44.1kHz). MP3 uploads get rejected or re-encoded badly.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">WHAT THIS TOOL OUTPUTS</div><div class="plan-detail">Standard 16-bit / 44.1kHz stereo WAV — the exact format DSPs expect for distribution.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">PRO TIP</div><div class="plan-detail">Distributing through Stop One? Pair this with the Distribution page and your release is format-ready on the first try.</div></div>
         </div>
       </div>
     </div>
@@ -892,7 +962,7 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -977,7 +1047,11 @@ async function generateArt() {
   if(!title) { alert('Please enter a song or project title'); return; }
   if(!userPrompt) { alert('Please describe your vision in the prompt box'); return; }
 
-  const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition, no text, no words, purely visual. Cinematic quality.`;
+  const includeTitle = document.getElementById('art-title-toggle').checked;
+  const textInstruction = includeTitle
+    ? `Render the title "${title}" prominently on the artwork in bold, stylish typography that fits the genre and mood — integrated naturally like a professionally designed album cover. Spell the title exactly as written. No other text, watermarks, or logos.`
+    : 'No text, no words, purely visual.';
+  const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition. ${textInstruction} Cinematic quality.`;
 
   const imgUpload = document.getElementById('art-img-upload');
   let imageData = null;
@@ -1246,6 +1320,120 @@ function downloadMerch() {
   const a = document.createElement('a');
   a.href = img.src;
   a.download = 'studiosound-merch-mockup.png';
+  a.click();
+}
+
+// ====== COVER RESIZER (free, runs in browser) ======
+let resizeImg = null;
+
+function loadResizeImg(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  document.getElementById('resize-label').textContent = '✓ ' + f.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      resizeImg = img;
+      document.getElementById('resize-info').innerHTML =
+        'Original: <strong style="color:#fff;">' + img.width + '×' + img.height + '</strong> → Output: <strong style="color:var(--neon);">3000×3000 JPEG</strong>' +
+        (img.width !== img.height ? ' (centered square crop)' : '');
+      const c = document.getElementById('resize-canvas');
+      const ctx = c.getContext('2d');
+      drawSquareCrop(ctx, img, 600);
+      document.getElementById('resize-placeholder').style.display = 'none';
+      document.getElementById('resize-result').style.display = 'block';
+      document.getElementById('resize-btn').disabled = false;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+function drawSquareCrop(ctx, img, size) {
+  const side = Math.min(img.width, img.height);
+  const sx = (img.width - side) / 2;
+  const sy = (img.height - side) / 2;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+}
+
+function downloadResized() {
+  if(!resizeImg) return;
+  const c = document.createElement('canvas');
+  c.width = 3000; c.height = 3000;
+  drawSquareCrop(c.getContext('2d'), resizeImg, 3000);
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/jpeg', 0.92);
+  a.download = 'cover-3000x3000.jpg';
+  a.click();
+}
+
+// ====== AUDIO CONVERTER (free, runs in browser) ======
+let wavBlob = null;
+let wavName = 'audio';
+
+async function convertAudio(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  wavName = f.name.replace(/\.[^.]+$/, '');
+  document.getElementById('audio-label').textContent = '✓ ' + f.name;
+  const status = document.getElementById('audio-status');
+  document.getElementById('audio-btn').disabled = true;
+  status.textContent = 'Decoding audio...';
+  try {
+    const arrayBuf = await f.arrayBuffer();
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await ac.decodeAudioData(arrayBuf);
+    status.textContent = 'Converting to 16-bit / 44.1kHz WAV...';
+    const channels = Math.min(decoded.numberOfChannels, 2) || 1;
+    const offline = new OfflineAudioContext(channels, Math.ceil(decoded.duration * 44100), 44100);
+    const src = offline.createBufferSource();
+    src.buffer = decoded;
+    src.connect(offline.destination);
+    src.start();
+    const rendered = await offline.startRendering();
+    wavBlob = encodeWav(rendered);
+    const mb = (wavBlob.size / 1048576).toFixed(1);
+    status.innerHTML = '✓ Ready: <strong style="color:var(--neon);">' + wavName + '.wav</strong> — 16-bit / 44.1kHz · ' + mb + ' MB';
+    document.getElementById('audio-btn').disabled = false;
+  } catch(e) {
+    console.error(e);
+    status.textContent = 'Could not read that file — make sure it\'s a valid audio file and try again.';
+  }
+}
+
+function encodeWav(buffer) {
+  const numCh = buffer.numberOfChannels;
+  const len = buffer.length * numCh * 2;
+  const out = new ArrayBuffer(44 + len);
+  const view = new DataView(out);
+  const writeStr = (o, str) => { for(let i=0;i<str.length;i++) view.setUint8(o+i, str.charCodeAt(i)); };
+  writeStr(0,'RIFF'); view.setUint32(4, 36+len, true); writeStr(8,'WAVE');
+  writeStr(12,'fmt '); view.setUint32(16,16,true); view.setUint16(20,1,true);
+  view.setUint16(22,numCh,true); view.setUint32(24,44100,true);
+  view.setUint32(28,44100*numCh*2,true); view.setUint16(32,numCh*2,true); view.setUint16(34,16,true);
+  writeStr(36,'data'); view.setUint32(40,len,true);
+  let offset = 44;
+  const chans = [];
+  for(let c=0;c<numCh;c++) chans.push(buffer.getChannelData(c));
+  for(let i=0;i<buffer.length;i++){
+    for(let c=0;c<numCh;c++){
+      let s = Math.max(-1, Math.min(1, chans[c][i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      offset += 2;
+    }
+  }
+  return new Blob([out], {type:'audio/wav'});
+}
+
+function downloadWav() {
+  if(!wavBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(wavBlob);
+  a.download = wavName + '.wav';
   a.click();
 }
 
