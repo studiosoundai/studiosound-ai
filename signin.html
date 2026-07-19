@@ -81,7 +81,7 @@ body{overflow-y:auto;}
       <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="si-pass" placeholder="Your password" type="password"/></div>
       <div class="forgot"><a onclick="sendReset()">Forgot your password?</a></div>
       <button class="btn-submit" id="si-btn" onclick="doSignIn()"><i class="ti ti-login"></i> Sign In to StudioSound</button>
-      <div class="auth-footer">Don't have an account? <a href="signup.html">Sign up free →</a></div>
+      <div class="auth-footer">Don't have an account? <a href="signup.html" onclick="window.location.href='signup.html';return false;" style="display:inline-block;padding:8px 6px;cursor:pointer;">Sign up free →</a></div>
     </div>
 
     <!-- SET NEW PASSWORD PANEL (shows after clicking reset link in email) -->
