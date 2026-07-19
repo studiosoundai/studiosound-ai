@@ -204,6 +204,11 @@ body{overflow:auto;height:auto;}
     <div class="sidebar-label">UTILITIES</div>
     <button class="sidebar-item" onclick="switchTool('resize',this)"><i class="ti ti-crop"></i> Cover Resizer <span class="badge">FREE</span></button>
     <button class="sidebar-item" onclick="switchTool('audio',this)"><i class="ti ti-file-music"></i> MP3 → WAV <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('trim',this)"><i class="ti ti-cut"></i> Audio Trimmer <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('meta',this)"><i class="ti ti-list-details"></i> Metadata Formatter <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('split',this)"><i class="ti ti-users"></i> Split Sheet <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('check',this)"><i class="ti ti-checklist"></i> Release Checklist <span class="badge">FREE</span></button>
+    <button class="sidebar-item"><i class="ti ti-badge-cc"></i> Lyric Captions <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-label">MARKETING</div>
@@ -656,6 +661,124 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
+    <!-- AUDIO TRIMMER -->
+    <div id="tool-trim" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">✂️ Audio Trimmer</div>
+          <div class="gen-sub">Cut the perfect preview clip — for TikTok sounds, Spotify Canvas timing, snippet teasers, or beat previews. Runs on your device.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Audio</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('trim-upload').click()">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="trim-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload (MP3, WAV, M4A...)</div>
+              <input type="file" id="trim-upload" accept="audio/*" style="display:none;" onchange="loadTrimAudio(this)"/>
+            </div>
+          </div>
+          <div id="trim-info" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start (seconds)</label>
+              <input class="form-input" id="trim-start" type="number" min="0" step="0.1" value="0"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">End (seconds)</label>
+              <input class="form-input" id="trim-end" type="number" min="0" step="0.1" value="15"/>
+            </div>
+          </div>
+          <div class="result-actions" style="margin-bottom:10px;">
+            <button class="result-btn" onclick="previewTrim()"><i class="ti ti-player-play"></i> Preview Clip</button>
+            <button class="result-btn" onclick="stopTrim()"><i class="ti ti-player-stop"></i> Stop</button>
+          </div>
+          <button class="gen-btn" id="trim-btn" onclick="downloadTrim()" disabled><i class="ti ti-download"></i> Download Clip (WAV)</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Clip Cheat Sheet</div>
+          <div class="gen-sub">The lengths that matter</div>
+          <div class="plan-item"><div class="plan-date">TIKTOK SOUND</div><div class="plan-detail">15–30 seconds — start at your hook, not your intro. The first second decides everything.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">IG REELS / YT SHORTS</div><div class="plan-detail">15–60 seconds. Same rule: hook first.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">SNIPPET TEASER</div><div class="plan-detail">8–15 seconds of your most quotable bar — leave them wanting the full track.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METADATA FORMATTER -->
+    <div id="tool-meta" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">📋 Metadata & Credits Formatter</div>
+          <div class="gen-sub">Distributors reject uploads over bad metadata every day. Fill this once, paste it anywhere, upload clean the first time.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Artist Name (as on DSP's) <span style="color:var(--neon);">*</span></label><input class="form-input" id="md-artist" placeholder="Exact DSP spelling"/></div>
+            <div class="form-group"><label class="form-label">Track Title <span style="color:var(--neon);">*</span></label><input class="form-input" id="md-title" placeholder="No 'feat.' here — see tip"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Featured Artists</label><input class="form-input" id="md-feat" placeholder="Leave empty if none"/></div>
+            <div class="form-group"><label class="form-label">Version / Mix</label><input class="form-input" id="md-version" placeholder="e.g. Remix, Sped Up, Acoustic"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Primary Genre</label><input class="form-input" id="md-genre" placeholder="e.g. Latin, Hip-Hop"/></div>
+            <div class="form-group"><label class="form-label">Language of Lyrics</label><input class="form-input" id="md-lang" placeholder="e.g. English, Spanish"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Explicit?</label><select class="form-select" id="md-explicit"><option>Clean</option><option>Explicit</option></select></div>
+            <div class="form-group"><label class="form-label">Release Date</label><input class="form-input" id="md-date" type="date"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Songwriters — FULL LEGAL NAMES, one per line <span style="color:var(--neon);">*</span></label><textarea class="form-textarea" id="md-writers" style="min-height:60px;" placeholder="John Michael Smith&#10;Maria Elena Garcia"></textarea></div>
+          <div class="form-group"><label class="form-label">Producers — one per line</label><textarea class="form-textarea" id="md-producers" style="min-height:50px;" placeholder="Producer name(s)"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">ISRC (if you have one)</label><input class="form-input" id="md-isrc" placeholder="e.g. USRC12345678"/></div>
+            <div class="form-group"><label class="form-label">℗ / © Owner + Year</label><input class="form-input" id="md-copyright" placeholder="e.g. 2026 Stop One Distribution"/></div>
+          </div>
+          <button class="gen-btn" onclick="buildMetadata()"><i class="ti ti-sparkles"></i> Format My Metadata</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Formatted Metadata</div>
+          <div class="gen-sub">Copy-paste ready for any distributor</div>
+          <div class="result-placeholder" id="md-placeholder"><i class="ti ti-list-details"></i><p>Fill the form and hit Format — clean metadata plus warnings for anything distributors would reject.</p></div>
+          <div id="md-warnings" style="display:none;margin-bottom:10px;"></div>
+          <textarea class="form-textarea" id="md-output" style="display:none;min-height:260px;font-size:11px;" readonly></textarea>
+          <div class="result-actions"><button class="result-btn primary" onclick="copyMetadata()"><i class="ti ti-copy"></i> Copy All</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPLIT SHEET -->
+    <div id="tool-split" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🤝 Split Sheet Generator</div>
+          <div class="gen-sub">Agree on the splits BEFORE the song blows up. Print it, everybody signs, no fights later.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Song Title <span style="color:var(--neon);">*</span></label><input class="form-input" id="sp-title" placeholder="Song name"/></div>
+            <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="sp-date" type="date"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Contributors</label><div id="sp-rows"></div>
+            <button class="result-btn" style="margin-top:8px;" onclick="addSplitRow()"><i class="ti ti-plus"></i> Add Contributor</button>
+          </div>
+          <div id="sp-total" style="font-size:12px;font-weight:700;margin-bottom:12px;color:var(--muted);">Total: 0%</div>
+          <button class="gen-btn" onclick="printSplitSheet()"><i class="ti ti-printer"></i> Generate & Print Split Sheet</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Why This Matters</div>
+          <div class="gen-sub">The 30-second education</div>
+          <div class="plan-item"><div class="plan-date">THE RULE</div><div class="plan-detail">Songwriting splits must total exactly 100%. Decide them the day the song is made — memories change when money shows up.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">USE LEGAL NAMES</div><div class="plan-detail">PROs (BMI/ASCAP) and publishers pay real people — stage names on paperwork cause payment holds.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">EVERYBODY SIGNS</div><div class="plan-detail">Print it, sign it, everyone keeps a photo of it. That's your receipt forever.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELEASE CHECKLIST -->
+    <div id="tool-check" class="hidden">
+      <div class="gen-panel" style="margin-bottom:16px;">
+        <div class="gen-title">✅ Release Checklist</div>
+        <div class="gen-sub">Every box an independent artist needs to tick, from 4 weeks out to release week. Check them off here or print it for the studio wall.</div>
+        <div id="check-list"></div>
+        <button class="gen-btn" style="margin-top:14px;" onclick="printChecklist()"><i class="ti ti-printer"></i> Print Checklist</button>
+      </div>
+    </div>
+
     <!-- MY ASSETS -->
     <div id="tool-assets" class="hidden">
       <div class="gen-panel" style="margin-bottom:16px;">
@@ -962,10 +1085,12 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
+  if(tool === 'split' && !document.querySelector('#sp-rows .form-row')) { addSplitRow(); addSplitRow(); }
+  if(tool === 'check') renderChecklist();
   if(sidebarBtn) {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
     sidebarBtn.classList.add('active');
@@ -1435,6 +1560,208 @@ function downloadWav() {
   a.href = URL.createObjectURL(wavBlob);
   a.download = wavName + '.wav';
   a.click();
+}
+
+// ====== AUDIO TRIMMER ======
+let trimBuffer = null;
+let trimSource = null;
+
+async function loadTrimAudio(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  document.getElementById('trim-label').textContent = '✓ ' + f.name;
+  const info = document.getElementById('trim-info');
+  info.textContent = 'Decoding...';
+  try {
+    const buf = await f.arrayBuffer();
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    trimBuffer = await ac.decodeAudioData(buf);
+    const dur = trimBuffer.duration;
+    info.innerHTML = 'Loaded: <strong style="color:#fff;">' + dur.toFixed(1) + ' seconds</strong> — set your start/end below';
+    document.getElementById('trim-end').value = Math.min(15, Math.floor(dur)).toString();
+    document.getElementById('trim-end').max = dur;
+    document.getElementById('trim-start').max = dur;
+    document.getElementById('trim-btn').disabled = false;
+  } catch(e) {
+    info.textContent = 'Could not read that file — try another format.';
+  }
+}
+
+function trimRange() {
+  const start = Math.max(0, parseFloat(document.getElementById('trim-start').value) || 0);
+  let end = parseFloat(document.getElementById('trim-end').value) || 0;
+  if (trimBuffer) end = Math.min(end, trimBuffer.duration);
+  return { start, end, dur: Math.max(0, end - start) };
+}
+
+function previewTrim() {
+  if(!trimBuffer) { alert('Upload audio first'); return; }
+  const { start, dur } = trimRange();
+  if (dur <= 0) { alert('End must be after start'); return; }
+  stopTrim();
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  trimSource = ac.createBufferSource();
+  trimSource.buffer = trimBuffer;
+  trimSource.connect(ac.destination);
+  trimSource.start(0, start, dur);
+}
+
+function stopTrim() {
+  if (trimSource) { try { trimSource.stop(); } catch(e){} trimSource = null; }
+}
+
+async function downloadTrim() {
+  if(!trimBuffer) return;
+  const { start, dur } = trimRange();
+  if (dur <= 0) { alert('End must be after start'); return; }
+  const channels = Math.min(trimBuffer.numberOfChannels, 2) || 1;
+  const offline = new OfflineAudioContext(channels, Math.ceil(dur * 44100), 44100);
+  const src = offline.createBufferSource();
+  src.buffer = trimBuffer;
+  src.connect(offline.destination);
+  src.start(0, start, dur);
+  const rendered = await offline.startRendering();
+  const blob = encodeWav(rendered);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'studiosound-clip.wav';
+  a.click();
+}
+
+// ====== METADATA FORMATTER ======
+function buildMetadata() {
+  const g = id => document.getElementById(id).value.trim();
+  const artist = g('md-artist'), title = g('md-title'), feat = g('md-feat'),
+        version = g('md-version'), genre = g('md-genre'), lang = g('md-lang'),
+        explicit = document.getElementById('md-explicit').value,
+        date = g('md-date'), isrc = g('md-isrc').toUpperCase().replace(/[-\s]/g,''),
+        cr = g('md-copyright');
+  const writers = g('md-writers').split('\n').map(w=>w.trim()).filter(Boolean);
+  const producers = g('md-producers').split('\n').map(w=>w.trim()).filter(Boolean);
+
+  const warnings = [];
+  if(!artist) warnings.push('Artist name is required.');
+  if(!title) warnings.push('Track title is required.');
+  if(/feat\.?|ft\.?/i.test(title)) warnings.push('Remove "feat." from the TITLE — features go in the Featured Artists field. Distributors reject this constantly.');
+  if(!writers.length) warnings.push('At least one songwriter (full legal name) is required — every distributor asks.');
+  writers.forEach(w => { if(w.split(' ').length < 2) warnings.push(`"${w}" doesn't look like a full legal name — use first + last name for royalty payments.`); });
+  if(isrc && !/^[A-Z]{2}[A-Z0-9]{3}\d{7}$/.test(isrc)) warnings.push('ISRC format looks off — should be like USRC12345678 (2 letters, 3 characters, 7 digits). Leave blank and your distributor assigns one free.');
+  if(!cr) warnings.push('Add a ℗/© line (year + owner) — e.g. "2026 Your Name".');
+
+  const lines = [
+    '=== TRACK METADATA — generated by StudioSound.ai ===','',
+    'Artist Name: ' + artist,
+    'Track Title: ' + title + (version ? ' (' + version + ')' : ''),
+    feat ? 'Featured Artists: ' + feat : null,
+    'Primary Genre: ' + (genre || '—'),
+    'Lyrics Language: ' + (lang || '—'),
+    'Explicit: ' + explicit,
+    date ? 'Release Date: ' + date : null,
+    '',
+    'Songwriters (legal names):',
+    ...writers.map(w => '  • ' + w),
+    producers.length ? 'Producers:' : null,
+    ...producers.map(pd => '  • ' + pd),
+    '',
+    'ISRC: ' + (isrc || 'To be assigned by distributor'),
+    '℗/© : ' + (cr || '—'),
+  ].filter(x => x !== null);
+
+  const wbox = document.getElementById('md-warnings');
+  if (warnings.length) {
+    wbox.innerHTML = warnings.map(w => '<div style="background:#ff6b6b15;border:0.5px solid #ff6b6b;border-radius:8px;padding:8px 10px;color:#ff9b9b;font-size:11px;margin-bottom:6px;">⚠ ' + w + '</div>').join('');
+    wbox.style.display = 'block';
+  } else {
+    wbox.innerHTML = '<div style="background:#00FFD115;border:0.5px solid var(--neon);border-radius:8px;padding:8px 10px;color:var(--neon);font-size:11px;">✓ Clean — no distributor red flags found.</div>';
+    wbox.style.display = 'block';
+  }
+  document.getElementById('md-placeholder').style.display = 'none';
+  const out = document.getElementById('md-output');
+  out.value = lines.join('\n');
+  out.style.display = 'block';
+}
+
+function copyMetadata() {
+  const out = document.getElementById('md-output');
+  if (!out.value) { alert('Format your metadata first'); return; }
+  navigator.clipboard.writeText(out.value).then(() => alert('Metadata copied — paste it into your distributor upload.'));
+}
+
+// ====== SPLIT SHEET ======
+function addSplitRow(name, role, pct) {
+  const rows = document.getElementById('sp-rows');
+  const div = document.createElement('div');
+  div.className = 'form-row';
+  div.style.cssText = 'grid-template-columns:2fr 1.2fr 0.8fr;margin-bottom:8px;';
+  div.innerHTML = `
+    <input class="form-input" placeholder="Full legal name" value="${name||''}"/>
+    <select class="form-select"><option${role==='Songwriter'?' selected':''}>Songwriter</option><option${role==='Producer'?' selected':''}>Producer</option><option${role==='Artist'?' selected':''}>Artist</option></select>
+    <input class="form-input sp-pct" type="number" min="0" max="100" placeholder="%" value="${pct||''}" oninput="updateSplitTotal()"/>`;
+  rows.appendChild(div);
+  updateSplitTotal();
+}
+
+function updateSplitTotal() {
+  let total = 0;
+  document.querySelectorAll('.sp-pct').forEach(i => total += parseFloat(i.value) || 0);
+  const el = document.getElementById('sp-total');
+  el.textContent = 'Total: ' + total + '%';
+  el.style.color = total === 100 ? 'var(--neon)' : '#ff9b9b';
+}
+
+function printSplitSheet() {
+  const title = document.getElementById('sp-title').value.trim();
+  if(!title) { alert('Enter the song title'); return; }
+  const date = document.getElementById('sp-date').value || new Date().toISOString().slice(0,10);
+  const rows = [];
+  let total = 0;
+  document.querySelectorAll('#sp-rows .form-row').forEach(r => {
+    const name = r.children[0].value.trim();
+    const role = r.children[1].value;
+    const pct = parseFloat(r.children[2].value) || 0;
+    if(name) { rows.push({name, role, pct}); total += pct; }
+  });
+  if(!rows.length) { alert('Add at least one contributor'); return; }
+  if(total !== 100 && !confirm('Splits total ' + total + '% (should be 100%). Print anyway?')) return;
+  const w = window.open('', '_blank');
+  w.document.write('<html><head><title>Split Sheet — ' + title + '</title><style>body{font-family:Arial;color:#111;padding:40px;max-width:700px;margin:auto;}h1{font-size:20px;margin-bottom:2px;}p.sub{color:#555;font-size:12px;margin-top:0;}table{width:100%;border-collapse:collapse;margin:20px 0;}th,td{border:1px solid #ccc;padding:10px;text-align:left;font-size:13px;}th{background:#f2f2f2;}.sig{margin-top:34px;}.sigline{margin-top:28px;border-top:1px solid #333;width:280px;padding-top:4px;font-size:11px;color:#555;}footer{margin-top:40px;color:#999;font-size:10px;text-align:center;}</style></head><body>' +
+    '<h1>SONGWRITER SPLIT SHEET</h1><p class="sub">Song: <strong>' + title + '</strong> &nbsp;·&nbsp; Date: ' + date + '</p>' +
+    '<table><tr><th>Full Legal Name</th><th>Role</th><th>Share %</th></tr>' +
+    rows.map(r => '<tr><td>' + r.name + '</td><td>' + r.role + '</td><td>' + r.pct + '%</td></tr>').join('') +
+    '<tr><td colspan="2" style="text-align:right;font-weight:bold;">TOTAL</td><td style="font-weight:bold;">' + total + '%</td></tr></table>' +
+    '<p style="font-size:11px;color:#444;">The undersigned agree that the ownership shares of the musical composition listed above are as stated. Each party should keep a signed copy.</p>' +
+    '<div class="sig">' + rows.map(r => '<div class="sigline">Signature — ' + r.name + '</div>').join('') + '</div>' +
+    '<footer>Generated with StudioSound.ai — Create. Release. Elevate. · This document is a mutual agreement record, not legal advice.</footer></body></html>');
+  w.document.close(); w.focus();
+  setTimeout(() => w.print(), 400);
+}
+
+// ====== RELEASE CHECKLIST ======
+const CHECKLIST = [
+  ['4 WEEKS OUT', ['Master finalized — WAV 16-bit/44.1kHz ready', 'Cover art finalized — 3000×3000 JPEG', 'Metadata + credits formatted (use the Metadata tool)', 'Split sheet signed by everyone (use the Split Sheet tool)', 'Upload to distributor NOW — editorial playlists need 4 weeks', 'Pitch via Spotify for Artists as soon as the release shows up']],
+  ['3 WEEKS OUT', ['Pre-save link created and tested', 'Content batch day: film 10-15 short clips in one session', 'Announce the release date on all platforms', 'Update all bios + link-in-bio with pre-save']],
+  ['2 WEEKS OUT', ['Post 1-2 teasers daily (hook first, always)', 'Start fan pages on TikTok/Reels/Shorts if not running', 'Pitch independent playlists (SubmitHub / Groover)', 'Line up any collabs, premieres, or local press']],
+  ['RELEASE WEEK', ['Confirm the release is live on all DSPs at midnight', 'Release-day post on every platform + Stories all day', 'Push the official audio/visualizer on YouTube', 'Message your day-ones directly — personal texts move numbers', 'Thank early listeners publicly, repost every share']],
+  ['WEEK AFTER', ['Keep posting — releases grow in week 2-4, don\'t go quiet', 'Make content from listener reactions and comments', 'Check Spotify for Artists data — double down where it\'s working', 'Start planning the next drop (momentum is the algorithm)']],
+];
+
+function renderChecklist() {
+  const el = document.getElementById('check-list');
+  if (!el || el.dataset.done) return;
+  el.dataset.done = '1';
+  el.innerHTML = CHECKLIST.map(([phase, items]) => 
+    '<div class="plan-item" style="margin-bottom:8px;"><div class="plan-date">' + phase + '</div>' +
+    items.map(it => '<label style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;color:#e0e0f0;font-size:12px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--neon);margin-top:2px;"/>' + it + '</label>').join('') +
+    '</div>').join('');
+}
+
+function printChecklist() {
+  const w = window.open('', '_blank');
+  w.document.write('<html><head><title>Release Checklist — StudioSound.ai</title><style>body{font-family:Arial;color:#111;padding:40px;max-width:700px;margin:auto;}h1{font-size:20px;}h2{font-size:13px;color:#00997d;letter-spacing:0.05em;margin:18px 0 6px;}div.i{font-size:12px;padding:4px 0;}span.box{display:inline-block;width:12px;height:12px;border:1.5px solid #333;margin-right:8px;vertical-align:middle;}footer{margin-top:30px;color:#999;font-size:10px;text-align:center;}</style></head><body><h1>INDEPENDENT RELEASE CHECKLIST</h1>' +
+    CHECKLIST.map(([phase, items]) => '<h2>' + phase + '</h2>' + items.map(it => '<div class="i"><span class="box"></span>' + it + '</div>').join('')).join('') +
+    '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
+  w.document.close(); w.focus();
+  setTimeout(() => w.print(), 400);
 }
 
 // ====== RECENT GENERATIONS ======
