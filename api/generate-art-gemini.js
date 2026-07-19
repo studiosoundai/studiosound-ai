@@ -1,4 +1,4 @@
-import { checkAndCount } from './_usage.js';
+import { checkAndCount, logGeneration } from './_usage.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -25,6 +25,7 @@ export default async function handler(req, res) {
           parameters: {
             sampleCount: 1,
             aspectRatio: '1:1',
+            sampleImageSize: '2K',
             safetyFilterLevel: 'block_few',
             personGeneration: 'allow_all',
           }
@@ -34,6 +35,7 @@ export default async function handler(req, res) {
     const data = await response.json();
     console.log('Imagen4 response:', JSON.stringify(data).slice(0, 300));
     if (data.predictions?.[0]?.bytesBase64Encoded) {
+      logGeneration(gate.userId, 'cover_art', { prompt: prompt, version: 'B' }, { model: 'imagen-4' });
       return res.status(200).json({
         data: [{ url: `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}` }]
       });
@@ -54,6 +56,7 @@ export default async function handler(req, res) {
     if (fallbackData.candidates?.[0]?.content?.parts) {
       const imgPart = fallbackData.candidates[0].content.parts.find(p => p.inlineData);
       if (imgPart) {
+        logGeneration(gate.userId, 'cover_art', { prompt: prompt, version: 'B' }, { model: 'gemini-2.5-flash-image-fallback' });
         return res.status(200).json({
           data: [{ url: `data:image/png;base64,${imgPart.inlineData.data}` }]
         });
