@@ -1,5 +1,6 @@
-import { checkAndCount } from './_usage.js';
+import { checkAndCount, logGeneration } from './_usage.js';
 
+// Version A — Gemini 2.5 Flash Image (fast, high quality, supports photo input)
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -17,89 +18,44 @@ export default async function handler(req, res) {
     if (!prompt) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
+
+    const parts = [];
     if (imageData) {
-      try {
-        const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
-        const buffer = Buffer.from(base64Data, 'base64');
-        const formData = new FormData();
-        const blob = new Blob([buffer], { type: 'image/png' });
-        formData.append('image', blob, 'reference.png');
-        formData.append('prompt', prompt);
-        formData.append('model', 'gpt-image-1');
-        formData.append('n', '1');
-        formData.append('size', '1024x1024');
-        const fetchResponse = await fetch('https://api.openai.com/v1/images/edits', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          },
-          body: formData,
-        });
-        const result = await fetchResponse.json();
-        if (result.data && result.data[0]) {
-          const imageResult = result.data[0];
-          if (imageResult.b64_json) {
-            return res.status(200).json({
-              data: [{ url: `data:image/png;base64,${imageResult.b64_json}` }]
-            });
-          } else if (imageResult.url) {
-            return res.status(200).json({
-              data: [{ url: imageResult.url }]
-            });
-          }
-        } else {
-          throw new Error(result.error?.message || 'Edit failed');
-        }
-      } catch (editError) {
-        console.error('Image edit failed, falling back:', editError);
-        const fallback = await fetch('https://api.openai.com/v1/images/generations', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-image-1',
-            prompt: prompt,
-            n: 1,
-            size: '1024x1024',
-          }),
-        });
-        const fallbackData = await fallback.json();
-        if (fallbackData.data && fallbackData.data[0]) {
-          const img = fallbackData.data[0];
-          return res.status(200).json({
-            data: [{ url: img.b64_json ? `data:image/png;base64,${img.b64_json}` : img.url }]
-          });
-        }
-        throw new Error('Both image generation methods failed');
-      }
+      const mimeMatch = imageData.match(/^data:(image\/\w+);/);
+      const mime = (mimeMatch && mimeMatch[1]) || 'image/png';
+      const b64 = imageData.replace(/^data:image\/\w+;base64,/, '');
+      parts.push({ inline_data: { mime_type: mime, data: b64 } });
+      parts.push({ text: prompt + ' Incorporate the person from the provided photo as the central subject of the cover art, preserving their likeness naturally within the scene. Square 1:1 album cover composition.' });
     } else {
-      const response = await fetch('https://api.openai.com/v1/images/generations', {
+      parts.push({ text: prompt + ' Square 1:1 album cover composition.' });
+    }
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+      {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gpt-image-1',
-          prompt: prompt,
-          n: 1,
-          size: '1024x1024',
+          contents: [{ parts: parts }],
+          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
         }),
-      });
-      const data = await response.json();
-      if (data.error) {
-        return res.status(400).json({ error: data.error.message });
       }
-      if (data.data && data.data[0]) {
-        const img = data.data[0];
+    );
+
+    const data = await response.json();
+    if (data.candidates?.[0]?.content?.parts) {
+      const imgPart = data.candidates[0].content.parts.find(p => p.inlineData);
+      if (imgPart) {
+        logGeneration(gate.userId, 'cover_art',
+          { prompt: prompt, hasPhoto: !!imageData, version: 'A' },
+          { model: 'gemini-2.5-flash-image' }
+        );
         return res.status(200).json({
-          data: [{ url: img.b64_json ? `data:image/png;base64,${img.b64_json}` : img.url }]
+          data: [{ url: `data:image/png;base64,${imgPart.inlineData.data}` }]
         });
       }
-      throw new Error('No image data returned');
     }
+    throw new Error(data.error?.message || 'No image returned');
   } catch (error) {
     console.error('Generate art error:', error);
     return res.status(500).json({
