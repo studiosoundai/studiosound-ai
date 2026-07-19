@@ -301,10 +301,12 @@ body{overflow:auto;height:auto;}
               <select class="form-select" id="art-genre">
                 <option>Hip-Hop</option><option>Drill</option><option>Trap</option>
                 <option>R&B</option><option>R&B Soul</option><option>Neo Soul</option>
-                <option>Pop</option><option>Gospel</option><option>Afrobeats</option>
-                <option>Electronic</option><option>Country</option><option>Reggaeton</option>
-                <option>Latin</option><option>Jazz</option><option>Lo-Fi</option>
-                <option>Punk</option><option>Rock</option>
+                <option>Pop</option><option>Rock</option><option>Punk</option>
+                <option>Alternative</option><option>Alternative Rap</option><option>Indie</option><option>Metal</option>
+                <option>Gospel</option><option>Afrobeats</option><option>Electronic</option>
+                <option>House</option><option>EDM</option><option>Country</option><option>Reggaeton</option>
+                <option>Latin</option><option>Dancehall</option><option>Jazz</option>
+                <option>Lo-Fi</option>
               </select>
             </div>
             <div class="form-group">
@@ -419,9 +421,12 @@ body{overflow:auto;height:auto;}
               <select class="form-select" id="plan-genre">
                 <option>Hip-Hop</option><option>Drill</option><option>Trap</option>
                 <option>R&B</option><option>R&B Soul</option><option>Neo Soul</option>
-                <option>Pop</option><option>Gospel</option><option>Afrobeats</option>
-                <option>Electronic</option><option>Country</option><option>Reggaeton</option>
-                <option>Latin</option><option>Lo-Fi</option>
+                <option>Pop</option><option>Rock</option><option>Punk</option>
+                <option>Alternative</option><option>Alternative Rap</option><option>Indie</option><option>Metal</option>
+                <option>Gospel</option><option>Afrobeats</option><option>Electronic</option>
+                <option>House</option><option>EDM</option><option>Country</option><option>Reggaeton</option>
+                <option>Latin</option><option>Dancehall</option><option>Jazz</option>
+                <option>Lo-Fi</option>
               </select>
             </div>
           </div>
@@ -755,8 +760,17 @@ async function showAssetsPanel() {
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
+        ${a.data && a.data.prompt ? ` <a onclick="copyPrompt(${i})" style="color:var(--muted);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Copy Prompt ⧉</a>` : ''}
       </div>
     </div>`).join('');
+}
+
+function copyPrompt(i) {
+  const p = assetsCache[i] && assetsCache[i].data && assetsCache[i].data.prompt;
+  if (!p) return;
+  navigator.clipboard.writeText(p).then(() => {
+    alert('Prompt copied — paste it in the generator to remix.');
+  });
 }
 
 function openPlanAsset(i) {
@@ -1018,14 +1032,14 @@ async function generateArt() {
       selectedArtUrl = versionAUrl;
       selectVersion('a');
       addRecent('🎨', title, 'Cover Art', versionAUrl);
-      saveAsset('Cover Art', title, versionAUrl);
+      saveAsset('Cover Art', title, versionAUrl, {prompt: userPrompt, genre: genre, mood: mood});
     } else if(versionAUrl || versionBUrl) {
       const url = versionAUrl || versionBUrl;
       document.getElementById('art-single-img').src = url;
       document.getElementById('art-single').style.display = 'block';
       selectedArtUrl = url;
       addRecent('🎨', title, 'Cover Art', url);
-      saveAsset('Cover Art', title, url);
+      saveAsset('Cover Art', title, url, {prompt: userPrompt, genre: genre, mood: mood});
     } else {
       const limitHit = (resA.status==='fulfilled' && resA.value.error==='limit_reached') ||
                        (resB.status==='fulfilled' && resB.value.error==='limit_reached');
@@ -1050,10 +1064,27 @@ async function generateArt() {
 
 function downloadArt() {
   if(!selectedArtUrl) { alert('Please generate an image first'); return; }
-  const a = document.createElement('a');
-  a.href = selectedArtUrl;
-  a.download = 'studiosound-cover-art.png';
-  a.click();
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    const c = document.createElement('canvas');
+    c.width = 3000; c.height = 3000;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, 3000, 3000);
+    const a = document.createElement('a');
+    a.href = c.toDataURL('image/jpeg', 0.92);
+    a.download = 'studiosound-cover-3000x3000.jpg';
+    a.click();
+  };
+  img.onerror = function() {
+    const a = document.createElement('a');
+    a.href = selectedArtUrl;
+    a.download = 'studiosound-cover-art.png';
+    a.click();
+  };
+  img.src = selectedArtUrl;
   if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
     recentItems[0].imageUrl = selectedArtUrl;
     renderRecent();
@@ -1128,7 +1159,7 @@ async function generatePlan() {
     if(data.timeline && data.timeline.length > 0) {
       renderPlan(data);
       addRecent(null, name, 'Release Plan', null, data);
-      saveAsset('Release Plan', name, null, data);
+      saveAsset('Release Plan', name, null, Object.assign({}, data, {_inputs: {artistName, artistHandle, budget, genre, city, releaseDate: date, details}}));
     } else {
       throw new Error('No plan returned');
     }
@@ -1194,7 +1225,7 @@ async function generateMerch() {
       document.getElementById('merch-retail').textContent = d.retail;
       document.getElementById('merch-result').classList.add('show');
       addRecent(d.emoji, `${color} ${type}`, 'Merch Mockup', data.data[0].url);
-      saveAsset('Merch Mockup', `${color} ${type}`, data.data[0].url);
+      saveAsset('Merch Mockup', `${color} ${type}`, data.data[0].url, {prompt: prompt, productType: type, color: color});
     } else {
       throw new Error('No mockup returned');
     }
