@@ -900,6 +900,13 @@ body{overflow:auto;height:auto;}
           </div>
           <div class="form-row">
             <div class="form-group">
+              <label class="form-label">Background Style</label>
+              <select class="form-select" id="lv-bg-style">
+                <option value="fullbleed">Full Cover — Cinematic Pan</option>
+                <option value="card">Floating Card on Blur</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label class="form-label">Font</label>
               <select class="form-select" id="lv-font">
                 <option value="sora">Sora — Clean Bold</option>
@@ -911,6 +918,8 @@ body{overflow:auto;height:auto;}
                 <option value="oswald">Oswald — Editorial</option>
               </select>
             </div>
+          </div>
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label">Text Color</label>
               <select class="form-select" id="lv-color">
@@ -925,8 +934,6 @@ body{overflow:auto;height:auto;}
                 <option value="#FF6B35">Orange</option>
               </select>
             </div>
-          </div>
-          <div class="form-row">
             <div class="form-group">
               <label class="form-label">Motion</label>
               <select class="form-select" id="lv-motion">
@@ -935,10 +942,10 @@ body{overflow:auto;height:auto;}
                 <option value="slide">Slide Up</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label">Title (shown at bottom)</label>
-              <input class="form-input" id="lv-title" placeholder="Song — Artist"/>
-            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title (shown at bottom)</label>
+            <input class="form-input" id="lv-title" placeholder="Song — Artist"/>
           </div>
           <div class="form-group">
             <label class="form-label">4. Sync Your Lyrics</label>
@@ -2138,14 +2145,30 @@ async function lvAutoLyrics() {
     }
     if(!data.lines) throw new Error(data.error || 'No lyrics detected');
 
-    document.getElementById('lv-lyrics').value = data.lines.map(l => l.text).join('\n');
-    lvTimes = data.lines.map(l => l.t);
-    status.innerHTML = '✓ <strong style="color:var(--neon);">' + data.lines.length + ' lines pulled from your song, perfectly timed.</strong> Fix any misheard words below — timing stays locked. Then just add your cover and export.';
+    const merged = lvMergeLines(data.lines);
+    document.getElementById('lv-lyrics').value = merged.map(l => l.text).join('\n');
+    lvTimes = merged.map(l => l.t);
+    status.innerHTML = '✓ <strong style="color:var(--neon);">' + merged.length + ' lines pulled from your song, timed and paced.</strong> Fix any misheard words below — timing stays locked. Then just add your cover and export.';
     document.getElementById('lv-sync-status').textContent = '✓ Auto-synced from your song — no tapping needed.';
   } catch(e) {
     console.error(e);
     status.textContent = (e.message || 'Auto-lyrics failed') + ' — you can still paste lyrics and tap-sync below.';
   }
+}
+
+function lvMergeLines(lines) {
+  // Whisper chops songs into many tiny segments — merge so each line
+  // displays at least ~2.2s and short fragments join their neighbor.
+  const out = [];
+  for (const l of lines) {
+    const last = out[out.length - 1];
+    if (last && (l.t - last.t < 2.2 || last.text.split(' ').length < 4) && (last.text + ' ' + l.text).length < 95) {
+      last.text += ' ' + l.text;
+    } else {
+      out.push({ t: l.t, text: l.text });
+    }
+  }
+  return out;
 }
 
 function lvLines() {
@@ -2238,61 +2261,82 @@ function lvDrawFrame(t, lineIdx) {
   const ctx = c.getContext('2d');
   const W = c.width, H = c.height;
   const dur = lvBuffer ? lvBuffer.duration : 30;
+  const bgStyle = document.getElementById('lv-bg-style').value || 'fullbleed';
   ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, W, H);
 
-  if(lvBgImg) {
-    // Blurred, slowly zooming backdrop that always fills 9:16
-    const zoom = 1 + 0.10 * (t / Math.max(dur, 1));
-    const bScale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * zoom * 1.1;
-    const bw = lvBgImg.width * bScale, bh = lvBgImg.height * bScale;
-    ctx.save();
-    ctx.filter = 'blur(28px) brightness(0.55)';
-    ctx.drawImage(lvBgImg, (W - bw) / 2, (H - bh) / 2, bw, bh);
-    ctx.restore();
+  const times = lvGetTimes();
+  const lines = lvLines();
+  const lineStart = (lineIdx >= 0 && times[lineIdx] !== undefined) ? times[lineIdx] : 0;
+  const lineEnd = (lineIdx >= 0 && times[lineIdx + 1] !== undefined) ? times[lineIdx + 1] : dur;
+  const lineP = Math.min(1, Math.max(0, (t - lineStart) / Math.max(0.5, lineEnd - lineStart)));
+  const raw = Math.min(1, Math.max(0, (t - lineStart) / 0.4));
+  const entry = 1 - Math.pow(1 - raw, 3);
 
-    // Sharp cover card floating in the upper third, gently breathing
-    const breathe = 1 + 0.012 * Math.sin(t * 1.4);
-    const cardW = W * 0.66 * breathe;
-    const cardScale = cardW / lvBgImg.width;
-    const cardH = lvBgImg.height * cardScale;
-    const cx = (W - cardW) / 2, cy = H * 0.09;
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 14;
-    const r = W * 0.03;
-    ctx.beginPath();
-    ctx.moveTo(cx + r, cy);
-    ctx.arcTo(cx + cardW, cy, cx + cardW, cy + cardH, r);
-    ctx.arcTo(cx + cardW, cy + cardH, cx, cy + cardH, r);
-    ctx.arcTo(cx, cy + cardH, cx, cy, r);
-    ctx.arcTo(cx, cy, cx + cardW, cy, r);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(lvBgImg, cx, cy, cardW, cardH);
-    ctx.restore();
+  if (lvBgImg) {
+    if (bgStyle === 'card') {
+      // Blurred backdrop + floating cover card
+      const zoom = 1 + 0.10 * (t / Math.max(dur, 1));
+      const bScale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * zoom * 1.1;
+      const bw2 = lvBgImg.width * bScale, bh2 = lvBgImg.height * bScale;
+      ctx.save();
+      ctx.filter = 'blur(28px) brightness(0.55)';
+      ctx.drawImage(lvBgImg, (W - bw2) / 2, (H - bh2) / 2, bw2, bh2);
+      ctx.restore();
+      const breathe = 1 + 0.012 * Math.sin(t * 1.4);
+      const cardW = W * 0.66 * breathe;
+      const cardScale = cardW / lvBgImg.width;
+      const cardH = lvBgImg.height * cardScale;
+      const cx = (W - cardW) / 2, cy = H * 0.09;
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 14;
+      const r = W * 0.03;
+      ctx.beginPath();
+      ctx.moveTo(cx + r, cy);
+      ctx.arcTo(cx + cardW, cy, cx + cardW, cy + cardH, r);
+      ctx.arcTo(cx + cardW, cy + cardH, cx, cy + cardH, r);
+      ctx.arcTo(cx, cy + cardH, cx, cy, r);
+      ctx.arcTo(cx, cy, cx + cardW, cy, r);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(lvBgImg, cx, cy, cardW, cardH);
+      ctx.restore();
+    } else {
+      // FULL-BLEED with cinematic Ken Burns pan — direction alternates per line
+      const scale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * 1.18;
+      const bw2 = lvBgImg.width * scale, bh2 = lvBgImg.height * scale;
+      const maxPanX = Math.max(0, (bw2 - W) / 2) * 0.85;
+      const maxPanY = Math.max(0, (bh2 - H) / 2) * 0.35;
+      const dir = (lineIdx >= 0 ? lineIdx : Math.floor(t / 6)) % 2 === 0 ? 1 : -1;
+      const p = lineIdx >= 0 ? lineP : ((t % 6) / 6);
+      const eased = p * p * (3 - 2 * p); // smoothstep glide
+      const xOff = maxPanX * dir * (eased - 0.5) * 2;
+      const yOff = maxPanY * Math.sin(t * 0.25);
+      ctx.drawImage(lvBgImg, (W - bw2) / 2 + xOff, (H - bh2) / 2 + yOff, bw2, bh2);
+    }
   }
 
-  // Readability gradient over the lyric zone
-  const grad = ctx.createLinearGradient(0, H * 0.45, 0, H);
-  grad.addColorStop(0, 'rgba(5,5,10,0)');
-  grad.addColorStop(1, 'rgba(5,5,10,0.75)');
-  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  // Readability layers: vignette top+bottom, plus a dip that masks line changes
+  const gTop = ctx.createLinearGradient(0, 0, 0, H * 0.35);
+  gTop.addColorStop(0, 'rgba(5,5,10,0.5)'); gTop.addColorStop(1, 'rgba(5,5,10,0)');
+  ctx.fillStyle = gTop; ctx.fillRect(0, 0, W, H * 0.35);
+  const gBot = ctx.createLinearGradient(0, H * 0.55, 0, H);
+  gBot.addColorStop(0, 'rgba(5,5,10,0)'); gBot.addColorStop(1, 'rgba(5,5,10,0.65)');
+  ctx.fillStyle = gBot; ctx.fillRect(0, H * 0.55, W, H * 0.45);
+  if (lineIdx >= 0 && bgStyle !== 'card') {
+    ctx.fillStyle = 'rgba(5,5,10,' + (0.30 * (1 - entry)) + ')';
+    ctx.fillRect(0, 0, W, H);
+  }
 
-  // Current lyric with chosen font, color, and motion
-  const lines = lvLines();
+  // Current lyric
   const font = LV_FONTS[document.getElementById('lv-font').value] || LV_FONTS.sora;
   const color = document.getElementById('lv-color').value || '#FFFFFF';
   const motion = document.getElementById('lv-motion').value || 'fade';
 
-  if(lineIdx >= 0 && lineIdx < lines.length) {
-    const times = lvGetTimes();
-    const lineStart = times[lineIdx] || 0;
-    const raw = Math.min(1, Math.max(0, (t - lineStart) / 0.4));
-    const ease = 1 - Math.pow(1 - raw, 3);
-
-    let alpha = ease, yOff = 0, scale = 1;
-    if(motion === 'fade')  { yOff = (1 - ease) * 16; }
-    if(motion === 'slide') { yOff = (1 - ease) * 90; }
-    if(motion === 'pop')   { scale = 1 + (1 - ease) * 0.28; }
+  if (lineIdx >= 0 && lineIdx < lines.length) {
+    let alpha = entry, yShift = 0, scaleT = 1;
+    if (motion === 'fade')  { yShift = (1 - entry) * 16; }
+    if (motion === 'slide') { yShift = (1 - entry) * 90; }
+    if (motion === 'pop')   { scaleT = 1 + (1 - entry) * 0.28; }
 
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -2300,13 +2344,13 @@ function lvDrawFrame(t, lineIdx) {
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const wrapped = lvWrap(ctx, lines[lineIdx], W * 0.86);
     const lh = W * 0.115;
-    const centerY = H * 0.70 + yOff;
+    const centerY = (bgStyle === 'card' ? H * 0.70 : H * 0.52) + yShift;
     const startY = centerY - ((wrapped.length - 1) * lh) / 2;
     ctx.translate(W / 2, centerY);
-    ctx.scale(scale, scale);
+    ctx.scale(scaleT, scaleT);
     ctx.translate(-W / 2, -centerY);
     wrapped.forEach((ln, i) => {
-      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 4;
+      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 22; ctx.shadowOffsetY = 4;
       ctx.fillStyle = color;
       ctx.fillText(ln, W / 2, startY + i * lh);
     });
@@ -2315,7 +2359,7 @@ function lvDrawFrame(t, lineIdx) {
 
   // Footer title
   const title = document.getElementById('lv-title').value.trim();
-  if(title) {
+  if (title) {
     ctx.font = '700 ' + Math.round(W * 0.030) + 'px ' + (LV_FONTS.oswald.fam);
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
     ctx.textAlign = 'center';
