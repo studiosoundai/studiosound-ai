@@ -2077,7 +2077,14 @@ async function lvAutoLyrics() {
       headers: await authHeaders(),
       body: JSON.stringify({ audioUrl: audioUrl })
     });
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch(parseErr) {
+      throw new Error(res.status === 404
+        ? 'Auto-Lyrics isn\'t deployed yet — coming right back online'
+        : 'Server hiccup (' + res.status + ') — try again in a minute');
+    }
     if(data.error === 'limit_reached') {
       status.innerHTML = 'You\'ve used your auto-lyrics for this month. <a href="pricing.html" style="color:var(--neon);font-weight:700;">Upgrade →</a> or paste lyrics manually below.';
       return;
