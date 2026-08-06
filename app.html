@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="Dashboard — StudioSound.ai">
 <meta name="twitter:description" content="Your AI studio: cover art, release plans, and merch mockups.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Permanent+Marker&family=Bangers&family=Oswald:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -151,6 +151,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .recent-item{background:var(--card);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
 .recent-item:hover{border-color:var(--neon);}
 .recent-thumb{height:80px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;}
+#assets-grid .recent-thumb, #assets-grid .recent-thumb img{height:130px;}
 .recent-thumb img{width:100%;height:80px;object-fit:cover;display:block;}
 .recent-info{padding:8px 10px;}
 .recent-name{color:#fff;font-size:10px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -256,9 +257,12 @@ body{overflow:auto;height:auto;}
         <div class="welcome-title" id="welcome-title">Welcome to <span>StudioSound.ai</span> 👋</div>
         <div class="welcome-sub">Pick a tool and start creating. We'll guide you every step of the way.</div>
         <div class="welcome-pills">
-          <div class="wpill"><i class="ti ti-disc"></i> Cover Art Live</div>
-          <div class="wpill"><i class="ti ti-rocket"></i> Release Planner Live</div>
-          <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups Live</div>
+          <div class="wpill"><i class="ti ti-disc"></i> Cover Art</div>
+          <div class="wpill"><i class="ti ti-rocket"></i> Release Planner</div>
+          <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups</div>
+          <div class="wpill"><i class="ti ti-pencil"></i> Lyric Writer</div>
+          <div class="wpill"><i class="ti ti-video"></i> Lyric Videos</div>
+          <div class="wpill"><i class="ti ti-wand"></i> + 4 Free Utilities</div>
         </div>
       </div>
       <div class="welcome-right">
@@ -896,11 +900,39 @@ body{overflow:auto;height:auto;}
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Text Style</label>
-              <select class="form-select" id="lv-style">
-                <option value="white">Bold White</option>
-                <option value="neon">Neon Teal</option>
-                <option value="gold">Gold</option>
+              <label class="form-label">Font</label>
+              <select class="form-select" id="lv-font">
+                <option value="sora">Sora — Clean Bold</option>
+                <option value="anton">Anton — Big Impact</option>
+                <option value="bebas">Bebas Neue — Tall Poster</option>
+                <option value="archivo">Archivo Black — Heavy</option>
+                <option value="marker">Permanent Marker — Handwritten</option>
+                <option value="bangers">Bangers — Comic Energy</option>
+                <option value="oswald">Oswald — Editorial</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Text Color</label>
+              <select class="form-select" id="lv-color">
+                <option value="#FFFFFF">White</option>
+                <option value="#00FFD1">Neon Teal</option>
+                <option value="#FFD700">Gold</option>
+                <option value="#FF2D95">Hot Pink</option>
+                <option value="#FF3131">Red</option>
+                <option value="#B026FF">Purple</option>
+                <option value="#7DF9FF">Ice Blue</option>
+                <option value="#9DFF00">Lime</option>
+                <option value="#FF6B35">Orange</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Motion</label>
+              <select class="form-select" id="lv-motion">
+                <option value="fade">Smooth Fade</option>
+                <option value="pop">Pop In</option>
+                <option value="slide">Slide Up</option>
               </select>
             </div>
             <div class="form-group">
@@ -917,6 +949,20 @@ body{overflow:auto;height:auto;}
             </div>
             <button class="gen-btn" id="lv-tap" onclick="lvTap()" style="display:none;margin-top:10px;font-size:16px;padding:18px;">TAP — next line</button>
             <div id="lv-sync-status" style="color:var(--muted);font-size:11px;margin-top:8px;"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Video Length</label>
+              <select class="form-select" id="lv-length">
+                <option value="full">Full Song</option>
+                <option value="30">30s Clip (Reels/Shorts)</option>
+                <option value="15">15s Hook (TikTok)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Start at (seconds)</label>
+              <input class="form-input" id="lv-start" type="number" min="0" step="1" value="0" placeholder="0 = from the top"/>
+            </div>
           </div>
           <div class="result-actions" style="margin-bottom:10px;">
             <button class="result-btn" onclick="lvPreview()"><i class="ti ti-player-play"></i> Preview</button>
@@ -1115,7 +1161,7 @@ async function showAssetsPanel() {
   }
   grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : '')}>
+      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="window.open('${a.data.videoUrl}','_blank')" style="cursor:pointer;" title="Click to play your video"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))}>
         <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
@@ -1123,6 +1169,7 @@ async function showAssetsPanel() {
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
+        ${a.data && a.data.videoUrl ? `<a href="${a.data.videoUrl}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download Video ↓</a>` : ''}
         ${a.data && a.data.prompt ? ` <a onclick="copyPrompt(${i})" style="color:var(--muted);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Copy Prompt ⧉</a>` : ''}
       </div>
     </div>`).join('');
@@ -2155,11 +2202,25 @@ function lvStopSync() {
   if(lvTimes.length) document.getElementById('lv-sync-status').textContent = lvTimes.length + ' lines synced. Preview or export.';
 }
 
-const LV_STYLES = {
-  white: { fill:'#ffffff', shadow:'rgba(0,0,0,0.85)' },
-  neon:  { fill:'#00FFD1', shadow:'rgba(0,0,0,0.85)' },
-  gold:  { fill:'#FFD700', shadow:'rgba(0,0,0,0.85)' }
+const LV_FONTS = {
+  sora:    { fam: "'Sora', Arial", weight: '900' },
+  anton:   { fam: "'Anton', Arial", weight: '400' },
+  bebas:   { fam: "'Bebas Neue', Arial", weight: '400' },
+  archivo: { fam: "'Archivo Black', Arial", weight: '400' },
+  marker:  { fam: "'Permanent Marker', Arial", weight: '400' },
+  bangers: { fam: "'Bangers', Arial", weight: '400' },
+  oswald:  { fam: "'Oswald', Arial", weight: '700' }
 };
+
+async function lvLoadFont() {
+  const f = LV_FONTS[document.getElementById('lv-font').value] || LV_FONTS.sora;
+  try {
+    await Promise.all([
+      document.fonts.load(f.weight + ' 60px ' + f.fam.split(',')[0]),
+      document.fonts.ready
+    ]);
+  } catch(e) {}
+}
 
 function lvWrap(ctx, text, maxW) {
   const words = text.split(' ');
@@ -2177,48 +2238,88 @@ function lvDrawFrame(t, lineIdx) {
   const ctx = c.getContext('2d');
   const W = c.width, H = c.height;
   const dur = lvBuffer ? lvBuffer.duration : 30;
-  // background: cover-fill with slow zoom
   ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, W, H);
+
   if(lvBgImg) {
-    const zoom = 1 + 0.08 * (t / Math.max(dur, 1));
-    const scale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * zoom;
-    const dw = lvBgImg.width * scale, dh = lvBgImg.height * scale;
-    ctx.drawImage(lvBgImg, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    // Blurred, slowly zooming backdrop that always fills 9:16
+    const zoom = 1 + 0.10 * (t / Math.max(dur, 1));
+    const bScale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * zoom * 1.1;
+    const bw = lvBgImg.width * bScale, bh = lvBgImg.height * bScale;
+    ctx.save();
+    ctx.filter = 'blur(28px) brightness(0.55)';
+    ctx.drawImage(lvBgImg, (W - bw) / 2, (H - bh) / 2, bw, bh);
+    ctx.restore();
+
+    // Sharp cover card floating in the upper third, gently breathing
+    const breathe = 1 + 0.012 * Math.sin(t * 1.4);
+    const cardW = W * 0.66 * breathe;
+    const cardScale = cardW / lvBgImg.width;
+    const cardH = lvBgImg.height * cardScale;
+    const cx = (W - cardW) / 2, cy = H * 0.09;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 14;
+    const r = W * 0.03;
+    ctx.beginPath();
+    ctx.moveTo(cx + r, cy);
+    ctx.arcTo(cx + cardW, cy, cx + cardW, cy + cardH, r);
+    ctx.arcTo(cx + cardW, cy + cardH, cx, cy + cardH, r);
+    ctx.arcTo(cx, cy + cardH, cx, cy, r);
+    ctx.arcTo(cx, cy, cx + cardW, cy, r);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(lvBgImg, cx, cy, cardW, cardH);
+    ctx.restore();
   }
-  // dark overlay for readability
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, 'rgba(5,5,10,0.55)');
-  grad.addColorStop(0.5, 'rgba(5,5,10,0.35)');
-  grad.addColorStop(1, 'rgba(5,5,10,0.7)');
+
+  // Readability gradient over the lyric zone
+  const grad = ctx.createLinearGradient(0, H * 0.45, 0, H);
+  grad.addColorStop(0, 'rgba(5,5,10,0)');
+  grad.addColorStop(1, 'rgba(5,5,10,0.75)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
-  // current lyric
+
+  // Current lyric with chosen font, color, and motion
   const lines = lvLines();
-  const style = LV_STYLES[document.getElementById('lv-style').value] || LV_STYLES.white;
+  const font = LV_FONTS[document.getElementById('lv-font').value] || LV_FONTS.sora;
+  const color = document.getElementById('lv-color').value || '#FFFFFF';
+  const motion = document.getElementById('lv-motion').value || 'fade';
+
   if(lineIdx >= 0 && lineIdx < lines.length) {
     const times = lvGetTimes();
     const lineStart = times[lineIdx] || 0;
-    const fade = Math.min(1, (t - lineStart) / 0.35);
-    ctx.globalAlpha = Math.max(0, fade);
-    ctx.font = '900 ' + Math.round(W * 0.085) + 'px Sora, Arial';
+    const raw = Math.min(1, Math.max(0, (t - lineStart) / 0.4));
+    const ease = 1 - Math.pow(1 - raw, 3);
+
+    let alpha = ease, yOff = 0, scale = 1;
+    if(motion === 'fade')  { yOff = (1 - ease) * 16; }
+    if(motion === 'slide') { yOff = (1 - ease) * 90; }
+    if(motion === 'pop')   { scale = 1 + (1 - ease) * 0.28; }
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = font.weight + ' ' + Math.round(W * 0.088) + 'px ' + font.fam;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const wrapped = lvWrap(ctx, lines[lineIdx], W * 0.84);
-    const lh = W * 0.11;
-    const startY = H / 2 - ((wrapped.length - 1) * lh) / 2 + (1 - fade) * 14;
+    const wrapped = lvWrap(ctx, lines[lineIdx], W * 0.86);
+    const lh = W * 0.115;
+    const centerY = H * 0.70 + yOff;
+    const startY = centerY - ((wrapped.length - 1) * lh) / 2;
+    ctx.translate(W / 2, centerY);
+    ctx.scale(scale, scale);
+    ctx.translate(-W / 2, -centerY);
     wrapped.forEach((ln, i) => {
-      ctx.shadowColor = style.shadow; ctx.shadowBlur = 18; ctx.shadowOffsetY = 3;
-      ctx.fillStyle = style.fill;
+      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 4;
+      ctx.fillStyle = color;
       ctx.fillText(ln, W / 2, startY + i * lh);
     });
-    ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
-    ctx.globalAlpha = 1;
+    ctx.restore();
   }
-  // footer title
+
+  // Footer title
   const title = document.getElementById('lv-title').value.trim();
   if(title) {
-    ctx.font = '700 ' + Math.round(W * 0.032) + 'px Sora, Arial';
+    ctx.font = '700 ' + Math.round(W * 0.030) + 'px ' + (LV_FONTS.oswald.fam);
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
     ctx.textAlign = 'center';
-    ctx.fillText(title.toUpperCase(), W / 2, H - W * 0.07);
+    ctx.fillText(title.toUpperCase(), W / 2, H - W * 0.06);
   }
 }
 
@@ -2229,8 +2330,12 @@ function lvCurrentLine(t) {
   return idx;
 }
 
-function lvRun(record) {
+let lvSnap = null;
+
+async function lvRun(record) {
   lvStopAll();
+  lvSnap = null;
+  await lvLoadFont();
   lvAC = new (window.AudioContext || window.webkitAudioContext)();
   lvSrc = lvAC.createBufferSource(); lvSrc.buffer = lvBuffer;
   lvSrc.connect(lvAC.destination);
@@ -2243,26 +2348,50 @@ function lvRun(record) {
     let mime = 'video/webm;codecs=vp9,opus';
     if(!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
     if(!MediaRecorder.isTypeSupported(mime)) mime = '';
-    lvRecorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 6000000 } : undefined);
+    lvRecorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 3500000 } : undefined);
     const chunks = [];
     lvRecorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
-    lvRecorder.onstop = () => {
+    lvRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: 'video/webm' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'studiosound-lyric-video.webm';
       a.click();
-      document.getElementById('lv-export-status').innerHTML = '✓ Downloaded! It\'s a .webm — TikTok, Reels, and Shorts all accept it. Need MP4? Most phones convert on upload automatically.';
-      saveAsset('Lyric Video', (document.getElementById('lv-title').value.trim() || 'Lyric Video'), null, {lines: lvLines().length});
+      const lvName = document.getElementById('lv-title').value.trim() || ('Lyric Video ' + new Date().toLocaleDateString());
+      const status = document.getElementById('lv-export-status');
+      status.innerHTML = '✓ Downloaded! Now saving a copy to My Assets...';
+      let videoUrl = null;
+      try {
+        if (blob.size < 80 * 1048576 && currentUser) {
+          const path = currentUser.id + '/lyricvideo-' + Date.now() + '.webm';
+          const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'video/webm' });
+          if (!upErr) videoUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+          else console.error('video upload', upErr);
+        }
+      } catch(e) { console.error('video upload', e); }
+      saveAsset('Lyric Video', lvName, lvSnap, {videoUrl: videoUrl, lines: lvLines().length, font: document.getElementById('lv-font').value, color: document.getElementById('lv-color').value});
+      addRecent(null, lvName, 'Lyric Video', lvSnap);
+      status.innerHTML = videoUrl
+        ? '✓ Downloaded and saved to My Assets — you can re-download it anytime.'
+        : '✓ Downloaded! (Cloud copy skipped — file was large. The download on your device is yours to keep.)';
     };
     lvRecorder.start();
-    document.getElementById('lv-export-status').textContent = 'Recording your video in real time (' + lvBuffer.duration.toFixed(0) + 's) — keep this tab open...';
+    const lenSelStatus = document.getElementById('lv-length').value;
+    const durForStatus = lenSelStatus === 'full' ? lvBuffer.duration : Math.min(parseFloat(lenSelStatus), lvBuffer.duration);
+    document.getElementById('lv-export-status').textContent = 'Recording your video in real time (' + durForStatus.toFixed(0) + 's) — keep this tab open...';
   }
+  const lvStartSec = Math.max(0, parseFloat(document.getElementById('lv-start').value) || 0);
+  const lenSel = document.getElementById('lv-length').value;
+  let lvPlayDur = Math.max(1, lvBuffer.duration - lvStartSec);
+  if (lenSel !== 'full') lvPlayDur = Math.min(lvPlayDur, parseFloat(lenSel));
   lvStartT = lvAC.currentTime;
-  lvSrc.start();
+  lvSrc.start(0, lvStartSec, lvPlayDur);
   const tick = () => {
-    const t = lvAC.currentTime - lvStartT;
+    const t = lvStartSec + (lvAC.currentTime - lvStartT);
     lvDrawFrame(t, lvCurrentLine(t));
+    if(record && !lvSnap && (lvAC.currentTime - lvStartT) > 1.5) {
+      try { lvSnap = document.getElementById('lv-canvas').toDataURL('image/jpeg', 0.85); } catch(e) {}
+    }
     lvAnim = requestAnimationFrame(tick);
   };
   tick();
