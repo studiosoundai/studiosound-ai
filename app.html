@@ -870,7 +870,7 @@ body{overflow:auto;height:auto;}
       <div class="generator">
         <div class="gen-panel">
           <div class="gen-title">🎬 Lyric Video Creator <span style="color:var(--neon);font-size:10px;font-weight:800;">BETA</span></div>
-          <div class="gen-sub">Song + lyrics + your cover art = a vertical lyric video for TikTok, Reels, and Shorts. Made on your device.</div>
+          <div class="gen-sub">Drop your song, hit Auto-Lyrics, add your cover — that's the whole job. Vertical video ready for TikTok, Reels, and Shorts.</div>
           <div class="form-group">
             <label class="form-label">1. Upload Your Song <span style="color:var(--neon);">*</span></label>
             <div style="border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('lv-audio').click()">
@@ -890,8 +890,9 @@ body{overflow:auto;height:auto;}
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">3. Lyrics — one line per line <span style="color:var(--neon);">*</span></label>
-            <textarea class="form-textarea" id="lv-lyrics" style="min-height:120px;" placeholder="Paste your lyrics here&#10;One line at a time&#10;Each line shows on screen when you tap it in"></textarea>
+            <label class="form-label">3. Your Lyrics <span style="color:var(--neon);">*</span> <span style="color:#5a5a72;font-weight:600;">— fills itself, you just review</span></label>
+            <textarea class="form-textarea" id="lv-lyrics" style="min-height:120px;" placeholder="These fill in automatically:&#10;✨ Auto-Lyrics pulls them from your song, or&#10;✍️ the AI Lyric Writer sends them here.&#10;(You can also paste your own — one line per line.)"></textarea>
+            <div style="color:var(--muted);font-size:11px;margin-top:6px;">No lyrics yet? <a onclick="switchTool('writer',null)" style="color:var(--neon);font-weight:700;cursor:pointer;">Let the AI write them →</a></div>
           </div>
           <div class="form-row">
             <div class="form-group">
