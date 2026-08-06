@@ -199,7 +199,8 @@ body{overflow:auto;height:auto;}
     <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
     <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
-    <button class="sidebar-item"><i class="ti ti-video"></i> Lyric Videos <span class="soon">SOON</span></button>
+    <button class="sidebar-item" onclick="switchTool('writer',this)"><i class="ti ti-pencil"></i> AI Lyric Writer <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
     <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
@@ -308,6 +309,22 @@ body{overflow:auto;height:auto;}
             <label style="display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
               <input type="checkbox" id="art-title-toggle" checked style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
               Include the title as text on the artwork
+            </label>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Artist Name on Cover (optional)</label>
+              <input class="form-input" id="art-artist" placeholder="Rendered smaller, under the title"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Color Palette (optional)</label>
+              <input class="form-input" id="art-colors" placeholder="e.g. teal, gold, black"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
+              <input type="checkbox" id="art-pa" style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
+              Add Parental Advisory sticker <span style="color:#5a5a72;">(applied crisp on your download)</span>
             </label>
           </div>
           <div class="form-row">
@@ -780,6 +797,143 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
+    <!-- AI LYRIC WRITER -->
+    <div id="tool-writer" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">✍️ AI Lyric Writer</div>
+          <div class="gen-sub">Tell us what the song is about — get lyrics that actually sound like your genre. Then send them straight to the Lyric Video maker.</div>
+          <div class="form-group">
+            <label class="form-label">What's the song about? <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="lw-topic" style="min-height:80px;" placeholder="Example: Coming from nothing and finally seeing money, but the people around me changed. I want it to feel triumphant but a little cold."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <input class="form-input" id="lw-genre" placeholder="e.g. Drill, R&B, Reggaeton"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mood</label>
+              <input class="form-input" id="lw-mood" placeholder="e.g. triumphant, heartbreak, party"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Language</label>
+              <select class="form-select" id="lw-lang"><option>English</option><option>Spanish</option><option>Spanglish</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">How much do you need?</label>
+              <select class="form-select" id="lw-structure">
+                <option value="full">Full Song</option>
+                <option value="verse-hook">Verse + Hook</option>
+                <option value="hook">Just the Hook</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Extra direction (optional)</label>
+            <input class="form-input" id="lw-style" placeholder="e.g. heavy wordplay, melodic flow, short punchy lines"/>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
+              <input type="checkbox" id="lw-explicit" style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
+              Explicit allowed
+            </label>
+          </div>
+          <button class="gen-btn" id="lw-btn" onclick="generateLyrics()"><i class="ti ti-sparkles"></i> Write My Lyrics</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Lyrics</div>
+          <div class="gen-sub">Edit them right here — make them yours before you record</div>
+          <div class="result-placeholder" id="lw-placeholder">
+            <i class="ti ti-pencil"></i>
+            <p>Describe your song and hit Write — structured lyrics with verses and hooks appear here.</p>
+          </div>
+          <div class="loading" id="lw-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Writing your song...</div>
+          </div>
+          <textarea class="form-textarea" id="lw-output" style="display:none;min-height:320px;font-size:12px;line-height:1.7;"></textarea>
+          <div class="error-msg" id="lw-error"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generateLyrics()"><i class="ti ti-refresh"></i> Rewrite</button>
+            <button class="result-btn" onclick="copyLyrics()"><i class="ti ti-copy"></i> Copy</button>
+            <button class="result-btn primary" onclick="sendToVideo()"><i class="ti ti-video"></i> Make the Video</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LYRIC VIDEO CREATOR -->
+    <div id="tool-lyric" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🎬 Lyric Video Creator <span style="color:var(--neon);font-size:10px;font-weight:800;">BETA</span></div>
+          <div class="gen-sub">Song + lyrics + your cover art = a vertical lyric video for TikTok, Reels, and Shorts. Made on your device.</div>
+          <div class="form-group">
+            <label class="form-label">1. Upload Your Song <span style="color:var(--neon);">*</span></label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('lv-audio').click()">
+              <div id="lv-audio-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload audio (MP3, WAV...)</div>
+              <input type="file" id="lv-audio" accept="audio/*" style="display:none;" onchange="lvLoadAudio(this)"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="result-btn primary" style="width:100%;padding:11px;" onclick="lvAutoLyrics()"><i class="ti ti-wand"></i> ✨ Auto-Lyrics — AI pulls lyrics + timing from your song</button>
+            <div id="lv-auto-status" style="color:var(--muted);font-size:11px;margin-top:6px;"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">2. Background Image <span style="color:var(--neon);">*</span></label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('lv-bg').click()">
+              <div id="lv-bg-label" style="color:#fff;font-size:12px;font-weight:600;">Upload your cover art</div>
+              <input type="file" id="lv-bg" accept="image/*" style="display:none;" onchange="lvLoadBg(this)"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">3. Lyrics — one line per line <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="lv-lyrics" style="min-height:120px;" placeholder="Paste your lyrics here&#10;One line at a time&#10;Each line shows on screen when you tap it in"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Text Style</label>
+              <select class="form-select" id="lv-style">
+                <option value="white">Bold White</option>
+                <option value="neon">Neon Teal</option>
+                <option value="gold">Gold</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Title (shown at bottom)</label>
+              <input class="form-input" id="lv-title" placeholder="Song — Artist"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">4. Sync Your Lyrics</label>
+            <div style="color:var(--muted);font-size:11px;line-height:1.6;margin-bottom:8px;">Hit <strong style="color:#fff;">Start Sync</strong> — your song plays. Tap the big button (or spacebar) the moment each line should appear. Skip this and lines spread evenly instead.</div>
+            <div class="result-actions">
+              <button class="result-btn" id="lv-sync-btn" onclick="lvStartSync()"><i class="ti ti-metronome"></i> Start Sync</button>
+              <button class="result-btn" onclick="lvStopSync()"><i class="ti ti-player-stop"></i> Stop</button>
+            </div>
+            <button class="gen-btn" id="lv-tap" onclick="lvTap()" style="display:none;margin-top:10px;font-size:16px;padding:18px;">TAP — next line</button>
+            <div id="lv-sync-status" style="color:var(--muted);font-size:11px;margin-top:8px;"></div>
+          </div>
+          <div class="result-actions" style="margin-bottom:10px;">
+            <button class="result-btn" onclick="lvPreview()"><i class="ti ti-player-play"></i> Preview</button>
+            <button class="result-btn" onclick="lvStopPreview()"><i class="ti ti-player-stop"></i> Stop</button>
+          </div>
+          <button class="gen-btn" id="lv-export" onclick="lvExport()"><i class="ti ti-download"></i> Export Video</button>
+          <div id="lv-export-status" style="color:var(--muted);font-size:11px;margin-top:8px;"></div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Preview — 9:16 Vertical</div>
+          <div class="gen-sub">This exact video exports for TikTok / Reels / Shorts</div>
+          <div style="display:flex;justify-content:center;">
+            <canvas id="lv-canvas" width="540" height="960" style="width:100%;max-width:300px;border-radius:12px;background:#0f0f1a;display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- MY ASSETS -->
     <div id="tool-assets" class="hidden">
       <div class="gen-panel" style="margin-bottom:16px;">
@@ -897,6 +1051,8 @@ sbAuth.auth.getSession().then(async ({ data }) => {
 const TOOL_THUMBS = {
   'Cover Art': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png',
   'Release Plan': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
+  'Lyrics': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
+  'Lyric Video': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
   'Merch Mockup': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png'
 };
 function toolThumb(tool) {
@@ -915,19 +1071,26 @@ async function saveAsset(tool, name, dataUrl, extraData) {
         publicUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
       } else { console.error('upload error', upErr); }
     }
-    await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl, data: extraData || null });
+    const { error: insErr } = await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl, data: extraData || null });
+    if (insErr) {
+      console.error('asset insert failed, retrying without data column:', insErr);
+      const { error: retryErr } = await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl });
+      if (retryErr) console.error('asset insert retry also failed:', retryErr);
+    }
   } catch(e) { console.error('saveAsset', e); }
 }
 
 async function loadAssets() {
   try {
-    const { data } = await sbAuth.from('assets').select('*').order('created_at', { ascending: false }).limit(60);
-    return data || [];
-  } catch(e) { return []; }
+    const { data, error } = await sbAuth.from('assets').select('*').order('created_at', { ascending: false }).limit(60);
+    if (error) { console.error('loadAssets:', error); return { error: true, items: [] }; }
+    return { error: false, items: data || [] };
+  } catch(e) { console.error('loadAssets:', e); return { error: true, items: [] }; }
 }
 
 async function initRecent() {
-  const items = await loadAssets();
+  const result = await loadAssets();
+  const items = result.items || [];
   if (!items.length) return;
   recentItems = items.slice(0, 5).map(a => ({ icon: null, name: a.name || a.tool, type: a.tool, imageUrl: a.url, data: a.data || null }));
   renderRecent();
@@ -938,15 +1101,20 @@ let assetsCache = [];
 async function showAssetsPanel() {
   const grid = document.getElementById('assets-grid');
   grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Loading your assets...</p>';
-  const items = await loadAssets();
+  const result = await loadAssets();
+  const items = result.items || [];
   assetsCache = items;
+  if (result.error) {
+    grid.innerHTML = '<p style="color:#ff9b9b;font-size:12px;">Couldn\'t load your assets — refresh the page. If this keeps happening, contact support@studiosound.ai and we\'ll fix it fast.</p>';
+    return;
+  }
   if (!items.length) {
     grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Nothing here yet — everything you generate is saved automatically and will appear here.</p>';
     return;
   }
   grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : ''}>
+      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : '')}>
         <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
@@ -1086,7 +1254,7 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -1174,10 +1342,14 @@ async function generateArt() {
   if(!userPrompt) { alert('Please describe your vision in the prompt box'); return; }
 
   const includeTitle = document.getElementById('art-title-toggle').checked;
+  const coverArtist = document.getElementById('art-artist').value.trim();
+  const palette = document.getElementById('art-colors').value.trim();
   const textInstruction = includeTitle
     ? `Render the title "${title}" prominently on the artwork in bold, stylish typography that fits the genre and mood — integrated naturally like a professionally designed album cover. Spell the title exactly as written. No other text, watermarks, or logos.`
     : 'No text, no words, purely visual.';
-  const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}. Ultra high quality, label-quality artwork, striking visual composition. ${textInstruction} Cinematic quality.`;
+  const artistInstruction = coverArtist ? ` Also render the artist name "${coverArtist}" in smaller complementary typography, spelled exactly as written.` : '';
+  const paletteInstruction = palette ? ` Color palette: ${palette}.` : '';
+  const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}.${paletteInstruction} Ultra high quality, label-quality artwork, striking visual composition. ${textInstruction}${artistInstruction} Cinematic quality.`;
 
   const imgUpload = document.getElementById('art-img-upload');
   let imageData = null;
@@ -1232,14 +1404,14 @@ async function generateArt() {
       selectedArtUrl = versionAUrl;
       selectVersion('a');
       addRecent('🎨', title, 'Cover Art', versionAUrl);
-      saveAsset('Cover Art', title, versionAUrl, {prompt: userPrompt, genre: genre, mood: mood});
+      saveAsset('Cover Art', title, versionAUrl, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
     } else if(versionAUrl || versionBUrl) {
       const url = versionAUrl || versionBUrl;
       document.getElementById('art-single-img').src = url;
       document.getElementById('art-single').style.display = 'block';
       selectedArtUrl = url;
       addRecent('🎨', title, 'Cover Art', url);
-      saveAsset('Cover Art', title, url, {prompt: userPrompt, genre: genre, mood: mood});
+      saveAsset('Cover Art', title, url, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
     } else {
       const limitHit = (resA.status==='fulfilled' && resA.value.error==='limit_reached') ||
                        (resB.status==='fulfilled' && resB.value.error==='limit_reached');
@@ -1262,6 +1434,33 @@ async function generateArt() {
   document.getElementById('art-btn').disabled = false;
 }
 
+function drawPASticker(ctx, S) {
+  const w = S * 0.155, h = w * 0.60;
+  const x = S - w - S * 0.033, y = S - h - S * 0.033;
+  const bw = S * 0.0035;
+  // white base + black border
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(x, y, w, h);
+  ctx.lineWidth = bw * 2;
+  ctx.strokeStyle = '#000000';
+  ctx.strokeRect(x + bw, y + bw, w - bw * 2, h - bw * 2);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // PARENTAL
+  ctx.fillStyle = '#000000';
+  ctx.font = '900 ' + (h * 0.21) + 'px Arial';
+  ctx.fillText('PARENTAL', x + w / 2, y + h * 0.20);
+  // black band with ADVISORY
+  ctx.fillRect(x + bw * 3, y + h * 0.335, w - bw * 6, h * 0.30);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 ' + (h * 0.20) + 'px Arial';
+  ctx.fillText('ADVISORY', x + w / 2, y + h * 0.49);
+  // EXPLICIT CONTENT
+  ctx.fillStyle = '#000000';
+  ctx.font = '700 ' + (h * 0.135) + 'px Arial';
+  ctx.fillText('EXPLICIT CONTENT', x + w / 2, y + h * 0.80);
+}
+
 function downloadArt() {
   if(!selectedArtUrl) { alert('Please generate an image first'); return; }
   const img = new Image();
@@ -1273,6 +1472,7 @@ function downloadArt() {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(img, 0, 0, 3000, 3000);
+    if (document.getElementById('art-pa').checked) drawPASticker(ctx, 3000);
     const a = document.createElement('a');
     a.href = c.toDataURL('image/jpeg', 0.92);
     a.download = 'studiosound-cover-3000x3000.jpg';
@@ -1763,6 +1963,333 @@ function printChecklist() {
     '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
   w.document.close(); w.focus();
   setTimeout(() => w.print(), 400);
+}
+
+// ====== AI LYRIC WRITER ======
+async function generateLyrics() {
+  const topic = document.getElementById('lw-topic').value.trim();
+  if(!topic) { alert('Tell us what the song is about'); return; }
+  document.getElementById('lw-placeholder').style.display = 'none';
+  document.getElementById('lw-output').style.display = 'none';
+  document.getElementById('lw-error').style.display = 'none';
+  document.getElementById('lw-loading').classList.add('active');
+  document.getElementById('lw-btn').disabled = true;
+  try {
+    const res = await fetch('/api/generate-lyrics', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        topic: topic,
+        genre: document.getElementById('lw-genre').value.trim(),
+        mood: document.getElementById('lw-mood').value.trim(),
+        language: document.getElementById('lw-lang').value,
+        structure: document.getElementById('lw-structure').value,
+        explicit: document.getElementById('lw-explicit').checked,
+        styleNotes: document.getElementById('lw-style').value.trim()
+      })
+    });
+    const data = await res.json();
+    document.getElementById('lw-loading').classList.remove('active');
+    if(data.error === 'limit_reached') {
+      document.getElementById('lw-placeholder').style.display = 'flex';
+      showLimit('lw-error','lyric generations');
+      document.getElementById('lw-btn').disabled = false;
+      return;
+    }
+    if(data.lyrics) {
+      const out = document.getElementById('lw-output');
+      out.value = data.lyrics;
+      out.style.display = 'block';
+      addRecent(null, topic.slice(0, 30), 'Lyrics', null);
+      saveAsset('Lyrics', topic.slice(0, 40), null, {lyrics: data.lyrics, topic: topic});
+    } else {
+      throw new Error(data.error || 'No lyrics returned');
+    }
+  } catch(e) {
+    document.getElementById('lw-loading').classList.remove('active');
+    document.getElementById('lw-placeholder').style.display = 'flex';
+    const err = document.getElementById('lw-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+  }
+  document.getElementById('lw-btn').disabled = false;
+}
+
+function copyLyrics() {
+  const out = document.getElementById('lw-output');
+  if(!out.value) { alert('Write some lyrics first'); return; }
+  navigator.clipboard.writeText(out.value).then(() => alert('Lyrics copied!'));
+}
+
+function sendToVideo() {
+  const out = document.getElementById('lw-output');
+  if(!out.value) { alert('Write some lyrics first'); return; }
+  // strip section labels, keep the lines
+  const lines = out.value.split('\n').map(l => l.trim()).filter(l => l && !/^\[.*\]$/.test(l));
+  document.getElementById('lv-lyrics').value = lines.join('\n');
+  switchTool('lyric', null);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ====== LYRIC VIDEO CREATOR (client-side render, $0 per video) ======
+let lvBuffer = null, lvBgImg = null, lvTimes = [], lvSyncIdx = 0;
+let lvAC = null, lvSrc = null, lvStartT = 0, lvAnim = null, lvRecorder = null;
+
+let lvAudioFile = null;
+
+async function lvLoadAudio(input) {
+  if(!input.files || !input.files[0]) return;
+  lvAudioFile = input.files[0];
+  document.getElementById('lv-audio-label').textContent = '✓ ' + input.files[0].name;
+  const buf = await input.files[0].arrayBuffer();
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  lvBuffer = await ac.decodeAudioData(buf);
+  lvTimes = [];
+  document.getElementById('lv-sync-status').textContent = 'Song loaded: ' + lvBuffer.duration.toFixed(1) + 's. Sync when ready.';
+}
+
+function lvLoadBg(input) {
+  if(!input.files || !input.files[0]) return;
+  document.getElementById('lv-bg-label').textContent = '✓ ' + input.files[0].name;
+  const reader = new FileReader();
+  reader.onload = e => { const img = new Image(); img.onload = () => { lvBgImg = img; lvDrawFrame(0, -1); }; img.src = e.target.result; };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function lvAutoLyrics() {
+  if(!lvAudioFile) { alert('Upload your song first'); return; }
+  const status = document.getElementById('lv-auto-status');
+  if(lvAudioFile.size > 25 * 1048576) {
+    status.textContent = 'File too large for auto-lyrics (max 25MB) — try an MP3 version.';
+    return;
+  }
+  try {
+    status.textContent = 'Uploading your song for analysis...';
+    const path = currentUser.id + '/transcribe-' + Date.now() + '-' + lvAudioFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const { error: upErr } = await sbAuth.storage.from('assets').upload(path, lvAudioFile, { contentType: lvAudioFile.type || 'audio/mpeg' });
+    if(upErr) throw upErr;
+    const audioUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+
+    status.textContent = 'AI is listening to your song... (30-60 seconds)';
+    const res = await fetch('/api/transcribe-lyrics', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({ audioUrl: audioUrl })
+    });
+    const data = await res.json();
+    if(data.error === 'limit_reached') {
+      status.innerHTML = 'You\'ve used your auto-lyrics for this month. <a href="pricing.html" style="color:var(--neon);font-weight:700;">Upgrade →</a> or paste lyrics manually below.';
+      return;
+    }
+    if(!data.lines) throw new Error(data.error || 'No lyrics detected');
+
+    document.getElementById('lv-lyrics').value = data.lines.map(l => l.text).join('\n');
+    lvTimes = data.lines.map(l => l.t);
+    status.innerHTML = '✓ <strong style="color:var(--neon);">' + data.lines.length + ' lines pulled from your song, perfectly timed.</strong> Fix any misheard words below — timing stays locked. Then just add your cover and export.';
+    document.getElementById('lv-sync-status').textContent = '✓ Auto-synced from your song — no tapping needed.';
+  } catch(e) {
+    console.error(e);
+    status.textContent = (e.message || 'Auto-lyrics failed') + ' — you can still paste lyrics and tap-sync below.';
+  }
+}
+
+function lvLines() {
+  return document.getElementById('lv-lyrics').value.split('\n').map(l => l.trim()).filter(Boolean);
+}
+
+function lvGetTimes() {
+  const lines = lvLines();
+  if (lvTimes.length >= 1 && lvTimes.length >= lines.length) return lvTimes.slice(0, lines.length);
+  if (lvTimes.length > 0) return lvTimes; // partial sync — remaining lines never show, warn at export
+  // auto-distribute
+  const dur = lvBuffer ? lvBuffer.duration : 30;
+  return lines.map((_, i) => (i * dur) / Math.max(lines.length, 1));
+}
+
+function lvStartSync() {
+  if(!lvBuffer) { alert('Upload your song first'); return; }
+  const lines = lvLines();
+  if(!lines.length) { alert('Paste your lyrics first'); return; }
+  lvStopAll();
+  lvTimes = []; lvSyncIdx = 0;
+  lvAC = new (window.AudioContext || window.webkitAudioContext)();
+  lvSrc = lvAC.createBufferSource(); lvSrc.buffer = lvBuffer; lvSrc.connect(lvAC.destination);
+  lvStartT = lvAC.currentTime; lvSrc.start();
+  document.getElementById('lv-tap').style.display = 'flex';
+  document.getElementById('lv-tap').textContent = 'TAP → "' + lines[0].slice(0, 40) + '"';
+  document.getElementById('lv-sync-status').textContent = 'Syncing... tap when each line should appear.';
+  document.addEventListener('keydown', lvSpaceTap);
+  lvSrc.onended = () => lvStopSync();
+}
+
+function lvSpaceTap(e) { if(e.code === 'Space') { e.preventDefault(); lvTap(); } }
+
+function lvTap() {
+  if(!lvAC) return;
+  const lines = lvLines();
+  if(lvSyncIdx >= lines.length) return;
+  lvTimes.push(lvAC.currentTime - lvStartT);
+  lvSyncIdx++;
+  const btn = document.getElementById('lv-tap');
+  if(lvSyncIdx < lines.length) {
+    btn.textContent = 'TAP → "' + lines[lvSyncIdx].slice(0, 40) + '"';
+    document.getElementById('lv-sync-status').textContent = lvSyncIdx + ' / ' + lines.length + ' lines synced';
+  } else {
+    document.getElementById('lv-sync-status').textContent = '✓ All ' + lines.length + ' lines synced!';
+    lvStopSync();
+  }
+}
+
+function lvStopSync() {
+  document.getElementById('lv-tap').style.display = 'none';
+  document.removeEventListener('keydown', lvSpaceTap);
+  if(lvSrc) { try { lvSrc.onended = null; lvSrc.stop(); } catch(e){} lvSrc = null; }
+  if(lvTimes.length) document.getElementById('lv-sync-status').textContent = lvTimes.length + ' lines synced. Preview or export.';
+}
+
+const LV_STYLES = {
+  white: { fill:'#ffffff', shadow:'rgba(0,0,0,0.85)' },
+  neon:  { fill:'#00FFD1', shadow:'rgba(0,0,0,0.85)' },
+  gold:  { fill:'#FFD700', shadow:'rgba(0,0,0,0.85)' }
+};
+
+function lvWrap(ctx, text, maxW) {
+  const words = text.split(' ');
+  const lines = []; let cur = '';
+  words.forEach(w => {
+    const t = cur ? cur + ' ' + w : w;
+    if(ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t;
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function lvDrawFrame(t, lineIdx) {
+  const c = document.getElementById('lv-canvas');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  const dur = lvBuffer ? lvBuffer.duration : 30;
+  // background: cover-fill with slow zoom
+  ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, W, H);
+  if(lvBgImg) {
+    const zoom = 1 + 0.08 * (t / Math.max(dur, 1));
+    const scale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * zoom;
+    const dw = lvBgImg.width * scale, dh = lvBgImg.height * scale;
+    ctx.drawImage(lvBgImg, (W - dw) / 2, (H - dh) / 2, dw, dh);
+  }
+  // dark overlay for readability
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(5,5,10,0.55)');
+  grad.addColorStop(0.5, 'rgba(5,5,10,0.35)');
+  grad.addColorStop(1, 'rgba(5,5,10,0.7)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  // current lyric
+  const lines = lvLines();
+  const style = LV_STYLES[document.getElementById('lv-style').value] || LV_STYLES.white;
+  if(lineIdx >= 0 && lineIdx < lines.length) {
+    const times = lvGetTimes();
+    const lineStart = times[lineIdx] || 0;
+    const fade = Math.min(1, (t - lineStart) / 0.35);
+    ctx.globalAlpha = Math.max(0, fade);
+    ctx.font = '900 ' + Math.round(W * 0.085) + 'px Sora, Arial';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const wrapped = lvWrap(ctx, lines[lineIdx], W * 0.84);
+    const lh = W * 0.11;
+    const startY = H / 2 - ((wrapped.length - 1) * lh) / 2 + (1 - fade) * 14;
+    wrapped.forEach((ln, i) => {
+      ctx.shadowColor = style.shadow; ctx.shadowBlur = 18; ctx.shadowOffsetY = 3;
+      ctx.fillStyle = style.fill;
+      ctx.fillText(ln, W / 2, startY + i * lh);
+    });
+    ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    ctx.globalAlpha = 1;
+  }
+  // footer title
+  const title = document.getElementById('lv-title').value.trim();
+  if(title) {
+    ctx.font = '700 ' + Math.round(W * 0.032) + 'px Sora, Arial';
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.textAlign = 'center';
+    ctx.fillText(title.toUpperCase(), W / 2, H - W * 0.07);
+  }
+}
+
+function lvCurrentLine(t) {
+  const times = lvGetTimes();
+  let idx = -1;
+  for(let i = 0; i < times.length; i++) if(t >= times[i]) idx = i;
+  return idx;
+}
+
+function lvRun(record) {
+  lvStopAll();
+  lvAC = new (window.AudioContext || window.webkitAudioContext)();
+  lvSrc = lvAC.createBufferSource(); lvSrc.buffer = lvBuffer;
+  lvSrc.connect(lvAC.destination);
+  if(record) {
+    const c = document.getElementById('lv-canvas');
+    const stream = c.captureStream(30);
+    const dest = lvAC.createMediaStreamDestination();
+    lvSrc.connect(dest);
+    dest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+    let mime = 'video/webm;codecs=vp9,opus';
+    if(!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
+    if(!MediaRecorder.isTypeSupported(mime)) mime = '';
+    lvRecorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 6000000 } : undefined);
+    const chunks = [];
+    lvRecorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+    lvRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'studiosound-lyric-video.webm';
+      a.click();
+      document.getElementById('lv-export-status').innerHTML = '✓ Downloaded! It\'s a .webm — TikTok, Reels, and Shorts all accept it. Need MP4? Most phones convert on upload automatically.';
+      saveAsset('Lyric Video', (document.getElementById('lv-title').value.trim() || 'Lyric Video'), null, {lines: lvLines().length});
+    };
+    lvRecorder.start();
+    document.getElementById('lv-export-status').textContent = 'Recording your video in real time (' + lvBuffer.duration.toFixed(0) + 's) — keep this tab open...';
+  }
+  lvStartT = lvAC.currentTime;
+  lvSrc.start();
+  const tick = () => {
+    const t = lvAC.currentTime - lvStartT;
+    lvDrawFrame(t, lvCurrentLine(t));
+    lvAnim = requestAnimationFrame(tick);
+  };
+  tick();
+  lvSrc.onended = () => {
+    if(lvAnim) cancelAnimationFrame(lvAnim);
+    if(lvRecorder && lvRecorder.state === 'recording') lvRecorder.stop();
+    lvSrc = null;
+  };
+}
+
+function lvPreview() {
+  if(!lvBuffer) { alert('Upload your song first'); return; }
+  if(!lvBgImg) { alert('Upload a background image first'); return; }
+  if(!lvLines().length) { alert('Paste your lyrics first'); return; }
+  lvRun(false);
+}
+
+function lvStopPreview() { lvStopAll(); }
+
+function lvExport() {
+  if(!lvBuffer) { alert('Upload your song first'); return; }
+  if(!lvBgImg) { alert('Upload a background image first'); return; }
+  if(!lvLines().length) { alert('Paste your lyrics first'); return; }
+  const lines = lvLines();
+  if(lvTimes.length && lvTimes.length < lines.length) {
+    if(!confirm('You synced ' + lvTimes.length + ' of ' + lines.length + ' lines — unsynced lines won\'t show. Export anyway?')) return;
+  }
+  lvRun(true);
+}
+
+function lvStopAll() {
+  if(lvAnim) { cancelAnimationFrame(lvAnim); lvAnim = null; }
+  if(lvRecorder && lvRecorder.state === 'recording') { try { lvRecorder.stop(); } catch(e){} }
+  lvRecorder = null;
+  if(lvSrc) { try { lvSrc.onended = null; lvSrc.stop(); } catch(e){} lvSrc = null; }
 }
 
 // ====== RECENT GENERATIONS ======
