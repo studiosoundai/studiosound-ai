@@ -1117,6 +1117,7 @@ sbAuth.auth.getSession().then(async ({ data }) => {
 
   // load saved generations into Recent row
   initRecent();
+  applyDeepLink();
 
   // First mobile visit this session: pop the menu out so people know it's there
   if (window.innerWidth <= 768 && !sessionStorage.getItem('sbSeen')) {
@@ -1170,6 +1171,25 @@ async function loadAssets() {
     if (error) { console.error('loadAssets:', error); return { error: true, items: [] }; }
     return { error: false, items: data || [] };
   } catch(e) { console.error('loadAssets:', e); return { error: true, items: [] }; }
+}
+
+// Deep links: studiosound.ai/app#resize opens the Cover Resizer directly, etc.
+function applyDeepLink() {
+  const map = {
+    '#art':'art', '#cover':'art', '#plan':'plan', '#merch':'merch',
+    '#writer':'writer', '#lyrics':'writer', '#lyric':'lyric', '#video':'lyric',
+    '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split'
+  };
+  const tool = map[(location.hash || '').toLowerCase()];
+  if (!tool) return;
+  switchTool(tool, null);
+  // highlight the matching sidebar button
+  document.querySelectorAll('.sidebar-item').forEach(b => {
+    if ((b.getAttribute('onclick') || '').includes("'" + tool + "'")) {
+      document.querySelectorAll('.sidebar-item').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    }
+  });
 }
 
 async function initRecent() {
