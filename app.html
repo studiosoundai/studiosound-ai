@@ -196,8 +196,8 @@ body{overflow:auto;height:auto;}
   <div class="sidebar-nav">
   <div class="sidebar-section">
     <div class="sidebar-label">TOOLS</div>
-    <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('forecast',this)"><i class="ti ti-chart-line"></i> Earnings Forecast <span class="badge">NEW</span></button>
+    <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
     <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
@@ -258,6 +258,7 @@ body{overflow:auto;height:auto;}
         <div class="welcome-title" id="welcome-title">Welcome to <span>StudioSound.ai</span> 👋</div>
         <div class="welcome-sub">Pick a tool and start creating. We'll guide you every step of the way.</div>
         <div class="welcome-pills">
+          <div class="wpill"><i class="ti ti-chart-line"></i> Earnings Forecast</div>
           <div class="wpill"><i class="ti ti-disc"></i> Cover Art</div>
           <div class="wpill"><i class="ti ti-rocket"></i> Release Planner</div>
           <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups</div>
@@ -276,6 +277,12 @@ body{overflow:auto;height:auto;}
     <!-- TOOLS GRID -->
     <div class="section-label">YOUR TOOLS</div>
     <div class="tools-grid">
+      <div class="tool-card" onclick="switchTool('forecast',null);setToolActive(this)">
+        <div class="tool-badge live">NEW</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Earnings Forecast"/></div>
+        <div class="tool-name">Earnings Forecast</div>
+        <div class="tool-desc">See what your music earns in 1, 3 & 5 years</div>
+      </div>
       <div class="tool-card active" onclick="switchTool('art',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art"/></div>
@@ -830,8 +837,13 @@ body{overflow:auto;height:auto;}
           </div>
           <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
           <div class="form-group">
-            <label class="form-label">Or enter monthly earnings by hand — "Month, Amount" per line</label>
-            <textarea class="form-textarea" id="fc-manual" style="min-height:90px;" placeholder="2026-01, 142.50&#10;2026-02, 156.20&#10;2026-03, 171.80"></textarea>
+            <label class="form-label">Or type it in — oldest month first</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
+              <div style="color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.05em;">MONTH</div>
+              <div style="color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.05em;">WHAT YOU EARNED</div>
+            </div>
+            <div id="fc-rows"></div>
+            <button class="result-btn" style="margin-top:8px;" onclick="fcAddRow()"><i class="ti ti-plus"></i> Add Month</button>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -1446,6 +1458,7 @@ function switchTool(tool, sidebarBtn) {
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
   if(tool === 'split' && !document.querySelector('#sp-rows .form-row')) { addSplitRow(); addSplitRow(); }
+  if(tool === 'forecast' && !document.querySelector('#fc-rows .fc-row')) { fcAddRow(); fcAddRow(); fcAddRow(); }
   if(tool === 'check') renderChecklist();
   if(sidebarBtn) {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -2191,29 +2204,40 @@ function fcParseCsv(input) {
       const keys = Object.keys(byMonth).filter(k => k !== 'all').sort();
       if (keys.length >= 2) {
         fcMonthly = keys.map(k => ({ month: k, amount: Math.round(byMonth[k] * 100) / 100 }));
-        document.getElementById('fc-parse-status').innerHTML = '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months found</strong> — total $' + fcMonthly.reduce((a,b)=>a+b.amount,0).toFixed(2) + '. Hit Forecast.';
-        document.getElementById('fc-manual').value = fcMonthly.map(m => m.month + ', ' + m.amount).join('\n');
+        document.getElementById('fc-parse-status').innerHTML = '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months found</strong> — total $' + fcMonthly.reduce((a,b)=>a+b.amount,0).toFixed(2) + '. Check the rows below, then hit Forecast.';
+        document.getElementById('fc-rows').innerHTML = '';
+        fcMonthly.slice(-24).forEach(m => fcAddRow(m.month, m.amount));
       } else if (byMonth.all) {
-        document.getElementById('fc-parse-status').textContent = 'Found $' + byMonth.all.toFixed(2) + ' total but no monthly dates — type your monthly amounts in the box below instead.';
+        document.getElementById('fc-parse-status').textContent = 'Found $' + byMonth.all.toFixed(2) + ' total but no monthly dates — fill in the months below instead.';
       } else {
         throw new Error('empty');
       }
     } catch(err) {
-      document.getElementById('fc-parse-status').textContent = 'Couldn\'t auto-read that CSV format — no problem: type your monthly amounts in the box below (Month, Amount per line).';
+      document.getElementById('fc-parse-status').textContent = 'Couldn\'t auto-read that CSV format — no problem: fill in your months below.';
     }
   };
   reader.readAsText(f);
 }
 
+function fcAddRow(month, amount) {
+  const wrap = document.getElementById('fc-rows');
+  const div = document.createElement('div');
+  div.className = 'fc-row';
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;';
+  div.innerHTML = `
+    <input class="form-input" placeholder="e.g. Jan 2026" value="${month || ''}"/>
+    <input class="form-input" type="number" step="0.01" min="0" placeholder="e.g. 150.00" value="${amount != null ? amount : ''}"/>`;
+  wrap.appendChild(div);
+}
+
 function fcGetMonthly() {
-  const manual = document.getElementById('fc-manual').value.trim();
-  if (manual) {
-    const rows = manual.split('\n').map(l => {
-      const parts = l.split(',');
-      return { month: (parts[0]||'').trim(), amount: parseFloat((parts[1]||'').replace(/[$\s]/g,'')) };
-    }).filter(r => r.month && !isNaN(r.amount));
-    if (rows.length >= 2) return rows;
-  }
+  const rows = [];
+  document.querySelectorAll('#fc-rows .fc-row').forEach((r, i) => {
+    const amount = parseFloat(r.children[1].value);
+    if (isNaN(amount)) return;
+    rows.push({ month: r.children[0].value.trim() || ('Month ' + (i + 1)), amount: amount });
+  });
+  if (rows.length >= 2) return rows;
   return fcMonthly;
 }
 
@@ -2878,7 +2902,7 @@ function loadRecent(index) {
   }
   if(item.type === 'Release Plan' && item.data) {
     switchTool('plan', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+    setToolActive(document.querySelector('.tool-card:nth-child(3)'));
     document.getElementById('plan-name').value = item.name || '';
     renderPlan(item.data);
     window.scrollTo({top:0, behavior:'smooth'});
@@ -2887,7 +2911,7 @@ function loadRecent(index) {
   if(!item.imageUrl) return;
   if(item.type === 'Cover Art') {
     switchTool('art', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+    setToolActive(document.querySelector('.tool-card:nth-child(2)'));
     document.getElementById('art-placeholder').style.display = 'none';
     document.getElementById('art-dual').classList.remove('show');
     document.getElementById('art-single-img').src = item.imageUrl;
@@ -2896,7 +2920,7 @@ function loadRecent(index) {
     window.scrollTo({top:0, behavior:'smooth'});
   } else if(item.type === 'Merch Mockup') {
     switchTool('merch', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+    setToolActive(document.querySelector('.tool-card:nth-child(4)'));
     document.getElementById('merch-placeholder').style.display = 'none';
     document.getElementById('merch-result-img').src = item.imageUrl;
     document.getElementById('merch-result').classList.add('show');
