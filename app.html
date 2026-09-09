@@ -1191,6 +1191,22 @@ sbAuth.auth.getSession().then(async ({ data }) => {
   initRecent();
   applyDeepLink();
 
+  // Came back from checkout? Poll for the plan flip (webhook can lag a few seconds)
+  if (new URLSearchParams(location.search).get('upgraded') === '1') {
+    let tries = 0;
+    const poll = setInterval(async () => {
+      tries++;
+      try {
+        const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
+        if (prof && prof.plan && prof.plan !== 'free') {
+          currentPlan = prof.plan;
+          clearInterval(poll);
+        }
+      } catch(e) {}
+      if (tries > 10) clearInterval(poll);
+    }, 2000);
+  }
+
   // First mobile visit this session: pop the menu out so people know it's there
   if (window.innerWidth <= 768 && !sessionStorage.getItem('sbSeen')) {
     setTimeout(() => { toggleSidebar(); sessionStorage.setItem('sbSeen', '1'); }, 700);
@@ -1291,7 +1307,7 @@ async function showAssetsPanel() {
   }
   grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : '')))}>
+      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
         <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
@@ -1299,6 +1315,7 @@ async function showAssetsPanel() {
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
+        ${a.tool==='Forecast' && a.data && a.data.scenarios ? `<a onclick="openForecastAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Forecast →</a>` : ''}
         ${a.data && a.data.videoUrl ? `<a onclick="playVideoAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">▶ Play</a> <a href="${a.data.videoUrl}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download Video ↓</a>` : ''}
         ${a.data && a.data.prompt ? ` <a onclick="copyPrompt(${i})" style="color:var(--muted);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Copy Prompt ⧉</a>` : ''}
       </div>
@@ -1458,7 +1475,20 @@ function switchTool(tool, sidebarBtn) {
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
   if(tool === 'split' && !document.querySelector('#sp-rows .form-row')) { addSplitRow(); addSplitRow(); }
-  if(tool === 'forecast' && !document.querySelector('#fc-rows .fc-row')) { fcAddRow(); fcAddRow(); fcAddRow(); }
+  if(tool === 'forecast' && !document.querySelector('#fc-rows .fc-row')) {
+    let restored = false;
+    try {
+      const saved = JSON.parse(localStorage.getItem('fcSaved') || 'null');
+      if (saved && saved.rows && saved.rows.length >= 2) {
+        saved.rows.forEach(r => fcAddRow(r.month, r.amount));
+        if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
+        if (saved.city) document.getElementById('fc-city').value = saved.city;
+        if (saved.releases) document.getElementById('fc-releases').value = saved.releases;
+        restored = true;
+      }
+    } catch(e) {}
+    if (!restored) { fcAddRow(); fcAddRow(); fcAddRow(); }
+  }
   if(tool === 'check') renderChecklist();
   if(sidebarBtn) {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -2279,9 +2309,65 @@ function fcProject(monthly) {
   };
 }
 
+function fcRenderFull(stats, scenarios, data) {
+  data = data || {};
+  document.getElementById('fc-placeholder').style.display = 'none';
+  const money = v => '$' + (v || 0).toLocaleString();
+  const rows = [
+    ['STEADY — keep doing what you\'re doing', scenarios.steady, ''],
+    ['GROWTH — consistent releases + content', scenarios.growth, 'var(--neon)'],
+    ['BREAKOUT — growth plan + one viral moment', scenarios.breakout, '#FFD700']
+  ];
+  let html = '';
+  if (data.headline) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">${data.headline}</div></div>`;
+  html += `<div class="plan-item"><div class="plan-date">YOUR NUMBERS</div><div class="plan-detail">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · Based on ${stats.monthsOfData} months of data</div></div>`;
+  rows.forEach(([label, sc, color]) => {
+    html += `<div class="plan-item"><div class="plan-date" ${color?`style="color:${color};"`:''}>${label}</div>
+      <div class="plan-detail"><strong style="color:#fff;">1 yr:</strong> ${money(sc.y1)} &nbsp; <strong style="color:#fff;">3 yr:</strong> ${money(sc.y3)} &nbsp; <strong style="color:#fff;">5 yr:</strong> ${money(sc.y5)}</div>
+      ${data.scenario_notes ? `<div class="plan-detail" style="margin-top:4px;">${data.scenario_notes[label.split(' ')[0].toLowerCase()] || ''}</div>` : ''}</div>`;
+  });
+  if (data.analysis) html += `<div class="plan-item"><div class="plan-date">ANALYST READ</div><div class="plan-detail">${data.analysis}</div></div>`;
+  if (data.moves && data.moves.length) {
+    html += `<div class="plan-item"><div class="plan-date">MOVES THAT CHANGE YOUR CURVE</div>` +
+      data.moves.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${m}</div>`).join('') + `</div>`;
+  }
+  if (!data.analysis) html += `<div style="color:var(--muted);font-size:11px;margin-top:8px;">This is a saved preview — run a fresh forecast on Pro for your full analyst report and moves.</div>`;
+  html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
+  document.getElementById('fc-result').innerHTML = html;
+  document.getElementById('fc-result').style.display = 'block';
+}
+
+function openForecastAsset(i) {
+  const a = assetsCache[i];
+  if (!a || !a.data || !a.data.scenarios) return;
+  switchTool('forecast', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+  fcRenderFull(a.data.stats, a.data.scenarios, a.data.report || {});
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
 async function runForecast() {
   const monthly = fcGetMonthly();
   if (!monthly || monthly.length < 2) { alert('Upload a report or enter at least 2 months of earnings'); return; }
+
+  // Remember the artist's inputs so they survive upgrades and page reloads
+  try {
+    localStorage.setItem('fcSaved', JSON.stringify({
+      rows: monthly,
+      genre: document.getElementById('fc-genre').value,
+      city: document.getElementById('fc-city').value,
+      releases: document.getElementById('fc-releases').value
+    }));
+  } catch(e) {}
+
+  // Plan can change mid-session (they just upgraded!) — re-check before deciding teaser vs full
+  if (currentPlan === 'free') {
+    try {
+      const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
+      if (prof && prof.plan) currentPlan = prof.plan;
+    } catch(e) {}
+  }
+
   const { stats, scenarios } = fcProject(monthly);
   document.getElementById('fc-placeholder').style.display = 'none';
 
@@ -2303,6 +2389,9 @@ async function runForecast() {
     document.getElementById('fc-result').innerHTML = html;
     document.getElementById('fc-result').style.display = 'block';
     document.getElementById('fc-loading').classList.remove('active');
+    const tName = 'Earnings Forecast ' + new Date().toLocaleDateString();
+    addRecent(null, tName, 'Forecast', null, {stats, scenarios});
+    saveAsset('Forecast', tName, null, {stats, scenarios});
     return;
   }
 
@@ -2329,30 +2418,10 @@ async function runForecast() {
       document.getElementById('fc-btn').disabled = false;
       return;
     }
-    const money = v => '$' + (v || 0).toLocaleString();
-    const rows = [
-      ['STEADY — keep doing what you\'re doing', scenarios.steady, ''],
-      ['GROWTH — consistent releases + content', scenarios.growth, 'var(--neon)'],
-      ['BREAKOUT — growth plan + one viral moment', scenarios.breakout, '#FFD700']
-    ];
-    let html = '';
-    if (data.headline) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">${data.headline}</div></div>`;
-    html += `<div class="plan-item"><div class="plan-date">YOUR NUMBERS</div><div class="plan-detail">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · Based on ${stats.monthsOfData} months of data</div></div>`;
-    rows.forEach(([label, sc, color]) => {
-      html += `<div class="plan-item"><div class="plan-date" ${color?`style="color:${color};"`:''}>${label}</div>
-        <div class="plan-detail"><strong style="color:#fff;">1 yr:</strong> ${money(sc.y1)} &nbsp; <strong style="color:#fff;">3 yr:</strong> ${money(sc.y3)} &nbsp; <strong style="color:#fff;">5 yr:</strong> ${money(sc.y5)}</div>
-        ${data.scenario_notes ? `<div class="plan-detail" style="margin-top:4px;">${data.scenario_notes[label.split(' ')[0].toLowerCase()] || ''}</div>` : ''}</div>`;
-    });
-    if (data.analysis) html += `<div class="plan-item"><div class="plan-date">ANALYST READ</div><div class="plan-detail">${data.analysis}</div></div>`;
-    if (data.moves && data.moves.length) {
-      html += `<div class="plan-item"><div class="plan-date">MOVES THAT CHANGE YOUR CURVE</div>` +
-        data.moves.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${m}</div>`).join('') + `</div>`;
-    }
-    html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
-    document.getElementById('fc-result').innerHTML = html;
-    document.getElementById('fc-result').style.display = 'block';
-    addRecent(null, 'Earnings Forecast', 'Forecast', null);
-    saveAsset('Forecast', 'Earnings Forecast ' + new Date().toLocaleDateString(), null, {stats, scenarios, report: data});
+    fcRenderFull(stats, scenarios, data);
+    const fcName = 'Earnings Forecast ' + new Date().toLocaleDateString();
+    addRecent(null, fcName, 'Forecast', null, {stats, scenarios, report: data});
+    saveAsset('Forecast', fcName, null, {stats, scenarios, report: data});
   } catch(e) {
     document.getElementById('fc-loading').classList.remove('active');
     document.getElementById('fc-placeholder').style.display = 'flex';
@@ -2896,6 +2965,13 @@ function renderRecent() {
 function loadRecent(index) {
   const item = recentItems[index];
   if(!item) return;
+  if(item.type === 'Forecast' && item.data && item.data.scenarios) {
+    switchTool('forecast', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+    fcRenderFull(item.data.stats, item.data.scenarios, item.data.report || {});
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    return;
+  }
   if(item.type === 'Lyric Video' && item.data && item.data.videoUrl) {
     playVideo(item.data.videoUrl, item.name);
     return;
