@@ -197,6 +197,7 @@ body{overflow:auto;height:auto;}
   <div class="sidebar-section">
     <div class="sidebar-label">TOOLS</div>
     <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('forecast',this)"><i class="ti ti-chart-line"></i> Earnings Forecast <span class="badge">NEW</span></button>
     <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
     <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
@@ -369,6 +370,17 @@ body{overflow:auto;height:auto;}
               <img class="img-preview-thumb" id="art-img-thumb" src="" alt=""/>
               <div class="img-upload-hint">Upload a photo of yourself — AI will incorporate you into the cover art</div>
               <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb')"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inspiration Cover (optional)</label>
+            <div class="img-upload-row">
+              <div class="img-upload-btn" onclick="document.getElementById('art-insp-upload').click()">
+                <i class="ti ti-palette"></i> Add Reference
+              </div>
+              <img class="img-preview-thumb" id="art-insp-thumb" src="" alt=""/>
+              <div class="img-upload-hint">Upload a cover whose style/mood you love — the AI creates an ORIGINAL in that spirit (applies to Version A). Only upload art you have the right to reference.</div>
+              <input type="file" id="art-insp-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-insp-thumb')"/>
             </div>
           </div>
           <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate — 2 Unique Versions</button>
@@ -801,6 +813,54 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
+    <!-- EARNINGS FORECAST -->
+    <div id="tool-forecast" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">📈 Earnings Forecast</div>
+          <div class="gen-sub">Drop your royalty report (any distributor's CSV) — see where your income is heading over 1, 3, and 5 years, and what moves change the curve.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Royalty Report (CSV)</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('fc-upload').click()">
+              <i class="ti ti-upload" style="font-size:26px;color:var(--neon);display:block;margin-bottom:5px;"></i>
+              <div id="fc-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload your earnings CSV</div>
+              <div style="color:var(--muted);font-size:10px;">Stop One, DistroKid, TuneCore, CD Baby — any report with dates and amounts</div>
+              <input type="file" id="fc-upload" accept=".csv,text/csv" style="display:none;" onchange="fcParseCsv(this)"/>
+            </div>
+          </div>
+          <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
+          <div class="form-group">
+            <label class="form-label">Or enter monthly earnings by hand — "Month, Amount" per line</label>
+            <textarea class="form-textarea" id="fc-manual" style="min-height:90px;" placeholder="2026-01, 142.50&#10;2026-02, 156.20&#10;2026-03, 171.80"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <input class="form-input" id="fc-genre" placeholder="e.g. Latin, Hip-Hop"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Releases planned per year</label>
+              <input class="form-input" id="fc-releases" type="number" min="0" placeholder="e.g. 6"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City / Region</label>
+            <input class="form-input" id="fc-city" placeholder="e.g. Atlanta — powers local artist benchmarks"/>
+          </div>
+          <button class="gen-btn" id="fc-btn" onclick="runForecast()"><i class="ti ti-chart-line"></i> Forecast My Earnings</button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Estimates based on your historical data and standard industry patterns — scenarios, not guarantees. Streaming income varies; this is not financial advice.</div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Projection</div>
+          <div class="gen-sub">Three curves: where you're headed, and what changes it</div>
+          <div class="result-placeholder" id="fc-placeholder"><i class="ti ti-chart-line"></i><p>Upload your royalty report and hit Forecast — projections and your analyst report appear here.</p></div>
+          <div class="loading" id="fc-loading"><div class="loading-spinner"></div><div class="loading-text">Reading your numbers...</div></div>
+          <div class="error-msg" id="fc-error"></div>
+          <div id="fc-result" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- AI LYRIC WRITER -->
     <div id="tool-writer" class="hidden">
       <div class="generator">
@@ -1136,6 +1196,7 @@ sbAuth.auth.getSession().then(async ({ data }) => {
 const TOOL_THUMBS = {
   'Cover Art': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png',
   'Release Plan': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
+  'Forecast': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
   'Lyrics': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
   'Lyric Video': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
   'Merch Mockup': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png'
@@ -1380,7 +1441,7 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -1482,6 +1543,11 @@ async function generateArt() {
   if(imgUpload.files && imgUpload.files[0]) {
     imageData = await toBase64(imgUpload.files[0]);
   }
+  const inspUpload = document.getElementById('art-insp-upload');
+  let inspirationData = null;
+  if(inspUpload.files && inspUpload.files[0]) {
+    inspirationData = await toBase64(inspUpload.files[0]);
+  }
 
   document.getElementById('art-placeholder').style.display = 'none';
   document.getElementById('art-dual').classList.remove('show');
@@ -1509,7 +1575,7 @@ async function generateArt() {
       fetch('/api/generate-art', {
         method: 'POST',
         headers: hdrs,
-        body: JSON.stringify({prompt: basePrompt, imageData})
+        body: JSON.stringify({prompt: basePrompt, imageData, inspirationData})
       }).then(r => r.json()),
       fetch('/api/generate-art-gemini', {
         method: 'POST',
@@ -2089,6 +2155,188 @@ function printChecklist() {
     '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
   w.document.close(); w.focus();
   setTimeout(() => w.print(), 400);
+}
+
+// ====== EARNINGS FORECAST ======
+let fcMonthly = null;
+
+function fcParseCsv(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  document.getElementById('fc-label').textContent = '✓ ' + f.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const text = e.target.result;
+      const delim = (text.split('\n')[0].match(/;/g) || []).length > (text.split('\n')[0].match(/,/g) || []).length ? ';' : ',';
+      const rows = text.split(/\r?\n/).map(r => r.split(delim));
+      const header = rows[0].map(h => h.toLowerCase().replace(/"/g,'').trim());
+      // find the money column and the date column
+      const moneyIdx = header.findIndex(h => /earn|royal|net|revenue|amount|payout|usd|total/.test(h));
+      const dateIdx = header.findIndex(h => /month|date|period|statement|sale/.test(h));
+      if (moneyIdx === -1) throw new Error('no money column');
+      const byMonth = {};
+      for (let i = 1; i < rows.length; i++) {
+        const amt = parseFloat((rows[i][moneyIdx] || '').replace(/["$\s]/g, ''));
+        if (isNaN(amt)) continue;
+        let key = 'all';
+        if (dateIdx !== -1) {
+          const d = (rows[i][dateIdx] || '').replace(/"/g,'').trim();
+          const m = d.match(/(\d{4})[-\/](\d{1,2})/) || d.match(/(\d{1,2})[-\/]\d{1,2}[-\/](\d{4})/);
+          if (m) key = m[2] && m[2].length === 4 ? m[2] + '-' + String(m[1]).padStart(2,'0') : m[1] + '-' + String(m[2]).padStart(2,'0');
+          else if (/^\d{4}-\d{2}/.test(d)) key = d.slice(0,7);
+        }
+        byMonth[key] = (byMonth[key] || 0) + amt;
+      }
+      const keys = Object.keys(byMonth).filter(k => k !== 'all').sort();
+      if (keys.length >= 2) {
+        fcMonthly = keys.map(k => ({ month: k, amount: Math.round(byMonth[k] * 100) / 100 }));
+        document.getElementById('fc-parse-status').innerHTML = '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months found</strong> — total $' + fcMonthly.reduce((a,b)=>a+b.amount,0).toFixed(2) + '. Hit Forecast.';
+        document.getElementById('fc-manual').value = fcMonthly.map(m => m.month + ', ' + m.amount).join('\n');
+      } else if (byMonth.all) {
+        document.getElementById('fc-parse-status').textContent = 'Found $' + byMonth.all.toFixed(2) + ' total but no monthly dates — type your monthly amounts in the box below instead.';
+      } else {
+        throw new Error('empty');
+      }
+    } catch(err) {
+      document.getElementById('fc-parse-status').textContent = 'Couldn\'t auto-read that CSV format — no problem: type your monthly amounts in the box below (Month, Amount per line).';
+    }
+  };
+  reader.readAsText(f);
+}
+
+function fcGetMonthly() {
+  const manual = document.getElementById('fc-manual').value.trim();
+  if (manual) {
+    const rows = manual.split('\n').map(l => {
+      const parts = l.split(',');
+      return { month: (parts[0]||'').trim(), amount: parseFloat((parts[1]||'').replace(/[$\s]/g,'')) };
+    }).filter(r => r.month && !isNaN(r.amount));
+    if (rows.length >= 2) return rows;
+  }
+  return fcMonthly;
+}
+
+function fcProject(monthly) {
+  const amts = monthly.map(m => m.amount);
+  const n = amts.length;
+  const recent = amts.slice(-3);
+  const prior = amts.slice(-6, -3);
+  const avgRecent = recent.reduce((a,b)=>a+b,0) / recent.length;
+  const avgPrior = prior.length ? prior.reduce((a,b)=>a+b,0) / prior.length : avgRecent;
+  let trend = avgPrior > 0 ? Math.pow(avgRecent / avgPrior, 1/3) - 1 : 0; // monthly growth observed
+  trend = Math.max(-0.12, Math.min(0.15, trend));
+
+  function run(growth, viral) {
+    let m = avgRecent, total = 0;
+    const marks = {};
+    for (let i = 1; i <= 60; i++) {
+      m = m * (1 + growth);
+      let monthVal = m;
+      if (viral && i === 9) monthVal *= 3.2;           // one viral month
+      if (viral && (i === 10 || i === 11)) monthVal *= 1.6; // afterglow decays
+      total += monthVal;
+      if (i === 12) marks.y1 = Math.round(total);
+      if (i === 36) marks.y3 = Math.round(total);
+      if (i === 60) marks.y5 = Math.round(total);
+    }
+    return marks;
+  }
+
+  const steadyG = Math.max(-0.03, Math.min(0.02, trend));      // coast: mild version of current trend
+  const growthG = Math.min(0.09, Math.max(0.05, trend + 0.05)); // working the plan
+  return {
+    stats: { avgMonthly: Math.round(avgRecent * 100) / 100, trend: Math.round(trend * 1000) / 10, monthsOfData: n },
+    scenarios: {
+      steady:   run(steadyG, false),
+      growth:   run(growthG, false),
+      breakout: run(growthG, true)
+    }
+  };
+}
+
+async function runForecast() {
+  const monthly = fcGetMonthly();
+  if (!monthly || monthly.length < 2) { alert('Upload a report or enter at least 2 months of earnings'); return; }
+  const { stats, scenarios } = fcProject(monthly);
+  document.getElementById('fc-placeholder').style.display = 'none';
+
+  // FREE PLAN: real numbers teaser, full report locked behind Pro
+  if (currentPlan === 'free') {
+    const money = v => '$' + (v || 0).toLocaleString();
+    const lockRow = (label, tease) => `
+      <div class="plan-item" style="position:relative;overflow:hidden;">
+        <div class="plan-date" style="color:#5a5a72;">🔒 ${label}</div>
+        <div class="plan-detail" style="filter:blur(5px);user-select:none;">${tease}</div>
+      </div>`;
+    let html = `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · ${stats.monthsOfData} months of data read</div></div>`;
+    html += `<div class="plan-item"><div class="plan-date">STEADY PATH — 1 YEAR</div><div class="plan-detail">If nothing changes: <strong style="color:#fff;">${money(scenarios.steady.y1)}</strong> over the next 12 months</div></div>`;
+    html += lockRow('GROWTH SCENARIO — 1 / 3 / 5 YEARS', 'Your ceiling: $' + (scenarios.growth.y5) + ' over five years with the right moves');
+    html += lockRow('BREAKOUT SCENARIO — 1 / 3 / 5 YEARS', 'One viral moment changes this to $' + (scenarios.breakout.y5));
+    html += lockRow('ANALYST READ + YOUR NEXT MOVES', 'Four specific moves would shift your curve this quarter based on your trend');
+    html += `<a href="pricing.html" style="display:block;text-align:center;background:var(--neon);color:#05050a;font-weight:800;font-size:13px;padding:13px;border-radius:10px;text-decoration:none;margin-top:12px;">Unlock your full forecast with Pro — $9.99/mo →</a>`;
+    html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
+    document.getElementById('fc-result').innerHTML = html;
+    document.getElementById('fc-result').style.display = 'block';
+    document.getElementById('fc-loading').classList.remove('active');
+    return;
+  }
+
+  document.getElementById('fc-result').style.display = 'none';
+  document.getElementById('fc-error').style.display = 'none';
+  document.getElementById('fc-loading').classList.add('active');
+  document.getElementById('fc-btn').disabled = true;
+  try {
+    const res = await fetch('/api/generate-forecast', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        monthly: monthly.slice(-12), stats, scenarios,
+        genre: document.getElementById('fc-genre').value.trim(),
+        city: document.getElementById('fc-city').value.trim(),
+        releasesPerYear: document.getElementById('fc-releases').value.trim()
+      })
+    });
+    const data = await res.json();
+    document.getElementById('fc-loading').classList.remove('active');
+    if (data.error === 'limit_reached') {
+      document.getElementById('fc-placeholder').style.display = 'flex';
+      showLimit('fc-error','forecasts');
+      document.getElementById('fc-btn').disabled = false;
+      return;
+    }
+    const money = v => '$' + (v || 0).toLocaleString();
+    const rows = [
+      ['STEADY — keep doing what you\'re doing', scenarios.steady, ''],
+      ['GROWTH — consistent releases + content', scenarios.growth, 'var(--neon)'],
+      ['BREAKOUT — growth plan + one viral moment', scenarios.breakout, '#FFD700']
+    ];
+    let html = '';
+    if (data.headline) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">${data.headline}</div></div>`;
+    html += `<div class="plan-item"><div class="plan-date">YOUR NUMBERS</div><div class="plan-detail">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · Based on ${stats.monthsOfData} months of data</div></div>`;
+    rows.forEach(([label, sc, color]) => {
+      html += `<div class="plan-item"><div class="plan-date" ${color?`style="color:${color};"`:''}>${label}</div>
+        <div class="plan-detail"><strong style="color:#fff;">1 yr:</strong> ${money(sc.y1)} &nbsp; <strong style="color:#fff;">3 yr:</strong> ${money(sc.y3)} &nbsp; <strong style="color:#fff;">5 yr:</strong> ${money(sc.y5)}</div>
+        ${data.scenario_notes ? `<div class="plan-detail" style="margin-top:4px;">${data.scenario_notes[label.split(' ')[0].toLowerCase()] || ''}</div>` : ''}</div>`;
+    });
+    if (data.analysis) html += `<div class="plan-item"><div class="plan-date">ANALYST READ</div><div class="plan-detail">${data.analysis}</div></div>`;
+    if (data.moves && data.moves.length) {
+      html += `<div class="plan-item"><div class="plan-date">MOVES THAT CHANGE YOUR CURVE</div>` +
+        data.moves.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${m}</div>`).join('') + `</div>`;
+    }
+    html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
+    document.getElementById('fc-result').innerHTML = html;
+    document.getElementById('fc-result').style.display = 'block';
+    addRecent(null, 'Earnings Forecast', 'Forecast', null);
+    saveAsset('Forecast', 'Earnings Forecast ' + new Date().toLocaleDateString(), null, {stats, scenarios, report: data});
+  } catch(e) {
+    document.getElementById('fc-loading').classList.remove('active');
+    document.getElementById('fc-placeholder').style.display = 'flex';
+    const err = document.getElementById('fc-error');
+    err.textContent = 'Something went wrong — try again.';
+    err.style.display = 'block';
+  }
+  document.getElementById('fc-btn').disabled = false;
 }
 
 // ====== AI LYRIC WRITER ======
