@@ -433,6 +433,7 @@ body{overflow:auto;height:auto;}
             <button class="result-btn" onclick="generateArt()"><i class="ti ti-refresh"></i> Regenerate</button>
             <button class="result-btn primary" onclick="downloadArt()"><i class="ti ti-download"></i> Download Selected</button>
           </div>
+          <div id="art-next" style="display:none;"></div>
         </div>
       </div>
 
@@ -1638,6 +1639,8 @@ async function generateArt() {
       document.getElementById('art-dual').classList.add('show');
       selectedArtUrl = versionAUrl;
       selectVersion('a');
+      document.getElementById('art-next').innerHTML = nextStepHtml('Cover\'s done — put it in motion. One tap sends this artwork into the Lyric Video Creator as your background.', 'Make the Lyric Video', 'artToVideo()');
+      document.getElementById('art-next').style.display = 'block';
       addRecent('🎨', title, 'Cover Art', versionAUrl);
       saveAsset('Cover Art', title, versionAUrl, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
     } else if(versionAUrl || versionBUrl) {
@@ -1645,6 +1648,8 @@ async function generateArt() {
       document.getElementById('art-single-img').src = url;
       document.getElementById('art-single').style.display = 'block';
       selectedArtUrl = url;
+      document.getElementById('art-next').innerHTML = nextStepHtml('Cover\'s done — put it in motion. One tap sends this artwork into the Lyric Video Creator as your background.', 'Make the Lyric Video', 'artToVideo()');
+      document.getElementById('art-next').style.display = 'block';
       addRecent('🎨', title, 'Cover Art', url);
       saveAsset('Cover Art', title, url, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
     } else {
@@ -1749,6 +1754,7 @@ function renderPlan(data) {
       <div class="plan-detail">${item.detail}</div>
     </div>
   `).join('');
+  html += nextStepHtml('Plan\'s set — now lock the visuals. Generate the cover art for this release (we\'ll carry the title over).', 'Make My Cover Art', 'planToArt()');
   container.innerHTML = html;
   container.classList.add('show');
 }
@@ -2200,6 +2206,55 @@ function printChecklist() {
   setTimeout(() => w.print(), 400);
 }
 
+// ====== NEXT-STEP FLOW (keeps artists moving tool to tool) ======
+function nextStepHtml(desc, btnText, fn) {
+  return `<div class="plan-item" style="border:1px solid var(--neon);background:#00FFD10a;margin-top:12px;">
+    <div class="plan-date" style="color:var(--neon);">WHAT'S NEXT?</div>
+    <div class="plan-detail" style="margin-bottom:10px;">${desc}</div>
+    <button class="result-btn primary" onclick="${fn}" style="width:100%;justify-content:center;padding:11px;">${btnText} →</button>
+  </div>`;
+}
+
+function fcToPlan() {
+  // carry forecast context into the planner
+  const g = document.getElementById('fc-genre').value.trim().toLowerCase();
+  const sel = document.getElementById('plan-genre');
+  for (const o of sel.options) { if (o.value.toLowerCase() === g || o.text.toLowerCase() === g) { sel.value = o.value; break; } }
+  const city = document.getElementById('fc-city').value.trim();
+  if (city) document.getElementById('plan-city').value = city;
+  switchTool('plan', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function planToArt() {
+  const name = document.getElementById('plan-name').value.trim();
+  if (name) document.getElementById('art-title').value = name;
+  switchTool('art', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function artToVideo() {
+  if (selectedArtUrl) {
+    const img = new Image();
+    img.onload = () => {
+      lvBgImg = img;
+      document.getElementById('lv-bg-label').textContent = '✓ Using your generated cover';
+      lvRefresh();
+    };
+    img.src = selectedArtUrl;
+  }
+  switchTool('lyric', null);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function lvToPlan() {
+  switchTool('plan', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
 // ====== EARNINGS FORECAST ======
 let fcMonthly = null;
 
@@ -2277,8 +2332,14 @@ function fcProject(monthly) {
   const recent = amts.slice(-3);
   const prior = amts.slice(-6, -3);
   const avgRecent = recent.reduce((a,b)=>a+b,0) / recent.length;
-  const avgPrior = prior.length ? prior.reduce((a,b)=>a+b,0) / prior.length : avgRecent;
-  let trend = avgPrior > 0 ? Math.pow(avgRecent / avgPrior, 1/3) - 1 : 0; // monthly growth observed
+  let trend;
+  if (prior.length) {
+    const avgPrior = prior.reduce((a,b)=>a+b,0) / prior.length;
+    trend = avgPrior > 0 ? Math.pow(avgRecent / avgPrior, 1/3) - 1 : 0;
+  } else {
+    // short history: read growth across the whole span, first month to last
+    trend = (amts[0] > 0 && n > 1) ? Math.pow(amts[n-1] / amts[0], 1/(n-1)) - 1 : 0;
+  }
   trend = Math.max(-0.12, Math.min(0.15, trend));
 
   function run(growth, viral) {
@@ -2332,6 +2393,7 @@ function fcRenderFull(stats, scenarios, data) {
       data.moves.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${m}</div>`).join('') + `</div>`;
   }
   if (!data.analysis) html += `<div style="color:var(--muted);font-size:11px;margin-top:8px;">This is a saved preview — run a fresh forecast on Pro for your full analyst report and moves.</div>`;
+  html += nextStepHtml('The Growth curve only happens with a real rollout. Turn these numbers into your 30-day plan — we\'ll research you across the web and build it step by step.', 'Build My Release Plan', 'fcToPlan()');
   html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
   document.getElementById('fc-result').innerHTML = html;
   document.getElementById('fc-result').style.display = 'block';
@@ -2385,6 +2447,7 @@ async function runForecast() {
     html += lockRow('BREAKOUT SCENARIO — 1 / 3 / 5 YEARS', 'One viral moment changes this to $' + (scenarios.breakout.y5));
     html += lockRow('ANALYST READ + YOUR NEXT MOVES', 'Four specific moves would shift your curve this quarter based on your trend');
     html += `<a href="pricing.html" style="display:block;text-align:center;background:var(--neon);color:#05050a;font-weight:800;font-size:13px;padding:13px;border-radius:10px;text-decoration:none;margin-top:12px;">Unlock your full forecast with Pro — $9.99/mo →</a>`;
+    html += `<div style="text-align:center;margin-top:10px;"><a onclick="fcToPlan()" style="color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;">Free move while you decide: build this month's release plan →</a></div>`;
     html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
     document.getElementById('fc-result').innerHTML = html;
     document.getElementById('fc-result').style.display = 'block';
@@ -2885,9 +2948,10 @@ async function lvRun(record) {
       saveAsset('Lyric Video', lvName, lvSnap, {videoUrl: videoUrl, lines: lvLines().length, font: document.getElementById('lv-font').value, color: document.getElementById('lv-color').value});
       addRecent(null, lvName, 'Lyric Video', lvSnap);
       const sizeMB = (blob.size / 1048576).toFixed(1);
-      status.innerHTML = videoUrl
+      status.innerHTML = (videoUrl
         ? '✓ Downloaded and saved to My Assets (' + sizeMB + ' MB) — play or re-download it there anytime.'
-        : '✓ Downloaded (' + sizeMB + ' MB)! Too large for a cloud copy — the file on your device is your copy. 15s and 30s clips always save to My Assets.';
+        : '✓ Downloaded (' + sizeMB + ' MB)! Too large for a cloud copy — the file on your device is your copy. 15s and 30s clips always save to My Assets.')
+        + ' <a onclick="lvToPlan()" style="color:var(--neon);font-weight:700;cursor:pointer;">Next: plan the rollout →</a>';
     };
     lvRecorder.start();
     const lenSelStatus = document.getElementById('lv-length').value;
