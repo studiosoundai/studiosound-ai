@@ -7,9 +7,9 @@
 // 2 requests (Version A + Version B), so request limits are 2x the
 // generation counts shown on the pricing page.
 const LIMITS = {
-  free:    { cover_art: 6,   release_plan: 1,    merch: 2,   lyrics: 3,   transcribe: 2   },
-  pro:     { cover_art: 200, release_plan: 1000, merch: 50,  lyrics: 200, transcribe: 30  },
-  premium: { cover_art: 600, release_plan: 1000, merch: 100, lyrics: 500, transcribe: 100 },
+  free:    { cover_art: 6,   release_plan: 1,    merch: 2,   lyrics: 3,   transcribe: 2,   forecast: 1  },
+  pro:     { cover_art: 200, release_plan: 1000, merch: 50,  lyrics: 200, transcribe: 30,  forecast: 3  },
+  premium: { cover_art: 600, release_plan: 1000, merch: 100, lyrics: 500, transcribe: 100, forecast: 10 },
 };
 
 export async function checkAndCount(req, tool) {
