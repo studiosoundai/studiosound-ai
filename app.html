@@ -2411,9 +2411,10 @@ function fcDrawChart(scenarios) {
   [12, 24, 36, 48].forEach((m, i) => ctx.fillText((i + 1) + ' yr', px(m), H - 28));
   ctx.fillText('5 yrs', px(59), H - 28);
 
-  const smooth = (series, color, width, glow) => {
+  const smooth = (series, color, width, glow, dash) => {
     ctx.save();
     if (glow) { ctx.shadowColor = color; ctx.shadowBlur = 22; }
+    if (dash) ctx.setLineDash([20, 16]);
     ctx.strokeStyle = color; ctx.lineWidth = width;
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     ctx.beginPath();
@@ -2438,8 +2439,8 @@ function fcDrawChart(scenarios) {
   ctx.closePath(); ctx.fillStyle = area; ctx.fill();
 
   smooth(scenarios.steady.series, '#7a7a92', 5, false);
-  smooth(scenarios.breakout.series, '#FFD700', 5, true);
   smooth(scenarios.growth.series, '#00FFD1', 8, true);
+  smooth(scenarios.breakout.series, '#FFD700', 5, true, true);
 
   // endpoint dots + plain-English labels ON the lines (this IS the legend)
   const ends = [
