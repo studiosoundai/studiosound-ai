@@ -1282,10 +1282,26 @@ function applyDeepLink() {
   });
 }
 
+function showFirstWin() {
+  const grid = document.getElementById('recent-grid');
+  if (!grid) return;
+  grid.style.display = 'block';
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;background:linear-gradient(135deg,#00FFD10f,#0b0b14);border:1px solid var(--neon);border-radius:14px;padding:22px;">
+      <div style="color:var(--neon);font-size:11px;font-weight:800;letter-spacing:0.08em;margin-bottom:6px;">START HERE — YOUR FIRST WIN TAKES ABOUT 60 SECONDS</div>
+      <div style="color:#e8e8f5;font-size:13px;margin-bottom:14px;">Pick one. We'll walk you through it.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('art',null);setToolActive(document.querySelector('.tool-card:nth-child(2)'))">🎨 Make my cover art</button>
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('lyric',null)">🎬 Turn my song into a lyric video</button>
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('forecast',null);setToolActive(document.querySelector('.tool-card:nth-child(1)'))">📈 See what my music could earn</button>
+      </div>
+    </div>`;
+}
+
 async function initRecent() {
   const result = await loadAssets();
   const items = result.items || [];
-  if (!items.length) return;
+  if (!items.length) { showFirstWin(); return; }
   recentItems = items.slice(0, 5).map(a => ({ icon: null, name: a.name || a.tool, type: a.tool, imageUrl: a.url, data: a.data || null }));
   renderRecent();
 }
