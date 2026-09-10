@@ -823,7 +823,7 @@ body{overflow:auto;height:auto;}
 
     <!-- EARNINGS FORECAST -->
     <div id="tool-forecast" class="hidden">
-      <div class="generator">
+      <div class="generator" style="align-items:start;">
         <div class="gen-panel">
           <div class="gen-title">📈 Earnings Forecast</div>
           <div class="gen-sub">Drop your royalty report (any distributor's CSV) — see where your income is heading over 1, 3, and 5 years, and what moves change the curve.</div>
@@ -2380,45 +2380,87 @@ function fcDrawChart(scenarios) {
   const c = document.getElementById('fc-chart');
   if (!c || !scenarios.steady.series) return;
   const ctx = c.getContext('2d');
-  const W = c.width, H = c.height;
-  const padL = 56, padR = 14, padT = 30, padB = 26;
-  ctx.fillStyle = '#0b0b14';
-  ctx.fillRect(0, 0, W, H);
-  const maxV = Math.max(scenarios.breakout.series[59], 10);
-  const px = i => padL + (i / 59) * (W - padL - padR);
-  const py = v => H - padB - (v / maxV) * (H - padT - padB);
-  // gridlines + $ labels
-  ctx.strokeStyle = '#1e1e2e'; ctx.fillStyle = '#7a7a92';
-  ctx.font = '10px Arial'; ctx.textAlign = 'right'; ctx.lineWidth = 1;
-  for (let g = 0; g <= 4; g++) {
-    const v = (maxV / 4) * g, y = py(v);
-    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
-    ctx.fillText(fcMoney(v), padL - 6, y + 3);
+  const W = c.width, H = c.height;              // 1280x600 for crispness
+  const padL = 40, padR = 320, padT = 60, padB = 70;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+
+  // card background
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0e0e1a'); bg.addColorStop(1, '#0a0a12');
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.roundRect(0, 0, W, H, 24); ctx.fill();
+
+  const maxV = Math.max(scenarios.breakout.series[59], 10) * 1.06;
+  const px = i => padL + (i / 59) * plotW;
+  const py = v => padT + plotH - (v / maxV) * plotH;
+
+  // whisper-subtle gridlines (no dollar axis — numbers live on the lines)
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 2;
+  for (let g = 1; g <= 3; g++) {
+    const y = padT + (plotH / 4) * g;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
   }
-  // year labels
-  ctx.textAlign = 'center';
-  [12, 24, 36, 48, 60].forEach((m, i) => ctx.fillText('Yr ' + (i + 1), px(m - 1), H - 8));
-  // curves
-  const lines = [
-    [scenarios.steady.series, '#8a8aa0', 2],
-    [scenarios.growth.series, '#00FFD1', 2.5],
-    [scenarios.breakout.series, '#FFD700', 2]
-  ];
-  lines.forEach(([series, color, width]) => {
+
+  // time labels people actually say
+  ctx.fillStyle = '#6a6a82'; ctx.font = '600 22px Arial'; ctx.textAlign = 'center';
+  ctx.fillText('Today', px(0) + 30, H - 28);
+  [12, 24, 36, 48].forEach((m, i) => ctx.fillText((i + 1) + ' yr', px(m), H - 28));
+  ctx.fillText('5 yrs', px(59), H - 28);
+
+  const smooth = (series, color, width, glow) => {
+    ctx.save();
+    if (glow) { ctx.shadowColor = color; ctx.shadowBlur = 22; }
     ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     ctx.beginPath();
-    series.forEach((v, i) => i === 0 ? ctx.moveTo(px(i), py(v)) : ctx.lineTo(px(i), py(v)));
+    ctx.moveTo(px(0), py(series[0]));
+    for (let i = 1; i < series.length; i++) {
+      const xc = (px(i - 1) + px(i)) / 2, yc = (py(series[i - 1]) + py(series[i])) / 2;
+      ctx.quadraticCurveTo(px(i - 1), py(series[i - 1]), xc, yc);
+    }
+    ctx.lineTo(px(59), py(series[59]));
     ctx.stroke();
+    ctx.restore();
+  };
+
+  // soft teal area under the Growth curve — "your money filling up"
+  const area = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+  area.addColorStop(0, 'rgba(0,255,209,0.18)');
+  area.addColorStop(1, 'rgba(0,255,209,0)');
+  ctx.beginPath();
+  ctx.moveTo(px(0), py(scenarios.growth.series[0]));
+  scenarios.growth.series.forEach((v, i) => ctx.lineTo(px(i), py(v)));
+  ctx.lineTo(px(59), padT + plotH); ctx.lineTo(px(0), padT + plotH);
+  ctx.closePath(); ctx.fillStyle = area; ctx.fill();
+
+  smooth(scenarios.steady.series, '#7a7a92', 5, false);
+  smooth(scenarios.breakout.series, '#FFD700', 5, true);
+  smooth(scenarios.growth.series, '#00FFD1', 8, true);
+
+  // endpoint dots + plain-English labels ON the lines (this IS the legend)
+  const ends = [
+    { name: 'If you coast', v: scenarios.steady.y5, color: '#9a9ab2', y: py(scenarios.steady.series[59]) },
+    { name: 'If you work the plan', v: scenarios.growth.y5, color: '#00FFD1', y: py(scenarios.growth.series[59]) },
+    { name: 'Plan + one viral hit', v: scenarios.breakout.y5, color: '#FFD700', y: py(scenarios.breakout.series[59]) }
+  ];
+  // keep labels from overlapping
+  ends.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) {
+    if (ends[i].y - ends[i - 1].y < 62) ends[i].y = ends[i - 1].y + 62;
+  }
+  ends.forEach(e => {
+    ctx.fillStyle = e.color;
+    ctx.beginPath(); ctx.arc(px(59), Math.min(e.y, padT + plotH), 9, 0, Math.PI * 2); ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.font = '800 30px Arial';
+    ctx.fillText(fcMoney(e.v), px(59) + 22, e.y + 2);
+    ctx.fillStyle = '#b8b8cf'; ctx.font = '600 20px Arial';
+    ctx.fillText(e.name, px(59) + 22, e.y + 28);
   });
-  // legend
-  ctx.font = '700 10px Arial'; ctx.textAlign = 'left';
-  const legend = [['Steady', '#8a8aa0'], ['Growth', '#00FFD1'], ['Breakout', '#FFD700']];
-  let lx = padL;
-  legend.forEach(([name, color]) => {
-    ctx.fillStyle = color; ctx.fillRect(lx, 10, 10, 10);
-    ctx.fillStyle = '#c8c8dd'; ctx.fillText(name, lx + 14, 19);
-    lx += ctx.measureText(name).width + 44;
-  });
+
+  // "Today" marker
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(px(0), py(scenarios.growth.series[0]), 7, 0, Math.PI * 2); ctx.fill();
 }
 
 let _fcLast = null;
@@ -2468,7 +2510,10 @@ function fcRenderFull(stats, scenarios, data) {
   if (data.headline) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">${data.headline}</div></div>`;
   html += `<div class="plan-item"><div class="plan-date">YOUR NUMBERS</div><div class="plan-detail">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · Based on ${stats.monthsOfData} months of data</div></div>`;
   if (scenarios.steady && scenarios.steady.series) {
-    html += `<div class="plan-item"><div class="plan-date">FIVE-YEAR PROJECTION</div><canvas id="fc-chart" width="640" height="300" style="width:100%;border-radius:10px;display:block;margin-top:6px;"></canvas></div>`;
+    const gap = (scenarios.growth.y5 || 0) - (scenarios.steady.y5 || 0);
+    html += `<div class="plan-item"><div class="plan-date">WHERE YOUR MONEY IS HEADED</div>
+      <canvas id="fc-chart" width="1280" height="600" style="width:100%;border-radius:14px;display:block;margin-top:8px;"></canvas>
+      <div class="plan-detail" style="margin-top:10px;">Each line is a path. The higher the line climbs, the more you've made in total. The gap between <strong style="color:#9a9ab2;">coasting</strong> and <strong style="color:var(--neon);">working the plan</strong> is worth <strong style="color:var(--neon);">${money(gap)}</strong> over 5 years — that's what the work pays.</div></div>`;
   }
   rows.forEach(([label, sc, color]) => {
     html += `<div class="plan-item"><div class="plan-date" ${color?`style="color:${color};"`:''}>${label}</div>
