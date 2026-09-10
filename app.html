@@ -2381,7 +2381,7 @@ function fcDrawChart(scenarios) {
   if (!c || !scenarios.steady.series) return;
   const ctx = c.getContext('2d');
   const W = c.width, H = c.height;              // 1280x600 for crispness
-  const padL = 40, padR = 320, padT = 60, padB = 70;
+  const padL = 110, padR = 320, padT = 60, padB = 70;
   const plotW = W - padL - padR, plotH = H - padT - padB;
 
   // card background
@@ -2394,11 +2394,15 @@ function fcDrawChart(scenarios) {
   const px = i => padL + (i / 59) * plotW;
   const py = v => padT + plotH - (v / maxV) * plotH;
 
-  // whisper-subtle gridlines (no dollar axis — numbers live on the lines)
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 2;
-  for (let g = 1; g <= 3; g++) {
+  // gridlines with dollar labels on the left
+  ctx.lineWidth = 2;
+  for (let g = 0; g <= 4; g++) {
+    const v = maxV - (maxV / 4) * g;
     const y = padT + (plotH / 4) * g;
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
     ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+    ctx.fillStyle = '#7a7a92'; ctx.font = '600 20px Arial'; ctx.textAlign = 'right';
+    ctx.fillText(fcMoney(v), padL - 14, y + 7);
   }
 
   // time labels people actually say
