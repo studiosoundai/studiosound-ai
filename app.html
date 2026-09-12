@@ -1705,7 +1705,7 @@ async function generateArt() {
   document.getElementById('art-single').style.display = 'none';
   document.getElementById('art-error').style.display = 'none';
   document.getElementById('art-loading').classList.add('active');
-  document.getElementById('art-loading-text').textContent = imageData
+  document.getElementById('art-loading-text').textContent = (document.getElementById('art-img-upload').files || []).length
     ? 'Incorporating your photo into two unique versions...'
     : 'Generating two unique versions...';
   document.getElementById('art-btn').disabled = true;
