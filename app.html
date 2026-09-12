@@ -1738,7 +1738,7 @@ async function generateArt() {
     const isLimit = r => r.status === 'fulfilled' && r.value.error === 'limit_reached';
 
     // One version rate-limited or hiccuped? Breathe 7s and retry it once.
-    if (gotUrl(resA) !== gotUrl(resB) && !isLimit(resA) && !isLimit(resB)) {
+    if (Boolean(gotUrl(resA)) !== Boolean(gotUrl(resB)) && !isLimit(resA) && !isLimit(resB)) {
       const lt = document.querySelector('#art-loading .loading-text');
       if (lt) lt.textContent = 'One version is finishing up — few more seconds...';
       await new Promise(r => setTimeout(r, 7000));
@@ -1760,7 +1760,7 @@ async function generateArt() {
       if (!versionBUrl) parts.push('Version B: ' + failText(resB));
       console.error('COVER DEBUG →', parts.join(' | '));
       const dbg = document.getElementById('art-error');
-      if (dbg && (versionAUrl || versionBUrl)) {
+      if (dbg) {
         dbg.textContent = '⚠ ' + parts.join(' · ');
         dbg.style.display = 'block';
       }
