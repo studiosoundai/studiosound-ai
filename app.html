@@ -375,8 +375,9 @@ body{overflow:auto;height:auto;}
                 <i class="ti ti-photo-plus"></i> Add Image
               </div>
               <img class="img-preview-thumb" id="art-img-thumb" src="" alt=""/>
+              <span id="art-img-remove" onclick="event.stopPropagation();clearArtUpload('art-img-upload','art-img-thumb','art-img-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
               <div class="img-upload-hint">Upload a photo of yourself — AI will incorporate you into the cover art</div>
-              <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb')"/>
+              <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb');document.getElementById('art-img-remove').style.display='inline-block';"/>
             </div>
           </div>
           <div class="form-group">
@@ -386,8 +387,9 @@ body{overflow:auto;height:auto;}
                 <i class="ti ti-palette"></i> Add Reference
               </div>
               <img class="img-preview-thumb" id="art-insp-thumb" src="" alt=""/>
+              <span id="art-insp-remove" onclick="event.stopPropagation();clearArtUpload('art-insp-upload','art-insp-thumb','art-insp-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
               <div class="img-upload-hint">Upload a cover whose style/mood you love — the AI creates an ORIGINAL in that spirit (applies to Version A). Only upload art you have the right to reference.</div>
-              <input type="file" id="art-insp-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-insp-thumb')"/>
+              <input type="file" id="art-insp-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-insp-thumb');document.getElementById('art-insp-remove').style.display='inline-block';"/>
             </div>
           </div>
           <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate — 2 Unique Versions</button>
@@ -413,11 +415,13 @@ body{overflow:auto;height:auto;}
             <div>
               <div class="style-label">✦ VERSION A</div>
               <img class="style-img" id="art-version-a" src="" alt="Version A" onclick="selectVersion('a')"/>
+              <button class="result-btn" style="width:100%;justify-content:center;margin-bottom:6px;" onclick="viewArtFull('a')"><i class="ti ti-zoom-in"></i> View Full Size</button>
               <button class="style-btn" id="btn-version-a" onclick="selectVersion('a')"><i class="ti ti-check"></i> Select Version A</button>
             </div>
             <div>
               <div class="style-label">✦ VERSION B</div>
               <img class="style-img" id="art-version-b" src="" alt="Version B" onclick="selectVersion('b')"/>
+              <button class="result-btn" style="width:100%;justify-content:center;margin-bottom:6px;" onclick="viewArtFull('b')"><i class="ti ti-zoom-in"></i> View Full Size</button>
               <button class="style-btn" id="btn-version-b" onclick="selectVersion('b')"><i class="ti ti-check"></i> Select Version B</button>
             </div>
           </div>
@@ -1526,6 +1530,52 @@ function useExample(tool, text) {
 }
 
 // ====== IMAGE HELPERS ======
+function viewArtFull(version) {
+  const img = document.getElementById('art-version-' + version);
+  if (!img || !img.src || img.src.endsWith('#') || img.src === location.href) { alert('Generate your covers first'); return; }
+  const other = version === 'a' ? 'b' : 'a';
+  const otherImg = document.getElementById('art-version-' + other);
+  const hasOther = otherImg && otherImg.src && !otherImg.src.endsWith('#') && otherImg.src !== location.href;
+  const old = document.getElementById('art-modal');
+  if (old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.id = 'art-modal';
+  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;';
+  wrap.innerHTML = `
+    <div style="color:#fff;font-weight:800;font-size:14px;letter-spacing:0.05em;" id="art-modal-title">VERSION ${version.toUpperCase()}</div>
+    <img id="art-modal-img" src="${img.src}" style="max-height:76vh;max-width:92vw;border-radius:14px;box-shadow:0 20px 80px rgba(0,0,0,0.8);"/>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      ${hasOther ? `<button onclick="artModalSwap()" style="background:#1a1a2a;color:#fff;font-weight:700;font-size:12px;padding:10px 18px;border-radius:8px;border:0.5px solid var(--border);cursor:pointer;">⇄ Compare Version ${other.toUpperCase()}</button>` : ''}
+      <button onclick="selectVersion(document.getElementById('art-modal').dataset.v);document.getElementById('art-modal').remove();" style="background:var(--neon);color:#05050a;font-weight:800;font-size:12px;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;">✓ Use This One</button>
+      <button onclick="document.getElementById('art-modal').remove()" style="background:#1a1a2a;color:#fff;font-weight:700;font-size:12px;padding:10px 18px;border-radius:8px;border:0.5px solid var(--border);cursor:pointer;">Close ✕</button>
+    </div>`;
+  wrap.dataset.v = version;
+  wrap.addEventListener('click', e => { if (e.target === wrap) wrap.remove(); });
+  document.body.appendChild(wrap);
+}
+
+function artModalSwap() {
+  const modal = document.getElementById('art-modal');
+  if (!modal) return;
+  const cur = modal.dataset.v;
+  const next = cur === 'a' ? 'b' : 'a';
+  const nextImg = document.getElementById('art-version-' + next);
+  if (!nextImg || !nextImg.src) return;
+  modal.dataset.v = next;
+  document.getElementById('art-modal-img').src = nextImg.src;
+  document.getElementById('art-modal-title').textContent = 'VERSION ' + next.toUpperCase();
+  const swapBtn = modal.querySelector('button');
+  if (swapBtn && swapBtn.textContent.includes('Compare')) swapBtn.innerHTML = '⇄ Compare Version ' + cur.toUpperCase();
+}
+
+function clearArtUpload(inputId, thumbId, removeId) {
+  const input = document.getElementById(inputId);
+  input.value = '';
+  const thumb = document.getElementById(thumbId);
+  thumb.src = ''; thumb.style.display = 'none';
+  document.getElementById(removeId).style.display = 'none';
+}
+
 function previewImg(input, thumbId) {
   if(!input.files || !input.files[0]) return;
   const reader = new FileReader();
