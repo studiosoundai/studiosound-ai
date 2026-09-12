@@ -1722,23 +1722,49 @@ async function generateArt() {
 
   try {
     const hdrs = await authHeaders();
-    const [resA, resB] = await Promise.allSettled([
-      fetch('/api/generate-art', {
-        method: 'POST',
-        headers: hdrs,
-        body: JSON.stringify({prompt: basePrompt, imageDatas, inspirationDatas})
-      }).then(r => r.json()),
-      fetch('/api/generate-art-gemini', {
-        method: 'POST',
-        headers: hdrs,
-        body: JSON.stringify({prompt: basePrompt})
-      }).then(r => r.json())
-    ]);
+    const fetchT = (url, body) => {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 75000);
+      return fetch(url, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal: ctl.signal })
+        .then(r => r.json())
+        .finally(() => clearTimeout(timer));
+    };
+    const callA = () => fetchT('/api/generate-art', {prompt: basePrompt, imageDatas, inspirationDatas});
+    const callB = () => fetchT('/api/generate-art-gemini', {prompt: basePrompt});
+
+    let [resA, resB] = await Promise.allSettled([callA(), callB()]);
+
+    const gotUrl = r => r.status === 'fulfilled' && r.value.data?.[0]?.url;
+    const isLimit = r => r.status === 'fulfilled' && r.value.error === 'limit_reached';
+
+    // One version rate-limited or hiccuped? Breathe 7s and retry it once.
+    if (gotUrl(resA) !== gotUrl(resB) && !isLimit(resA) && !isLimit(resB)) {
+      const lt = document.querySelector('#art-loading .loading-text');
+      if (lt) lt.textContent = 'One version is finishing up — few more seconds...';
+      await new Promise(r => setTimeout(r, 7000));
+      if (!gotUrl(resA)) { const retry = await Promise.allSettled([callA()]); resA = retry[0]; }
+      else { const retry = await Promise.allSettled([callB()]); resB = retry[0]; }
+    }
 
     document.getElementById('art-loading').classList.remove('active');
 
-    versionAUrl = (resA.status === 'fulfilled' && resA.value.data?.[0]?.url) ? resA.value.data[0].url : null;
-    versionBUrl = (resB.status === 'fulfilled' && resB.value.data?.[0]?.url) ? resB.value.data[0].url : null;
+    versionAUrl = gotUrl(resA) ? resA.value.data[0].url : null;
+    versionBUrl = gotUrl(resB) ? resB.value.data[0].url : null;
+
+    const failText = r => r.status === 'fulfilled'
+      ? ((r.value && (r.value.details || r.value.error)) || 'unknown response')
+      : (String(r.reason).includes('abort') ? 'timed out after 75s' : String(r.reason));
+    if (!versionAUrl || !versionBUrl) {
+      const parts = [];
+      if (!versionAUrl) parts.push('Version A: ' + failText(resA));
+      if (!versionBUrl) parts.push('Version B: ' + failText(resB));
+      console.error('COVER DEBUG →', parts.join(' | '));
+      const dbg = document.getElementById('art-error');
+      if (dbg && (versionAUrl || versionBUrl)) {
+        dbg.textContent = '⚠ ' + parts.join(' · ');
+        dbg.style.display = 'block';
+      }
+    }
 
     if(versionAUrl && versionBUrl) {
       document.getElementById('art-version-a').src = versionAUrl;
