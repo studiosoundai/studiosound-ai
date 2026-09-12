@@ -374,10 +374,10 @@ body{overflow:auto;height:auto;}
               <div class="img-upload-btn" onclick="document.getElementById('art-img-upload').click()">
                 <i class="ti ti-photo-plus"></i> Add Image
               </div>
-              <img class="img-preview-thumb" id="art-img-thumb" src="" alt=""/>
-              <span id="art-img-remove" onclick="event.stopPropagation();clearArtUpload('art-img-upload','art-img-thumb','art-img-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
+              <div id="art-img-thumbs" style="display:flex;gap:4px;"></div>
+              <span id="art-img-remove" onclick="event.stopPropagation();clearArtUpload('art-img-upload','art-img-thumbs','art-img-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
               <div class="img-upload-hint">Upload a photo of yourself — AI will incorporate you into the cover art</div>
-              <input type="file" id="art-img-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-img-thumb');document.getElementById('art-img-remove').style.display='inline-block';"/>
+              <input type="file" id="art-img-upload" accept="image/*" multiple style="display:none;" onchange="previewMulti(this,'art-img-thumbs','art-img-remove')"/>
             </div>
           </div>
           <div class="form-group">
@@ -386,10 +386,10 @@ body{overflow:auto;height:auto;}
               <div class="img-upload-btn" onclick="document.getElementById('art-insp-upload').click()">
                 <i class="ti ti-palette"></i> Add Reference
               </div>
-              <img class="img-preview-thumb" id="art-insp-thumb" src="" alt=""/>
-              <span id="art-insp-remove" onclick="event.stopPropagation();clearArtUpload('art-insp-upload','art-insp-thumb','art-insp-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
-              <div class="img-upload-hint">Upload a cover whose style/mood you love — the AI creates an ORIGINAL in that spirit (applies to Version A). Only upload art you have the right to reference.</div>
-              <input type="file" id="art-insp-upload" accept="image/*" style="display:none;" onchange="previewImg(this,'art-insp-thumb');document.getElementById('art-insp-remove').style.display='inline-block';"/>
+              <div id="art-insp-thumbs" style="display:flex;gap:4px;"></div>
+              <span id="art-insp-remove" onclick="event.stopPropagation();clearArtUpload('art-insp-upload','art-insp-thumbs','art-insp-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
+              <div class="img-upload-hint">Upload up to 3 covers whose style/mood you love — the AI creates an ORIGINAL in that spirit (applies to Version A). Only upload art you have the right to reference.</div>
+              <input type="file" id="art-insp-upload" accept="image/*" multiple style="display:none;" onchange="previewMulti(this,'art-insp-thumbs','art-insp-remove')"/>
             </div>
           </div>
           <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate — 2 Unique Versions</button>
@@ -1568,12 +1568,57 @@ function artModalSwap() {
   if (swapBtn && swapBtn.textContent.includes('Compare')) swapBtn.innerHTML = '⇄ Compare Version ' + cur.toUpperCase();
 }
 
-function clearArtUpload(inputId, thumbId, removeId) {
-  const input = document.getElementById(inputId);
-  input.value = '';
-  const thumb = document.getElementById(thumbId);
-  thumb.src = ''; thumb.style.display = 'none';
+function clearArtUpload(inputId, thumbsId, removeId) {
+  document.getElementById(inputId).value = '';
+  document.getElementById(thumbsId).innerHTML = '';
   document.getElementById(removeId).style.display = 'none';
+}
+
+function previewMulti(input, thumbsId, removeId) {
+  const wrap = document.getElementById(thumbsId);
+  wrap.innerHTML = '';
+  const files = Array.from(input.files || []).slice(0, 3);
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:36px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid var(--neon);';
+      wrap.appendChild(img);
+    };
+    reader.readAsDataURL(f);
+  });
+  if ((input.files || []).length > 3) {
+    const more = document.createElement('span');
+    more.textContent = 'first 3 used';
+    more.style.cssText = 'color:var(--muted);font-size:10px;align-self:center;';
+    wrap.appendChild(more);
+  }
+  document.getElementById(removeId).style.display = files.length ? 'inline-block' : 'none';
+}
+
+// Shrink images client-side so multi-uploads fit the server and generate faster
+function compressImage(file, maxDim) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, (maxDim || 1024) / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        const ctx = c.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function previewImg(input, thumbId) {
@@ -1649,15 +1694,11 @@ async function generateArt() {
   const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}.${paletteInstruction} Ultra high quality, label-quality artwork, striking visual composition. ${textInstruction}${artistInstruction} Cinematic quality.`;
 
   const imgUpload = document.getElementById('art-img-upload');
-  let imageData = null;
-  if(imgUpload.files && imgUpload.files[0]) {
-    imageData = await toBase64(imgUpload.files[0]);
-  }
+  const photoFiles = Array.from((imgUpload.files || [])).slice(0, 3);
+  const imageDatas = await Promise.all(photoFiles.map(f => compressImage(f, 1024)));
   const inspUpload = document.getElementById('art-insp-upload');
-  let inspirationData = null;
-  if(inspUpload.files && inspUpload.files[0]) {
-    inspirationData = await toBase64(inspUpload.files[0]);
-  }
+  const inspFiles = Array.from((inspUpload.files || [])).slice(0, 3);
+  const inspirationDatas = await Promise.all(inspFiles.map(f => compressImage(f, 1024)));
 
   document.getElementById('art-placeholder').style.display = 'none';
   document.getElementById('art-dual').classList.remove('show');
@@ -1685,7 +1726,7 @@ async function generateArt() {
       fetch('/api/generate-art', {
         method: 'POST',
         headers: hdrs,
-        body: JSON.stringify({prompt: basePrompt, imageData, inspirationData})
+        body: JSON.stringify({prompt: basePrompt, imageDatas, inspirationDatas})
       }).then(r => r.json()),
       fetch('/api/generate-art-gemini', {
         method: 'POST',
