@@ -1,101 +1,3332 @@
-import { checkAndCount, logGeneration } from './_usage.js';
-
-// Version A — tiered engine:
-//   free           → gemini-3.1-flash-image (Nano Banana 2)
-//   pro / premium  → gemini-3-pro-image (Nano Banana Pro — best-in-class text rendering)
-//   safety net     → gemini-2.5-flash-image (known-good fallback)
-// Supports photo input (put yourself on the cover) and inspiration input (style reference).
-
-function b64Part(dataUrl) {
-  const mimeMatch = dataUrl.match(/^data:(image\/\w+);/);
-  const mime = (mimeMatch && mimeMatch[1]) || 'image/png';
-  return { inline_data: { mime_type: mime, data: dataUrl.replace(/^data:image\/\w+;base64,/, '') } };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudioSound.ai — Dashboard</title>
+<meta name="description" content="Your AI studio: cover art, release plans, and merch mockups.">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<meta property="og:title" content="Dashboard — StudioSound.ai">
+<meta property="og:description" content="Your AI studio: cover art, release plans, and merch mockups.">
+<meta property="og:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<meta property="og:url" content="https://studiosound.ai/app">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="StudioSound.ai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dashboard — StudioSound.ai">
+<meta name="twitter:description" content="Your AI studio: cover art, release plans, and merch mockups.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Permanent+Marker&family=Bangers&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;}
+.app{display:flex;height:100vh;}
+.sidebar{width:220px;flex-shrink:0;background:#07070f;border-right:0.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-nav{flex:1;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#2a2a3a transparent;}
+.sidebar-logo{display:flex;align-items:center;gap:8px;padding:16px 20px;border-bottom:0.5px solid var(--border);text-decoration:none;}
+.logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
+.logoname{font-size:13px;font-weight:800;color:#fff;}
+.sidebar-section{padding:12px 12px 4px;}
+.sidebar-label{color:#5a5a72;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:0 8px;margin-bottom:6px;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-bottom:2px;border:none;background:transparent;width:100%;text-align:left;font-family:'Sora',sans-serif;}
+.sidebar-item:hover{background:var(--card);color:#fff;}
+.sidebar-item.active{background:#00FFD115;color:var(--neon);}
+.sidebar-item i{font-size:16px;flex-shrink:0;}
+.badge{background:var(--neon);color:#05050a;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;margin-left:auto;}
+.soon{background:#1a1a28;color:#5a5a72;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:auto;}
+.sidebar-bottom{margin-top:auto;padding:12px;border-top:0.5px solid var(--border);}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border-radius:10px;border:0.5px solid var(--border);margin-bottom:8px;}
+.user-av{width:32px;height:32px;background:#00FFD120;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.user-name{color:#fff;font-size:12px;font-weight:700;}
+.user-plan{color:var(--neon);font-size:10px;font-weight:600;}
+.signout-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:transparent;border:0.5px solid var(--border);color:var(--muted);border-radius:8px;padding:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.15s;}
+.signout-btn:hover{border-color:#ff6b6b;color:#ff6b6b;}
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.topbar-title{font-size:16px;font-weight:800;color:#fff;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.topbar-btn{display:flex;align-items:center;gap:6px;background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
+.notif{width:32px;height:32px;background:var(--card);border:0.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.notif i{font-size:16px;color:var(--muted);}
+.content{padding:24px;}
+.welcome{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:16px;padding:24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.welcome-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:4px;}
+.welcome-title span{color:var(--neon);}
+.welcome-sub{color:var(--muted);font-size:12px;font-weight:500;margin-bottom:16px;}
+.welcome-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.wpill{display:flex;align-items:center;gap:5px;background:#00FFD110;border:0.5px solid var(--neon);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--neon);font-weight:600;}
+.welcome-right{text-align:right;flex-shrink:0;}
+.usage-label{color:var(--muted);font-size:10px;font-weight:600;margin-bottom:6px;}
+.usage-bar{width:140px;height:6px;background:#1a1a28;border-radius:3px;margin-bottom:4px;margin-left:auto;}
+.usage-fill{height:100%;background:var(--neon);border-radius:3px;width:30%;}
+.usage-text{color:var(--muted);font-size:10px;}
+.section-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.06em;margin-bottom:12px;}
+.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.tool-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;text-align:left;}
+.tool-card:hover{border-color:var(--neon);transform:translateY(-2px);}
+.tool-card.active{border-color:var(--neon);background:#00FFD108;}
+.tool-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:20px;overflow:hidden;}
+.tool-icon img{width:100%;height:100%;object-fit:cover;display:block;}
+.tool-name{color:#fff;font-size:12px;font-weight:700;margin-bottom:3px;}
+.tool-desc{color:var(--muted);font-size:10px;font-weight:500;line-height:1.5;}
+.tool-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
+.tool-badge.live{background:#00FFD120;color:var(--neon);border:0.5px solid var(--neon);}
+.tool-badge.soon{background:#1a1a28;color:#5a5a72;}
+.generator{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.gen-panel{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+.gen-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;}
+.gen-sub{color:var(--muted);font-size:11px;margin-bottom:16px;}
+.form-group{margin-bottom:12px;}
+.form-label{color:#e0e0f0;font-size:11px;font-weight:700;margin-bottom:5px;display:block;}
+.form-input{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;}
+.form-input:focus{border-color:var(--neon);}
+.form-input::placeholder{color:#5a5a72;}
+.form-textarea{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;transition:border 0.15s;font-family:'Sora',sans-serif;resize:none;min-height:100px;}
+.form-textarea:focus{border-color:var(--neon);}
+.form-textarea::placeholder{color:#5a5a72;}
+.form-select{width:100%;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none;font-family:'Sora',sans-serif;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.gen-btn{width:100%;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto;transition:opacity 0.15s;}
+.gen-btn:hover{opacity:0.9;}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.img-upload-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.img-upload-btn{display:flex;align-items:center;gap:6px;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:border-color 0.15s;white-space:nowrap;}
+.img-upload-btn:hover{border-color:var(--neon);color:#fff;}
+.img-upload-btn i{font-size:15px;color:var(--neon);}
+.img-preview-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid var(--neon);display:none;}
+.img-upload-hint{color:#5a5a72;font-size:10px;line-height:1.4;}
+.result-placeholder{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;margin-bottom:12px;padding:20px;text-align:center;flex:1;}
+.result-placeholder i{font-size:40px;color:#2a2a3a;margin-bottom:8px;}
+.result-placeholder p{color:#3a3a52;font-size:12px;font-weight:500;line-height:1.6;}
+.loading{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:200px;margin-bottom:12px;}
+.loading.active{display:flex;}
+.loading-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{color:var(--muted);font-size:12px;font-weight:500;text-align:center;}
+.dual-results{display:none;gap:10px;margin-bottom:12px;}
+.dual-results.show{display:grid;grid-template-columns:1fr 1fr;}
+.style-label{font-size:10px;font-weight:700;margin-bottom:6px;text-align:center;color:var(--neon);}
+.style-img{width:100%;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;display:block;}
+.style-img.selected{border-color:var(--neon);}
+.style-btn{width:100%;margin-top:6px;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:4px;}
+.style-btn:hover{border-color:var(--neon);color:var(--neon);}
+.style-btn.selected{background:var(--neon);color:#05050a;border-color:var(--neon);}
+.single-result{display:none;margin-bottom:12px;}
+.single-result img{width:100%;border-radius:10px;}
+.error-msg{color:#ff6b6b;font-size:11px;text-align:center;padding:8px;display:none;}
+.result-actions{display:flex;gap:8px;margin-top:8px;}
+.result-btn{flex:1;background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:8px;padding:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:border-color 0.15s;}
+.result-btn:hover{border-color:var(--neon);}
+.result-btn.primary{background:var(--neon);border:none;color:#05050a;}
+.plan-timeline{display:none;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:12px;}
+.plan-timeline.show{display:flex;}
+.plan-item{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;}
+.plan-date{color:var(--neon);font-size:10px;font-weight:700;margin-bottom:3px;}
+.plan-task{color:#fff;font-size:12px;font-weight:600;margin-bottom:2px;}
+.plan-detail{color:var(--muted);font-size:11px;line-height:1.5;}
+.merch-result{display:none;margin-bottom:12px;}
+.merch-result.show{display:block;}
+.merch-result img{width:100%;border-radius:10px;margin-bottom:10px;}
+.merch-cost{background:#0f0f1a;border-radius:10px;padding:14px;}
+.merch-cost-title{color:var(--neon);font-size:11px;font-weight:700;margin-bottom:8px;}
+.merch-cost-row{display:flex;justify-content:space-between;color:#e0e0f0;font-size:11px;margin-bottom:4px;}
+.merch-cost-row.hl{color:var(--neon);font-weight:700;}
+.examples-section{margin-bottom:24px;}
+.examples-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.examples-label i{color:var(--neon);font-size:14px;}
+.examples-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.example-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;}
+.example-card:hover{border-color:var(--neon);transform:translateY(-2px);}
+.example-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;}
+.example-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.example-badge{position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);color:var(--neon);font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.example-body{padding:10px 12px 12px;}
+.example-prompt{color:#e0e0f0;font-size:11px;font-weight:500;line-height:1.5;margin-bottom:6px;}
+.example-use{color:var(--neon);font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.recent-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+.recent-item{background:var(--card);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
+.recent-item:hover{border-color:var(--neon);}
+.recent-thumb{height:80px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;}
+#assets-grid .recent-thumb, #assets-grid .recent-thumb img{height:130px;}
+.recent-thumb img{width:100%;height:80px;object-fit:cover;display:block;}
+.recent-info{padding:8px 10px;}
+.recent-name{color:#fff;font-size:10px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recent-meta{color:var(--muted);font-size:9px;}
+.hidden{display:none;}
+.menu-toggle{display:none;background:#0d0d14;border:0.5px solid var(--border);border-radius:8px;width:38px;height:36px;cursor:pointer;flex-direction:column;gap:4px;justify-content:center;align-items:center;flex-shrink:0;margin-right:10px;}
+.hb{display:block;width:16px;height:2px;background:var(--neon);border-radius:2px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:290;}
+.sidebar-overlay.show{display:block;}
+@media(max-width:768px){
+html,body{max-width:100vw;}
+body{overflow:auto;height:auto;}
+.app{height:auto;min-height:100vh;}
+.sidebar{position:fixed;left:-250px;top:0;bottom:0;width:230px;z-index:300;transition:left 0.25s ease;overflow-y:auto;}
+.sidebar.open{left:0;box-shadow:20px 0 60px rgba(0,0,0,0.6);}
+.menu-toggle{display:flex;}
+.main{width:100%;}
+.topbar{padding:10px 14px;}
+.topbar-title{font-size:14px;}
+.content{padding:14px;}
+.welcome{flex-direction:column;align-items:flex-start;padding:18px;}
+.welcome-right{text-align:left;}
+.usage-bar{margin-left:0;}
+.generator{grid-template-columns:1fr;}
+.tools-grid{grid-template-columns:repeat(2,1fr);}
+.examples-grid{grid-template-columns:1fr;}
+.recent-grid{grid-template-columns:repeat(2,1fr);}
+#assets-grid{grid-template-columns:repeat(2,1fr) !important;}
 }
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 
-async function callModel(model, parts) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GOOGLE_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: parts }],
-        generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
-      }),
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <a class="sidebar-logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="sidebar-nav">
+  <div class="sidebar-section">
+    <div class="sidebar-label">TOOLS</div>
+    <button class="sidebar-item" onclick="switchTool('forecast',this)"><i class="ti ti-chart-line"></i> Earnings Forecast <span class="badge">NEW</span></button>
+    <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
+    <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
+    <button class="sidebar-item" onclick="switchTool('writer',this)"><i class="ti ti-pencil"></i> AI Lyric Writer <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
+    <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">UTILITIES</div>
+    <button class="sidebar-item" onclick="switchTool('resize',this)"><i class="ti ti-crop"></i> Cover Resizer <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('audio',this)"><i class="ti ti-file-music"></i> MP3 → WAV <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('trim',this)"><i class="ti ti-cut"></i> Audio Trimmer <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('split',this)"><i class="ti ti-users"></i> Split Sheet <span class="badge">FREE</span></button>
+    <button class="sidebar-item"><i class="ti ti-badge-cc"></i> Lyric Captions <span class="soon">SOON</span></button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">MARKETING</div>
+    <button class="sidebar-item"><i class="ti ti-chart-bar"></i> AI Ad Manager <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-scissors"></i> Video Clipping <span class="soon">SOON</span></button>
+    <button class="sidebar-item"><i class="ti ti-calendar"></i> Auto Posting <span class="soon">SOON</span></button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">ACCOUNT</div>
+    <button class="sidebar-item" onclick="switchTool('assets',this)"><i class="ti ti-folder"></i> My Assets</button>
+    <button class="sidebar-item" onclick="switchTool('settings',this)"><i class="ti ti-settings"></i> Settings</button>
+    <button class="sidebar-item" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade Plan</button>
+  </div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-av">🎤</div>
+      <div>
+        <div class="user-name" id="user-name">Artist</div>
+        <div class="user-plan">Free Plan</div>
+      </div>
+    </div>
+    <button class="signout-btn" onclick="doSignOut()"><i class="ti ti-logout"></i> Sign Out</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;">
+      <button class="menu-toggle" aria-label="Menu" onclick="toggleSidebar()"><span class="hb"></span><span class="hb"></span><span class="hb"></span></button>
+      <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" id="topbar-upgrade" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- WELCOME -->
+    <div class="welcome">
+      <div>
+        <div class="welcome-title" id="welcome-title">Welcome to <span>StudioSound.ai</span> 👋</div>
+        <div class="welcome-sub">Pick a tool and start creating. We'll guide you every step of the way.</div>
+        <div class="welcome-pills">
+          <div class="wpill"><i class="ti ti-chart-line"></i> Earnings Forecast</div>
+          <div class="wpill"><i class="ti ti-disc"></i> Cover Art</div>
+          <div class="wpill"><i class="ti ti-rocket"></i> Release Planner</div>
+          <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups</div>
+          <div class="wpill"><i class="ti ti-pencil"></i> Lyric Writer</div>
+          <div class="wpill"><i class="ti ti-video"></i> Lyric Videos</div>
+          <div class="wpill"><i class="ti ti-wand"></i> + 4 Free Utilities</div>
+        </div>
+      </div>
+      <div class="welcome-right">
+        <div class="usage-label">MONTHLY USAGE</div>
+        <div class="usage-bar"><div class="usage-fill"></div></div>
+        <div class="usage-text">Free plan — 3 generations</div>
+      </div>
+    </div>
+
+    <!-- TOOLS GRID -->
+    <div class="section-label">YOUR TOOLS</div>
+    <div class="tools-grid">
+      <div class="tool-card" onclick="switchTool('forecast',null);setToolActive(this)">
+        <div class="tool-badge live">NEW</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Earnings Forecast"/></div>
+        <div class="tool-name">Earnings Forecast</div>
+        <div class="tool-desc">See what your music earns in 1, 3 & 5 years</div>
+      </div>
+      <div class="tool-card active" onclick="switchTool('art',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art"/></div>
+        <div class="tool-name">Cover Art Generator</div>
+        <div class="tool-desc">Generate label-quality artwork in seconds</div>
+      </div>
+      <div class="tool-card" onclick="switchTool('plan',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Planner"/></div>
+        <div class="tool-name">Release Planner</div>
+        <div class="tool-desc">Your personalized 30-day roadmap</div>
+      </div>
+      <div class="tool-card" onclick="switchTool('merch',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="Merch Mockups"/></div>
+        <div class="tool-name">Merch Mockups</div>
+        <div class="tool-desc">See your art on real products instantly</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-badge soon">SOON</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/music-video-generator.png.png" alt="Song Generator"/></div>
+        <div class="tool-name">AI Song Generator</div>
+        <div class="tool-desc">Turn your ideas into full tracks</div>
+      </div>
+    </div>
+
+    <!-- COVER ART TOOL -->
+    <div id="tool-art">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🎨 Cover Art Generator</div>
+          <div class="gen-sub">Describe your vision — the more detail, the better the result. We generate two unique versions so you can pick your favorite.</div>
+          <div class="form-group">
+            <label class="form-label">Song or Project Title <span style="color:var(--neon);">*</span></label>
+            <input class="form-input" id="art-title" placeholder="e.g. Midnight Static"/>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
+              <input type="checkbox" id="art-title-toggle" checked style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
+              Include the title as text on the artwork
+            </label>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Artist Name on Cover (optional)</label>
+              <input class="form-input" id="art-artist" placeholder="Rendered smaller, under the title"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Color Palette (optional)</label>
+              <input class="form-input" id="art-colors" placeholder="e.g. teal, gold, black"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
+              <input type="checkbox" id="art-pa" style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
+              Add Parental Advisory sticker <span style="color:#5a5a72;">(applied crisp on your download)</span>
+            </label>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <select class="form-select" id="art-genre">
+                <option>Hip-Hop</option><option>Drill</option><option>Trap</option>
+                <option>R&B</option><option>R&B Soul</option><option>Neo Soul</option>
+                <option>Pop</option><option>Rock</option><option>Punk</option>
+                <option>Alternative</option><option>Alternative Rap</option><option>Indie</option><option>Metal</option>
+                <option>Gospel</option><option>Afrobeats</option><option>Electronic</option>
+                <option>House</option><option>EDM</option><option>Country</option><option>Reggaeton</option>
+                <option>Latin</option><option>Dancehall</option><option>Jazz</option>
+                <option>Lo-Fi</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mood</label>
+              <select class="form-select" id="art-mood">
+                <option>Dark & Moody</option><option>Aggressive</option><option>Cinematic</option>
+                <option>Energetic</option><option>Emotional</option><option>Uplifting</option>
+                <option>Dreamy</option><option>Nostalgic</option><option>Romantic</option>
+                <option>Mysterious</option><option>Raw & Gritty</option><option>Luxurious</option>
+                <option>Spiritual</option><option>Playful</option><option>Melancholic</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Describe Your Vision <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="art-prompt" placeholder="Tell the AI exactly what you want to see. Example: A dark hooded figure standing alone under a flickering streetlight in the rain. Blue and purple neon reflections on wet pavement. Cinematic, dramatic, no text."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Add Your Photo (optional)</label>
+            <div class="img-upload-row">
+              <div class="img-upload-btn" onclick="document.getElementById('art-img-upload').click()">
+                <i class="ti ti-photo-plus"></i> Add Image
+              </div>
+              <div id="art-img-thumbs" style="display:flex;gap:4px;"></div>
+              <span id="art-img-remove" onclick="event.stopPropagation();clearArtUpload('art-img-upload','art-img-thumbs','art-img-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
+              <div class="img-upload-hint">Upload a photo of yourself — AI will incorporate you into the cover art</div>
+              <input type="file" id="art-img-upload" accept="image/*" multiple style="display:none;" onchange="previewMulti(this,'art-img-thumbs','art-img-remove')"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inspiration Cover (optional)</label>
+            <div class="img-upload-row">
+              <div class="img-upload-btn" onclick="document.getElementById('art-insp-upload').click()">
+                <i class="ti ti-palette"></i> Add Reference
+              </div>
+              <div id="art-insp-thumbs" style="display:flex;gap:4px;"></div>
+              <span id="art-insp-remove" onclick="event.stopPropagation();clearArtUpload('art-insp-upload','art-insp-thumbs','art-insp-remove')" style="display:none;color:#ff9b9b;font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border:0.5px solid #ff6b6b55;border-radius:6px;">✕ Remove</span>
+              <div class="img-upload-hint">Upload up to 3 covers whose style/mood you love — the AI creates an ORIGINAL in that spirit (applies to Version A). Only upload art you have the right to reference.</div>
+              <input type="file" id="art-insp-upload" accept="image/*" multiple style="display:none;" onchange="previewMulti(this,'art-insp-thumbs','art-insp-remove')"/>
+            </div>
+          </div>
+          <button class="gen-btn" id="art-btn" onclick="generateArt()"><i class="ti ti-sparkles"></i> Generate — 2 Unique Versions</button>
+        </div>
+
+        <!-- RESULT PANEL -->
+        <div class="gen-panel">
+          <div class="gen-title">Your Results</div>
+          <div class="gen-sub">Two unique AI versions — pick your favorite then download</div>
+
+          <div class="result-placeholder" id="art-placeholder">
+            <i class="ti ti-photo"></i>
+            <p>Describe your vision and hit Generate.<br/>You'll get two unique versions to choose from.</p>
+          </div>
+
+          <div class="loading" id="art-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="art-loading-text">Generating two unique versions...</div>
+          </div>
+
+          <!-- DUAL RESULTS — no AI branding -->
+          <div class="dual-results" id="art-dual">
+            <div>
+              <div class="style-label">✦ VERSION A</div>
+              <img class="style-img" id="art-version-a" src="" alt="Version A" onclick="selectVersion('a')"/>
+              <button class="result-btn" style="width:100%;justify-content:center;margin-bottom:6px;" onclick="viewArtFull('a')"><i class="ti ti-zoom-in"></i> View Full Size</button>
+              <button class="style-btn" id="btn-version-a" onclick="selectVersion('a')"><i class="ti ti-check"></i> Select Version A</button>
+            </div>
+            <div>
+              <div class="style-label">✦ VERSION B</div>
+              <img class="style-img" id="art-version-b" src="" alt="Version B" onclick="selectVersion('b')"/>
+              <button class="result-btn" style="width:100%;justify-content:center;margin-bottom:6px;" onclick="viewArtFull('b')"><i class="ti ti-zoom-in"></i> View Full Size</button>
+              <button class="style-btn" id="btn-version-b" onclick="selectVersion('b')"><i class="ti ti-check"></i> Select Version B</button>
+            </div>
+          </div>
+
+          <!-- SINGLE RESULT fallback -->
+          <div class="single-result" id="art-single">
+            <img id="art-single-img" src="" alt="Generated" style="width:100%;border-radius:10px;"/>
+          </div>
+
+          <div class="error-msg" id="art-error"></div>
+
+          <div class="result-actions">
+            <button class="result-btn" onclick="generateArt()"><i class="ti ti-refresh"></i> Regenerate</button>
+            <button class="result-btn primary" onclick="downloadArt()"><i class="ti ti-download"></i> Download Selected</button>
+          </div>
+          <div id="art-next" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- EXAMPLES -->
+      <div class="examples-section">
+        <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE PROMPTS — Click any to use it</div>
+        <div class="examples-grid">
+          <div class="example-card" onclick="useExample('art','I need to create a cover art for a Latin song. It has to feel gritty and look like it will hit the Top 100 Latin charts, while keeping a gritty urban feel.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="" loading="lazy"/><div class="example-badge">Latin Gritty · Real Result</div></div>
+            <div class="example-body"><div class="example-prompt">"Cover art for a Latin song. Gritty, urban feel — has to look like it will hit the Top 100 Latin charts."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+          <div class="example-card" onclick="useExample('art','A sunny beach scene with girls in bikinis playing volleyball and laying out tanning, all different ethnicities. The title BEACHES in bold fluorescent colors to fit the image. Bright, fun, summer energy.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/beaches-cover-art.png.png" alt="" loading="lazy"/><div class="example-badge">Summer Pop · Real Result</div></div>
+            <div class="example-body"><div class="example-prompt">"Sunny beach, girls playing volleyball and tanning, all different ethnicities. Title BEACHES in bold fluorescent colors."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+          <div class="example-card" onclick="useExample('art','I need to create a cover art for a Latin song. It has to feel unique and luxurious, and look like it will hit the Top 100 Latin charts.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-luxury.png.png" alt="" loading="lazy"/><div class="example-badge">Latin Luxury · Real Result</div></div>
+            <div class="example-body"><div class="example-prompt">"Cover art for a Latin song. Unique, luxurious — has to look like it will hit the Top 100 Latin charts."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELEASE PLANNER TOOL -->
+    <div id="tool-plan" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🚀 Release Plan Generator</div>
+          <div class="gen-sub">Tell us about your project and we'll build a personalized 30-day release strategy.</div>
+          <div class="form-group">
+            <label class="form-label">Project Name <span style="color:var(--neon);">*</span></label>
+            <input class="form-input" id="plan-name" placeholder="e.g. Midnight Static EP"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Release Date <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-date" type="date"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <select class="form-select" id="plan-genre">
+                <option>Hip-Hop</option><option>Drill</option><option>Trap</option>
+                <option>R&B</option><option>R&B Soul</option><option>Neo Soul</option>
+                <option>Pop</option><option>Rock</option><option>Punk</option>
+                <option>Alternative</option><option>Alternative Rap</option><option>Indie</option><option>Metal</option>
+                <option>Gospel</option><option>Afrobeats</option><option>Electronic</option>
+                <option>House</option><option>EDM</option><option>Country</option><option>Reggaeton</option>
+                <option>Latin</option><option>Dancehall</option><option>Jazz</option>
+                <option>Lo-Fi</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Career Stage</label>
+              <select class="form-select" id="plan-stage">
+                <option>Just Starting Out</option><option>Emerging Artist</option>
+                <option>Independent Artist</option><option>Established Artist</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your City <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-city" placeholder="e.g. Atlanta, GA"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Artist Name (As on DSP's) <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-artist" placeholder="Exactly as spelled on Spotify/Apple"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Social Handle <span style="color:var(--neon);">*</span></label>
+              <input class="form-input" id="plan-handle" placeholder="@yourname (IG/TikTok)"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Promo Budget</label>
+            <input class="form-input" id="plan-budget" placeholder="e.g. $200"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tell us about your project <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="plan-details" placeholder="Describe your project. Example: I am dropping a 6-track EP. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP. My budget is around $200."></textarea>
+          </div>
+          <button class="gen-btn" id="plan-btn" onclick="generatePlan()"><i class="ti ti-sparkles"></i> Generate My Release Plan</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your 30-Day Plan</div>
+          <div class="gen-sub">Your personalized release strategy will appear here</div>
+          <div class="result-placeholder" id="plan-placeholder">
+            <i class="ti ti-calendar"></i>
+            <p>Fill in your project details and hit Generate — your custom release plan will be ready in seconds.</p>
+          </div>
+          <div class="loading" id="plan-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Building your release plan...</div>
+          </div>
+          <div class="plan-timeline" id="plan-result"></div>
+          <div class="error-msg" id="plan-error"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generatePlan()"><i class="ti ti-refresh"></i> Regenerate</button>
+            <button class="result-btn primary" onclick="downloadPlanPDF()"><i class="ti ti-download"></i> Download PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="examples-section">
+        <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE DESCRIPTIONS — Click any to use it</div>
+        <div class="examples-grid">
+          <div class="example-card" onclick="useExample('plan','I need a release plan for my 6-track Hip-Hop EP dropping next month. I have about 2,000 followers on Instagram and 500 on TikTok. I want to drop a single 2 weeks before the EP to build hype. My promo budget is around $200.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="" loading="lazy"/><div class="example-badge">Hip-Hop EP</div></div>
+            <div class="example-body"><div class="example-prompt">"I need a release plan for my 6-track EP. 2K on IG, 500 on TikTok. Single drops 2 weeks early. $200 budget."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+          <div class="example-card" onclick="useExample('plan','This is my first single ever — R&B Soul. I am brand new with less than 500 followers and no budget, but I can post every day on TikTok and Instagram. Help me build a real fanbase from nothing.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/post-schedule-builder.png.png" alt="" loading="lazy"/><div class="example-badge">R&B · New Artist</div></div>
+            <div class="example-body"><div class="example-prompt">"My first single ever. Brand new artist, under 500 followers, no budget — but I can post every day."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+          <div class="example-card" onclick="useExample('plan','Voy a lanzar mi nuevo sencillo de música Latina el próximo mes. Tengo 3,000 seguidores en Instagram y 1,500 en TikTok. Quiero entrar en las playlists de música Latina y crecer mi fanbase en Estados Unidos y Latinoamérica. Mi presupuesto es de $300.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/pre-save-campaign.png.png" alt="" loading="lazy"/><div class="example-badge">Latin · En Español</div></div>
+            <div class="example-body"><div class="example-prompt">"Voy a lanzar mi sencillo Latino. 3K en Instagram, 1.5K en TikTok. Quiero entrar en playlists Latinas. $300."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MERCH MOCKUP TOOL -->
+    <div id="tool-merch" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">👕 Merch Mockup Studio</div>
+          <div class="gen-sub">Upload your design, describe what you want, and get a real AI generated mockup instantly.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Design or Cover Art <span style="color:var(--neon);">*</span></label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;transition:border-color 0.15s;" onclick="document.getElementById('merch-upload').click()" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='var(--border)'">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="merch-upload-label" style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload your art</div>
+              <div style="color:var(--muted);font-size:10px;">PNG or JPG · Max 10MB · Best results with square images</div>
+              <input type="file" id="merch-upload" accept="image/*" style="display:none;" onchange="previewMerch(this)"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Product Type</label>
+              <select class="form-select" id="merch-type">
+                <option>T-Shirt</option><option>Hoodie</option><option>Hat / Cap</option>
+                <option>Phone Case</option><option>Poster</option><option>Tote Bag</option>
+                <option>Sweatpants</option><option>Jacket</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Color</label>
+              <select class="form-select" id="merch-color">
+                <option>Black</option><option>White</option><option>Navy</option>
+                <option>Grey</option><option>Red</option><option>Forest Green</option>
+                <option>Burgundy</option><option>Vintage Wash</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Describe Your Merch Vision <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="merch-prompt" placeholder="Tell us what you want. Example: I want my cover art centered on the front chest area of a black oversized hoodie. Clean and minimal, like something you would see at a major label merch table at a concert."></textarea>
+          </div>
+          <button class="gen-btn" id="merch-btn" onclick="generateMerch()"><i class="ti ti-sparkles"></i> Generate Mockup</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Mockup</div>
+          <div class="gen-sub">Your AI-generated merch mockup will appear here</div>
+          <div class="result-placeholder" id="merch-placeholder">
+            <i class="ti ti-shirt"></i>
+            <p>Upload your art and describe your vision — your real mockup will be generated instantly.</p>
+          </div>
+          <div class="loading" id="merch-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Generating your mockup...</div>
+          </div>
+          <div class="merch-result" id="merch-result">
+            <img id="merch-result-img" src="" alt="Merch mockup"/>
+            <div class="merch-cost">
+              <div class="merch-cost-title">COST BREAKDOWN</div>
+              <div class="merch-cost-row"><span>Print on Demand (Printful)</span><span id="merch-pod">$18-22</span></div>
+              <div class="merch-cost-row"><span>Bulk Order (50 units)</span><span id="merch-bulk">$8-12 each</span></div>
+              <div class="merch-cost-row hl"><span>Suggested Retail Price</span><span id="merch-retail">$35-45</span></div>
+            </div>
+          </div>
+          <div class="error-msg" id="merch-error"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generateMerch()"><i class="ti ti-refresh"></i> Try Another</button>
+            <button class="result-btn primary" onclick="downloadMerch()"><i class="ti ti-download"></i> Download</button>
+          </div>
+        </div>
+      </div>
+      <div class="examples-section">
+        <div class="examples-label"><i class="ti ti-bulb"></i> EXAMPLE DESCRIPTIONS — Click any to use it</div>
+        <div class="examples-grid">
+          <div class="example-card" onclick="useExample('merch','I need my cover art centered on the front chest of a black oversized hoodie. Clean and minimal — like official merch at a sold-out show.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/hoodie-mockup.png.png" alt="" loading="lazy"/><div class="example-badge">Hoodie · Clean</div></div>
+            <div class="example-body"><div class="example-prompt">"My cover art on the front chest of a black oversized hoodie. Clean, minimal, official merch feel."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+          <div class="example-card" onclick="useExample('merch','I need my logo printed big across the back of a white vintage wash tee, with my artist name in small text on the left chest. High-end streetwear feel.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="" loading="lazy"/><div class="example-badge">T-Shirt · Streetwear</div></div>
+            <div class="example-body"><div class="example-prompt">"Logo big across the back of a vintage wash tee, artist name small on the left chest. Streetwear."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+          <div class="example-card" onclick="useExample('merch','I need an 18x24 inch poster of my album cover art. Gallery quality, suitable for framing — something fans would actually hang on their wall.')">
+            <div class="example-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ep-album-art.png.png" alt="" loading="lazy"/><div class="example-badge">Poster · Gallery</div></div>
+            <div class="example-body"><div class="example-prompt">"18x24 poster of my album cover. Gallery quality — something fans would actually frame."</div><div class="example-use"><i class="ti ti-arrow-right"></i> Use this prompt</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COVER RESIZER -->
+    <div id="tool-resize" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">📐 Cover Art Resizer</div>
+          <div class="gen-sub">Got artwork from somewhere else? Resize it to the official 3000×3000 JPEG that Spotify, Apple Music, and every distributor require.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Artwork</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('resize-upload').click()">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="resize-label" style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload (PNG or JPG)</div>
+              <div style="color:var(--muted);font-size:10px;">Non-square images get centered and cropped automatically</div>
+              <input type="file" id="resize-upload" accept="image/*" style="display:none;" onchange="loadResizeImg(this)"/>
+            </div>
+          </div>
+          <div id="resize-info" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
+          <button class="gen-btn" id="resize-btn" onclick="downloadResized()" disabled><i class="ti ti-download"></i> Download 3000×3000 JPEG</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Preview</div>
+          <div class="gen-sub">Exactly how your cover will be cropped</div>
+          <div class="result-placeholder" id="resize-placeholder">
+            <i class="ti ti-crop"></i>
+            <p>Upload artwork to see the DSP-ready preview.</p>
+          </div>
+          <div class="single-result" id="resize-result">
+            <canvas id="resize-canvas" width="600" height="600" style="width:100%;border-radius:10px;display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO CONVERTER -->
+    <div id="tool-audio" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🎧 MP3 → WAV Converter</div>
+          <div class="gen-sub">Distributors want WAV. Convert your MP3 (or M4A) to studio-standard 16-bit / 44.1kHz WAV — right here, nothing gets uploaded to any server.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Audio</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('audio-upload').click()">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="audio-label" style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload (MP3, M4A, AAC...)</div>
+              <div style="color:var(--muted);font-size:10px;">Converted on your device — private and instant</div>
+              <input type="file" id="audio-upload" accept="audio/*" style="display:none;" onchange="convertAudio(this)"/>
+            </div>
+          </div>
+          <div id="audio-status" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
+          <button class="gen-btn" id="audio-btn" onclick="downloadWav()" disabled><i class="ti ti-download"></i> Download WAV</button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Heads up: converting MP3 to WAV meets distributor format requirements, but it can't restore quality lost in the original MP3. For best results, always export WAV directly from your recording session when you can.</div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Why WAV?</div>
+          <div class="gen-sub">The 10-second version</div>
+          <div class="plan-item"><div class="plan-date">DISTRIBUTORS REQUIRE IT</div><div class="plan-detail">Most distributors only accept WAV (16-bit or 24-bit, 44.1kHz). MP3 uploads get rejected or re-encoded badly.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">WHAT THIS TOOL OUTPUTS</div><div class="plan-detail">Standard 16-bit / 44.1kHz stereo WAV — the exact format DSPs expect for distribution.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">PRO TIP</div><div class="plan-detail">Distributing through Stop One? Pair this with the Distribution page and your release is format-ready on the first try.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO TRIMMER -->
+    <div id="tool-trim" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">✂️ Audio Trimmer</div>
+          <div class="gen-sub">Cut the perfect preview clip — for TikTok sounds, Spotify Canvas timing, snippet teasers, or beat previews. Runs on your device.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Your Audio</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('trim-upload').click()">
+              <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
+              <div id="trim-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload (MP3, WAV, M4A...)</div>
+              <input type="file" id="trim-upload" accept="audio/*" style="display:none;" onchange="loadTrimAudio(this)"/>
+            </div>
+          </div>
+          <div id="trim-info" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start (seconds)</label>
+              <input class="form-input" id="trim-start" type="number" min="0" step="0.1" value="0"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">End (seconds)</label>
+              <input class="form-input" id="trim-end" type="number" min="0" step="0.1" value="15"/>
+            </div>
+          </div>
+          <div class="result-actions" style="margin-bottom:10px;">
+            <button class="result-btn" onclick="previewTrim()"><i class="ti ti-player-play"></i> Preview Clip</button>
+            <button class="result-btn" onclick="stopTrim()"><i class="ti ti-player-stop"></i> Stop</button>
+          </div>
+          <button class="gen-btn" id="trim-btn" onclick="downloadTrim()" disabled><i class="ti ti-download"></i> Download Clip (WAV)</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Clip Cheat Sheet</div>
+          <div class="gen-sub">The lengths that matter</div>
+          <div class="plan-item"><div class="plan-date">TIKTOK SOUND</div><div class="plan-detail">15–30 seconds — start at your hook, not your intro. The first second decides everything.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">IG REELS / YT SHORTS</div><div class="plan-detail">15–60 seconds. Same rule: hook first.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">SNIPPET TEASER</div><div class="plan-detail">8–15 seconds of your most quotable bar — leave them wanting the full track.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METADATA FORMATTER -->
+    <div id="tool-meta" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">📋 Metadata & Credits Formatter</div>
+          <div class="gen-sub">Distributors reject uploads over bad metadata every day. Fill this once, paste it anywhere, upload clean the first time.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Artist Name (as on DSP's) <span style="color:var(--neon);">*</span></label><input class="form-input" id="md-artist" placeholder="Exact DSP spelling"/></div>
+            <div class="form-group"><label class="form-label">Track Title <span style="color:var(--neon);">*</span></label><input class="form-input" id="md-title" placeholder="No 'feat.' here — see tip"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Featured Artists</label><input class="form-input" id="md-feat" placeholder="Leave empty if none"/></div>
+            <div class="form-group"><label class="form-label">Version / Mix</label><input class="form-input" id="md-version" placeholder="e.g. Remix, Sped Up, Acoustic"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Primary Genre</label><input class="form-input" id="md-genre" placeholder="e.g. Latin, Hip-Hop"/></div>
+            <div class="form-group"><label class="form-label">Language of Lyrics</label><input class="form-input" id="md-lang" placeholder="e.g. English, Spanish"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Explicit?</label><select class="form-select" id="md-explicit"><option>Clean</option><option>Explicit</option></select></div>
+            <div class="form-group"><label class="form-label">Release Date</label><input class="form-input" id="md-date" type="date"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Songwriters — FULL LEGAL NAMES, one per line <span style="color:var(--neon);">*</span></label><textarea class="form-textarea" id="md-writers" style="min-height:60px;" placeholder="John Michael Smith&#10;Maria Elena Garcia"></textarea></div>
+          <div class="form-group"><label class="form-label">Producers — one per line</label><textarea class="form-textarea" id="md-producers" style="min-height:50px;" placeholder="Producer name(s)"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">ISRC (if you have one)</label><input class="form-input" id="md-isrc" placeholder="e.g. USRC12345678"/></div>
+            <div class="form-group"><label class="form-label">℗ / © Owner + Year</label><input class="form-input" id="md-copyright" placeholder="e.g. 2026 Stop One Distribution"/></div>
+          </div>
+          <button class="gen-btn" onclick="buildMetadata()"><i class="ti ti-sparkles"></i> Format My Metadata</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Formatted Metadata</div>
+          <div class="gen-sub">Copy-paste ready for any distributor</div>
+          <div class="result-placeholder" id="md-placeholder"><i class="ti ti-list-details"></i><p>Fill the form and hit Format — clean metadata plus warnings for anything distributors would reject.</p></div>
+          <div id="md-warnings" style="display:none;margin-bottom:10px;"></div>
+          <textarea class="form-textarea" id="md-output" style="display:none;min-height:260px;font-size:11px;" readonly></textarea>
+          <div class="result-actions"><button class="result-btn primary" onclick="copyMetadata()"><i class="ti ti-copy"></i> Copy All</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPLIT SHEET -->
+    <div id="tool-split" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🤝 Split Sheet Generator</div>
+          <div class="gen-sub">Agree on the splits BEFORE the song blows up. Print it, everybody signs, no fights later.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Song Title <span style="color:var(--neon);">*</span></label><input class="form-input" id="sp-title" placeholder="Song name"/></div>
+            <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="sp-date" type="date"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Contributors</label><div id="sp-rows"></div>
+            <button class="result-btn" style="margin-top:8px;" onclick="addSplitRow()"><i class="ti ti-plus"></i> Add Contributor</button>
+          </div>
+          <div id="sp-total" style="font-size:12px;font-weight:700;margin-bottom:12px;color:var(--muted);">Total: 0%</div>
+          <button class="gen-btn" onclick="printSplitSheet()"><i class="ti ti-printer"></i> Generate & Print Split Sheet</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Why This Matters</div>
+          <div class="gen-sub">The 30-second education</div>
+          <div class="plan-item"><div class="plan-date">THE RULE</div><div class="plan-detail">Songwriting splits must total exactly 100%. Decide them the day the song is made — memories change when money shows up.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">USE LEGAL NAMES</div><div class="plan-detail">PROs (BMI/ASCAP) and publishers pay real people — stage names on paperwork cause payment holds.</div></div>
+          <div class="plan-item" style="margin-top:8px;"><div class="plan-date">EVERYBODY SIGNS</div><div class="plan-detail">Print it, sign it, everyone keeps a photo of it. That's your receipt forever.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELEASE CHECKLIST -->
+    <div id="tool-check" class="hidden">
+      <div class="gen-panel" style="margin-bottom:16px;">
+        <div class="gen-title">✅ Release Checklist</div>
+        <div class="gen-sub">Every box an independent artist needs to tick, from 4 weeks out to release week. Check them off here or print it for the studio wall.</div>
+        <div id="check-list"></div>
+        <button class="gen-btn" style="margin-top:14px;" onclick="printChecklist()"><i class="ti ti-printer"></i> Print Checklist</button>
+      </div>
+    </div>
+
+    <!-- EARNINGS FORECAST -->
+    <div id="tool-forecast" class="hidden">
+      <div class="generator" style="align-items:start;">
+        <div class="gen-panel">
+          <div class="gen-title">📈 Earnings Forecast</div>
+          <div class="gen-sub">Drop your royalty report (any distributor's CSV) — see where your income is heading over 1, 3, and 5 years, and what moves change the curve.</div>
+          <div class="form-group">
+            <label class="form-label">Upload Royalty Report (CSV)</label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('fc-upload').click()">
+              <i class="ti ti-upload" style="font-size:26px;color:var(--neon);display:block;margin-bottom:5px;"></i>
+              <div id="fc-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload your earnings CSV</div>
+              <div style="color:var(--muted);font-size:10px;">Stop One, DistroKid, TuneCore, CD Baby — any report with dates and amounts</div>
+              <input type="file" id="fc-upload" accept=".csv,text/csv" style="display:none;" onchange="fcParseCsv(this)"/>
+            </div>
+          </div>
+          <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
+          <div class="form-group">
+            <label class="form-label">Or type it in — oldest month first</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
+              <div style="color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.05em;">MONTH</div>
+              <div style="color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.05em;">WHAT YOU EARNED</div>
+            </div>
+            <div id="fc-rows"></div>
+            <button class="result-btn" style="margin-top:8px;" onclick="fcAddRow()"><i class="ti ti-plus"></i> Add Month</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <input class="form-input" id="fc-genre" placeholder="e.g. Latin, Hip-Hop"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Releases planned per year</label>
+              <input class="form-input" id="fc-releases" type="number" min="0" placeholder="e.g. 6"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City / Region</label>
+            <input class="form-input" id="fc-city" placeholder="e.g. Atlanta — powers local artist benchmarks"/>
+          </div>
+          <button class="gen-btn" id="fc-btn" onclick="runForecast()"><i class="ti ti-chart-line"></i> Forecast My Earnings</button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Estimates based on your historical data and standard industry patterns — scenarios, not guarantees. Streaming income varies; this is not financial advice.</div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Projection</div>
+          <div class="gen-sub">Three curves: where you're headed, and what changes it</div>
+          <div class="result-placeholder" id="fc-placeholder"><i class="ti ti-chart-line"></i><p>Upload your royalty report and hit Forecast — projections and your analyst report appear here.</p></div>
+          <div class="loading" id="fc-loading"><div class="loading-spinner"></div><div class="loading-text">Reading your numbers...</div></div>
+          <div class="error-msg" id="fc-error"></div>
+          <div id="fc-result" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI LYRIC WRITER -->
+    <div id="tool-writer" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">✍️ AI Lyric Writer</div>
+          <div class="gen-sub">Tell us what the song is about — get lyrics that actually sound like your genre. Then send them straight to the Lyric Video maker.</div>
+          <div class="form-group">
+            <label class="form-label">What's the song about? <span style="color:var(--neon);">*</span></label>
+            <textarea class="form-textarea" id="lw-topic" style="min-height:80px;" placeholder="Example: Coming from nothing and finally seeing money, but the people around me changed. I want it to feel triumphant but a little cold."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <input class="form-input" id="lw-genre" placeholder="e.g. Drill, R&B, Reggaeton"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mood</label>
+              <input class="form-input" id="lw-mood" placeholder="e.g. triumphant, heartbreak, party"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Language</label>
+              <select class="form-select" id="lw-lang"><option>English</option><option>Spanish</option><option>Spanglish</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">How much do you need?</label>
+              <select class="form-select" id="lw-structure">
+                <option value="full">Full Song</option>
+                <option value="verse-hook">Verse + Hook</option>
+                <option value="hook">Just the Hook</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Extra direction (optional)</label>
+            <input class="form-input" id="lw-style" placeholder="e.g. heavy wordplay, melodic flow, short punchy lines"/>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;">
+              <input type="checkbox" id="lw-explicit" style="accent-color:var(--neon);width:14px;height:14px;cursor:pointer;"/>
+              Explicit allowed
+            </label>
+          </div>
+          <button class="gen-btn" id="lw-btn" onclick="generateLyrics()"><i class="ti ti-sparkles"></i> Write My Lyrics</button>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Lyrics</div>
+          <div class="gen-sub">Edit them right here — make them yours before you record</div>
+          <div class="result-placeholder" id="lw-placeholder">
+            <i class="ti ti-pencil"></i>
+            <p>Describe your song and hit Write — structured lyrics with verses and hooks appear here.</p>
+          </div>
+          <div class="loading" id="lw-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Writing your song...</div>
+          </div>
+          <textarea class="form-textarea" id="lw-output" style="display:none;min-height:320px;font-size:12px;line-height:1.7;"></textarea>
+          <div class="error-msg" id="lw-error"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="generateLyrics()"><i class="ti ti-refresh"></i> Rewrite</button>
+            <button class="result-btn" onclick="copyLyrics()"><i class="ti ti-copy"></i> Copy</button>
+            <button class="result-btn primary" onclick="sendToVideo()"><i class="ti ti-video"></i> Make the Video</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LYRIC VIDEO CREATOR -->
+    <div id="tool-lyric" class="hidden">
+      <div class="generator">
+        <div class="gen-panel">
+          <div class="gen-title">🎬 Lyric Video Creator <span style="color:var(--neon);font-size:10px;font-weight:800;">BETA</span></div>
+          <div class="gen-sub">Drop your song, hit Auto-Lyrics, add your cover — that's the whole job. Vertical video ready for TikTok, Reels, and Shorts.</div>
+          <div class="form-group">
+            <label class="form-label">1. Upload Your Song <span style="color:var(--neon);">*</span></label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('lv-audio').click()">
+              <div id="lv-audio-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload audio (MP3, WAV...)</div>
+              <input type="file" id="lv-audio" accept="audio/*" style="display:none;" onchange="lvLoadAudio(this)"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="result-btn primary" style="width:100%;padding:11px;" onclick="lvAutoLyrics()"><i class="ti ti-wand"></i> ✨ Auto-Lyrics — AI pulls lyrics + timing from your song</button>
+            <div id="lv-auto-status" style="color:var(--muted);font-size:11px;margin-top:6px;"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">2. Background Image <span style="color:var(--neon);">*</span></label>
+            <div style="border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('lv-bg').click()">
+              <div id="lv-bg-label" style="color:#fff;font-size:12px;font-weight:600;">Upload your cover art</div>
+              <input type="file" id="lv-bg" accept="image/*" style="display:none;" onchange="lvLoadBg(this)"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">3. Your Lyrics <span style="color:var(--neon);">*</span> <span style="color:#5a5a72;font-weight:600;">— fills itself, you just review</span></label>
+            <textarea class="form-textarea" id="lv-lyrics" style="min-height:120px;" placeholder="These fill in automatically:&#10;✨ Auto-Lyrics pulls them from your song, or&#10;✍️ the AI Lyric Writer sends them here.&#10;(You can also paste your own — one line per line.)"></textarea>
+            <div style="color:var(--muted);font-size:11px;margin-top:6px;">No lyrics yet? <a onclick="switchTool('writer',null)" style="color:var(--neon);font-weight:700;cursor:pointer;">Let the AI write them →</a></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Background Style</label>
+              <select class="form-select" id="lv-bg-style" onchange="lvRefresh()">
+                <option value="fullbleed">Full Cover</option>
+                <option value="card">Floating Card (centered)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Background Motion</label>
+              <select class="form-select" id="lv-bg-motion" onchange="lvRefresh()">
+                <option value="pan">Smooth Pan (L↔R)</option>
+                <option value="zoomin">Slow Zoom In</option>
+                <option value="zoomout">Slow Zoom Out</option>
+                <option value="pulse">Gentle Pulse</option>
+                <option value="still">Still</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Motion Speed — <span id="lv-speed-val" style="color:var(--neon);">0.6x</span></label>
+            <input type="range" id="lv-speed" min="0.2" max="2" step="0.1" value="0.6" style="width:100%;accent-color:var(--neon);" oninput="document.getElementById('lv-speed-val').textContent=this.value+'x';lvRefresh();"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Font</label>
+              <select class="form-select" id="lv-font" onchange="lvRefresh()">
+                <option value="sora">Sora — Clean Bold</option>
+                <option value="anton">Anton — Big Impact</option>
+                <option value="bebas">Bebas Neue — Tall Poster</option>
+                <option value="archivo">Archivo Black — Heavy</option>
+                <option value="marker">Permanent Marker — Handwritten</option>
+                <option value="bangers">Bangers — Comic Energy</option>
+                <option value="oswald">Oswald — Editorial</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Text Color</label>
+              <select class="form-select" id="lv-color" onchange="lvRefresh()">
+                <option value="#FFFFFF">White</option>
+                <option value="#000000">Black</option>
+                <option value="#FF3131">Red</option>
+                <option value="#2E86FF">Blue</option>
+                <option value="#22C55E">Green</option>
+                <option value="#FFE135">Yellow</option>
+                <option value="#FF6B35">Orange</option>
+                <option value="#B026FF">Purple</option>
+                <option value="#FF2D95">Pink</option>
+                <option value="#FFD700">Gold</option>
+                <option value="#C0C0C0">Silver</option>
+                <option value="#9CA3AF">Gray</option>
+                <option value="#00FFD1">Neon Teal</option>
+                <option value="#7DF9FF">Ice Blue</option>
+                <option value="#9DFF00">Lime</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Text Entrance</label>
+              <select class="form-select" id="lv-motion" onchange="lvRefresh()">
+                <option value="fade">Smooth Fade</option>
+                <option value="pop">Pop In</option>
+                <option value="slide">Slide Up</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lyric Pacing</label>
+              <select class="form-select" id="lv-pacing" onchange="lvRepace()">
+                <option value="fast">Fast — exactly as sung</option>
+                <option value="balanced" selected>Balanced</option>
+                <option value="relaxed">Relaxed — longer lines</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title (shown at bottom)</label>
+            <input class="form-input" id="lv-title" placeholder="Song — Artist" onchange="lvRefresh()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">4. Manual Sync <span style="color:#5a5a72;font-weight:600;">— SKIP if you used Auto-Lyrics (already timed)</span></label>
+            <div style="color:var(--muted);font-size:11px;line-height:1.6;margin-bottom:8px;">Only for pasted lyrics: hit <strong style="color:#fff;">Start Sync</strong>, tap (or spacebar) as each line should appear. Skip entirely and lines spread evenly.</div>
+            <div class="result-actions">
+              <button class="result-btn" id="lv-sync-btn" onclick="lvStartSync()"><i class="ti ti-metronome"></i> Start Sync</button>
+              <button class="result-btn" onclick="lvStopSync()"><i class="ti ti-player-stop"></i> Stop</button>
+            </div>
+            <button class="gen-btn" id="lv-tap" onclick="lvTap()" style="display:none;margin-top:10px;font-size:16px;padding:18px;">TAP — next line</button>
+            <div id="lv-sync-status" style="color:var(--muted);font-size:11px;margin-top:8px;"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Video Length</label>
+              <select class="form-select" id="lv-length">
+                <option value="full">Full Song</option>
+                <option value="30">30s Clip (Reels/Shorts)</option>
+                <option value="15">15s Hook (TikTok)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Start at (seconds)</label>
+              <input class="form-input" id="lv-start" type="number" min="0" step="1" value="0" placeholder="0 = from the top"/>
+            </div>
+          </div>
+          <div class="result-actions" style="margin-bottom:10px;">
+            <button class="result-btn" onclick="lvPreview()"><i class="ti ti-player-play"></i> Preview</button>
+            <button class="result-btn" onclick="lvStopPreview()"><i class="ti ti-player-stop"></i> Stop</button>
+          </div>
+          <button class="gen-btn" id="lv-export" onclick="lvExport()"><i class="ti ti-download"></i> Export Video</button>
+          <div id="lv-export-status" style="color:var(--muted);font-size:11px;margin-top:8px;"></div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Preview — 9:16 Vertical</div>
+          <div class="gen-sub">This exact video exports for TikTok / Reels / Shorts</div>
+          <div style="display:flex;justify-content:center;">
+            <canvas id="lv-canvas" width="540" height="960" style="width:100%;max-width:300px;border-radius:12px;background:#0f0f1a;display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY ASSETS -->
+    <div id="tool-assets" class="hidden">
+      <div class="gen-panel" style="margin-bottom:16px;">
+        <div class="gen-title">📁 My Assets</div>
+        <div class="gen-sub">Everything you've generated, saved automatically to your account.</div>
+        <div class="recent-grid" id="assets-grid" style="grid-template-columns:repeat(4,1fr);">
+          <p style="color:var(--muted);font-size:12px;">Loading your assets...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tool-settings" class="hidden">
+      <div class="gen-panel" style="max-width:520px;margin-bottom:16px;">
+        <div class="gen-title">⚙️ Account Settings</div>
+        <div class="gen-sub">Manage your StudioSound.ai account.</div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="settings-email" disabled value=""/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Plan</label>
+          <input class="form-input" id="settings-plan" disabled value="Free"/>
+        </div>
+        <div class="result-actions" style="margin-top:4px;">
+          <button class="result-btn" onclick="sendPasswordChange()"><i class="ti ti-lock"></i> Change Password</button>
+          <button class="result-btn primary" onclick="managePlan()"><i class="ti ti-crown"></i> Manage Plan</button>
+        </div>
+        <div style="color:var(--muted);font-size:11px;margin-top:10px;" id="settings-msg"></div>
+      </div>
+    </div>
+
+    <!-- RECENT GENERATIONS -->
+    <div class="section-label">RECENT GENERATIONS</div>
+    <div class="recent-grid" id="recent-grid">
+      <div class="recent-item">
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="" loading="lazy"/></div>
+        <div class="recent-info"><div class="recent-name">Your generations</div><div class="recent-meta">will appear here</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="" loading="lazy"/></div>
+        <div class="recent-info"><div class="recent-name">Release Plans</div><div class="recent-meta">saved automatically</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="" loading="lazy"/></div>
+        <div class="recent-info"><div class="recent-name">Merch Mockups</div><div class="recent-meta">saved automatically</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram-cover-art.png.png" alt="" loading="lazy"/></div>
+        <div class="recent-info"><div class="recent-name">Cover Art</div><div class="recent-meta">ready to download</div></div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-thumb"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png" alt="" loading="lazy"/></div>
+        <div class="recent-info"><div class="recent-name">Start creating</div><div class="recent-meta">to fill this row</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ====== AUTH GUARD ======
+const sbAuth = supabase.createClient(
+  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+);
+
+let currentUser = null;
+let currentPlan = 'free';
+
+sbAuth.auth.getSession().then(async ({ data }) => {
+  if (!data.session) {
+    window.location.href = 'signin.html';
+    return;
+  }
+  currentUser = data.session.user;
+  const meta = currentUser.user_metadata || {};
+  const first = meta.first_name || 'Artist';
+  document.getElementById('user-name').textContent = first + (meta.last_name ? ' ' + meta.last_name.charAt(0) + '.' : '');
+  document.getElementById('welcome-title').innerHTML = 'Welcome back, <span>' + first + '</span> 👋';
+
+  // show real plan in sidebar
+  try {
+    const { data: prof } = await sbAuth.from('profiles').select('plan').single();
+    if (prof && prof.plan) {
+      currentPlan = prof.plan;
+      document.querySelector('.user-plan').textContent = prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' Plan';
+      if (prof.plan !== 'free') {
+        const tb = document.getElementById('topbar-upgrade');
+        tb.innerHTML = '<i class="ti ti-crown"></i> ' + prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' Member';
+        tb.onclick = openBillingPortal;
+        document.querySelector('.usage-text').textContent = prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' plan — limits raised';
+      }
     }
-  );
-  const data = await response.json();
-  if (data.candidates?.[0]?.content?.parts) {
-    const imgPart = data.candidates[0].content.parts.find(p => p.inlineData);
-    if (imgPart) return imgPart.inlineData.data;
+  } catch(e) {}
+
+  // load saved generations into Recent row
+  initRecent();
+  applyDeepLink();
+
+  // Came back from checkout? Poll for the plan flip (webhook can lag a few seconds)
+  if (new URLSearchParams(location.search).get('upgraded') === '1') {
+    let tries = 0;
+    const poll = setInterval(async () => {
+      tries++;
+      try {
+        const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
+        if (prof && prof.plan && prof.plan !== 'free') {
+          currentPlan = prof.plan;
+          clearInterval(poll);
+        }
+      } catch(e) {}
+      if (tries > 10) clearInterval(poll);
+    }, 2000);
   }
-  throw new Error(data.error?.message || 'No image returned');
+
+  // First mobile visit this session: pop the menu out so people know it's there
+  if (window.innerWidth <= 768 && !sessionStorage.getItem('sbSeen')) {
+    setTimeout(() => { toggleSidebar(); sessionStorage.setItem('sbSeen', '1'); }, 700);
+    setTimeout(() => { closeSidebar(); }, 3200);
+  }
+
+  // Celebrate a successful upgrade
+  if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
+    document.querySelector('.welcome-sub').innerHTML = '🎉 <strong style="color:var(--neon);">Upgrade successful!</strong> Your new limits are live — go create.';
+    window.history.replaceState({}, '', 'app.html');
+  }
+});
+
+// ===== ASSET PERSISTENCE =====
+const TOOL_THUMBS = {
+  'Cover Art': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png',
+  'Release Plan': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
+  'Forecast': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
+  'Lyrics': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
+  'Lyric Video': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
+  'Merch Mockup': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png'
+};
+function toolThumb(tool) {
+  return TOOL_THUMBS[tool] || 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png';
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+async function saveAsset(tool, name, dataUrl, extraData) {
+  try {
+    if (!currentUser) return;
+    let publicUrl = null;
+    if (dataUrl) {
+      const blob = await (await fetch(dataUrl)).blob();
+      const path = currentUser.id + '/' + Date.now() + '.png';
+      const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'image/png' });
+      if (!upErr) {
+        publicUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+      } else { console.error('upload error', upErr); }
+    }
+    const { error: insErr } = await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl, data: extraData || null });
+    if (insErr) {
+      console.error('asset insert failed, retrying without data column:', insErr);
+      const { error: retryErr } = await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl });
+      if (retryErr) console.error('asset insert retry also failed:', retryErr);
+    }
+  } catch(e) { console.error('saveAsset', e); }
+}
+
+async function loadAssets() {
+  try {
+    const { data, error } = await sbAuth.from('assets').select('*').order('created_at', { ascending: false }).limit(60);
+    if (error) { console.error('loadAssets:', error); return { error: true, items: [] }; }
+    return { error: false, items: data || [] };
+  } catch(e) { console.error('loadAssets:', e); return { error: true, items: [] }; }
+}
+
+// Deep links: studiosound.ai/app#resize opens the Cover Resizer directly, etc.
+function applyDeepLink() {
+  const map = {
+    '#art':'art', '#cover':'art', '#plan':'plan', '#merch':'merch',
+    '#writer':'writer', '#lyrics':'writer', '#lyric':'lyric', '#video':'lyric',
+    '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split'
+  };
+  const tool = map[(location.hash || '').toLowerCase()];
+  if (!tool) return;
+  switchTool(tool, null);
+  // highlight the matching sidebar button
+  document.querySelectorAll('.sidebar-item').forEach(b => {
+    if ((b.getAttribute('onclick') || '').includes("'" + tool + "'")) {
+      document.querySelectorAll('.sidebar-item').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    }
+  });
+}
+
+function showFirstWin() {
+  const grid = document.getElementById('recent-grid');
+  if (!grid) return;
+  grid.style.display = 'block';
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;background:linear-gradient(135deg,#00FFD10f,#0b0b14);border:1px solid var(--neon);border-radius:14px;padding:22px;">
+      <div style="color:var(--neon);font-size:11px;font-weight:800;letter-spacing:0.08em;margin-bottom:6px;">START HERE — YOUR FIRST WIN TAKES ABOUT 60 SECONDS</div>
+      <div style="color:#e8e8f5;font-size:13px;margin-bottom:14px;">Pick one. We'll walk you through it.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('art',null);setToolActive(document.querySelector('.tool-card:nth-child(2)'))">🎨 Make my cover art</button>
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('lyric',null)">🎬 Turn my song into a lyric video</button>
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('forecast',null);setToolActive(document.querySelector('.tool-card:nth-child(1)'))">📈 See what my music could earn</button>
+      </div>
+    </div>`;
+}
+
+async function initRecent() {
+  const result = await loadAssets();
+  const items = result.items || [];
+  if (!items.length) { showFirstWin(); return; }
+  recentItems = items.slice(0, 5).map(a => ({ icon: null, name: a.name || a.tool, type: a.tool, imageUrl: a.url, data: a.data || null }));
+  renderRecent();
+}
+
+let assetsCache = [];
+
+async function showAssetsPanel() {
+  const grid = document.getElementById('assets-grid');
+  grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Loading your assets...</p>';
+  const result = await loadAssets();
+  const items = result.items || [];
+  assetsCache = items;
+  if (result.error) {
+    grid.innerHTML = '<p style="color:#ff9b9b;font-size:12px;">Couldn\'t load your assets — refresh the page. If this keeps happening, contact support@studiosound.ai and we\'ll fix it fast.</p>';
+    return;
+  }
+  if (!items.length) {
+    grid.innerHTML = '<p style="color:var(--muted);font-size:12px;">Nothing here yet — everything you generate is saved automatically and will appear here.</p>';
+    return;
+  }
+  grid.innerHTML = items.map((a, i) => `
+    <div class="recent-item">
+      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
+        <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
+      </div>
+      <div class="recent-info">
+        <div class="recent-name">${a.name || a.tool}</div>
+        <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
+        ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
+        ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
+        ${a.tool==='Forecast' && a.data && a.data.scenarios ? `<a onclick="openForecastAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Forecast →</a>` : ''}
+        ${a.data && a.data.videoUrl ? `<a onclick="playVideoAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">▶ Play</a> <a href="${a.data.videoUrl}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download Video ↓</a>` : ''}
+        ${a.data && a.data.prompt ? ` <a onclick="copyPrompt(${i})" style="color:var(--muted);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Copy Prompt ⧉</a>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function copyPrompt(i) {
+  const p = assetsCache[i] && assetsCache[i].data && assetsCache[i].data.prompt;
+  if (!p) return;
+  navigator.clipboard.writeText(p).then(() => {
+    alert('Prompt copied — paste it in the generator to remix.');
+  });
+}
+
+function playVideo(url, name) {
+  const old = document.getElementById('video-modal');
+  if (old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.id = 'video-modal';
+  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;';
+  wrap.innerHTML = `
+    <video src="${url}" controls autoplay playsinline style="max-height:80vh;max-width:92vw;border-radius:14px;box-shadow:0 20px 80px rgba(0,0,0,0.8);"></video>
+    <div style="display:flex;gap:10px;">
+      <a href="${url}" download style="background:var(--neon);color:#05050a;font-weight:800;font-size:12px;padding:10px 18px;border-radius:8px;text-decoration:none;">Download ↓</a>
+      <button onclick="document.getElementById('video-modal').remove()" style="background:#1a1a2a;color:#fff;font-weight:700;font-size:12px;padding:10px 18px;border-radius:8px;border:0.5px solid var(--border);cursor:pointer;">Close ✕</button>
+    </div>`;
+  wrap.addEventListener('click', e => { if (e.target === wrap) wrap.remove(); });
+  document.body.appendChild(wrap);
+}
+
+function playVideoAsset(i) {
+  const a = assetsCache[i];
+  if (a && a.data && a.data.videoUrl) playVideo(a.data.videoUrl, a.name);
+}
+
+function openPlanAsset(i) {
+  const a = assetsCache[i];
+  if (!a || !a.data) return;
+  switchTool('plan', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+  document.getElementById('plan-name').value = a.name || '';
+  renderPlan(a.data);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function fillSettings() {
+  if (currentUser) document.getElementById('settings-email').value = currentUser.email || '';
+  document.getElementById('settings-plan').value = currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1) + ' Plan';
+}
+
+async function sendPasswordChange() {
+  if (!currentUser) return;
+  const { error } = await sbAuth.auth.resetPasswordForEmail(currentUser.email, {
+    redirectTo: window.location.origin + '/signin.html'
+  });
+  document.getElementById('settings-msg').textContent = error
+    ? 'Something went wrong — try again.'
+    : 'Password change link sent to ' + currentUser.email + ' — check your inbox.';
+}
+
+async function doSignOut() {
+  await sbAuth.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+async function openBillingPortal() {
+  const { data } = await sbAuth.auth.getSession();
+  if (!data.session) return;
+  const res = await fetch('/api/create-portal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + data.session.access_token }
+  });
+  const out = await res.json();
+  if (out.url) window.location.href = out.url;
+  else alert(out.error || 'Could not open billing portal.');
+}
+
+function managePlan() {
+  if (currentPlan === 'free') window.location.href = 'pricing.html';
+  else openBillingPortal();
+}
+
+function downloadPlanPDF() {
+  const items = document.querySelectorAll('#plan-result .plan-item');
+  if (!items.length) { alert('Generate a release plan first'); return; }
+  const name = document.getElementById('plan-name').value.trim() || 'My Release';
+  let rows = '';
+  items.forEach(i => {
+    const task = i.querySelector('.plan-task');
+    const details = i.querySelectorAll('.plan-detail');
+    let detailHtml = '';
+    details.forEach(d => { detailHtml += '<div class="detail">' + d.textContent + '</div>'; });
+    rows += '<div class="item"><div class="date">' + i.querySelector('.plan-date').textContent +
+      '</div>' + (task ? '<div class="task">' + task.textContent + '</div>' : '') +
+      detailHtml + '</div>';
+  });
+  const w = window.open('', '_blank');
+  w.document.write('<html><head><title>' + name + ' — Release Plan</title><style>' +
+    'body{font-family:Arial,Helvetica,sans-serif;color:#111;padding:40px;max-width:700px;margin:auto;}' +
+    'h1{font-size:22px;margin-bottom:2px;}p.sub{color:#555;margin-top:0;font-size:12px;}' +
+    '.item{border-left:3px solid #00c9a7;padding:10px 14px;margin:14px 0;background:#f7f7f7;border-radius:6px;page-break-inside:avoid;}' +
+    '.date{color:#00997d;font-size:11px;font-weight:bold;letter-spacing:0.05em;}' +
+    '.task{font-size:14px;font-weight:bold;margin:2px 0;}' +
+    '.detail{font-size:12px;color:#333;line-height:1.6;}' +
+    'footer{margin-top:30px;color:#999;font-size:10px;text-align:center;}' +
+    '</style></head><body><h1>' + name + ' — 30-Day Release Plan</h1>' +
+    '<p class="sub">Generated by StudioSound.ai — Create. Release. Elevate.</p>' + rows +
+    '<footer>studiosound.ai</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(() => w.print(), 500);
+}
+
+// Attach the user's session token so the API knows who's asking
+async function authHeaders() {
+  const { data } = await sbAuth.auth.getSession();
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + (data.session ? data.session.access_token : '')
+  };
+}
+
+function limitMessage(toolLabel) {
+  return 'You\u2019ve used all your ' + toolLabel + ' for this month. Upgrade your plan to keep creating \u2192 ';
+}
+
+function showLimit(errId, toolLabel) {
+  const err = document.getElementById(errId);
+  err.innerHTML = limitMessage(toolLabel) + '<a href="pricing.html" style="color:var(--neon);font-weight:700;">View plans</a>';
+  err.style.display = 'block';
+}
+
+// ====== GLOBALS ======
+let selectedArtUrl = null;
+let lastPlanData = null;
+let versionAUrl = null;
+let versionBUrl = null;
+let recentItems = [];
+
+// ====== TOOL SWITCHING ======
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+
+function switchTool(tool, sidebarBtn) {
+  closeSidebar();
+  document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
+  document.getElementById('tool-' + tool).classList.remove('hidden');
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast'};
+  document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
+  if(tool === 'assets') showAssetsPanel();
+  if(tool === 'settings') fillSettings();
+  if(tool === 'split' && !document.querySelector('#sp-rows .form-row')) { addSplitRow(); addSplitRow(); }
+  if(tool === 'forecast' && !document.querySelector('#fc-rows .fc-row')) {
+    let restored = false;
+    try {
+      const saved = JSON.parse(localStorage.getItem('fcSaved') || 'null');
+      if (saved && saved.rows && saved.rows.length >= 2) {
+        saved.rows.forEach(r => fcAddRow(r.month, r.amount));
+        if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
+        if (saved.city) document.getElementById('fc-city').value = saved.city;
+        if (saved.releases) document.getElementById('fc-releases').value = saved.releases;
+        restored = true;
+      }
+    } catch(e) {}
+    if (!restored) { fcAddRow(); fcAddRow(); fcAddRow(); }
+  }
+  if(tool === 'check') renderChecklist();
+  if(sidebarBtn) {
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    sidebarBtn.classList.add('active');
+  }
+}
+
+function setToolActive(el) {
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ====== EXAMPLE PROMPTS ======
+function useExample(tool, text) {
+  const ids = {art:'art-prompt', plan:'plan-details', merch:'merch-prompt'};
+  const el = document.getElementById(ids[tool]);
+  if(el) { el.value = text; el.focus(); }
+}
+
+// ====== IMAGE HELPERS ======
+function viewArtFull(version) {
+  const img = document.getElementById('art-version-' + version);
+  if (!img || !img.src || img.src.endsWith('#') || img.src === location.href) { alert('Generate your covers first'); return; }
+  const other = version === 'a' ? 'b' : 'a';
+  const otherImg = document.getElementById('art-version-' + other);
+  const hasOther = otherImg && otherImg.src && !otherImg.src.endsWith('#') && otherImg.src !== location.href;
+  const old = document.getElementById('art-modal');
+  if (old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.id = 'art-modal';
+  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;';
+  wrap.innerHTML = `
+    <div style="color:#fff;font-weight:800;font-size:14px;letter-spacing:0.05em;" id="art-modal-title">VERSION ${version.toUpperCase()}</div>
+    <img id="art-modal-img" src="${img.src}" style="max-height:76vh;max-width:92vw;border-radius:14px;box-shadow:0 20px 80px rgba(0,0,0,0.8);"/>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      ${hasOther ? `<button onclick="artModalSwap()" style="background:#1a1a2a;color:#fff;font-weight:700;font-size:12px;padding:10px 18px;border-radius:8px;border:0.5px solid var(--border);cursor:pointer;">⇄ Compare Version ${other.toUpperCase()}</button>` : ''}
+      <button onclick="selectVersion(document.getElementById('art-modal').dataset.v);document.getElementById('art-modal').remove();" style="background:var(--neon);color:#05050a;font-weight:800;font-size:12px;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;">✓ Use This One</button>
+      <button onclick="document.getElementById('art-modal').remove()" style="background:#1a1a2a;color:#fff;font-weight:700;font-size:12px;padding:10px 18px;border-radius:8px;border:0.5px solid var(--border);cursor:pointer;">Close ✕</button>
+    </div>`;
+  wrap.dataset.v = version;
+  wrap.addEventListener('click', e => { if (e.target === wrap) wrap.remove(); });
+  document.body.appendChild(wrap);
+}
+
+function artModalSwap() {
+  const modal = document.getElementById('art-modal');
+  if (!modal) return;
+  const cur = modal.dataset.v;
+  const next = cur === 'a' ? 'b' : 'a';
+  const nextImg = document.getElementById('art-version-' + next);
+  if (!nextImg || !nextImg.src) return;
+  modal.dataset.v = next;
+  document.getElementById('art-modal-img').src = nextImg.src;
+  document.getElementById('art-modal-title').textContent = 'VERSION ' + next.toUpperCase();
+  const swapBtn = modal.querySelector('button');
+  if (swapBtn && swapBtn.textContent.includes('Compare')) swapBtn.innerHTML = '⇄ Compare Version ' + cur.toUpperCase();
+}
+
+function clearArtUpload(inputId, thumbsId, removeId) {
+  document.getElementById(inputId).value = '';
+  document.getElementById(thumbsId).innerHTML = '';
+  document.getElementById(removeId).style.display = 'none';
+}
+
+function previewMulti(input, thumbsId, removeId) {
+  const wrap = document.getElementById(thumbsId);
+  wrap.innerHTML = '';
+  const files = Array.from(input.files || []).slice(0, 3);
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:36px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid var(--neon);';
+      wrap.appendChild(img);
+    };
+    reader.readAsDataURL(f);
+  });
+  if ((input.files || []).length > 3) {
+    const more = document.createElement('span');
+    more.textContent = 'first 3 used';
+    more.style.cssText = 'color:var(--muted);font-size:10px;align-self:center;';
+    wrap.appendChild(more);
+  }
+  document.getElementById(removeId).style.display = files.length ? 'inline-block' : 'none';
+}
+
+// Shrink images client-side so multi-uploads fit the server and generate faster
+function compressImage(file, maxDim) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, (maxDim || 1024) / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        const ctx = c.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function previewImg(input, thumbId) {
+  if(!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const thumb = document.getElementById(thumbId);
+    thumb.src = e.target.result;
+    thumb.style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function previewMerch(input) {
+  if(!input.files || !input.files[0]) return;
+  document.getElementById('merch-upload-label').textContent = '✓ ' + input.files[0].name;
+}
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ====== VERSION SELECTION ======
+function selectVersion(version) {
+  selectedArtUrl = version === 'a' ? versionAUrl : versionBUrl;
+
+  document.getElementById('art-version-a').classList.toggle('selected', version === 'a');
+  document.getElementById('art-version-b').classList.toggle('selected', version === 'b');
+
+  const btnA = document.getElementById('btn-version-a');
+  const btnB = document.getElementById('btn-version-b');
+
+  if(version === 'a') {
+    btnA.innerHTML = '<i class="ti ti-check"></i> ✓ Selected';
+    btnA.classList.add('selected');
+    btnB.innerHTML = '<i class="ti ti-check"></i> Select Version B';
+    btnB.classList.remove('selected');
+  } else {
+    btnB.innerHTML = '<i class="ti ti-check"></i> ✓ Selected';
+    btnB.classList.add('selected');
+    btnA.innerHTML = '<i class="ti ti-check"></i> Select Version A';
+    btnA.classList.remove('selected');
   }
 
-  // ===== GATE: verify user + check/count monthly limit =====
-  const gate = await checkAndCount(req, 'cover_art');
-  if (!gate.ok) {
-    return res.status(gate.status).json({ error: gate.error, plan: gate.plan || null });
+  if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
+    recentItems[0].imageUrl = selectedArtUrl;
+    renderRecent();
   }
-  // ==========================================================
+}
+
+// ====== COVER ART GENERATOR ======
+async function generateArt() {
+  const title = document.getElementById('art-title').value.trim();
+  const genre = document.getElementById('art-genre').value;
+  const mood = document.getElementById('art-mood').value;
+  const userPrompt = document.getElementById('art-prompt').value.trim();
+  if(!title) { alert('Please enter a song or project title'); return; }
+  if(!userPrompt) { alert('Please describe your vision in the prompt box'); return; }
+
+  const includeTitle = document.getElementById('art-title-toggle').checked;
+  const coverArtist = document.getElementById('art-artist').value.trim();
+  const palette = document.getElementById('art-colors').value.trim();
+  const textInstruction = includeTitle
+    ? `Render the title "${title}" prominently on the artwork in bold, stylish typography that fits the genre and mood — integrated naturally like a professionally designed album cover. Spell the title exactly as written. No other text, watermarks, or logos.`
+    : 'No text, no words, purely visual.';
+  const artistInstruction = coverArtist ? ` Also render the artist name "${coverArtist}" in smaller complementary typography, spelled exactly as written.` : '';
+  const paletteInstruction = palette ? ` Color palette: ${palette}.` : '';
+  const basePrompt = `Professional music album cover art for a ${genre} song called "${title}". Mood: ${mood}. ${userPrompt}.${paletteInstruction} Ultra high quality, label-quality artwork, striking visual composition. ${textInstruction}${artistInstruction} Cinematic quality.`;
+
+  const imgUpload = document.getElementById('art-img-upload');
+  const photoFiles = Array.from((imgUpload.files || [])).slice(0, 3);
+  const imageDatas = await Promise.all(photoFiles.map(f => compressImage(f, 1024)));
+  const inspUpload = document.getElementById('art-insp-upload');
+  const inspFiles = Array.from((inspUpload.files || [])).slice(0, 3);
+  const inspirationDatas = await Promise.all(inspFiles.map(f => compressImage(f, 1024)));
+
+  document.getElementById('art-placeholder').style.display = 'none';
+  document.getElementById('art-dual').classList.remove('show');
+  document.getElementById('art-single').style.display = 'none';
+  document.getElementById('art-error').style.display = 'none';
+  document.getElementById('art-loading').classList.add('active');
+  document.getElementById('art-loading-text').textContent = imageData
+    ? 'Incorporating your photo into two unique versions...'
+    : 'Generating two unique versions...';
+  document.getElementById('art-btn').disabled = true;
+  selectedArtUrl = null;
+  versionAUrl = null;
+  versionBUrl = null;
+
+  document.getElementById('btn-version-a').innerHTML = '<i class="ti ti-check"></i> Select Version A';
+  document.getElementById('btn-version-b').innerHTML = '<i class="ti ti-check"></i> Select Version B';
+  document.getElementById('btn-version-a').classList.remove('selected');
+  document.getElementById('btn-version-b').classList.remove('selected');
+  document.getElementById('art-version-a').classList.remove('selected');
+  document.getElementById('art-version-b').classList.remove('selected');
 
   try {
-    const { prompt, imageData, imageDatas, inspirationData, inspirationDatas } = req.body;
-    if (!prompt) {
-      return res.status(400).json({ error: 'Prompt is required' });
+    const hdrs = await authHeaders();
+    const callA = () => fetch('/api/generate-art', {
+      method: 'POST', headers: hdrs,
+      body: JSON.stringify({prompt: basePrompt, imageDatas, inspirationDatas})
+    }).then(r => r.json());
+    const callB = () => fetch('/api/generate-art-gemini', {
+      method: 'POST', headers: hdrs,
+      body: JSON.stringify({prompt: basePrompt})
+    }).then(r => r.json());
+
+    let [resA, resB] = await Promise.allSettled([callA(), callB()]);
+
+    const gotUrl = r => r.status === 'fulfilled' && r.value.data?.[0]?.url;
+    const isLimit = r => r.status === 'fulfilled' && r.value.error === 'limit_reached';
+
+    // One version rate-limited or hiccuped? Breathe 7s and retry it once.
+    if (gotUrl(resA) !== gotUrl(resB) && !isLimit(resA) && !isLimit(resB)) {
+      const lt = document.querySelector('#art-loading .loading-text');
+      if (lt) lt.textContent = 'One version is finishing up — few more seconds...';
+      await new Promise(r => setTimeout(r, 7000));
+      if (!gotUrl(resA)) { const retry = await Promise.allSettled([callA()]); resA = retry[0]; }
+      else { const retry = await Promise.allSettled([callB()]); resB = retry[0]; }
     }
 
-    const photos = (imageDatas && imageDatas.length ? imageDatas : (imageData ? [imageData] : [])).slice(0, 3);
-    const refs = (inspirationDatas && inspirationDatas.length ? inspirationDatas : (inspirationData ? [inspirationData] : [])).slice(0, 3);
+    document.getElementById('art-loading').classList.remove('active');
 
-    const parts = [];
-    let promptText = prompt;
+    versionAUrl = gotUrl(resA) ? resA.value.data[0].url : null;
+    versionBUrl = gotUrl(resB) ? resB.value.data[0].url : null;
 
-    photos.forEach(d => parts.push(b64Part(d)));
-    if (photos.length === 1) {
-      promptText += ' Incorporate the person from the provided photo as the central subject of the cover art, preserving their likeness naturally within the scene.';
-    } else if (photos.length > 1) {
-      promptText += ` Incorporate the ${photos.length} people from the first ${photos.length} provided photos together in the cover art scene, preserving each person's likeness naturally.`;
+    if(versionAUrl && versionBUrl) {
+      document.getElementById('art-version-a').src = versionAUrl;
+      document.getElementById('art-version-b').src = versionBUrl;
+      document.getElementById('art-dual').classList.add('show');
+      selectedArtUrl = versionAUrl;
+      selectVersion('a');
+      document.getElementById('art-next').innerHTML = nextStepHtml('Cover\'s done — put it in motion. One tap sends this artwork into the Lyric Video Creator as your background.', 'Make the Lyric Video', 'artToVideo()');
+      document.getElementById('art-next').style.display = 'block';
+      addRecent('🎨', title, 'Cover Art', versionAUrl);
+      saveAsset('Cover Art', title, versionAUrl, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
+    } else if(versionAUrl || versionBUrl) {
+      const url = versionAUrl || versionBUrl;
+      document.getElementById('art-single-img').src = url;
+      document.getElementById('art-single').style.display = 'block';
+      selectedArtUrl = url;
+      document.getElementById('art-next').innerHTML = nextStepHtml('Cover\'s done — put it in motion. One tap sends this artwork into the Lyric Video Creator as your background.', 'Make the Lyric Video', 'artToVideo()');
+      document.getElementById('art-next').style.display = 'block';
+      addRecent('🎨', title, 'Cover Art', url);
+      saveAsset('Cover Art', title, url, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
+    } else {
+      const limitHit = (resA.status==='fulfilled' && resA.value.error==='limit_reached') ||
+                       (resB.status==='fulfilled' && resB.value.error==='limit_reached');
+      if(limitHit) {
+        document.getElementById('art-placeholder').style.display = 'flex';
+        showLimit('art-error','cover art generations');
+        document.getElementById('art-btn').disabled = false;
+        return;
+      }
+      throw new Error('Both versions failed to generate');
     }
-    refs.forEach(d => parts.push(b64Part(d)));
-    if (refs.length) {
-      promptText += ` Take style, mood, color palette, typography feel, and compositional inspiration from the ${refs.length > 1 ? refs.length + ' provided reference covers' : 'provided reference cover'} — but create a completely ORIGINAL artwork in that spirit. Do NOT copy, recreate, or closely imitate the reference images themselves.`;
-    }
-    promptText += ' Square 1:1 album cover composition.';
-    parts.push({ text: promptText });
+  } catch(e) {
+    document.getElementById('art-loading').classList.remove('active');
+    document.getElementById('art-placeholder').style.display = 'flex';
+    const err = document.getElementById('art-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+    console.error(e);
+  }
+  document.getElementById('art-btn').disabled = false;
+}
 
-    // Tiered engine: paid plans get the flagship, free gets the fast lane
-    const primary = (gate.plan === 'pro' || gate.plan === 'premium')
-      ? 'gemini-3-pro-image'
-      : 'gemini-3.1-flash-image';
+function drawPASticker(ctx, S) {
+  const w = S * 0.155, h = w * 0.60;
+  const x = S - w - S * 0.033, y = S - h - S * 0.033;
+  const bw = S * 0.0035;
+  // white base + black border
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(x, y, w, h);
+  ctx.lineWidth = bw * 2;
+  ctx.strokeStyle = '#000000';
+  ctx.strokeRect(x + bw, y + bw, w - bw * 2, h - bw * 2);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // PARENTAL
+  ctx.fillStyle = '#000000';
+  ctx.font = '900 ' + (h * 0.21) + 'px Arial';
+  ctx.fillText('PARENTAL', x + w / 2, y + h * 0.20);
+  // black band with ADVISORY
+  ctx.fillRect(x + bw * 3, y + h * 0.335, w - bw * 6, h * 0.30);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 ' + (h * 0.20) + 'px Arial';
+  ctx.fillText('ADVISORY', x + w / 2, y + h * 0.49);
+  // EXPLICIT CONTENT
+  ctx.fillStyle = '#000000';
+  ctx.font = '700 ' + (h * 0.135) + 'px Arial';
+  ctx.fillText('EXPLICIT CONTENT', x + w / 2, y + h * 0.80);
+}
 
-    let b64 = null, used = primary;
-    try {
-      b64 = await callModel(primary, parts);
-    } catch (e1) {
-      console.error(primary + ' failed, falling back:', e1.message);
-      used = 'gemini-2.5-flash-image';
-      b64 = await callModel(used, parts);
-    }
-
-    logGeneration(gate.userId, 'cover_art',
-      { prompt: prompt, photoCount: photos.length, refCount: refs.length, version: 'A', plan: gate.plan },
-      { model: used }
-    );
-
-    return res.status(200).json({
-      data: [{ url: `data:image/png;base64,${b64}` }]
-    });
-  } catch (error) {
-    console.error('Generate art error:', error);
-    return res.status(500).json({
-      error: 'Failed to generate image',
-      details: error.message
-    });
+function downloadArt() {
+  if(!selectedArtUrl) { alert('Please generate an image first'); return; }
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    const c = document.createElement('canvas');
+    c.width = 3000; c.height = 3000;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, 3000, 3000);
+    if (document.getElementById('art-pa').checked) drawPASticker(ctx, 3000);
+    const a = document.createElement('a');
+    a.href = c.toDataURL('image/jpeg', 0.92);
+    a.download = 'studiosound-cover-3000x3000.jpg';
+    a.click();
+  };
+  img.onerror = function() {
+    const a = document.createElement('a');
+    a.href = selectedArtUrl;
+    a.download = 'studiosound-cover-art.png';
+    a.click();
+  };
+  img.src = selectedArtUrl;
+  if(recentItems.length > 0 && recentItems[0].type === 'Cover Art') {
+    recentItems[0].imageUrl = selectedArtUrl;
+    renderRecent();
   }
 }
+
+// ====== RELEASE PLAN ======
+function renderPlan(data) {
+  lastPlanData = data;
+  document.getElementById('plan-placeholder').style.display = 'none';
+  const container = document.getElementById('plan-result');
+  let html = '';
+  if(data.summary) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">YOUR STRATEGY</div><div class="plan-detail" style="color:#e8e8f5;">${data.summary}</div></div>`;
+  if(data.artist_snapshot) html += `<div class="plan-item"><div class="plan-date">WHERE YOU STAND</div><div class="plan-detail">${data.artist_snapshot}</div></div>`;
+  if(data.budget_breakdown && data.budget_breakdown.length) {
+    html += `<div class="plan-item"><div class="plan-date">BUDGET BREAKDOWN</div>` +
+      data.budget_breakdown.map(b => `<div class="plan-detail" style="margin-bottom:4px;"><strong style="color:var(--neon);">${b.amount}</strong> — ${b.item}: ${b.why}</div>`).join('') + `</div>`;
+  }
+  if(data.trend_tactics && data.trend_tactics.length) {
+    html += `<div class="plan-item"><div class="plan-date">WORKING RIGHT NOW IN YOUR LANE</div>` +
+      data.trend_tactics.map(t => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${t}</div>`).join('') + `</div>`;
+  }
+  html += data.timeline.map(item => `
+    <div class="plan-item">
+      <div class="plan-date">${item.date}</div>
+      <div class="plan-task">${item.task}</div>
+      <div class="plan-detail">${item.detail}</div>
+    </div>
+  `).join('');
+  html += nextStepHtml('Plan\'s set — now lock the visuals. Generate the cover art for this release (we\'ll carry the title over).', 'Make My Cover Art', 'planToArt()');
+  container.innerHTML = html;
+  container.classList.add('show');
+}
+
+async function generatePlan() {
+  const name = document.getElementById('plan-name').value.trim();
+  const date = document.getElementById('plan-date').value;
+  const genre = document.getElementById('plan-genre').value;
+  const stage = document.getElementById('plan-stage').value;
+  const city = document.getElementById('plan-city').value.trim();
+  const details = document.getElementById('plan-details').value.trim();
+  const artistName = document.getElementById('plan-artist').value.trim();
+  const artistHandle = document.getElementById('plan-handle').value.trim();
+  const budget = document.getElementById('plan-budget').value.trim();
+  if(!name) { alert('Please enter your project name'); return; }
+  if(!artistName) { alert('Please enter your artist name exactly as it appears on Spotify/Apple'); return; }
+  if(!artistHandle) { alert('Please enter your social handle (like @yourname) so we research the right artist'); return; }
+  if(!date) { alert('Please enter your release date'); return; }
+  if(!details) { alert('Please tell us more about your project'); return; }
+
+  document.getElementById('plan-placeholder').style.display = 'none';
+  document.getElementById('plan-result').classList.remove('show');
+  document.getElementById('plan-error').style.display = 'none';
+  document.getElementById('plan-loading').classList.add('active');
+  document.getElementById('plan-btn').disabled = true;
+
+  try {
+    const res = await fetch('/api/generate-plan', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({projectName:name, releaseDate:date, genre, careerStage:stage, city, details, artistName, artistHandle, budget})
+    });
+    const data = await res.json();
+    document.getElementById('plan-loading').classList.remove('active');
+
+    if(data.error === 'limit_reached') {
+      document.getElementById('plan-placeholder').style.display = 'flex';
+      showLimit('plan-error','release plans');
+      document.getElementById('plan-btn').disabled = false;
+      return;
+    }
+
+    if(data.timeline && data.timeline.length > 0) {
+      renderPlan(data);
+      addRecent(null, name, 'Release Plan', null, data);
+      saveAsset('Release Plan', name, null, Object.assign({}, data, {_inputs: {artistName, artistHandle, budget, genre, city, releaseDate: date, details}}));
+    } else {
+      throw new Error('No plan returned');
+    }
+  } catch(e) {
+    document.getElementById('plan-loading').classList.remove('active');
+    document.getElementById('plan-placeholder').style.display = 'flex';
+    const err = document.getElementById('plan-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+  }
+  document.getElementById('plan-btn').disabled = false;
+}
+
+// ====== MERCH MOCKUP ======
+const merchData = {
+  'T-Shirt':{emoji:'👕',pod:'$18-22',bulk:'$8-12 each',retail:'$35-45'},
+  'Hoodie':{emoji:'🧥',pod:'$28-34',bulk:'$14-18 each',retail:'$65-85'},
+  'Hat / Cap':{emoji:'🧢',pod:'$18-22',bulk:'$7-10 each',retail:'$35-45'},
+  'Phone Case':{emoji:'📱',pod:'$12-16',bulk:'$5-8 each',retail:'$25-35'},
+  'Poster':{emoji:'🖼️',pod:'$8-12',bulk:'$3-5 each',retail:'$20-30'},
+  'Tote Bag':{emoji:'👜',pod:'$12-16',bulk:'$5-8 each',retail:'$25-35'},
+  'Sweatpants':{emoji:'👖',pod:'$32-40',bulk:'$16-22 each',retail:'$75-95'},
+  'Jacket':{emoji:'🧣',pod:'$45-60',bulk:'$22-30 each',retail:'$95-125'},
+};
+
+async function generateMerch() {
+  const type = document.getElementById('merch-type').value;
+  const color = document.getElementById('merch-color').value;
+  const prompt = document.getElementById('merch-prompt').value.trim();
+  const upload = document.getElementById('merch-upload');
+  if(!upload.files || !upload.files[0]) { alert('Please upload your design or cover art first'); return; }
+  if(!prompt) { alert('Please describe your merch vision'); return; }
+
+  const imageData = await toBase64(upload.files[0]);
+  const d = merchData[type] || merchData['T-Shirt'];
+
+  document.getElementById('merch-placeholder').style.display = 'none';
+  document.getElementById('merch-result').classList.remove('show');
+  document.getElementById('merch-error').style.display = 'none';
+  document.getElementById('merch-loading').classList.add('active');
+  document.getElementById('merch-btn').disabled = true;
+
+  try {
+    const res = await fetch('/api/generate-merch', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({imageData, productType:type, color, prompt})
+    });
+    const data = await res.json();
+    document.getElementById('merch-loading').classList.remove('active');
+
+    if(data.error === 'limit_reached') {
+      document.getElementById('merch-placeholder').style.display = 'flex';
+      showLimit('merch-error','merch mockups');
+      document.getElementById('merch-btn').disabled = false;
+      return;
+    }
+
+    if(data.data && data.data[0]) {
+      document.getElementById('merch-result-img').src = data.data[0].url;
+      document.getElementById('merch-pod').textContent = d.pod;
+      document.getElementById('merch-bulk').textContent = d.bulk;
+      document.getElementById('merch-retail').textContent = d.retail;
+      document.getElementById('merch-result').classList.add('show');
+      addRecent(d.emoji, `${color} ${type}`, 'Merch Mockup', data.data[0].url);
+      saveAsset('Merch Mockup', `${color} ${type}`, data.data[0].url, {prompt: prompt, productType: type, color: color});
+    } else {
+      throw new Error('No mockup returned');
+    }
+  } catch(e) {
+    document.getElementById('merch-loading').classList.remove('active');
+    document.getElementById('merch-placeholder').style.display = 'flex';
+    const err = document.getElementById('merch-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+    console.error(e);
+  }
+  document.getElementById('merch-btn').disabled = false;
+}
+
+function downloadMerch() {
+  const img = document.getElementById('merch-result-img');
+  if(!img.src) { alert('Generate a mockup first'); return; }
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'studiosound-merch-mockup.png';
+  a.click();
+}
+
+// ====== COVER RESIZER (free, runs in browser) ======
+let resizeImg = null;
+
+function loadResizeImg(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  document.getElementById('resize-label').textContent = '✓ ' + f.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      resizeImg = img;
+      document.getElementById('resize-info').innerHTML =
+        'Original: <strong style="color:#fff;">' + img.width + '×' + img.height + '</strong> → Output: <strong style="color:var(--neon);">3000×3000 JPEG</strong>' +
+        (img.width !== img.height ? ' (centered square crop)' : '');
+      const c = document.getElementById('resize-canvas');
+      const ctx = c.getContext('2d');
+      drawSquareCrop(ctx, img, 600);
+      document.getElementById('resize-placeholder').style.display = 'none';
+      document.getElementById('resize-result').style.display = 'block';
+      document.getElementById('resize-btn').disabled = false;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+function drawSquareCrop(ctx, img, size) {
+  const side = Math.min(img.width, img.height);
+  const sx = (img.width - side) / 2;
+  const sy = (img.height - side) / 2;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+}
+
+function downloadResized() {
+  if(!resizeImg) return;
+  const c = document.createElement('canvas');
+  c.width = 3000; c.height = 3000;
+  drawSquareCrop(c.getContext('2d'), resizeImg, 3000);
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/jpeg', 0.92);
+  a.download = 'cover-3000x3000.jpg';
+  a.click();
+}
+
+// ====== AUDIO CONVERTER (free, runs in browser) ======
+let wavBlob = null;
+let wavName = 'audio';
+
+async function convertAudio(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  wavName = f.name.replace(/\.[^.]+$/, '');
+  document.getElementById('audio-label').textContent = '✓ ' + f.name;
+  const status = document.getElementById('audio-status');
+  document.getElementById('audio-btn').disabled = true;
+  status.textContent = 'Decoding audio...';
+  try {
+    const arrayBuf = await f.arrayBuffer();
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await ac.decodeAudioData(arrayBuf);
+    status.textContent = 'Converting to 16-bit / 44.1kHz WAV...';
+    const channels = Math.min(decoded.numberOfChannels, 2) || 1;
+    const offline = new OfflineAudioContext(channels, Math.ceil(decoded.duration * 44100), 44100);
+    const src = offline.createBufferSource();
+    src.buffer = decoded;
+    src.connect(offline.destination);
+    src.start();
+    const rendered = await offline.startRendering();
+    wavBlob = encodeWav(rendered);
+    const mb = (wavBlob.size / 1048576).toFixed(1);
+    status.innerHTML = '✓ Ready: <strong style="color:var(--neon);">' + wavName + '.wav</strong> — 16-bit / 44.1kHz · ' + mb + ' MB';
+    document.getElementById('audio-btn').disabled = false;
+  } catch(e) {
+    console.error(e);
+    status.textContent = 'Could not read that file — make sure it\'s a valid audio file and try again.';
+  }
+}
+
+function encodeWav(buffer) {
+  const numCh = buffer.numberOfChannels;
+  const len = buffer.length * numCh * 2;
+  const out = new ArrayBuffer(44 + len);
+  const view = new DataView(out);
+  const writeStr = (o, str) => { for(let i=0;i<str.length;i++) view.setUint8(o+i, str.charCodeAt(i)); };
+  writeStr(0,'RIFF'); view.setUint32(4, 36+len, true); writeStr(8,'WAVE');
+  writeStr(12,'fmt '); view.setUint32(16,16,true); view.setUint16(20,1,true);
+  view.setUint16(22,numCh,true); view.setUint32(24,44100,true);
+  view.setUint32(28,44100*numCh*2,true); view.setUint16(32,numCh*2,true); view.setUint16(34,16,true);
+  writeStr(36,'data'); view.setUint32(40,len,true);
+  let offset = 44;
+  const chans = [];
+  for(let c=0;c<numCh;c++) chans.push(buffer.getChannelData(c));
+  for(let i=0;i<buffer.length;i++){
+    for(let c=0;c<numCh;c++){
+      let s = Math.max(-1, Math.min(1, chans[c][i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      offset += 2;
+    }
+  }
+  return new Blob([out], {type:'audio/wav'});
+}
+
+function downloadWav() {
+  if(!wavBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(wavBlob);
+  a.download = wavName + '.wav';
+  a.click();
+}
+
+// ====== AUDIO TRIMMER ======
+let trimBuffer = null;
+let trimSource = null;
+
+async function loadTrimAudio(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  document.getElementById('trim-label').textContent = '✓ ' + f.name;
+  const info = document.getElementById('trim-info');
+  info.textContent = 'Decoding...';
+  try {
+    const buf = await f.arrayBuffer();
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    trimBuffer = await ac.decodeAudioData(buf);
+    const dur = trimBuffer.duration;
+    info.innerHTML = 'Loaded: <strong style="color:#fff;">' + dur.toFixed(1) + ' seconds</strong> — set your start/end below';
+    document.getElementById('trim-end').value = Math.min(15, Math.floor(dur)).toString();
+    document.getElementById('trim-end').max = dur;
+    document.getElementById('trim-start').max = dur;
+    document.getElementById('trim-btn').disabled = false;
+  } catch(e) {
+    info.textContent = 'Could not read that file — try another format.';
+  }
+}
+
+function trimRange() {
+  const start = Math.max(0, parseFloat(document.getElementById('trim-start').value) || 0);
+  let end = parseFloat(document.getElementById('trim-end').value) || 0;
+  if (trimBuffer) end = Math.min(end, trimBuffer.duration);
+  return { start, end, dur: Math.max(0, end - start) };
+}
+
+function previewTrim() {
+  if(!trimBuffer) { alert('Upload audio first'); return; }
+  const { start, dur } = trimRange();
+  if (dur <= 0) { alert('End must be after start'); return; }
+  stopTrim();
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  trimSource = ac.createBufferSource();
+  trimSource.buffer = trimBuffer;
+  trimSource.connect(ac.destination);
+  trimSource.start(0, start, dur);
+}
+
+function stopTrim() {
+  if (trimSource) { try { trimSource.stop(); } catch(e){} trimSource = null; }
+}
+
+async function downloadTrim() {
+  if(!trimBuffer) return;
+  const { start, dur } = trimRange();
+  if (dur <= 0) { alert('End must be after start'); return; }
+  const channels = Math.min(trimBuffer.numberOfChannels, 2) || 1;
+  const offline = new OfflineAudioContext(channels, Math.ceil(dur * 44100), 44100);
+  const src = offline.createBufferSource();
+  src.buffer = trimBuffer;
+  src.connect(offline.destination);
+  src.start(0, start, dur);
+  const rendered = await offline.startRendering();
+  const blob = encodeWav(rendered);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'studiosound-clip.wav';
+  a.click();
+}
+
+// ====== METADATA FORMATTER ======
+function buildMetadata() {
+  const g = id => document.getElementById(id).value.trim();
+  const artist = g('md-artist'), title = g('md-title'), feat = g('md-feat'),
+        version = g('md-version'), genre = g('md-genre'), lang = g('md-lang'),
+        explicit = document.getElementById('md-explicit').value,
+        date = g('md-date'), isrc = g('md-isrc').toUpperCase().replace(/[-\s]/g,''),
+        cr = g('md-copyright');
+  const writers = g('md-writers').split('\n').map(w=>w.trim()).filter(Boolean);
+  const producers = g('md-producers').split('\n').map(w=>w.trim()).filter(Boolean);
+
+  const warnings = [];
+  if(!artist) warnings.push('Artist name is required.');
+  if(!title) warnings.push('Track title is required.');
+  if(/feat\.?|ft\.?/i.test(title)) warnings.push('Remove "feat." from the TITLE — features go in the Featured Artists field. Distributors reject this constantly.');
+  if(!writers.length) warnings.push('At least one songwriter (full legal name) is required — every distributor asks.');
+  writers.forEach(w => { if(w.split(' ').length < 2) warnings.push(`"${w}" doesn't look like a full legal name — use first + last name for royalty payments.`); });
+  if(isrc && !/^[A-Z]{2}[A-Z0-9]{3}\d{7}$/.test(isrc)) warnings.push('ISRC format looks off — should be like USRC12345678 (2 letters, 3 characters, 7 digits). Leave blank and your distributor assigns one free.');
+  if(!cr) warnings.push('Add a ℗/© line (year + owner) — e.g. "2026 Your Name".');
+
+  const lines = [
+    '=== TRACK METADATA — generated by StudioSound.ai ===','',
+    'Artist Name: ' + artist,
+    'Track Title: ' + title + (version ? ' (' + version + ')' : ''),
+    feat ? 'Featured Artists: ' + feat : null,
+    'Primary Genre: ' + (genre || '—'),
+    'Lyrics Language: ' + (lang || '—'),
+    'Explicit: ' + explicit,
+    date ? 'Release Date: ' + date : null,
+    '',
+    'Songwriters (legal names):',
+    ...writers.map(w => '  • ' + w),
+    producers.length ? 'Producers:' : null,
+    ...producers.map(pd => '  • ' + pd),
+    '',
+    'ISRC: ' + (isrc || 'To be assigned by distributor'),
+    '℗/© : ' + (cr || '—'),
+  ].filter(x => x !== null);
+
+  const wbox = document.getElementById('md-warnings');
+  if (warnings.length) {
+    wbox.innerHTML = warnings.map(w => '<div style="background:#ff6b6b15;border:0.5px solid #ff6b6b;border-radius:8px;padding:8px 10px;color:#ff9b9b;font-size:11px;margin-bottom:6px;">⚠ ' + w + '</div>').join('');
+    wbox.style.display = 'block';
+  } else {
+    wbox.innerHTML = '<div style="background:#00FFD115;border:0.5px solid var(--neon);border-radius:8px;padding:8px 10px;color:var(--neon);font-size:11px;">✓ Clean — no distributor red flags found.</div>';
+    wbox.style.display = 'block';
+  }
+  document.getElementById('md-placeholder').style.display = 'none';
+  const out = document.getElementById('md-output');
+  out.value = lines.join('\n');
+  out.style.display = 'block';
+}
+
+function copyMetadata() {
+  const out = document.getElementById('md-output');
+  if (!out.value) { alert('Format your metadata first'); return; }
+  navigator.clipboard.writeText(out.value).then(() => alert('Metadata copied — paste it into your distributor upload.'));
+}
+
+// ====== SPLIT SHEET ======
+function addSplitRow(name, role, pct) {
+  const rows = document.getElementById('sp-rows');
+  const div = document.createElement('div');
+  div.className = 'form-row';
+  div.style.cssText = 'grid-template-columns:2fr 1.2fr 0.8fr;margin-bottom:8px;';
+  div.innerHTML = `
+    <input class="form-input" placeholder="Full legal name" value="${name||''}"/>
+    <select class="form-select"><option${role==='Songwriter'?' selected':''}>Songwriter</option><option${role==='Producer'?' selected':''}>Producer</option><option${role==='Artist'?' selected':''}>Artist</option></select>
+    <input class="form-input sp-pct" type="number" min="0" max="100" placeholder="%" value="${pct||''}" oninput="updateSplitTotal()"/>`;
+  rows.appendChild(div);
+  updateSplitTotal();
+}
+
+function updateSplitTotal() {
+  let total = 0;
+  document.querySelectorAll('.sp-pct').forEach(i => total += parseFloat(i.value) || 0);
+  const el = document.getElementById('sp-total');
+  el.textContent = 'Total: ' + total + '%';
+  el.style.color = total === 100 ? 'var(--neon)' : '#ff9b9b';
+}
+
+function printSplitSheet() {
+  const title = document.getElementById('sp-title').value.trim();
+  if(!title) { alert('Enter the song title'); return; }
+  const date = document.getElementById('sp-date').value || new Date().toISOString().slice(0,10);
+  const rows = [];
+  let total = 0;
+  document.querySelectorAll('#sp-rows .form-row').forEach(r => {
+    const name = r.children[0].value.trim();
+    const role = r.children[1].value;
+    const pct = parseFloat(r.children[2].value) || 0;
+    if(name) { rows.push({name, role, pct}); total += pct; }
+  });
+  if(!rows.length) { alert('Add at least one contributor'); return; }
+  if(total !== 100 && !confirm('Splits total ' + total + '% (should be 100%). Print anyway?')) return;
+  const w = window.open('', '_blank');
+  w.document.write('<html><head><title>Split Sheet — ' + title + '</title><style>body{font-family:Arial;color:#111;padding:40px;max-width:700px;margin:auto;}h1{font-size:20px;margin-bottom:2px;}p.sub{color:#555;font-size:12px;margin-top:0;}table{width:100%;border-collapse:collapse;margin:20px 0;}th,td{border:1px solid #ccc;padding:10px;text-align:left;font-size:13px;}th{background:#f2f2f2;}.sig{margin-top:34px;}.sigline{margin-top:28px;border-top:1px solid #333;width:280px;padding-top:4px;font-size:11px;color:#555;}footer{margin-top:40px;color:#999;font-size:10px;text-align:center;}</style></head><body>' +
+    '<h1>SONGWRITER SPLIT SHEET</h1><p class="sub">Song: <strong>' + title + '</strong> &nbsp;·&nbsp; Date: ' + date + '</p>' +
+    '<table><tr><th>Full Legal Name</th><th>Role</th><th>Share %</th></tr>' +
+    rows.map(r => '<tr><td>' + r.name + '</td><td>' + r.role + '</td><td>' + r.pct + '%</td></tr>').join('') +
+    '<tr><td colspan="2" style="text-align:right;font-weight:bold;">TOTAL</td><td style="font-weight:bold;">' + total + '%</td></tr></table>' +
+    '<p style="font-size:11px;color:#444;">The undersigned agree that the ownership shares of the musical composition listed above are as stated. Each party should keep a signed copy.</p>' +
+    '<div class="sig">' + rows.map(r => '<div class="sigline">Signature — ' + r.name + '</div>').join('') + '</div>' +
+    '<footer>Generated with StudioSound.ai — Create. Release. Elevate. · This document is a mutual agreement record, not legal advice.</footer></body></html>');
+  w.document.close(); w.focus();
+  setTimeout(() => w.print(), 400);
+}
+
+// ====== RELEASE CHECKLIST ======
+const CHECKLIST = [
+  ['4 WEEKS OUT', ['Master finalized — WAV 16-bit/44.1kHz ready', 'Cover art finalized — 3000×3000 JPEG', 'Metadata + credits formatted (use the Metadata tool)', 'Split sheet signed by everyone (use the Split Sheet tool)', 'Upload to distributor NOW — editorial playlists need 4 weeks', 'Pitch via Spotify for Artists as soon as the release shows up']],
+  ['3 WEEKS OUT', ['Pre-save link created and tested', 'Content batch day: film 10-15 short clips in one session', 'Announce the release date on all platforms', 'Update all bios + link-in-bio with pre-save']],
+  ['2 WEEKS OUT', ['Post 1-2 teasers daily (hook first, always)', 'Start fan pages on TikTok/Reels/Shorts if not running', 'Pitch independent playlists (SubmitHub / Groover)', 'Line up any collabs, premieres, or local press']],
+  ['RELEASE WEEK', ['Confirm the release is live on all DSPs at midnight', 'Release-day post on every platform + Stories all day', 'Push the official audio/visualizer on YouTube', 'Message your day-ones directly — personal texts move numbers', 'Thank early listeners publicly, repost every share']],
+  ['WEEK AFTER', ['Keep posting — releases grow in week 2-4, don\'t go quiet', 'Make content from listener reactions and comments', 'Check Spotify for Artists data — double down where it\'s working', 'Start planning the next drop (momentum is the algorithm)']],
+];
+
+function renderChecklist() {
+  const el = document.getElementById('check-list');
+  if (!el || el.dataset.done) return;
+  el.dataset.done = '1';
+  el.innerHTML = CHECKLIST.map(([phase, items]) => 
+    '<div class="plan-item" style="margin-bottom:8px;"><div class="plan-date">' + phase + '</div>' +
+    items.map(it => '<label style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;color:#e0e0f0;font-size:12px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--neon);margin-top:2px;"/>' + it + '</label>').join('') +
+    '</div>').join('');
+}
+
+function printChecklist() {
+  const w = window.open('', '_blank');
+  w.document.write('<html><head><title>Release Checklist — StudioSound.ai</title><style>body{font-family:Arial;color:#111;padding:40px;max-width:700px;margin:auto;}h1{font-size:20px;}h2{font-size:13px;color:#00997d;letter-spacing:0.05em;margin:18px 0 6px;}div.i{font-size:12px;padding:4px 0;}span.box{display:inline-block;width:12px;height:12px;border:1.5px solid #333;margin-right:8px;vertical-align:middle;}footer{margin-top:30px;color:#999;font-size:10px;text-align:center;}</style></head><body><h1>INDEPENDENT RELEASE CHECKLIST</h1>' +
+    CHECKLIST.map(([phase, items]) => '<h2>' + phase + '</h2>' + items.map(it => '<div class="i"><span class="box"></span>' + it + '</div>').join('')).join('') +
+    '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
+  w.document.close(); w.focus();
+  setTimeout(() => w.print(), 400);
+}
+
+// ====== NEXT-STEP FLOW (keeps artists moving tool to tool) ======
+function nextStepHtml(desc, btnText, fn) {
+  return `<div class="plan-item" style="border:1px solid var(--neon);background:#00FFD10a;margin-top:12px;">
+    <div class="plan-date" style="color:var(--neon);">WHAT'S NEXT?</div>
+    <div class="plan-detail" style="margin-bottom:10px;">${desc}</div>
+    <button class="result-btn primary" onclick="${fn}" style="width:100%;justify-content:center;padding:11px;">${btnText} →</button>
+  </div>`;
+}
+
+function fcToPlan() {
+  // carry forecast context into the planner
+  const g = document.getElementById('fc-genre').value.trim().toLowerCase();
+  const sel = document.getElementById('plan-genre');
+  for (const o of sel.options) { if (o.value.toLowerCase() === g || o.text.toLowerCase() === g) { sel.value = o.value; break; } }
+  const city = document.getElementById('fc-city').value.trim();
+  if (city) document.getElementById('plan-city').value = city;
+  switchTool('plan', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function planToArt() {
+  const name = document.getElementById('plan-name').value.trim();
+  if (name) document.getElementById('art-title').value = name;
+  switchTool('art', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function artToVideo() {
+  if (selectedArtUrl) {
+    const img = new Image();
+    img.onload = () => {
+      lvBgImg = img;
+      document.getElementById('lv-bg-label').textContent = '✓ Using your generated cover';
+      lvRefresh();
+    };
+    img.src = selectedArtUrl;
+  }
+  switchTool('lyric', null);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function lvToPlan() {
+  switchTool('plan', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ====== EARNINGS FORECAST ======
+let fcMonthly = null;
+
+function fcParseCsv(input) {
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  document.getElementById('fc-label').textContent = '✓ ' + f.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const text = e.target.result;
+      const delim = (text.split('\n')[0].match(/;/g) || []).length > (text.split('\n')[0].match(/,/g) || []).length ? ';' : ',';
+      const rows = text.split(/\r?\n/).map(r => r.split(delim));
+      const header = rows[0].map(h => h.toLowerCase().replace(/"/g,'').trim());
+      // find the money column and the date column
+      const moneyIdx = header.findIndex(h => /earn|royal|net|revenue|amount|payout|usd|total/.test(h));
+      const dateIdx = header.findIndex(h => /month|date|period|statement|sale/.test(h));
+      if (moneyIdx === -1) throw new Error('no money column');
+      const byMonth = {};
+      for (let i = 1; i < rows.length; i++) {
+        const amt = parseFloat((rows[i][moneyIdx] || '').replace(/["$\s]/g, ''));
+        if (isNaN(amt)) continue;
+        let key = 'all';
+        if (dateIdx !== -1) {
+          const d = (rows[i][dateIdx] || '').replace(/"/g,'').trim();
+          const m = d.match(/(\d{4})[-\/](\d{1,2})/) || d.match(/(\d{1,2})[-\/]\d{1,2}[-\/](\d{4})/);
+          if (m) key = m[2] && m[2].length === 4 ? m[2] + '-' + String(m[1]).padStart(2,'0') : m[1] + '-' + String(m[2]).padStart(2,'0');
+          else if (/^\d{4}-\d{2}/.test(d)) key = d.slice(0,7);
+        }
+        byMonth[key] = (byMonth[key] || 0) + amt;
+      }
+      const keys = Object.keys(byMonth).filter(k => k !== 'all').sort();
+      if (keys.length >= 2) {
+        fcMonthly = keys.map(k => ({ month: k, amount: Math.round(byMonth[k] * 100) / 100 }));
+        document.getElementById('fc-parse-status').innerHTML = '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months found</strong> — total $' + fcMonthly.reduce((a,b)=>a+b.amount,0).toFixed(2) + '. Check the rows below, then hit Forecast.';
+        document.getElementById('fc-rows').innerHTML = '';
+        fcMonthly.slice(-24).forEach(m => fcAddRow(m.month, m.amount));
+      } else if (byMonth.all) {
+        document.getElementById('fc-parse-status').textContent = 'Found $' + byMonth.all.toFixed(2) + ' total but no monthly dates — fill in the months below instead.';
+      } else {
+        throw new Error('empty');
+      }
+    } catch(err) {
+      document.getElementById('fc-parse-status').textContent = 'Couldn\'t auto-read that CSV format — no problem: fill in your months below.';
+    }
+  };
+  reader.readAsText(f);
+}
+
+function fcAddRow(month, amount) {
+  const wrap = document.getElementById('fc-rows');
+  const div = document.createElement('div');
+  div.className = 'fc-row';
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;';
+  div.innerHTML = `
+    <input class="form-input" placeholder="e.g. Jan 2026" value="${month || ''}"/>
+    <input class="form-input" type="number" step="0.01" min="0" placeholder="e.g. 150.00" value="${amount != null ? amount : ''}"/>`;
+  wrap.appendChild(div);
+}
+
+function fcGetMonthly() {
+  const rows = [];
+  document.querySelectorAll('#fc-rows .fc-row').forEach((r, i) => {
+    const amount = parseFloat(r.children[1].value);
+    if (isNaN(amount)) return;
+    rows.push({ month: r.children[0].value.trim() || ('Month ' + (i + 1)), amount: amount });
+  });
+  if (rows.length >= 2) return rows;
+  return fcMonthly;
+}
+
+function fcProject(monthly) {
+  const amts = monthly.map(m => m.amount);
+  const n = amts.length;
+  const recent = amts.slice(-3);
+  const prior = amts.slice(-6, -3);
+  const avgRecent = recent.reduce((a,b)=>a+b,0) / recent.length;
+  let trend;
+  if (prior.length) {
+    const avgPrior = prior.reduce((a,b)=>a+b,0) / prior.length;
+    trend = avgPrior > 0 ? Math.pow(avgRecent / avgPrior, 1/3) - 1 : 0;
+  } else {
+    // short history: read growth across the whole span, first month to last
+    trend = (amts[0] > 0 && n > 1) ? Math.pow(amts[n-1] / amts[0], 1/(n-1)) - 1 : 0;
+  }
+  trend = Math.max(-0.12, Math.min(0.15, trend));
+
+  function run(growth, viral) {
+    let m = avgRecent, total = 0;
+    const marks = { series: [] };
+    for (let i = 1; i <= 60; i++) {
+      m = m * (1 + growth);
+      let monthVal = m;
+      if (viral && i === 9) monthVal *= 3.2;           // one viral month
+      if (viral && (i === 10 || i === 11)) monthVal *= 1.6; // afterglow decays
+      total += monthVal;
+      marks.series.push(Math.round(total));
+      if (i === 12) marks.y1 = Math.round(total);
+      if (i === 36) marks.y3 = Math.round(total);
+      if (i === 60) marks.y5 = Math.round(total);
+    }
+    return marks;
+  }
+
+  const steadyG = Math.max(-0.03, Math.min(0.02, trend));      // coast: mild version of current trend
+  const growthG = Math.min(0.09, Math.max(0.05, trend + 0.05)); // working the plan
+  return {
+    stats: { avgMonthly: Math.round(avgRecent * 100) / 100, trend: Math.round(trend * 1000) / 10, monthsOfData: n },
+    scenarios: {
+      steady:   run(steadyG, false),
+      growth:   run(growthG, false),
+      breakout: run(growthG, true)
+    }
+  };
+}
+
+function fcMoney(v) {
+  v = v || 0;
+  return v >= 1000 ? '$' + (v/1000).toFixed(v >= 100000 ? 0 : 1) + 'k' : '$' + Math.round(v);
+}
+
+function fcDrawChart(scenarios) {
+  const c = document.getElementById('fc-chart');
+  if (!c || !scenarios.steady.series) return;
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;              // 1280x600 for crispness
+  const padL = 110, padR = 320, padT = 60, padB = 70;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+
+  // card background
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0e0e1a'); bg.addColorStop(1, '#0a0a12');
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.roundRect(0, 0, W, H, 24); ctx.fill();
+
+  const maxV = Math.max(scenarios.breakout.series[59], 10) * 1.06;
+  const px = i => padL + (i / 59) * plotW;
+  const py = v => padT + plotH - (v / maxV) * plotH;
+
+  // gridlines with dollar labels on the left
+  ctx.lineWidth = 2;
+  for (let g = 0; g <= 4; g++) {
+    const v = maxV - (maxV / 4) * g;
+    const y = padT + (plotH / 4) * g;
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+    ctx.fillStyle = '#7a7a92'; ctx.font = '600 20px Arial'; ctx.textAlign = 'right';
+    ctx.fillText(fcMoney(v), padL - 14, y + 7);
+  }
+
+  // time labels people actually say
+  ctx.fillStyle = '#6a6a82'; ctx.font = '600 22px Arial'; ctx.textAlign = 'center';
+  ctx.fillText('Today', px(0) + 30, H - 28);
+  [12, 24, 36, 48].forEach((m, i) => ctx.fillText((i + 1) + ' yr', px(m), H - 28));
+  ctx.fillText('5 yrs', px(59), H - 28);
+
+  const smooth = (series, color, width, glow, dash) => {
+    ctx.save();
+    if (glow) { ctx.shadowColor = color; ctx.shadowBlur = 22; }
+    if (dash) ctx.setLineDash([20, 16]);
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(px(0), py(series[0]));
+    for (let i = 1; i < series.length; i++) {
+      const xc = (px(i - 1) + px(i)) / 2, yc = (py(series[i - 1]) + py(series[i])) / 2;
+      ctx.quadraticCurveTo(px(i - 1), py(series[i - 1]), xc, yc);
+    }
+    ctx.lineTo(px(59), py(series[59]));
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  // soft teal area under the Growth curve — "your money filling up"
+  const area = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+  area.addColorStop(0, 'rgba(0,255,209,0.18)');
+  area.addColorStop(1, 'rgba(0,255,209,0)');
+  ctx.beginPath();
+  ctx.moveTo(px(0), py(scenarios.growth.series[0]));
+  scenarios.growth.series.forEach((v, i) => ctx.lineTo(px(i), py(v)));
+  ctx.lineTo(px(59), padT + plotH); ctx.lineTo(px(0), padT + plotH);
+  ctx.closePath(); ctx.fillStyle = area; ctx.fill();
+
+  smooth(scenarios.steady.series, '#7a7a92', 5, false);
+  smooth(scenarios.growth.series, '#00FFD1', 8, true);
+  smooth(scenarios.breakout.series, '#FFD700', 5, true, true);
+
+  // endpoint dots + plain-English labels ON the lines (this IS the legend)
+  const ends = [
+    { name: 'If you coast', v: scenarios.steady.y5, color: '#9a9ab2', y: py(scenarios.steady.series[59]) },
+    { name: 'If you work the plan', v: scenarios.growth.y5, color: '#00FFD1', y: py(scenarios.growth.series[59]) },
+    { name: 'Plan + one viral hit', v: scenarios.breakout.y5, color: '#FFD700', y: py(scenarios.breakout.series[59]) }
+  ];
+  // keep labels from overlapping
+  ends.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) {
+    if (ends[i].y - ends[i - 1].y < 62) ends[i].y = ends[i - 1].y + 62;
+  }
+  ends.forEach(e => {
+    ctx.fillStyle = e.color;
+    ctx.beginPath(); ctx.arc(px(59), Math.min(e.y, padT + plotH), 9, 0, Math.PI * 2); ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.font = '800 30px Arial';
+    ctx.fillText(fcMoney(e.v), px(59) + 22, e.y + 2);
+    ctx.fillStyle = '#b8b8cf'; ctx.font = '600 20px Arial';
+    ctx.fillText(e.name, px(59) + 22, e.y + 28);
+  });
+
+  // "Today" marker
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(px(0), py(scenarios.growth.series[0]), 7, 0, Math.PI * 2); ctx.fill();
+}
+
+let _fcLast = null;
+
+function fcExportPdf() {
+  if (!_fcLast) return;
+  const { stats, scenarios, data } = _fcLast;
+  const chart = document.getElementById('fc-chart');
+  const chartImg = chart ? chart.toDataURL('image/png') : '';
+  const money = v => '$' + (v || 0).toLocaleString();
+  const w = window.open('', '_blank');
+  w.document.write('<html><head><title>Earnings Forecast — StudioSound.ai</title><style>' +
+    'body{font-family:Arial;color:#111;padding:36px;max-width:720px;margin:auto;}' +
+    'h1{font-size:22px;margin:0;}p.sub{color:#555;font-size:12px;margin:4px 0 18px;}' +
+    'h2{font-size:12px;color:#00997d;letter-spacing:0.08em;margin:20px 0 6px;text-transform:uppercase;}' +
+    'p{font-size:13px;line-height:1.6;margin:4px 0;}' +
+    'table{width:100%;border-collapse:collapse;margin:8px 0;}th,td{border:1px solid #ddd;padding:9px;font-size:13px;text-align:left;}th{background:#f4f4f4;}' +
+    'img.chart{width:100%;border:1px solid #eee;border-radius:8px;margin:6px 0;}' +
+    '.move{font-size:13px;padding:3px 0;}footer{margin-top:28px;color:#999;font-size:10px;text-align:center;}' +
+    '.disc{margin-top:16px;color:#888;font-size:10px;line-height:1.5;}</style></head><body>' +
+    '<h1>EARNINGS FORECAST</h1><p class="sub">Generated by StudioSound.ai · ' + new Date().toLocaleDateString() + '</p>' +
+    (data.headline ? '<h2>Where You Are</h2><p>' + data.headline + '</p>' : '') +
+    '<h2>Your Numbers</h2><p>Recent monthly average: <strong>' + money(stats.avgMonthly) + '</strong> · Trend: <strong>' + (stats.trend > 0 ? '+' : '') + stats.trend + '%/mo</strong> · Based on ' + stats.monthsOfData + ' months of data</p>' +
+    (chartImg ? '<h2>Five-Year Projection</h2><img class="chart" src="' + chartImg + '"/>' : '') +
+    '<h2>Scenarios (cumulative)</h2><table><tr><th>Scenario</th><th>1 Year</th><th>3 Years</th><th>5 Years</th></tr>' +
+    '<tr><td>Steady — current path</td><td>' + money(scenarios.steady.y1) + '</td><td>' + money(scenarios.steady.y3) + '</td><td>' + money(scenarios.steady.y5) + '</td></tr>' +
+    '<tr><td>Growth — consistent releases + content</td><td>' + money(scenarios.growth.y1) + '</td><td>' + money(scenarios.growth.y3) + '</td><td>' + money(scenarios.growth.y5) + '</td></tr>' +
+    '<tr><td>Breakout — growth + one viral moment</td><td>' + money(scenarios.breakout.y1) + '</td><td>' + money(scenarios.breakout.y3) + '</td><td>' + money(scenarios.breakout.y5) + '</td></tr></table>' +
+    (data.analysis ? '<h2>Analyst Read</h2><p>' + data.analysis + '</p>' : '') +
+    (data.moves && data.moves.length ? '<h2>Moves That Change Your Curve</h2>' + data.moves.map(m => '<div class="move">• ' + m + '</div>').join('') : '') +
+    '<p class="disc">Scenario estimates derived from the artist\'s historical royalty data and standard independent-music income patterns. These are projections, not guarantees, and do not constitute financial advice. Streaming income is variable.</p>' +
+    '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
+  w.document.close(); w.focus();
+  setTimeout(() => w.print(), 500);
+}
+
+function fcRenderFull(stats, scenarios, data) {
+  data = data || {};
+  document.getElementById('fc-placeholder').style.display = 'none';
+  const money = v => '$' + (v || 0).toLocaleString();
+  const rows = [
+    ['STEADY — keep doing what you\'re doing', scenarios.steady, ''],
+    ['GROWTH — consistent releases + content', scenarios.growth, 'var(--neon)'],
+    ['BREAKOUT — growth plan + one viral moment', scenarios.breakout, '#FFD700']
+  ];
+  let html = '';
+  if (data.headline) html += `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">${data.headline}</div></div>`;
+  html += `<div class="plan-item"><div class="plan-date">YOUR NUMBERS</div><div class="plan-detail">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · Based on ${stats.monthsOfData} months of data</div></div>`;
+  if (scenarios.steady && scenarios.steady.series) {
+    const gap = (scenarios.growth.y5 || 0) - (scenarios.steady.y5 || 0);
+    html += `<div class="plan-item"><div class="plan-date">WHERE YOUR MONEY IS HEADED</div>
+      <canvas id="fc-chart" width="1280" height="600" style="width:100%;border-radius:14px;display:block;margin-top:8px;"></canvas>
+      <div class="plan-detail" style="margin-top:10px;">Each line is a path. The higher the line climbs, the more you've made in total. The gap between <strong style="color:#9a9ab2;">coasting</strong> and <strong style="color:var(--neon);">working the plan</strong> is worth <strong style="color:var(--neon);">${money(gap)}</strong> over 5 years — that's what the work pays.</div></div>`;
+  }
+  rows.forEach(([label, sc, color]) => {
+    html += `<div class="plan-item"><div class="plan-date" ${color?`style="color:${color};"`:''}>${label}</div>
+      <div class="plan-detail"><strong style="color:#fff;">1 yr:</strong> ${money(sc.y1)} &nbsp; <strong style="color:#fff;">3 yr:</strong> ${money(sc.y3)} &nbsp; <strong style="color:#fff;">5 yr:</strong> ${money(sc.y5)}</div>
+      ${data.scenario_notes ? `<div class="plan-detail" style="margin-top:4px;">${data.scenario_notes[label.split(' ')[0].toLowerCase()] || ''}</div>` : ''}</div>`;
+  });
+  if (data.analysis) html += `<div class="plan-item"><div class="plan-date">ANALYST READ</div><div class="plan-detail">${data.analysis}</div></div>`;
+  if (data.moves && data.moves.length) {
+    html += `<div class="plan-item"><div class="plan-date">MOVES THAT CHANGE YOUR CURVE</div>` +
+      data.moves.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${m}</div>`).join('') + `</div>`;
+  }
+  if (!data.analysis) html += `<div style="color:var(--muted);font-size:11px;margin-top:8px;">This is a saved preview — run a fresh forecast on Pro for your full analyst report and moves.</div>`;
+  html += nextStepHtml('The Growth curve only happens with a real rollout. Turn these numbers into your 30-day plan — we\'ll research you across the web and build it step by step.', 'Build My Release Plan', 'fcToPlan()');
+  html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
+  if (data.analysis) {
+    html += `<div class="result-actions" style="margin-top:10px;"><button class="result-btn primary" onclick="fcExportPdf()" style="width:100%;justify-content:center;"><i class="ti ti-file-download"></i> Download PDF Report</button></div>`;
+  }
+  document.getElementById('fc-result').innerHTML = html;
+  document.getElementById('fc-result').style.display = 'block';
+  _fcLast = { stats: stats, scenarios: scenarios, data: data };
+  if (scenarios.steady && scenarios.steady.series) fcDrawChart(scenarios);
+}
+
+function openForecastAsset(i) {
+  const a = assetsCache[i];
+  if (!a || !a.data || !a.data.scenarios) return;
+  switchTool('forecast', null);
+  setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+  fcRenderFull(a.data.stats, a.data.scenarios, a.data.report || {});
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+async function runForecast() {
+  const monthly = fcGetMonthly();
+  if (!monthly || monthly.length < 2) { alert('Upload a report or enter at least 2 months of earnings'); return; }
+
+  // Remember the artist's inputs so they survive upgrades and page reloads
+  try {
+    localStorage.setItem('fcSaved', JSON.stringify({
+      rows: monthly,
+      genre: document.getElementById('fc-genre').value,
+      city: document.getElementById('fc-city').value,
+      releases: document.getElementById('fc-releases').value
+    }));
+  } catch(e) {}
+
+  // Plan can change mid-session (they just upgraded!) — re-check before deciding teaser vs full
+  if (currentPlan === 'free') {
+    try {
+      const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
+      if (prof && prof.plan) currentPlan = prof.plan;
+    } catch(e) {}
+  }
+
+  const { stats, scenarios } = fcProject(monthly);
+  document.getElementById('fc-placeholder').style.display = 'none';
+
+  // FREE PLAN: real numbers teaser, full report locked behind Pro
+  if (currentPlan === 'free') {
+    const money = v => '$' + (v || 0).toLocaleString();
+    const lockRow = (label, tease) => `
+      <div class="plan-item" style="position:relative;overflow:hidden;">
+        <div class="plan-date" style="color:#5a5a72;">🔒 ${label}</div>
+        <div class="plan-detail" style="filter:blur(5px);user-select:none;">${tease}</div>
+      </div>`;
+    let html = `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · ${stats.monthsOfData} months of data read</div></div>`;
+    html += `<div class="plan-item"><div class="plan-date">STEADY PATH — 1 YEAR</div><div class="plan-detail">If nothing changes: <strong style="color:#fff;">${money(scenarios.steady.y1)}</strong> over the next 12 months</div></div>`;
+    html += lockRow('GROWTH SCENARIO — 1 / 3 / 5 YEARS', 'Your ceiling: $' + (scenarios.growth.y5) + ' over five years with the right moves');
+    html += lockRow('BREAKOUT SCENARIO — 1 / 3 / 5 YEARS', 'One viral moment changes this to $' + (scenarios.breakout.y5));
+    html += lockRow('ANALYST READ + YOUR NEXT MOVES', 'Four specific moves would shift your curve this quarter based on your trend');
+    html += `<a href="pricing.html" style="display:block;text-align:center;background:var(--neon);color:#05050a;font-weight:800;font-size:13px;padding:13px;border-radius:10px;text-decoration:none;margin-top:12px;">Unlock your full forecast with Pro — $9.99/mo →</a>`;
+    html += `<div style="text-align:center;margin-top:10px;"><a onclick="fcToPlan()" style="color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;">Free move while you decide: build this month's release plan →</a></div>`;
+    html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
+    document.getElementById('fc-result').innerHTML = html;
+    document.getElementById('fc-result').style.display = 'block';
+    document.getElementById('fc-loading').classList.remove('active');
+    const tName = 'Earnings Forecast ' + new Date().toLocaleDateString();
+    addRecent(null, tName, 'Forecast', null, {stats, scenarios});
+    saveAsset('Forecast', tName, null, {stats, scenarios});
+    return;
+  }
+
+  document.getElementById('fc-result').style.display = 'none';
+  document.getElementById('fc-error').style.display = 'none';
+  document.getElementById('fc-loading').classList.add('active');
+  document.getElementById('fc-btn').disabled = true;
+  try {
+    const res = await fetch('/api/generate-forecast', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        monthly: monthly.slice(-12), stats, scenarios,
+        genre: document.getElementById('fc-genre').value.trim(),
+        city: document.getElementById('fc-city').value.trim(),
+        releasesPerYear: document.getElementById('fc-releases').value.trim()
+      })
+    });
+    const data = await res.json();
+    document.getElementById('fc-loading').classList.remove('active');
+    if (data.error === 'limit_reached') {
+      document.getElementById('fc-placeholder').style.display = 'flex';
+      showLimit('fc-error','forecasts');
+      document.getElementById('fc-btn').disabled = false;
+      return;
+    }
+    fcRenderFull(stats, scenarios, data);
+    const fcName = 'Earnings Forecast ' + new Date().toLocaleDateString();
+    addRecent(null, fcName, 'Forecast', null, {stats, scenarios, report: data});
+    saveAsset('Forecast', fcName, null, {stats, scenarios, report: data});
+  } catch(e) {
+    document.getElementById('fc-loading').classList.remove('active');
+    document.getElementById('fc-placeholder').style.display = 'flex';
+    const err = document.getElementById('fc-error');
+    err.textContent = 'Something went wrong — try again.';
+    err.style.display = 'block';
+  }
+  document.getElementById('fc-btn').disabled = false;
+}
+
+// ====== AI LYRIC WRITER ======
+async function generateLyrics() {
+  const topic = document.getElementById('lw-topic').value.trim();
+  if(!topic) { alert('Tell us what the song is about'); return; }
+  document.getElementById('lw-placeholder').style.display = 'none';
+  document.getElementById('lw-output').style.display = 'none';
+  document.getElementById('lw-error').style.display = 'none';
+  document.getElementById('lw-loading').classList.add('active');
+  document.getElementById('lw-btn').disabled = true;
+  try {
+    const res = await fetch('/api/generate-lyrics', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        topic: topic,
+        genre: document.getElementById('lw-genre').value.trim(),
+        mood: document.getElementById('lw-mood').value.trim(),
+        language: document.getElementById('lw-lang').value,
+        structure: document.getElementById('lw-structure').value,
+        explicit: document.getElementById('lw-explicit').checked,
+        styleNotes: document.getElementById('lw-style').value.trim()
+      })
+    });
+    const data = await res.json();
+    document.getElementById('lw-loading').classList.remove('active');
+    if(data.error === 'limit_reached') {
+      document.getElementById('lw-placeholder').style.display = 'flex';
+      showLimit('lw-error','lyric generations');
+      document.getElementById('lw-btn').disabled = false;
+      return;
+    }
+    if(data.lyrics) {
+      const out = document.getElementById('lw-output');
+      out.value = data.lyrics;
+      out.style.display = 'block';
+      addRecent(null, topic.slice(0, 30), 'Lyrics', null);
+      saveAsset('Lyrics', topic.slice(0, 40), null, {lyrics: data.lyrics, topic: topic});
+    } else {
+      throw new Error(data.error || 'No lyrics returned');
+    }
+  } catch(e) {
+    document.getElementById('lw-loading').classList.remove('active');
+    document.getElementById('lw-placeholder').style.display = 'flex';
+    const err = document.getElementById('lw-error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+  }
+  document.getElementById('lw-btn').disabled = false;
+}
+
+function copyLyrics() {
+  const out = document.getElementById('lw-output');
+  if(!out.value) { alert('Write some lyrics first'); return; }
+  navigator.clipboard.writeText(out.value).then(() => alert('Lyrics copied!'));
+}
+
+function sendToVideo() {
+  const out = document.getElementById('lw-output');
+  if(!out.value) { alert('Write some lyrics first'); return; }
+  // strip section labels, keep the lines
+  const lines = out.value.split('\n').map(l => l.trim()).filter(l => l && !/^\[.*\]$/.test(l));
+  document.getElementById('lv-lyrics').value = lines.join('\n');
+  switchTool('lyric', null);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ====== LYRIC VIDEO CREATOR (client-side render, $0 per video) ======
+let lvBuffer = null, lvBgImg = null, lvTimes = [], lvSyncIdx = 0;
+let lvMotionPhase = 0, lvPrevT = 0;
+let lvAC = null, lvSrc = null, lvStartT = 0, lvAnim = null, lvRecorder = null;
+
+let lvAudioFile = null;
+
+async function lvLoadAudio(input) {
+  if(!input.files || !input.files[0]) return;
+  lvAudioFile = input.files[0];
+  document.getElementById('lv-audio-label').textContent = '✓ ' + input.files[0].name;
+  const buf = await input.files[0].arrayBuffer();
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  lvBuffer = await ac.decodeAudioData(buf);
+  lvTimes = [];
+  document.getElementById('lv-sync-status').textContent = 'Song loaded: ' + lvBuffer.duration.toFixed(1) + 's. Sync when ready.';
+}
+
+function lvLoadBg(input) {
+  if(!input.files || !input.files[0]) return;
+  document.getElementById('lv-bg-label').textContent = '✓ ' + input.files[0].name;
+  const reader = new FileReader();
+  reader.onload = e => { const img = new Image(); img.onload = () => { lvBgImg = img; lvRefresh(); }; img.src = e.target.result; };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function lvAutoLyrics() {
+  if(!lvAudioFile) { alert('Upload your song first'); return; }
+  const status = document.getElementById('lv-auto-status');
+  if(lvAudioFile.size > 25 * 1048576) {
+    status.textContent = 'File too large for auto-lyrics (max 25MB) — try an MP3 version.';
+    return;
+  }
+  try {
+    status.textContent = 'Uploading your song for analysis...';
+    const path = currentUser.id + '/transcribe-' + Date.now() + '-' + lvAudioFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const { error: upErr } = await sbAuth.storage.from('assets').upload(path, lvAudioFile, { contentType: lvAudioFile.type || 'audio/mpeg' });
+    if(upErr) throw upErr;
+    const audioUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+
+    status.textContent = 'AI is listening to your song... (30-60 seconds)';
+    const res = await fetch('/api/transcribe-lyrics', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({ audioUrl: audioUrl })
+    });
+    let data;
+    try {
+      data = await res.json();
+    } catch(parseErr) {
+      throw new Error(res.status === 404
+        ? 'Auto-Lyrics isn\'t deployed yet — coming right back online'
+        : 'Server hiccup (' + res.status + ') — try again in a minute');
+    }
+    if(data.error === 'limit_reached') {
+      status.innerHTML = 'You\'ve used your auto-lyrics for this month. <a href="pricing.html" style="color:var(--neon);font-weight:700;">Upgrade →</a> or paste lyrics manually below.';
+      return;
+    }
+    if(!data.lines) throw new Error(data.error || 'No lyrics detected');
+
+    lvRawLines = data.lines;
+    const merged = lvMergeLines(data.lines, document.getElementById('lv-pacing').value);
+    document.getElementById('lv-lyrics').value = merged.map(l => l.text).join('\n');
+    lvTimes = merged.map(l => l.t);
+    status.innerHTML = '✓ <strong style="color:var(--neon);">' + merged.length + ' lines pulled from your song, timed and paced.</strong> Fix any misheard words below — timing stays locked. Then just add your cover and export.';
+    document.getElementById('lv-sync-status').textContent = '✓ Auto-synced from your song — no tapping needed.';
+  } catch(e) {
+    console.error(e);
+    status.textContent = (e.message || 'Auto-lyrics failed') + ' — you can still paste lyrics and tap-sync below.';
+  }
+}
+
+let lvRawLines = null;
+
+function lvMergeLines(lines, mode) {
+  const minDur = mode === 'fast' ? 0.7 : mode === 'relaxed' ? 2.4 : 1.5;
+  const joinShort = mode !== 'fast';
+  const out = [];
+  for (const l of lines) {
+    const last = out[out.length - 1];
+    if (last && (l.t - last.t < minDur || (joinShort && last.text.split(' ').length < 3)) && (last.text + ' ' + l.text).length < 95) {
+      last.text += ' ' + l.text;
+    } else {
+      out.push({ t: l.t, text: l.text });
+    }
+  }
+  return out;
+}
+
+function lvRepace() {
+  if (!lvRawLines) return;
+  const merged = lvMergeLines(lvRawLines, document.getElementById('lv-pacing').value);
+  document.getElementById('lv-lyrics').value = merged.map(l => l.text).join('\n');
+  lvTimes = merged.map(l => l.t);
+  document.getElementById('lv-sync-status').textContent = '✓ Re-paced: ' + merged.length + ' lines, timing locked to your song.';
+  lvRefresh();
+}
+
+function lvRefresh() {
+  // Redraw a sample frame instantly when settings change (no play needed)
+  if (lvAnim) return; // live playback already redraws every frame
+  const times = lvGetTimes();
+  const sampleT = (times && times.length) ? times[0] + 1.2 : 2;
+  lvDrawFrame(sampleT, lvLines().length ? lvCurrentLine(sampleT) : -1);
+}
+
+function lvLines() {
+  return document.getElementById('lv-lyrics').value.split('\n').map(l => l.trim()).filter(Boolean);
+}
+
+function lvGetTimes() {
+  const lines = lvLines();
+  if (lvTimes.length >= 1 && lvTimes.length >= lines.length) return lvTimes.slice(0, lines.length);
+  if (lvTimes.length > 0) return lvTimes; // partial sync — remaining lines never show, warn at export
+  // auto-distribute
+  const dur = lvBuffer ? lvBuffer.duration : 30;
+  return lines.map((_, i) => (i * dur) / Math.max(lines.length, 1));
+}
+
+function lvStartSync() {
+  if(!lvBuffer) { alert('Upload your song first'); return; }
+  const lines = lvLines();
+  if(!lines.length) { alert('Paste your lyrics first'); return; }
+  lvStopAll();
+  lvTimes = []; lvSyncIdx = 0;
+  lvAC = new (window.AudioContext || window.webkitAudioContext)();
+  lvSrc = lvAC.createBufferSource(); lvSrc.buffer = lvBuffer; lvSrc.connect(lvAC.destination);
+  lvStartT = lvAC.currentTime; lvSrc.start();
+  document.getElementById('lv-tap').style.display = 'flex';
+  document.getElementById('lv-tap').textContent = 'TAP → "' + lines[0].slice(0, 40) + '"';
+  document.getElementById('lv-sync-status').textContent = 'Syncing... tap when each line should appear.';
+  document.addEventListener('keydown', lvSpaceTap);
+  lvSrc.onended = () => lvStopSync();
+}
+
+function lvSpaceTap(e) { if(e.code === 'Space') { e.preventDefault(); lvTap(); } }
+
+function lvTap() {
+  if(!lvAC) return;
+  const lines = lvLines();
+  if(lvSyncIdx >= lines.length) return;
+  lvTimes.push(lvAC.currentTime - lvStartT);
+  lvSyncIdx++;
+  const btn = document.getElementById('lv-tap');
+  if(lvSyncIdx < lines.length) {
+    btn.textContent = 'TAP → "' + lines[lvSyncIdx].slice(0, 40) + '"';
+    document.getElementById('lv-sync-status').textContent = lvSyncIdx + ' / ' + lines.length + ' lines synced';
+  } else {
+    document.getElementById('lv-sync-status').textContent = '✓ All ' + lines.length + ' lines synced!';
+    lvStopSync();
+  }
+}
+
+function lvStopSync() {
+  document.getElementById('lv-tap').style.display = 'none';
+  document.removeEventListener('keydown', lvSpaceTap);
+  if(lvSrc) { try { lvSrc.onended = null; lvSrc.stop(); } catch(e){} lvSrc = null; }
+  if(lvTimes.length) document.getElementById('lv-sync-status').textContent = lvTimes.length + ' lines synced. Preview or export.';
+}
+
+const LV_FONTS = {
+  sora:    { fam: "'Sora', Arial", weight: '900' },
+  anton:   { fam: "'Anton', Arial", weight: '400' },
+  bebas:   { fam: "'Bebas Neue', Arial", weight: '400' },
+  archivo: { fam: "'Archivo Black', Arial", weight: '400' },
+  marker:  { fam: "'Permanent Marker', Arial", weight: '400' },
+  bangers: { fam: "'Bangers', Arial", weight: '400' },
+  oswald:  { fam: "'Oswald', Arial", weight: '700' }
+};
+
+async function lvLoadFont() {
+  const f = LV_FONTS[document.getElementById('lv-font').value] || LV_FONTS.sora;
+  try {
+    await Promise.all([
+      document.fonts.load(f.weight + ' 60px ' + f.fam.split(',')[0]),
+      document.fonts.ready
+    ]);
+  } catch(e) {}
+}
+
+function lvWrap(ctx, text, maxW) {
+  const words = text.split(' ');
+  const lines = []; let cur = '';
+  words.forEach(w => {
+    const t = cur ? cur + ' ' + w : w;
+    if(ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t;
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function lvDrawFrame(t, lineIdx) {
+  const c = document.getElementById('lv-canvas');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  const dur = lvBuffer ? lvBuffer.duration : 30;
+  const bgStyle = document.getElementById('lv-bg-style').value || 'fullbleed';
+  const bgMotion = document.getElementById('lv-bg-motion').value || 'pan';
+  const speed = parseFloat(document.getElementById('lv-speed').value) || 0.6;
+  // Accumulated motion phase: speed changes apply smoothly, no jumps, and
+  // the scrubber has a real, visible effect at every setting.
+  let dt = t - lvPrevT;
+  if (!(dt > 0) || dt > 1) dt = 0.016;
+  lvMotionPhase += dt * speed;
+  lvPrevT = t;
+  const ph = lvMotionPhase;
+  ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, W, H);
+
+  const times = lvGetTimes();
+  const lines = lvLines();
+  const lineStart = (lineIdx >= 0 && times[lineIdx] !== undefined) ? times[lineIdx] : 0;
+  const raw = Math.min(1, Math.max(0, (t - lineStart) / 0.4));
+  const entry = 1 - Math.pow(1 - raw, 3);
+
+  // ---- Background motion: pure time-based, totally decoupled from lyrics ----
+  if (lvBgImg) {
+    let zoom = 1.10, xOff = 0, yOff = 0;
+    if (bgMotion === 'pan') {
+      zoom = 1.18;
+      // full sweep ~12s at 1x, ~6s at 2x — clearly responds to the scrubber
+      xOff = Math.sin(ph * 0.5);
+      yOff = Math.sin(ph * 0.31 + 1.3);
+    } else if (bgMotion === 'zoomin') {
+      // breathing loop: pushes in slow, eases back out, repeats (~16s cycle at 1x)
+      zoom = 1.22 - 0.16 * Math.cos(ph * 0.4);
+    } else if (bgMotion === 'zoomout') {
+      // same loop, opposite direction: starts tight, pulls out, returns
+      zoom = 1.22 + 0.16 * Math.cos(ph * 0.4);
+    } else if (bgMotion === 'pulse') {
+      zoom = 1.12 + 0.022 * Math.sin(ph * 1.8);
+    } else { // still
+      zoom = 1.06;
+    }
+
+    if (bgStyle === 'card') {
+      // Blurred backdrop
+      const bScale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * 1.15 * (bgMotion === 'still' ? 1 : zoom * 0.98);
+      const bw2 = lvBgImg.width * bScale, bh2 = lvBgImg.height * bScale;
+      ctx.save();
+      ctx.filter = 'blur(28px) brightness(0.5)';
+      ctx.drawImage(lvBgImg, (W - bw2) / 2, (H - bh2) / 2, bw2, bh2);
+      ctx.restore();
+      // Sharp cover card CENTERED in the middle of the frame
+      const cardW = W * 0.68 * (bgMotion === 'pulse' ? (1 + 0.012 * Math.sin(t * 1.5 * speed)) : 1);
+      const cardScale = cardW / lvBgImg.width;
+      const cardH = lvBgImg.height * cardScale;
+      const cx = (W - cardW) / 2, cy = (H - cardH) / 2;
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 12;
+      const r = W * 0.03;
+      ctx.beginPath();
+      ctx.moveTo(cx + r, cy);
+      ctx.arcTo(cx + cardW, cy, cx + cardW, cy + cardH, r);
+      ctx.arcTo(cx + cardW, cy + cardH, cx, cy + cardH, r);
+      ctx.arcTo(cx, cy + cardH, cx, cy, r);
+      ctx.arcTo(cx, cy, cx + cardW, cy, r);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(lvBgImg, cx, cy, cardW, cardH);
+      ctx.restore();
+    } else {
+      // FULL-BLEED: cover-fill with smooth continuous motion
+      const scale = Math.max(W / lvBgImg.width, H / lvBgImg.height) * zoom;
+      const bw2 = lvBgImg.width * scale, bh2 = lvBgImg.height * scale;
+      const maxPanX = Math.max(0, (bw2 - W) / 2) * 0.8;
+      const maxPanY = Math.max(0, (bh2 - H) / 2) * 0.4;
+      ctx.drawImage(lvBgImg,
+        (W - bw2) / 2 + (bgMotion === 'pan' ? maxPanX * xOff : 0),
+        (H - bh2) / 2 + (bgMotion === 'pan' ? maxPanY * yOff : 0),
+        bw2, bh2);
+    }
+  }
+
+  // Readability vignettes
+  const gTop = ctx.createLinearGradient(0, 0, 0, H * 0.32);
+  gTop.addColorStop(0, 'rgba(5,5,10,0.55)'); gTop.addColorStop(1, 'rgba(5,5,10,0)');
+  ctx.fillStyle = gTop; ctx.fillRect(0, 0, W, H * 0.32);
+  const gBot = ctx.createLinearGradient(0, H * 0.60, 0, H);
+  gBot.addColorStop(0, 'rgba(5,5,10,0)'); gBot.addColorStop(1, 'rgba(5,5,10,0.65)');
+  ctx.fillStyle = gBot; ctx.fillRect(0, H * 0.60, W, H * 0.40);
+
+  // ---- Current lyric ----
+  const font = LV_FONTS[document.getElementById('lv-font').value] || LV_FONTS.sora;
+  const color = document.getElementById('lv-color').value || '#FFFFFF';
+  const motion = document.getElementById('lv-motion').value || 'fade';
+
+  if (lineIdx >= 0 && lineIdx < lines.length) {
+    let alpha = entry, yShift = 0, scaleT = 1;
+    if (motion === 'fade')  { yShift = (1 - entry) * 16; }
+    if (motion === 'slide') { yShift = (1 - entry) * 90; }
+    if (motion === 'pop')   { scaleT = 1 + (1 - entry) * 0.28; }
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = font.weight + ' ' + Math.round(W * 0.088) + 'px ' + font.fam;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const wrapped = lvWrap(ctx, lines[lineIdx], W * 0.86);
+    const lh = W * 0.115;
+    // Card mode: lyrics alternate top / bottom line by line; full-bleed: centered
+    let centerY;
+    if (bgStyle === 'card') {
+      centerY = (lineIdx % 2 === 0 ? H * 0.14 : H * 0.86) + yShift;
+      const halfBlock = ((wrapped.length - 1) * lh) / 2;
+      centerY = Math.min(Math.max(centerY, halfBlock + W * 0.08), H - halfBlock - W * 0.10);
+    } else {
+      centerY = H * 0.52 + yShift;
+    }
+    const startY = centerY - ((wrapped.length - 1) * lh) / 2;
+    ctx.translate(W / 2, centerY);
+    ctx.scale(scaleT, scaleT);
+    ctx.translate(-W / 2, -centerY);
+    const rr = parseInt(color.slice(1,3),16), gg = parseInt(color.slice(3,5),16), bb = parseInt(color.slice(5,7),16);
+    const isDark = (0.299*rr + 0.587*gg + 0.114*bb) < 90;
+    wrapped.forEach((ln, i) => {
+      ctx.shadowColor = isDark ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.9)';
+      ctx.shadowBlur = isDark ? 26 : 22; ctx.shadowOffsetY = isDark ? 0 : 4;
+      ctx.fillStyle = color;
+      ctx.fillText(ln, W / 2, startY + i * lh);
+    });
+    ctx.restore();
+  }
+
+  // Footer title
+  const title = document.getElementById('lv-title').value.trim();
+  if (title) {
+    ctx.font = '700 ' + Math.round(W * 0.030) + 'px ' + (LV_FONTS.oswald.fam);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.textAlign = 'center';
+    ctx.fillText(title.toUpperCase(), W / 2, H - W * 0.055);
+  }
+}
+
+function lvCurrentLine(t) {
+  const times = lvGetTimes();
+  let idx = -1;
+  for(let i = 0; i < times.length; i++) if(t >= times[i]) idx = i;
+  return idx;
+}
+
+let lvSnap = null;
+
+async function lvRun(record) {
+  lvStopAll();
+  lvSnap = null;
+  lvMotionPhase = 0; lvPrevT = 0;
+  await lvLoadFont();
+  lvAC = new (window.AudioContext || window.webkitAudioContext)();
+  lvSrc = lvAC.createBufferSource(); lvSrc.buffer = lvBuffer;
+  lvSrc.connect(lvAC.destination);
+  const lvStartSec = Math.max(0, parseFloat(document.getElementById('lv-start').value) || 0);
+  const lenSel = document.getElementById('lv-length').value;
+  let lvPlayDur = Math.max(1, lvBuffer.duration - lvStartSec);
+  if (lenSel !== 'full') lvPlayDur = Math.min(lvPlayDur, parseFloat(lenSel));
+  if(record) {
+    const c = document.getElementById('lv-canvas');
+    const stream = c.captureStream(30);
+    const dest = lvAC.createMediaStreamDestination();
+    lvSrc.connect(dest);
+    dest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+    let mime = 'video/webm;codecs=vp9,opus';
+    if(!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
+    if(!MediaRecorder.isTypeSupported(mime)) mime = '';
+    const lvBitrate = lvPlayDur > 75 ? 2000000 : 3500000;
+    lvRecorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: lvBitrate } : undefined);
+    const chunks = [];
+    lvRecorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+    lvRecorder.onstop = async () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'studiosound-lyric-video.webm';
+      a.click();
+      const lvName = document.getElementById('lv-title').value.trim() || ('Lyric Video ' + new Date().toLocaleDateString());
+      const status = document.getElementById('lv-export-status');
+      status.innerHTML = '✓ Downloaded! Now saving a copy to My Assets...';
+      let videoUrl = null;
+      try {
+        if (blob.size < 45 * 1048576 && currentUser) {
+          const path = currentUser.id + '/lyricvideo-' + Date.now() + '.webm';
+          const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'video/webm' });
+          if (!upErr) videoUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+          else console.error('video upload', upErr);
+        }
+      } catch(e) { console.error('video upload', e); }
+      saveAsset('Lyric Video', lvName, lvSnap, {videoUrl: videoUrl, lines: lvLines().length, font: document.getElementById('lv-font').value, color: document.getElementById('lv-color').value});
+      addRecent(null, lvName, 'Lyric Video', lvSnap);
+      const sizeMB = (blob.size / 1048576).toFixed(1);
+      status.innerHTML = (videoUrl
+        ? '✓ Downloaded and saved to My Assets (' + sizeMB + ' MB) — play or re-download it there anytime.'
+        : '✓ Downloaded (' + sizeMB + ' MB)! Too large for a cloud copy — the file on your device is your copy. 15s and 30s clips always save to My Assets.')
+        + ' <a onclick="lvToPlan()" style="color:var(--neon);font-weight:700;cursor:pointer;">Next: plan the rollout →</a>';
+    };
+    lvRecorder.start();
+    const lenSelStatus = document.getElementById('lv-length').value;
+    const durForStatus = lenSelStatus === 'full' ? lvBuffer.duration : Math.min(parseFloat(lenSelStatus), lvBuffer.duration);
+    document.getElementById('lv-export-status').textContent = 'Recording your video in real time (' + durForStatus.toFixed(0) + 's) — keep this tab open...';
+  }
+  lvStartT = lvAC.currentTime;
+  lvSrc.start(0, lvStartSec, lvPlayDur);
+  const tick = () => {
+    const t = lvStartSec + (lvAC.currentTime - lvStartT);
+    lvDrawFrame(t, lvCurrentLine(t));
+    if(record && !lvSnap && (lvAC.currentTime - lvStartT) > 1.5) {
+      try { lvSnap = document.getElementById('lv-canvas').toDataURL('image/jpeg', 0.85); } catch(e) {}
+    }
+    lvAnim = requestAnimationFrame(tick);
+  };
+  tick();
+  lvSrc.onended = () => {
+    if(lvAnim) cancelAnimationFrame(lvAnim);
+    if(lvRecorder && lvRecorder.state === 'recording') lvRecorder.stop();
+    lvSrc = null;
+  };
+}
+
+function lvPreview() {
+  if(!lvBuffer) { alert('Upload your song first'); return; }
+  if(!lvBgImg) { alert('Upload a background image first'); return; }
+  if(!lvLines().length) { alert('Paste your lyrics first'); return; }
+  lvRun(false);
+}
+
+function lvStopPreview() { lvStopAll(); }
+
+function lvExport() {
+  if(!lvBuffer) { alert('Upload your song first'); return; }
+  if(!lvBgImg) { alert('Upload a background image first'); return; }
+  if(!lvLines().length) { alert('Paste your lyrics first'); return; }
+  const lines = lvLines();
+  if(lvTimes.length && lvTimes.length < lines.length) {
+    if(!confirm('You synced ' + lvTimes.length + ' of ' + lines.length + ' lines — unsynced lines won\'t show. Export anyway?')) return;
+  }
+  lvRun(true);
+}
+
+function lvStopAll() {
+  if(lvAnim) { cancelAnimationFrame(lvAnim); lvAnim = null; }
+  if(lvRecorder && lvRecorder.state === 'recording') { try { lvRecorder.stop(); } catch(e){} }
+  lvRecorder = null;
+  if(lvSrc) { try { lvSrc.onended = null; lvSrc.stop(); } catch(e){} lvSrc = null; }
+}
+
+// ====== RECENT GENERATIONS ======
+function addRecent(icon, name, type, imageUrl, planData) {
+  recentItems.unshift({icon, name, type, imageUrl, data: planData || null});
+  if(recentItems.length > 5) recentItems = recentItems.slice(0,5);
+  renderRecent();
+}
+
+function renderRecent() {
+  const grid = document.getElementById('recent-grid');
+  const colors = ['#1a0828','#0f1f3a','#0f3a1f','#1a0808','#1a1808'];
+  grid.innerHTML = recentItems.map((item,i) => `
+    <div class="recent-item" onclick="loadRecent(${i})">
+      <div class="recent-thumb">
+        <img src="${item.imageUrl || toolThumb(item.type)}" alt="${item.name}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
+      </div>
+      <div class="recent-info">
+        <div class="recent-name">${item.name}</div>
+        <div class="recent-meta">${item.type} · just now</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadRecent(index) {
+  const item = recentItems[index];
+  if(!item) return;
+  if(item.type === 'Forecast' && item.data && item.data.scenarios) {
+    switchTool('forecast', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+    fcRenderFull(item.data.stats, item.data.scenarios, item.data.report || {});
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    return;
+  }
+  if(item.type === 'Lyric Video' && item.data && item.data.videoUrl) {
+    playVideo(item.data.videoUrl, item.name);
+    return;
+  }
+  if(item.type === 'Release Plan' && item.data) {
+    switchTool('plan', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+    document.getElementById('plan-name').value = item.name || '';
+    renderPlan(item.data);
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+  if(!item.imageUrl) return;
+  if(item.type === 'Cover Art') {
+    switchTool('art', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+    document.getElementById('art-placeholder').style.display = 'none';
+    document.getElementById('art-dual').classList.remove('show');
+    document.getElementById('art-single-img').src = item.imageUrl;
+    document.getElementById('art-single').style.display = 'block';
+    selectedArtUrl = item.imageUrl;
+    window.scrollTo({top:0, behavior:'smooth'});
+  } else if(item.type === 'Merch Mockup') {
+    switchTool('merch', null);
+    setToolActive(document.querySelector('.tool-card:nth-child(4)'));
+    document.getElementById('merch-placeholder').style.display = 'none';
+    document.getElementById('merch-result-img').src = item.imageUrl;
+    document.getElementById('merch-result').classList.add('show');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+</script>
+</body>
+</html>
