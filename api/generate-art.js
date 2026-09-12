@@ -45,21 +45,26 @@ export default async function handler(req, res) {
   // ==========================================================
 
   try {
-    const { prompt, imageData, inspirationData } = req.body;
+    const { prompt, imageData, imageDatas, inspirationData, inspirationDatas } = req.body;
     if (!prompt) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
+    const photos = (imageDatas && imageDatas.length ? imageDatas : (imageData ? [imageData] : [])).slice(0, 3);
+    const refs = (inspirationDatas && inspirationDatas.length ? inspirationDatas : (inspirationData ? [inspirationData] : [])).slice(0, 3);
+
     const parts = [];
     let promptText = prompt;
 
-    if (imageData) {
-      parts.push(b64Part(imageData));
-      promptText += ' Incorporate the person from the first provided photo as the central subject of the cover art, preserving their likeness naturally within the scene.';
+    photos.forEach(d => parts.push(b64Part(d)));
+    if (photos.length === 1) {
+      promptText += ' Incorporate the person from the provided photo as the central subject of the cover art, preserving their likeness naturally within the scene.';
+    } else if (photos.length > 1) {
+      promptText += ` Incorporate the ${photos.length} people from the first ${photos.length} provided photos together in the cover art scene, preserving each person's likeness naturally.`;
     }
-    if (inspirationData) {
-      parts.push(b64Part(inspirationData));
-      promptText += ' Take style, mood, color palette, typography feel, and compositional inspiration from the provided reference cover — but create a completely ORIGINAL artwork in that spirit. Do NOT copy, recreate, or closely imitate the reference image itself.';
+    refs.forEach(d => parts.push(b64Part(d)));
+    if (refs.length) {
+      promptText += ` Take style, mood, color palette, typography feel, and compositional inspiration from the ${refs.length > 1 ? refs.length + ' provided reference covers' : 'provided reference cover'} — but create a completely ORIGINAL artwork in that spirit. Do NOT copy, recreate, or closely imitate the reference images themselves.`;
     }
     promptText += ' Square 1:1 album cover composition.';
     parts.push({ text: promptText });
@@ -79,7 +84,7 @@ export default async function handler(req, res) {
     }
 
     logGeneration(gate.userId, 'cover_art',
-      { prompt: prompt, hasPhoto: !!imageData, hasInspiration: !!inspirationData, version: 'A', plan: gate.plan },
+      { prompt: prompt, photoCount: photos.length, refCount: refs.length, version: 'A', plan: gate.plan },
       { model: used }
     );
 
