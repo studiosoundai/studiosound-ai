@@ -180,6 +180,10 @@ body{overflow:auto;height:auto;}
 .examples-grid{grid-template-columns:1fr;}
 .recent-grid{grid-template-columns:repeat(2,1fr);}
 #assets-grid{grid-template-columns:repeat(2,1fr) !important;}
+.form-row{grid-template-columns:1fr;}
+#fc-chart{width:100% !important;height:auto !important;}
+#fc-reports span{max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+.dual-results.show{grid-template-columns:1fr;}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -2437,13 +2441,24 @@ let fcCsvReports = [];   // each uploaded report kept separately: {name, months:
 let fcCurrency = 'USD';  // detected from the money column header, e.g. "Net Royalties (AUD)"
 function fcCur() { return { USD:'$', AUD:'A$', NZD:'NZ$', CAD:'C$', EUR:'\u20ac', GBP:'\u00a3' }[fcCurrency] || '$'; }
 let fcFxCache = {};
+const FC_FX_APPROX = { AUD: 0.66, NZD: 0.61, CAD: 0.73, EUR: 1.08, GBP: 1.27 }; // last-resort ballparks
 async function fcFxRate(from) {
   if (fcFxCache[from]) return fcFxCache[from];
-  const r = await fetch('https://api.frankfurter.app/latest?from=' + from + '&to=USD');
-  const j = await r.json();
-  if (!j || !j.rates || !j.rates.USD) throw new Error('no rate');
-  fcFxCache[from] = j.rates.USD;
-  return j.rates.USD;
+  // 1) our own backend (server-side lookup — immune to ad-blockers)
+  try {
+    const r = await fetch('/api/fx?from=' + from);
+    const j = await r.json();
+    if (j && j.rate > 0) { fcFxCache[from] = { rate: j.rate, approx: false }; return fcFxCache[from]; }
+  } catch (e) { console.warn('FX via backend failed:', e); }
+  // 2) direct provider from the browser
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=' + from + '&to=USD');
+    const j = await r.json();
+    if (j && j.rates && j.rates.USD) { fcFxCache[from] = { rate: j.rates.USD, approx: false }; return fcFxCache[from]; }
+  } catch (e) { console.warn('FX direct failed:', e); }
+  // 3) approximate baked rate — conversion still happens, clearly labeled
+  if (FC_FX_APPROX[from]) return { rate: FC_FX_APPROX[from], approx: true };
+  throw new Error('no rate for ' + from);
 }
 
 function fcParseCsv(input) {
@@ -3007,11 +3022,11 @@ async function runForecast() {
     const fromCur = fcCurrency;
     try {
       const fx = await fcFxRate(fromCur);
-      monthly.forEach(m => { m.amount = Math.round(m.amount * fx * 100) / 100; });
-      fxNote = 'Converted from ' + fromCur + ' to USD at ' + fx.toFixed(4) + ' (today\'s rate)';
+      monthly.forEach(m => { m.amount = Math.round(m.amount * fx.rate * 100) / 100; });
+      fxNote = 'Converted from ' + fromCur + ' to USD at ' + fx.rate.toFixed(4) + (fx.approx ? ' (approximate rate)' : ' (today\'s rate)');
       fcCurrency = 'USD';
     } catch(e) {
-      fxNote = 'Shown in ' + fromCur + ' (live USD rate unavailable right now)';
+      fxNote = 'Shown in ' + fromCur + ' (USD rate unavailable right now)';
     }
   }
 
