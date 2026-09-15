@@ -2440,10 +2440,29 @@ function fcParseCsv(input) {
     reader.onload = e => {
       try {
         const text = e.target.result;
-        const lines = text.split(/\r?\n/).filter(l => l.trim());
+        const lines = text.split(/\r\n|\r|\n/).filter(l => l.trim());
         const first = lines[0];
-        const delim = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ';' : ',';
-        const header = fcCsvLine(first, delim).map(h => h.toLowerCase().replace(/"/g, '').trim());
+        // delimiter: tab beats semicolon beats comma (DistroKid ships TSV)
+        const counts = { '\t': (first.match(/\t/g)||[]).length, ';': (first.match(/;/g)||[]).length, ',': (first.match(/,/g)||[]).length };
+        const delim = counts['\t'] >= 2 ? '\t' : (counts[';'] > counts[','] ? ';' : ',');
+        // headerless DistroKid-style file: first line is DATA (col2 = YYYY-MM, col13 = float)
+        const probe = fcCsvLine(first, delim);
+        const dkSig = r => r.length >= 14 && /^\d{4}-\d{2}$/.test((r[2]||'').trim()) && !isNaN(parseFloat(r[13]));
+        const dkHeaderless = lines.slice(0, 5).some(l => dkSig(fcCsvLine(l, delim)));
+        if (dkHeaderless) {
+          let added = 0;
+          lines.forEach(l => {
+            const r = fcCsvLine(l, delim);
+            const mk = (r[2]||'').trim();
+            const amt = parseFloat(r[13]);
+            if (/^\d{4}-\d{2}$/.test(mk) && !isNaN(amt)) { fcCsvStack[mk] = (fcCsvStack[mk]||0) + amt; added++; }
+          });
+          if (!added) throw new Error('no dated rows');
+          fcCsvFiles++;
+          if (++done === files.length) fcCsvRender();
+          return;
+        }
+        const header = probe.map(h => h.toLowerCase().replace(/"/g, '').trim());
         // score columns by name: money wants earnings words, hates counting words
         let moneyIdx = -1, moneyBest = 0, dateIdx = -1, dateBest = 0;
         header.forEach((h, i) => {
