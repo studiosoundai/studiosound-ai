@@ -7,9 +7,9 @@
 // 2 requests (Version A + Version B), so request limits are 2x the
 // generation counts shown on the pricing page.
 const LIMITS = {
-  free:    { cover_art: 6,   release_plan: 1,    merch: 2,   lyrics: 3,   transcribe: 2,   forecast: 1  },
-  pro:     { cover_art: 200, release_plan: 1000, merch: 50,  lyrics: 200, transcribe: 30,  forecast: 3  },
-  premium: { cover_art: 600, release_plan: 1000, merch: 100, lyrics: 500, transcribe: 100, forecast: 10 },
+  free:    { cover_art: 6,   release_plan: 1,    merch: 2,   lyrics: 3,   transcribe: 2,   forecast: 1,  chat: 20   },
+  pro:     { cover_art: 200, release_plan: 1000, merch: 50,  lyrics: 200, transcribe: 30,  forecast: 3,  chat: 400  },
+  premium: { cover_art: 600, release_plan: 1000, merch: 100, lyrics: 500, transcribe: 100, forecast: 10, chat: 1200 },
 };
 
 export async function checkAndCount(req, tool) {
@@ -33,6 +33,14 @@ export async function checkAndCount(req, tool) {
     return { ok: false, status: 401, error: 'Session expired — please sign in again.' };
   }
   const user = await userRes.json();
+
+  // Founder accounts (comma-separated emails in FOUNDER_EMAILS env var) skip
+  // limits entirely — testing your own platform shouldn't burn your quota.
+  const founders = (process.env.FOUNDER_EMAILS || '')
+    .toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
+  if (founders.includes((user.email || '').toLowerCase())) {
+    return { ok: true, userId: user.id, plan: 'premium', founder: true };
+  }
 
   // 2. What plan are they on?
   const profRes = await fetch(
