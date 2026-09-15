@@ -378,5 +378,22 @@ function toggleFaq(el) {
   if(!isOpen) item.classList.add('open');
 }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sbNav2 = supabase.createClient(
+  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+);
+sbNav2.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    document.querySelectorAll('.btn-ghost, .btn-neon').forEach(b => {
+      const t = (b.textContent || '').toLowerCase();
+      if (t.includes('sign in')) { b.textContent = 'Open Studio'; b.onclick = () => window.location.href = 'app.html'; }
+      if (t.includes('sign up')) { b.innerHTML = 'Back to Studio →'; b.onclick = () => window.location.href = 'app.html'; }
+    });
+  }
+});
+</script>
 </body>
 </html>
