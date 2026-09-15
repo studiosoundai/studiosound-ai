@@ -847,6 +847,13 @@ body{overflow:auto;height:auto;}
           </div>
           <div style="background:rgba(0,255,209,0.06);border:1px solid rgba(0,255,209,0.3);border-left:3px solid var(--neon);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#e8e8f5;">💡 <strong style="color:var(--neon);">Best practice:</strong> <strong style="color:var(--neon);">upload the exact file your distributor gave you</strong> — converted CSVs often round the cents away, and in streaming the cents are the money. Or type your monthly statement totals below.</div>
           <div id="fc-reports" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;"></div>
+          <div id="fc-fxpref-row" style="display:none;align-items:center;gap:8px;margin:2px 0 8px;">
+            <span style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.05em;">FORECAST IN</span>
+            <select class="form-input" id="fc-fxpref" style="width:auto;padding:5px 10px;font-size:12px;">
+              <option value="USD">USD (converted at today's rate)</option>
+              <option value="native">AUD — my statement currency</option>
+            </select>
+          </div>
           <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
           <div class="form-group">
             <label class="form-label">Or type it in — oldest month first</label>
@@ -1518,6 +1525,7 @@ function switchTool(tool, sidebarBtn) {
         if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
         if (saved.city) document.getElementById('fc-city').value = saved.city;
         if (saved.releases) document.getElementById('fc-releases').value = saved.releases;
+        if (saved.fxPref) { const fp = document.getElementById('fc-fxpref'); if (fp) fp.value = saved.fxPref; }
         restored = true;
       }
     } catch(e) {}
@@ -2605,6 +2613,14 @@ function fcCsvRender() {
   }
   const cleaned = fcCsvClean(keys.map(k => ({ month: k, amount: Math.round(stack[k] * 100) / 100 })));
   fcMonthly = cleaned.monthly;
+  const fxRow = document.getElementById('fc-fxpref-row');
+  if (fxRow) {
+    fxRow.style.display = fcCurrency !== 'USD' ? 'flex' : 'none';
+    if (fcCurrency !== 'USD') {
+      const opt = document.querySelector('#fc-fxpref option[value="native"]');
+      if (opt) opt.textContent = fcCurrency + ' \u2014 my statement currency';
+    }
+  }
   let cleanNote = fcCurrency !== 'USD' ? ' · amounts are in ' + fcCurrency : '';
   if (cleaned.lead) cleanNote += ' · trimmed ' + cleaned.lead + ' near-zero month' + (cleaned.lead > 1 ? 's' : '') + ' from before your catalog was live';
   if (cleaned.partial) cleanNote += ' · your latest month looks incomplete (statements lag), so it\'s set aside — type it back in below if it\'s real';
@@ -3011,14 +3027,18 @@ async function runForecast() {
       genre: document.getElementById('fc-genre').value,
       city: document.getElementById('fc-city').value,
       releases: document.getElementById('fc-releases').value + ' ' + ((document.getElementById('fc-reltype')||{}).value || 'songs'),
-      currency: fcCurrency
+      currency: fcCurrency,
+      fxPref: ((document.getElementById('fc-fxpref') || {}).value) || 'USD'
     }));
   } catch(e) {}
 
   // Statements in AUD/EUR/etc: convert to USD at today's rate so every forecast speaks one currency.
   // Rows keep the statement's own currency (they should match what the distributor shows).
   let fxNote = '';
-  if (fcCurrency !== 'USD') {
+  const fxPref = ((document.getElementById('fc-fxpref') || {}).value) || 'USD';
+  if (fcCurrency !== 'USD' && fxPref === 'native') {
+    fxNote = 'Shown in ' + fcCurrency + ' \u2014 your statement currency';
+  } else if (fcCurrency !== 'USD') {
     const fromCur = fcCurrency;
     try {
       const fx = await fcFxRate(fromCur);
