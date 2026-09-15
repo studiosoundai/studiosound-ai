@@ -161,6 +161,8 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
 .hb{display:block;width:16px;height:2px;background:var(--neon);border-radius:2px;}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:290;}
 .sidebar-overlay.show{display:block;}
+.fx-pill{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.fx-pill.active{background:rgba(0,255,209,0.12);border-color:var(--neon);color:var(--neon);}
 @media(max-width:768px){
 html,body{max-width:100vw;}
 body{overflow:auto;height:auto;}
@@ -849,10 +851,9 @@ body{overflow:auto;height:auto;}
           <div id="fc-reports" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;"></div>
           <div id="fc-fxpref-row" style="display:none;align-items:center;gap:8px;margin:2px 0 8px;">
             <span style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.05em;">FORECAST IN</span>
-            <select class="form-input" id="fc-fxpref" style="width:auto;padding:5px 10px;font-size:12px;">
-              <option value="USD">USD (converted at today's rate)</option>
-              <option value="native">AUD — my statement currency</option>
-            </select>
+            <input type="hidden" id="fc-fxpref" value="USD"/>
+            <button type="button" id="fc-fx-usd" class="fx-pill active" onclick="fcSetFxPref('USD')">USD</button>
+            <button type="button" id="fc-fx-native" class="fx-pill" onclick="fcSetFxPref('native')">AUD</button>
           </div>
           <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
           <div class="form-group">
@@ -1525,7 +1526,7 @@ function switchTool(tool, sidebarBtn) {
         if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
         if (saved.city) document.getElementById('fc-city').value = saved.city;
         if (saved.releases) document.getElementById('fc-releases').value = saved.releases;
-        if (saved.fxPref) { const fp = document.getElementById('fc-fxpref'); if (fp) fp.value = saved.fxPref; }
+        if (saved.fxPref) fcSetFxPref(saved.fxPref);
         restored = true;
       }
     } catch(e) {}
@@ -2447,6 +2448,14 @@ function fcMonthKey(raw, dayFirst) {
 
 let fcCsvReports = [];   // each uploaded report kept separately: {name, months:{'YYYY-MM':amt}} — removable
 let fcCurrency = 'USD';  // detected from the money column header, e.g. "Net Royalties (AUD)"
+function fcSetFxPref(v) {
+  const inp = document.getElementById('fc-fxpref');
+  if (inp) inp.value = v;
+  const u = document.getElementById('fc-fx-usd'), n = document.getElementById('fc-fx-native');
+  if (u) u.classList.toggle('active', v === 'USD');
+  if (n) n.classList.toggle('active', v === 'native');
+}
+
 function fcCur() { return { USD:'$', AUD:'A$', NZD:'NZ$', CAD:'C$', EUR:'\u20ac', GBP:'\u00a3' }[fcCurrency] || '$'; }
 let fcFxCache = {};
 const FC_FX_APPROX = { AUD: 0.66, NZD: 0.61, CAD: 0.73, EUR: 1.08, GBP: 1.27 }; // last-resort ballparks
@@ -2617,8 +2626,8 @@ function fcCsvRender() {
   if (fxRow) {
     fxRow.style.display = fcCurrency !== 'USD' ? 'flex' : 'none';
     if (fcCurrency !== 'USD') {
-      const opt = document.querySelector('#fc-fxpref option[value="native"]');
-      if (opt) opt.textContent = fcCurrency + ' \u2014 my statement currency';
+      const nb = document.getElementById('fc-fx-native');
+      if (nb) nb.textContent = fcCurrency;
     }
   }
   let cleanNote = fcCurrency !== 'USD' ? ' · amounts are in ' + fcCurrency : '';
