@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     if (refs.length) {
       promptText += ` Take style, mood, color palette, typography feel, and compositional inspiration from the ${refs.length > 1 ? refs.length + ' provided reference covers' : 'provided reference cover'} — but create a completely ORIGINAL artwork in that spirit. Do NOT copy, recreate, or closely imitate the reference images themselves.`;
     }
-    promptText += ' Square 1:1 album cover composition.';
+    promptText += ' STYLE DIRECTIVE: Hyper-photorealistic. This must look like a REAL photograph from a professional photo shoot — natural skin texture and pores, true-to-life lighting and shadows, realistic depth of field, authentic materials and environments. No illustration, no painting, no CGI look. Indistinguishable from an actual photo. Square 1:1 album cover composition.';
     parts.push({ text: promptText });
 
     // Tiered engine: paid plans get the flagship, free gets the fast lane
