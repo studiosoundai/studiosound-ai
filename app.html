@@ -2458,9 +2458,9 @@ async function fcFxRate(from) {
     const j = await r.json();
     if (j && j.rate > 0) { fcFxCache[from] = { rate: j.rate, approx: false }; return fcFxCache[from]; }
   } catch (e) { console.warn('FX via backend failed:', e); }
-  // 2) direct provider from the browser
+  // 2) direct provider from the browser (er-api: reliable CORS)
   try {
-    const r = await fetch('https://api.frankfurter.app/latest?from=' + from + '&to=USD');
+    const r = await fetch('https://open.er-api.com/v6/latest/' + from);
     const j = await r.json();
     if (j && j.rates && j.rates.USD) { fcFxCache[from] = { rate: j.rates.USD, approx: false }; return fcFxCache[from]; }
   } catch (e) { console.warn('FX direct failed:', e); }
