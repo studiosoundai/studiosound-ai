@@ -841,6 +841,7 @@ body{overflow:auto;height:auto;}
               <input type="file" id="fc-upload" accept=".csv,.tsv,.txt,.xls,.xlsx,text/csv" multiple style="display:none;" onchange="fcParseCsv(this)"/>
             </div>
           </div>
+          <div id="fc-reports" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;"></div>
           <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
           <div class="form-group">
             <label class="form-label">Or type it in — oldest month first</label>
@@ -2428,8 +2429,7 @@ function fcMonthKey(raw, dayFirst) {
   return null;
 }
 
-let fcCsvStack = {};   // months accumulate across multiple uploaded reports
-let fcCsvFiles = 0;
+let fcCsvReports = [];   // each uploaded report kept separately: {name, months:{'YYYY-MM':amt}} — removable
 
 function fcParseCsv(input) {
   if (!input.files || !input.files.length) return;
@@ -2454,14 +2454,14 @@ function fcParseCsv(input) {
           text = e.target.result;
         }
       } catch (err) { finish(f, false); return; }
-      finish(f, fcIngestText(text));
+      finish(f, fcIngestText(text, f.name));
     };
     reader.onerror = () => finish(f, false);
     if (isExcel) reader.readAsArrayBuffer(f); else reader.readAsText(f);
   });
 }
 
-function fcIngestText(text) {
+function fcIngestText(text, fname) {
   try {
         const lines = text.split(/\r\n|\r|\n/).filter(l => l.trim());
         const first = lines[0];
@@ -2473,15 +2473,16 @@ function fcIngestText(text) {
         const dkSig = r => r.length >= 14 && /^\d{4}-\d{2}$/.test((r[2]||'').trim()) && !isNaN(parseFloat(r[13]));
         const dkHeaderless = lines.slice(0, 5).some(l => dkSig(fcCsvLine(l, delim)));
         if (dkHeaderless) {
+          const months = {};
           let added = 0;
           lines.forEach(l => {
             const r = fcCsvLine(l, delim);
             const mk = (r[2]||'').trim();
             const amt = parseFloat(r[13]);
-            if (/^\d{4}-\d{2}$/.test(mk) && !isNaN(amt)) { fcCsvStack[mk] = (fcCsvStack[mk]||0) + amt; added++; }
+            if (/^\d{4}-\d{2}$/.test(mk) && !isNaN(amt)) { months[mk] = (months[mk]||0) + amt; added++; }
           });
           if (!added) throw new Error('no dated rows');
-          fcCsvFiles++;
+          fcCsvReports.push({ name: fname, months: months });
           return true;
         }
         const header = probe.map(h => h.toLowerCase().replace(/"/g, '').trim());
@@ -2514,17 +2515,18 @@ function fcIngestText(text) {
             if (dm) { if (+dm[1] > 12) { dayFirst = true; break; } if (+dm[2] > 12) { dayFirst = false; break; } }
           }
         }
+        const months = {};
         let added = 0;
         rows.forEach(r => {
           const amt = parseFloat(String(r[moneyIdx] || '').replace(/[",$\s]/g, ''));
           if (isNaN(amt)) return;
           const key = dateIdx !== -1 ? fcMonthKey(r[dateIdx], dayFirst) : null;
           if (!key) return;
-          fcCsvStack[key] = (fcCsvStack[key] || 0) + amt;
+          months[key] = (months[key] || 0) + amt;
           added++;
         });
         if (!added) throw new Error('no dated rows');
-        fcCsvFiles++;
+        fcCsvReports.push({ name: fname, months: months });
         return true;
   } catch (err) { return false; }
 }
@@ -2545,10 +2547,31 @@ function fcCsvClean(monthly) {
   return { monthly: monthly.slice(lead, partial ? monthly.length - 1 : monthly.length), lead: lead, partial: partial };
 }
 
+function fcRemoveReport(i) {
+  fcCsvReports.splice(i, 1);
+  fcCsvRender();
+}
+
 function fcCsvRender() {
-  const keys = Object.keys(fcCsvStack).sort();
-  if (!keys.length) return;
-  const cleaned = fcCsvClean(keys.map(k => ({ month: k, amount: Math.round(fcCsvStack[k] * 100) / 100 })));
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const chips = document.getElementById('fc-reports');
+  if (chips) chips.innerHTML = fcCsvReports.map((r, i) =>
+    '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,209,0.08);border:1px solid rgba(0,255,209,0.35);border-radius:20px;padding:3px 10px;font-size:11px;color:#fff;">' +
+    esc(r.name) + ' <span style="color:var(--muted);">· ' + Object.keys(r.months).length + ' mo</span>' +
+    '<span onclick="fcRemoveReport(' + i + ')" title="Remove this report" style="cursor:pointer;color:var(--muted);font-weight:700;padding:0 2px;">✕</span></span>'
+  ).join('');
+  const stack = {};
+  fcCsvReports.forEach(r => Object.keys(r.months).forEach(k => { stack[k] = (stack[k] || 0) + r.months[k]; }));
+  const keys = Object.keys(stack).sort();
+  if (!keys.length) {
+    document.getElementById('fc-label').textContent = 'Click to upload your earnings CSV';
+    document.getElementById('fc-rows').innerHTML = '';
+    fcAddRow(); fcAddRow(); fcAddRow();
+    document.getElementById('fc-parse-status').textContent = '';
+    fcMonthly = null;
+    return;
+  }
+  const cleaned = fcCsvClean(keys.map(k => ({ month: k, amount: Math.round(stack[k] * 100) / 100 })));
   fcMonthly = cleaned.monthly;
   let cleanNote = '';
   if (cleaned.lead) cleanNote += ' · trimmed ' + cleaned.lead + ' near-zero month' + (cleaned.lead > 1 ? 's' : '') + ' from before your catalog was live';
@@ -2556,19 +2579,21 @@ function fcCsvRender() {
   document.getElementById('fc-rows').innerHTML = '';
   fcMonthly.slice(-24).forEach(m => fcAddRow(m.month, m.amount));
   const total = fcMonthly.reduce((a, b) => a + b.amount, 0);
-  document.getElementById('fc-label').textContent = '✓ ' + fcCsvFiles + ' report' + (fcCsvFiles > 1 ? 's' : '') + ' loaded — add more anytime';
+  const nRep = fcCsvReports.length;
+  document.getElementById('fc-label').textContent = '✓ ' + nRep + ' report' + (nRep > 1 ? 's' : '') + ' loaded — add more anytime';
   if (keys.length === 1) {
     document.getElementById('fc-parse-status').innerHTML =
       '✓ <strong style="color:var(--neon);">1 month found</strong> ($' + total.toFixed(2) + '). Forecasts need 2+ — <strong>upload your other monthly reports</strong> (they stack automatically) or add months by hand below.' + cleanNote;
   } else {
     document.getElementById('fc-parse-status').innerHTML =
-      '✓ <strong style="color:var(--neon);">' + keys.length + ' months found</strong> across ' + fcCsvFiles + ' report' + (fcCsvFiles > 1 ? 's' : '') + ' — total $' + total.toFixed(2) + '. Check the rows, add more reports, or hit Forecast.' + cleanNote;
+      '✓ <strong style="color:var(--neon);">' + keys.length + ' months found</strong> across ' + nRep + ' report' + (nRep > 1 ? 's' : '') + ' — total $' + total.toFixed(2) + '. Check the rows, add more reports, or hit Forecast.' + cleanNote;
   }
 }
 
 function fcReset() {
   try { localStorage.removeItem('fcSaved'); } catch(e) {}
-  fcCsvStack = {}; fcCsvFiles = 0;
+  fcCsvReports = [];
+  const chips = document.getElementById('fc-reports'); if (chips) chips.innerHTML = '';
   document.getElementById('fc-label').textContent = 'Click to upload your earnings CSV';
   document.getElementById('fc-rows').innerHTML = '';
   fcAddRow(); fcAddRow(); fcAddRow();
