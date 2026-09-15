@@ -13,7 +13,8 @@ export default async function handler(req, res) {
   // ==========================================================
 
   try {
-    const { prompt } = req.body;
+    const { prompt: rawPrompt } = req.body;
+  const prompt = rawPrompt + ' STYLE DIRECTIVE: Stylized and artistic — a boldly art-directed piece with graphic design energy: cinematic color grading, painterly or illustrative treatment, dramatic composition. Clearly a designed artwork with strong visual identity, NOT a plain photograph. Square 1:1 album cover composition.';
     if (!prompt) return res.status(400).json({ error: 'Prompt is required' });
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${process.env.GOOGLE_API_KEY}`,
