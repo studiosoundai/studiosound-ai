@@ -41,15 +41,17 @@ Return ONLY valid JSON:
   "headline": "one sentence stating where they are right now (their current monthly average, their trend direction)",
   "analysis": "3-4 sentences reading their actual numbers: trend, what's driving it, what the data suggests",
   "scenario_notes": {
-    "steady": "1-2 sentences: what this curve assumes and who ends up on it",
-    "growth": "1-2 sentences: what specifically the artist must do to earn this curve (release cadence, content, playlisting)",
-    "breakout": "1-2 sentences: honest framing — what a viral moment does to the math and why it can't be counted on"
+    "steady": "2-3 sentences: what this curve assumes, who ends up on it, and what it feels like a year in",
+    "growth": "2-3 sentences: what specifically the artist must do to earn this curve — release cadence, content rhythm, playlisting, live/local presence",
+    "breakout": "2-3 sentences: honest framing — what a viral moment does to the math, how the afterglow decays, why it can't be planned on"
   },
-  "moves": ["4 specific actions, ordered by impact, to push from Steady toward Growth — concrete, doable this quarter"]
+  "moves": ["5-6 specific actions ordered by impact, each with the WHY built in (e.g. 'Release every 6 weeks — catalog decay is the #1 silent earnings killer for artists at this stage'). Concrete and doable this quarter."],
+  "milestones": ["3 monthly-income milestones ahead of this artist and what each unlocks (e.g. what becomes possible at 2x current monthly, at 5x) — tie to real artist moves like pressing merch, running ads profitably, playing paid shows"],
+  "watch_outs": ["2-3 honest risks or patterns that could pull this artist BELOW the steady curve, specific to their genre/trend/release plan — and the early warning sign for each"]
 }`
           }
         ],
-        max_tokens: 900
+        max_tokens: 1600
       })
     });
 
