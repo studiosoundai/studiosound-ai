@@ -837,7 +837,7 @@ body{overflow:auto;height:auto;}
               <i class="ti ti-upload" style="font-size:26px;color:var(--neon);display:block;margin-bottom:5px;"></i>
               <div id="fc-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload your earnings CSV</div>
               <div style="color:var(--muted);font-size:10px;">Stop One, DistroKid, TuneCore, CD Baby — any report with dates and amounts</div>
-              <input type="file" id="fc-upload" accept=".csv,text/csv" style="display:none;" onchange="fcParseCsv(this)"/>
+              <input type="file" id="fc-upload" accept=".csv,.tsv,.txt,text/csv" multiple style="display:none;" onchange="fcParseCsv(this)"/>
             </div>
           </div>
           <div id="fc-parse-status" style="color:var(--muted);font-size:11px;margin-bottom:10px;"></div>
@@ -2398,54 +2398,115 @@ function lvToPlan() {
 // ====== EARNINGS FORECAST ======
 let fcMonthly = null;
 
+function fcCsvLine(line, delim) {
+  // proper CSV split: respects "quoted, fields"
+  const out = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+    else if (ch === delim && !inQ) { out.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+const FC_MONTHS = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+
+function fcMonthKey(raw) {
+  const d = String(raw || '').replace(/"/g, '').trim();
+  if (!d) return null;
+  let m = d.match(/(\d{4})[-\/\.](\d{1,2})/);                    // 2024-08, 2024/8
+  if (m) return m[1] + '-' + String(m[2]).padStart(2, '0');
+  m = d.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);            // 8/1/2024 or 01/08/2024
+  if (m) return m[3] + '-' + String(m[1]).padStart(2, '0');
+  m = d.toLowerCase().match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s\-\.,]+(\d{4})/); // Aug 2024
+  if (m) return m[2] + '-' + FC_MONTHS[m[1]];
+  m = d.toLowerCase().match(/(\d{4})[\s\-\.,]+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/); // 2024 Aug
+  if (m) return m[1] + '-' + FC_MONTHS[m[2]];
+  return null;
+}
+
+let fcCsvStack = {};   // months accumulate across multiple uploaded reports
+let fcCsvFiles = 0;
+
 function fcParseCsv(input) {
-  if(!input.files || !input.files[0]) return;
-  const f = input.files[0];
-  document.getElementById('fc-label').textContent = '✓ ' + f.name;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const text = e.target.result;
-      const delim = (text.split('\n')[0].match(/;/g) || []).length > (text.split('\n')[0].match(/,/g) || []).length ? ';' : ',';
-      const rows = text.split(/\r?\n/).map(r => r.split(delim));
-      const header = rows[0].map(h => h.toLowerCase().replace(/"/g,'').trim());
-      // find the money column and the date column
-      const moneyIdx = header.findIndex(h => /earn|royal|net|revenue|amount|payout|usd|total/.test(h));
-      const dateIdx = header.findIndex(h => /month|date|period|statement|sale/.test(h));
-      if (moneyIdx === -1) throw new Error('no money column');
-      const byMonth = {};
-      for (let i = 1; i < rows.length; i++) {
-        const amt = parseFloat((rows[i][moneyIdx] || '').replace(/["$\s]/g, ''));
-        if (isNaN(amt)) continue;
-        let key = 'all';
-        if (dateIdx !== -1) {
-          const d = (rows[i][dateIdx] || '').replace(/"/g,'').trim();
-          const m = d.match(/(\d{4})[-\/](\d{1,2})/) || d.match(/(\d{1,2})[-\/]\d{1,2}[-\/](\d{4})/);
-          if (m) key = m[2] && m[2].length === 4 ? m[2] + '-' + String(m[1]).padStart(2,'0') : m[1] + '-' + String(m[2]).padStart(2,'0');
-          else if (/^\d{4}-\d{2}/.test(d)) key = d.slice(0,7);
-        }
-        byMonth[key] = (byMonth[key] || 0) + amt;
+  if (!input.files || !input.files.length) return;
+  const files = Array.from(input.files);
+  input.value = '';   // allow re-selecting the same file later
+  let done = 0;
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(l => l.trim());
+        const first = lines[0];
+        const delim = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ';' : ',';
+        const header = fcCsvLine(first, delim).map(h => h.toLowerCase().replace(/"/g, '').trim());
+        // score columns by name: money wants earnings words, hates counting words
+        let moneyIdx = -1, moneyBest = 0, dateIdx = -1, dateBest = 0;
+        header.forEach((h, i) => {
+          let ms = 0;
+          if (/earn/.test(h)) ms += 5;
+          if (/royal/.test(h)) ms += 5;
+          if (/net|payout/.test(h)) ms += 4;
+          if (/revenue/.test(h)) ms += 3;
+          if (/amount|usd|total/.test(h)) ms += 2;
+          if (/stream|unit|quantit|count|song|track|#|plays|downloads/.test(h)) ms -= 10;
+          if (ms > moneyBest) { moneyBest = ms; moneyIdx = i; }
+          let ds = 0;
+          if (/period/.test(h)) ds += 5;
+          if (/month/.test(h)) ds += 4;
+          if (/statement|reporting/.test(h)) ds += 3;
+          if (/date|sale/.test(h)) ds += 2;
+          if (/store|country|name|title|artist|type/.test(h)) ds -= 10;
+          if (ds > dateBest) { dateBest = ds; dateIdx = i; }
+        });
+        if (moneyIdx === -1) throw new Error('no money column');
+        const rows = lines.slice(1).map(l => fcCsvLine(l, delim));
+        let added = 0;
+        rows.forEach(r => {
+          const amt = parseFloat(String(r[moneyIdx] || '').replace(/[",$\s]/g, ''));
+          if (isNaN(amt)) return;
+          const key = dateIdx !== -1 ? fcMonthKey(r[dateIdx]) : null;
+          if (!key) return;
+          fcCsvStack[key] = (fcCsvStack[key] || 0) + amt;
+          added++;
+        });
+        if (!added) throw new Error('no dated rows');
+        fcCsvFiles++;
+      } catch (err) {
+        document.getElementById('fc-parse-status').textContent =
+          'Couldn\'t read "' + f.name + '" — send us the header row and we\'ll add that format. You can still type months below.';
       }
-      const keys = Object.keys(byMonth).filter(k => k !== 'all').sort();
-      if (keys.length >= 2) {
-        fcMonthly = keys.map(k => ({ month: k, amount: Math.round(byMonth[k] * 100) / 100 }));
-        document.getElementById('fc-parse-status').innerHTML = '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months found</strong> — total $' + fcMonthly.reduce((a,b)=>a+b.amount,0).toFixed(2) + '. Check the rows below, then hit Forecast.';
-        document.getElementById('fc-rows').innerHTML = '';
-        fcMonthly.slice(-24).forEach(m => fcAddRow(m.month, m.amount));
-      } else if (byMonth.all) {
-        document.getElementById('fc-parse-status').textContent = 'Found $' + byMonth.all.toFixed(2) + ' total but no monthly dates — fill in the months below instead.';
-      } else {
-        throw new Error('empty');
-      }
-    } catch(err) {
-      document.getElementById('fc-parse-status').textContent = 'Couldn\'t auto-read that CSV format — no problem: fill in your months below.';
-    }
-  };
-  reader.readAsText(f);
+      if (++done === files.length) fcCsvRender();
+    };
+    reader.readAsText(f);
+  });
+}
+
+function fcCsvRender() {
+  const keys = Object.keys(fcCsvStack).sort();
+  if (!keys.length) return;
+  fcMonthly = keys.map(k => ({ month: k, amount: Math.round(fcCsvStack[k] * 100) / 100 }));
+  document.getElementById('fc-rows').innerHTML = '';
+  fcMonthly.slice(-24).forEach(m => fcAddRow(m.month, m.amount));
+  const total = fcMonthly.reduce((a, b) => a + b.amount, 0);
+  document.getElementById('fc-label').textContent = '✓ ' + fcCsvFiles + ' report' + (fcCsvFiles > 1 ? 's' : '') + ' loaded — add more anytime';
+  if (keys.length === 1) {
+    document.getElementById('fc-parse-status').innerHTML =
+      '✓ <strong style="color:var(--neon);">1 month found</strong> ($' + total.toFixed(2) + '). Forecasts need 2+ — <strong>upload your other monthly reports</strong> (they stack automatically) or add months by hand below.';
+  } else {
+    document.getElementById('fc-parse-status').innerHTML =
+      '✓ <strong style="color:var(--neon);">' + keys.length + ' months found</strong> across ' + fcCsvFiles + ' report' + (fcCsvFiles > 1 ? 's' : '') + ' — total $' + total.toFixed(2) + '. Check the rows, add more reports, or hit Forecast.';
+  }
 }
 
 function fcReset() {
   try { localStorage.removeItem('fcSaved'); } catch(e) {}
+  fcCsvStack = {}; fcCsvFiles = 0;
+  document.getElementById('fc-label').textContent = 'Click to upload your earnings CSV';
   document.getElementById('fc-rows').innerHTML = '';
   fcAddRow(); fcAddRow(); fcAddRow();
   document.getElementById('fc-genre').value = '';
