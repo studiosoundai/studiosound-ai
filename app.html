@@ -2448,8 +2448,8 @@ function fcParseCsv(input) {
       let text;
       try {
         if (isExcel) {
-          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-          text = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]]);
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: true });
+          text = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]], { rawNumbers: true });
         } else {
           text = e.target.result;
         }
@@ -2644,11 +2644,13 @@ function fcProject(monthly) {
   }
   trend = Math.max(-0.12, Math.min(0.15, trend));
 
-  function run(growth, viral) {
+  function run(g0, viral) {
+    // momentum fades: month-i growth = g0 * 0.965^i, so curves bend toward a
+    // plateau instead of compounding forever (or bleeding to zero on a decline)
     let m = avgRecent, total = 0;
     const marks = { series: [] };
     for (let i = 1; i <= 60; i++) {
-      m = m * (1 + growth);
+      m = m * (1 + g0 * Math.pow(0.965, i));
       let monthVal = m;
       if (viral && i === 9) monthVal *= 3.2;           // one viral month
       if (viral && (i === 10 || i === 11)) monthVal *= 1.6; // afterglow decays
@@ -2661,8 +2663,8 @@ function fcProject(monthly) {
     return marks;
   }
 
-  const steadyG = Math.max(-0.03, Math.min(0.02, trend));      // coast: mild version of current trend
-  const growthG = Math.min(0.09, Math.max(0.05, trend + 0.05)); // working the plan
+  const steadyG = Math.max(-0.03, Math.min(0.02, trend));       // coast: mild version of current trend, fading to long-tail
+  const growthG = Math.min(0.08, Math.max(0.04, trend + 0.06)); // working the plan: strong start, momentum fades
   return {
     stats: { avgMonthly: Math.round(avgRecent * 100) / 100, trend: Math.round(trend * 1000) / 10, monthsOfData: n },
     scenarios: {
