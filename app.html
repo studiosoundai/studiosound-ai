@@ -848,7 +848,10 @@ body{overflow:auto;height:auto;}
               <div style="color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.05em;">WHAT YOU EARNED</div>
             </div>
             <div id="fc-rows"></div>
-            <button class="result-btn" style="margin-top:8px;" onclick="fcAddRow()"><i class="ti ti-plus"></i> Add Month</button>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="result-btn" onclick="fcAddRow()"><i class="ti ti-plus"></i> Add Month</button>
+              <button class="result-btn" onclick="fcReset()"><i class="ti ti-refresh"></i> Start Fresh</button>
+            </div>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -1500,7 +1503,7 @@ function switchTool(tool, sidebarBtn) {
     let restored = false;
     try {
       const saved = JSON.parse(localStorage.getItem('fcSaved') || 'null');
-      if (saved && saved.rows && saved.rows.length >= 2) {
+      if (saved && saved.rows && saved.rows.length >= 2 && saved.ts && (Date.now() - saved.ts) < 2 * 60 * 60 * 1000) {
         saved.rows.forEach(r => fcAddRow(r.month, r.amount));
         if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
         if (saved.city) document.getElementById('fc-city').value = saved.city;
@@ -2441,6 +2444,19 @@ function fcParseCsv(input) {
   reader.readAsText(f);
 }
 
+function fcReset() {
+  try { localStorage.removeItem('fcSaved'); } catch(e) {}
+  document.getElementById('fc-rows').innerHTML = '';
+  fcAddRow(); fcAddRow(); fcAddRow();
+  document.getElementById('fc-genre').value = '';
+  document.getElementById('fc-city').value = '';
+  document.getElementById('fc-releases').value = '';
+  document.getElementById('fc-result').style.display = 'none';
+  document.getElementById('fc-placeholder').style.display = 'block';
+  document.getElementById('fc-parse-status').textContent = '';
+  fcMonthly = null;
+}
+
 function fcAddRow(month, amount) {
   const wrap = document.getElementById('fc-rows');
   const div = document.createElement('div');
@@ -2795,6 +2811,7 @@ async function runForecast() {
   // Remember the artist's inputs so they survive upgrades and page reloads
   try {
     localStorage.setItem('fcSaved', JSON.stringify({
+      ts: Date.now(),
       rows: monthly,
       genre: document.getElementById('fc-genre').value,
       city: document.getElementById('fc-city').value,
