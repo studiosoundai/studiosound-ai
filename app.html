@@ -690,7 +690,7 @@ body{overflow:auto;height:auto;}
               <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
               <div id="audio-label" style="color:#fff;font-size:12px;font-weight:600;margin-bottom:3px;">Click to upload (MP3, M4A, AAC...)</div>
               <div style="color:var(--muted);font-size:10px;">Converted on your device — private and instant</div>
-              <input type="file" id="audio-upload" accept="audio/*" style="display:none;" onchange="convertAudio(this)"/>
+              <input type="file" id="audio-upload" accept="audio/*,video/mp4,.mp3,.m4a,.wav,.aac,.ogg,.flac,.aif,.aiff" style="display:none;" onchange="convertAudio(this)"/>
             </div>
           </div>
           <div id="audio-status" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
@@ -718,7 +718,7 @@ body{overflow:auto;height:auto;}
             <div style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('trim-upload').click()">
               <i class="ti ti-upload" style="font-size:28px;color:var(--neon);margin-bottom:6px;display:block;"></i>
               <div id="trim-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload (MP3, WAV, M4A...)</div>
-              <input type="file" id="trim-upload" accept="audio/*" style="display:none;" onchange="loadTrimAudio(this)"/>
+              <input type="file" id="trim-upload" accept="audio/*,video/mp4,.mp3,.m4a,.wav,.aac,.ogg,.flac,.aif,.aiff" style="display:none;" onchange="loadTrimAudio(this)"/>
             </div>
           </div>
           <div id="trim-info" style="color:var(--muted);font-size:11px;margin-bottom:12px;"></div>
@@ -856,8 +856,8 @@ body{overflow:auto;height:auto;}
               <input class="form-input" id="fc-genre" placeholder="e.g. Latin, Hip-Hop"/>
             </div>
             <div class="form-group">
-              <label class="form-label">Releases planned per year</label>
-              <input class="form-input" id="fc-releases" type="number" min="0" placeholder="e.g. 6"/>
+              <label class="form-label">Songs or albums planned this year</label>
+              <input class="form-input" id="fc-releases" type="number" min="0" placeholder="e.g. 6 songs"/>
             </div>
           </div>
           <div class="form-group">
@@ -956,7 +956,7 @@ body{overflow:auto;height:auto;}
             <label class="form-label">1. Upload Your Song <span style="color:var(--neon);">*</span></label>
             <div style="border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;" onclick="document.getElementById('lv-audio').click()">
               <div id="lv-audio-label" style="color:#fff;font-size:12px;font-weight:600;">Click to upload audio (MP3, WAV...)</div>
-              <input type="file" id="lv-audio" accept="audio/*" style="display:none;" onchange="lvLoadAudio(this)"/>
+              <input type="file" id="lv-audio" accept="audio/*,video/mp4,.mp3,.m4a,.wav,.aac,.ogg,.flac,.aif,.aiff" style="display:none;" onchange="lvLoadAudio(this)"/>
             </div>
           </div>
           <div class="form-group">
@@ -1774,8 +1774,12 @@ async function generateArt() {
       selectVersion('a');
       document.getElementById('art-next').innerHTML = nextStepHtml('Cover\'s done — put it in motion. One tap sends this artwork into the Lyric Video Creator as your background.', 'Make the Lyric Video', 'artToVideo()');
       document.getElementById('art-next').style.display = 'block';
-      addRecent('🎨', title, 'Cover Art', versionAUrl);
-      saveAsset('Cover Art', title, versionAUrl, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
+      addRecent('🎨', title + ' — Version A', 'Cover Art', versionAUrl);
+      saveAsset('Cover Art', title + ' — Version A', versionAUrl, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
+      if (versionBUrl) {
+        addRecent('🎨', title + ' — Version B', 'Cover Art', versionBUrl);
+        saveAsset('Cover Art', title + ' — Version B', versionBUrl, {prompt: userPrompt, genre: genre, mood: mood, coverArtist: coverArtist, palette: palette});
+      }
     } else if(versionAUrl || versionBUrl) {
       const url = versionAUrl || versionBUrl;
       document.getElementById('art-single-img').src = url;
@@ -2603,6 +2607,78 @@ function fcDrawChart(scenarios) {
 
 let _fcLast = null;
 
+function fcExportImage() {
+  if (!_fcLast) return;
+  const { stats, scenarios, data } = _fcLast;
+  const money = v => '$' + (v || 0).toLocaleString();
+  const W = 1080, H = 1500;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+  // background
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0a0a12'); bg.addColorStop(1, '#05050a');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  // header
+  ctx.fillStyle = '#00FFD1'; ctx.font = '800 26px Arial'; ctx.textAlign = 'left';
+  ctx.fillText('STUDIOSOUND.AI', 60, 80);
+  ctx.fillStyle = '#ffffff'; ctx.font = '900 54px Arial';
+  ctx.fillText('EARNINGS FORECAST', 60, 150);
+  ctx.fillStyle = '#7a7a92'; ctx.font = '600 24px Arial';
+  ctx.fillText(new Date().toLocaleDateString() + '  ·  5-year projection', 60, 190);
+  // numbers strip
+  ctx.fillStyle = '#e8e8f5'; ctx.font = '700 30px Arial';
+  ctx.fillText('Monthly average: ' + money(stats.avgMonthly) + '    Trend: ' + (stats.trend > 0 ? '+' : '') + stats.trend + '%/mo', 60, 260);
+  // chart snapshot
+  const chart = document.getElementById('fc-chart');
+  if (chart) ctx.drawImage(chart, 60, 300, W - 120, (W - 120) * (chart.height / chart.width));
+  let y = 300 + (chart ? (W - 120) * (chart.height / chart.width) : 0) + 80;
+  // scenario rows
+  const rows = [
+    ['IF YOU COAST', scenarios.steady, '#9a9ab2'],
+    ['IF YOU WORK THE PLAN', scenarios.growth, '#00FFD1'],
+    ['PLAN + ONE VIRAL HIT', scenarios.breakout, '#FFD700']
+  ];
+  rows.forEach(([label, sc, color]) => {
+    ctx.fillStyle = color; ctx.font = '800 28px Arial';
+    ctx.fillText(label, 60, y);
+    ctx.fillStyle = '#ffffff'; ctx.font = '600 28px Arial';
+    ctx.fillText('1yr ' + money(sc.y1) + '    3yr ' + money(sc.y3) + '    5yr ' + money(sc.y5), 460, y);
+    y += 56;
+  });
+  y += 20;
+  // the gap line
+  const gap = (scenarios.growth.y5 || 0) - (scenarios.steady.y5 || 0);
+  ctx.fillStyle = '#00FFD1'; ctx.font = '800 32px Arial';
+  ctx.fillText('The work is worth ' + money(gap) + ' over 5 years.', 60, y);
+  y += 70;
+  // moves
+  if (data.moves && data.moves.length) {
+    ctx.fillStyle = '#7a7a92'; ctx.font = '800 22px Arial';
+    ctx.fillText('MOVES THAT CHANGE YOUR CURVE', 60, y); y += 44;
+    ctx.fillStyle = '#e8e8f5'; ctx.font = '500 24px Arial';
+    data.moves.slice(0, 4).forEach(m => {
+      const words = ('⚡ ' + m).split(' ');
+      let line = '';
+      words.forEach(wd => {
+        if (ctx.measureText(line + wd).width > W - 140) { ctx.fillText(line, 60, y); y += 36; line = ''; }
+        line += wd + ' ';
+      });
+      ctx.fillText(line, 60, y); y += 50;
+    });
+  }
+  // footer
+  ctx.fillStyle = '#5a5a72'; ctx.font = '500 20px Arial';
+  ctx.fillText('Scenario estimates — not guarantees, not financial advice.', 60, H - 70);
+  ctx.fillStyle = '#00FFD1'; ctx.font = '700 22px Arial';
+  ctx.fillText('studiosound.ai — Create. Release. Elevate.', 60, H - 36);
+  // download
+  const a = document.createElement('a');
+  a.download = 'earnings-forecast.png';
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+
 function fcExportPdf() {
   if (!_fcLast) return;
   const { stats, scenarios, data } = _fcLast;
@@ -2610,6 +2686,7 @@ function fcExportPdf() {
   const chartImg = chart ? chart.toDataURL('image/png') : '';
   const money = v => '$' + (v || 0).toLocaleString();
   const w = window.open('', '_blank');
+  if (!w) { fcExportImage(); return; }
   w.document.write('<html><head><title>Earnings Forecast — StudioSound.ai</title><style>' +
     'body{font-family:Arial;color:#111;padding:36px;max-width:720px;margin:auto;}' +
     'h1{font-size:22px;margin:0;}p.sub{color:#555;font-size:12px;margin:4px 0 18px;}' +
@@ -2627,8 +2704,24 @@ function fcExportPdf() {
     '<tr><td>Steady — current path</td><td>' + money(scenarios.steady.y1) + '</td><td>' + money(scenarios.steady.y3) + '</td><td>' + money(scenarios.steady.y5) + '</td></tr>' +
     '<tr><td>Growth — consistent releases + content</td><td>' + money(scenarios.growth.y1) + '</td><td>' + money(scenarios.growth.y3) + '</td><td>' + money(scenarios.growth.y5) + '</td></tr>' +
     '<tr><td>Breakout — growth + one viral moment</td><td>' + money(scenarios.breakout.y1) + '</td><td>' + money(scenarios.breakout.y3) + '</td><td>' + money(scenarios.breakout.y5) + '</td></tr></table>' +
+    '<h2>Scenario Details</h2>' +
+    (data.scenario_notes ? '<p><strong>Steady:</strong> ' + (data.scenario_notes.steady||'') + '</p><p><strong>Growth:</strong> ' + (data.scenario_notes.growth||'') + '</p><p><strong>Breakout:</strong> ' + (data.scenario_notes.breakout||'') + '</p>' : '') +
+    (function(){
+      if (!scenarios.growth.series) return '';
+      var rows = '';
+      var prevS = 0, prevG = 0;
+      var mn = ['Month 1','Month 2','Month 3','Month 4','Month 5','Month 6','Month 7','Month 8','Month 9','Month 10','Month 11','Month 12'];
+      for (var i = 0; i < 12; i++) {
+        var sM = scenarios.steady.series[i] - prevS; prevS = scenarios.steady.series[i];
+        var gM = scenarios.growth.series[i] - prevG; prevG = scenarios.growth.series[i];
+        rows += '<tr><td>' + mn[i] + '</td><td>' + money(Math.round(sM)) + '</td><td>' + money(Math.round(gM)) + '</td></tr>';
+      }
+      return '<h2>Your First Year, Month by Month</h2><table><tr><th>Month</th><th>Steady path</th><th>Growth path</th></tr>' + rows + '</table>';
+    })() +
     (data.analysis ? '<h2>Analyst Read</h2><p>' + data.analysis + '</p>' : '') +
     (data.moves && data.moves.length ? '<h2>Moves That Change Your Curve</h2>' + data.moves.map(m => '<div class="move">• ' + m + '</div>').join('') : '') +
+    (data.milestones && data.milestones.length ? '<h2>Milestones Ahead</h2>' + data.milestones.map(m => '<div class="move">• ' + m + '</div>').join('') : '') +
+    (data.watch_outs && data.watch_outs.length ? '<h2>Watch Out For</h2>' + data.watch_outs.map(m => '<div class="move">• ' + m + '</div>').join('') : '') +
     '<p class="disc">Scenario estimates derived from the artist\'s historical royalty data and standard independent-music income patterns. These are projections, not guarantees, and do not constitute financial advice. Streaming income is variable.</p>' +
     '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
   w.document.close(); w.focus();
@@ -2663,11 +2756,22 @@ function fcRenderFull(stats, scenarios, data) {
     html += `<div class="plan-item"><div class="plan-date">MOVES THAT CHANGE YOUR CURVE</div>` +
       data.moves.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${m}</div>`).join('') + `</div>`;
   }
+  if (data.milestones && data.milestones.length) {
+    html += `<div class="plan-item"><div class="plan-date">MILESTONES AHEAD</div>` +
+      data.milestones.map(m => `<div class="plan-detail" style="margin-bottom:4px;">🏁 ${m}</div>`).join('') + `</div>`;
+  }
+  if (data.watch_outs && data.watch_outs.length) {
+    html += `<div class="plan-item"><div class="plan-date">WATCH OUT FOR</div>` +
+      data.watch_outs.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚠️ ${m}</div>`).join('') + `</div>`;
+  }
   if (!data.analysis) html += `<div style="color:var(--muted);font-size:11px;margin-top:8px;">This is a saved preview — run a fresh forecast on Pro for your full analyst report and moves.</div>`;
   html += nextStepHtml('The Growth curve only happens with a real rollout. Turn these numbers into your 30-day plan — we\'ll research you across the web and build it step by step.', 'Build My Release Plan', 'fcToPlan()');
   html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
   if (data.analysis) {
-    html += `<div class="result-actions" style="margin-top:10px;"><button class="result-btn primary" onclick="fcExportPdf()" style="width:100%;justify-content:center;"><i class="ti ti-file-download"></i> Download PDF Report</button></div>`;
+    html += `<div class="result-actions" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button class="result-btn primary" onclick="fcExportImage()" style="justify-content:center;"><i class="ti ti-photo-down"></i> Save as Image</button>
+      <button class="result-btn" onclick="fcExportPdf()" style="justify-content:center;"><i class="ti ti-file-download"></i> PDF (desktop)</button>
+    </div>`;
   }
   document.getElementById('fc-result').innerHTML = html;
   document.getElementById('fc-result').style.display = 'block';
@@ -3224,6 +3328,7 @@ async function lvRun(record) {
       saveAsset('Lyric Video', lvName, lvSnap, {videoUrl: videoUrl, lines: lvLines().length, font: document.getElementById('lv-font').value, color: document.getElementById('lv-color').value});
       addRecent(null, lvName, 'Lyric Video', lvSnap);
       const sizeMB = (blob.size / 1048576).toFixed(1);
+      window._lvExpDone = true;
       status.innerHTML = (videoUrl
         ? '✓ Downloaded and saved to My Assets (' + sizeMB + ' MB) — play or re-download it there anytime.'
         : '✓ Downloaded (' + sizeMB + ' MB)! Too large for a cloud copy — the file on your device is your copy. 15s and 30s clips always save to My Assets.')
@@ -3232,7 +3337,23 @@ async function lvRun(record) {
     lvRecorder.start();
     const lenSelStatus = document.getElementById('lv-length').value;
     const durForStatus = lenSelStatus === 'full' ? lvBuffer.duration : Math.min(parseFloat(lenSelStatus), lvBuffer.duration);
-    document.getElementById('lv-export-status').textContent = 'Recording your video in real time (' + durForStatus.toFixed(0) + 's) — keep this tab open...';
+    // live countdown so nobody thinks it's stuck — and try to keep the phone screen awake
+    let lvWake = null;
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(w => lvWake = w).catch(()=>{}); } catch(e) {}
+    const lvExpEnd = Date.now() + durForStatus * 1000;
+    const lvExpTimer = setInterval(() => {
+      const left = Math.max(0, Math.ceil((lvExpEnd - Date.now()) / 1000));
+      const st = document.getElementById('lv-export-status');
+      if (left > 0) {
+        st.textContent = '🎬 Rendering your video in real time — ' + Math.floor(left/60) + ':' + String(left%60).padStart(2,'0') + ' left. Keep this screen open (it\'s filming the video as it plays).';
+      } else {
+        st.textContent = 'Finishing up — your download starts in a moment...';
+        clearInterval(lvExpTimer);
+      }
+      if (window._lvExpDone) { clearInterval(lvExpTimer); if (lvWake) { try { lvWake.release(); } catch(e){} } }
+    }, 1000);
+    window._lvExpDone = false;
+    document.getElementById('lv-export-status').textContent = '🎬 Rendering your video in real time (' + durForStatus.toFixed(0) + 's) — keep this screen open...';
   }
   lvStartT = lvAC.currentTime;
   lvSrc.start(0, lvStartSec, lvPlayDur);
