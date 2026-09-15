@@ -861,8 +861,11 @@ body{overflow:auto;height:auto;}
               <input class="form-input" id="fc-genre" placeholder="e.g. Latin, Hip-Hop"/>
             </div>
             <div class="form-group">
-              <label class="form-label">Songs or albums planned this year</label>
-              <input class="form-input" id="fc-releases" type="number" min="0" placeholder="e.g. 6 songs"/>
+              <label class="form-label">Releases planned this year</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <input class="form-input" id="fc-releases" type="number" min="0" placeholder="e.g. 6"/>
+                <select class="form-input" id="fc-reltype"><option value="songs">Songs</option><option value="albums">Albums</option></select>
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -2430,6 +2433,8 @@ function fcMonthKey(raw, dayFirst) {
 }
 
 let fcCsvReports = [];   // each uploaded report kept separately: {name, months:{'YYYY-MM':amt}} — removable
+let fcCurrency = 'USD';  // detected from the money column header, e.g. "Net Royalties (AUD)"
+function fcCur() { return { USD:'$', AUD:'A$', NZD:'NZ$', CAD:'C$', EUR:'\u20ac', GBP:'\u00a3' }[fcCurrency] || '$'; }
 
 function fcParseCsv(input) {
   if (!input.files || !input.files.length) return;
@@ -2506,6 +2511,8 @@ function fcIngestText(text, fname) {
           if (ds > dateBest) { dateBest = ds; dateIdx = i; }
         });
         if (moneyIdx === -1) throw new Error('no money column');
+        const curM = header[moneyIdx].match(/\b(aud|usd|eur|gbp|cad|nzd)\b/) || header.join(' ').match(/\b(aud|nzd|cad|eur|gbp)\b/);
+        if (curM) fcCurrency = curM[1].toUpperCase();
         const rows = lines.slice(1).map(l => fcCsvLine(l, delim));
         // slash-date format: if any first number > 12 it's day-first (01/09/2025 = 1 Sep, not Jan 9)
         let dayFirst = false;
@@ -2573,7 +2580,7 @@ function fcCsvRender() {
   }
   const cleaned = fcCsvClean(keys.map(k => ({ month: k, amount: Math.round(stack[k] * 100) / 100 })));
   fcMonthly = cleaned.monthly;
-  let cleanNote = '';
+  let cleanNote = fcCurrency !== 'USD' ? ' · amounts are in ' + fcCurrency : '';
   if (cleaned.lead) cleanNote += ' · trimmed ' + cleaned.lead + ' near-zero month' + (cleaned.lead > 1 ? 's' : '') + ' from before your catalog was live';
   if (cleaned.partial) cleanNote += ' · your latest month looks incomplete (statements lag), so it\'s set aside — type it back in below if it\'s real';
   document.getElementById('fc-rows').innerHTML = '';
@@ -2586,7 +2593,7 @@ function fcCsvRender() {
       '✓ <strong style="color:var(--neon);">1 month found</strong> ($' + total.toFixed(2) + '). Forecasts need 2+ — <strong>upload your other monthly reports</strong> (they stack automatically) or add months by hand below.' + cleanNote;
   } else {
     document.getElementById('fc-parse-status').innerHTML =
-      '✓ <strong style="color:var(--neon);">' + keys.length + ' months found</strong> across ' + nRep + ' report' + (nRep > 1 ? 's' : '') + ' — total $' + total.toFixed(2) + '. Check the rows, add more reports, or hit Forecast.' + cleanNote;
+      '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months ready</strong> (' + keys.length + ' found in ' + nRep + ' report' + (nRep > 1 ? 's' : '') + ') — forecast will use ' + fcCur() + total.toFixed(2) + '. Check the rows, add more, or hit Forecast.' + cleanNote;
   }
 }
 
@@ -2600,6 +2607,8 @@ function fcReset() {
   document.getElementById('fc-genre').value = '';
   document.getElementById('fc-city').value = '';
   document.getElementById('fc-releases').value = '';
+  const rt = document.getElementById('fc-reltype'); if (rt) rt.value = 'songs';
+  fcCurrency = 'USD';
   document.getElementById('fc-result').style.display = 'none';
   document.getElementById('fc-placeholder').style.display = 'block';
   document.getElementById('fc-parse-status').textContent = '';
@@ -2626,6 +2635,12 @@ function fcGetMonthly() {
   });
   if (rows.length >= 2) return rows;
   return fcMonthly;
+}
+
+function fcSongsPlanned() {
+  const n = parseFloat(document.getElementById('fc-releases').value) || 0;
+  const t = (document.getElementById('fc-reltype') || {}).value || 'songs';
+  return t === 'albums' ? n * 8 : n;   // an album ~8 songs of release energy
 }
 
 function fcProject(monthly) {
@@ -2664,7 +2679,11 @@ function fcProject(monthly) {
   }
 
   const steadyG = Math.max(-0.03, Math.min(0.02, trend));       // coast: mild version of current trend, fading to long-tail
-  const growthG = Math.min(0.08, Math.max(0.04, trend + 0.06)); // working the plan: strong start, momentum fades
+  // your release plan bends the growth curve: ~6 songs/yr is the baseline plan;
+  // more output compounds harder, a thin plan grows slower (capped either way)
+  const relAdj = Math.max(-0.01, Math.min(0.02, (fcSongsPlanned() - 6) * 0.002));
+  const growthBase = Math.min(0.08, Math.max(0.03, trend + 0.06));
+  const growthG = Math.min(0.09, Math.max(0.02, growthBase + relAdj)); // working the plan: release cadence bends it, momentum fades
   return {
     stats: { avgMonthly: Math.round(avgRecent * 100) / 100, trend: Math.round(trend * 1000) / 10, monthsOfData: n },
     scenarios: {
@@ -2677,7 +2696,7 @@ function fcProject(monthly) {
 
 function fcMoney(v) {
   v = v || 0;
-  return v >= 1000 ? '$' + (v/1000).toFixed(v >= 100000 ? 0 : 1) + 'k' : '$' + Math.round(v);
+  return v >= 1000 ? fcCur() + (v/1000).toFixed(v >= 100000 ? 0 : 1) + 'k' : fcCur() + Math.round(v);
 }
 
 function fcDrawChart(scenarios) {
@@ -2777,7 +2796,7 @@ let _fcLast = null;
 function fcExportImage() {
   if (!_fcLast) return;
   const { stats, scenarios, data } = _fcLast;
-  const money = v => '$' + (v || 0).toLocaleString();
+  const money = v => fcCur() + (v || 0).toLocaleString();
   const W = 1080, H = 1500;
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
@@ -2851,7 +2870,7 @@ function fcExportPdf() {
   const { stats, scenarios, data } = _fcLast;
   const chart = document.getElementById('fc-chart');
   const chartImg = chart ? chart.toDataURL('image/png') : '';
-  const money = v => '$' + (v || 0).toLocaleString();
+  const money = v => fcCur() + (v || 0).toLocaleString();
   const w = window.open('', '_blank');
   if (!w) { fcExportImage(); return; }
   w.document.write('<html><head><title>Earnings Forecast — StudioSound.ai</title><style>' +
@@ -2898,7 +2917,7 @@ function fcExportPdf() {
 function fcRenderFull(stats, scenarios, data) {
   data = data || {};
   document.getElementById('fc-placeholder').style.display = 'none';
-  const money = v => '$' + (v || 0).toLocaleString();
+  const money = v => fcCur() + (v || 0).toLocaleString();
   const rows = [
     ['STEADY — keep doing what you\'re doing', scenarios.steady, ''],
     ['GROWTH — consistent releases + content', scenarios.growth, 'var(--neon)'],
@@ -2966,7 +2985,8 @@ async function runForecast() {
       rows: monthly,
       genre: document.getElementById('fc-genre').value,
       city: document.getElementById('fc-city').value,
-      releases: document.getElementById('fc-releases').value
+      releases: document.getElementById('fc-releases').value + ' ' + ((document.getElementById('fc-reltype')||{}).value || 'songs'),
+      currency: fcCurrency
     }));
   } catch(e) {}
 
@@ -2983,7 +3003,7 @@ async function runForecast() {
 
   // FREE PLAN: real numbers teaser, full report locked behind Pro
   if (currentPlan === 'free') {
-    const money = v => '$' + (v || 0).toLocaleString();
+    const money = v => fcCur() + (v || 0).toLocaleString();
     const lockRow = (label, tease) => `
       <div class="plan-item" style="position:relative;overflow:hidden;">
         <div class="plan-date" style="color:#5a5a72;">🔒 ${label}</div>
@@ -3018,7 +3038,8 @@ async function runForecast() {
         monthly: monthly.slice(-12), stats, scenarios,
         genre: document.getElementById('fc-genre').value.trim(),
         city: document.getElementById('fc-city').value.trim(),
-        releasesPerYear: document.getElementById('fc-releases').value.trim()
+        releasesPerYear: (document.getElementById('fc-releases').value.trim() + ' ' + (((document.getElementById('fc-reltype')||{}).value) || 'songs')).trim(),
+        currency: fcCurrency
       })
     });
     const data = await res.json();
