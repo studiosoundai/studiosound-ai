@@ -2867,7 +2867,7 @@ function openForecastAsset(i) {
 
 async function runForecast() {
   const monthly = fcGetMonthly();
-  if (!monthly || monthly.length < 2) { alert('Upload a report or enter at least 2 months of earnings'); return; }
+  if (!monthly || monthly.length < 2) { alert('Almost there — one more month and we can read your trend. Upload another monthly report (they stack automatically) or add a month by hand.'); return; }
 
   // Remember the artist's inputs so they survive upgrades and page reloads
   try {
