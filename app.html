@@ -1293,9 +1293,22 @@ function applyDeepLink() {
   const map = {
     '#art':'art', '#cover':'art', '#plan':'plan', '#merch':'merch',
     '#writer':'writer', '#lyrics':'writer', '#lyric':'lyric', '#video':'lyric',
-    '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split'
+    '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split',
+    '#forecast':'forecast', '#earnings':'forecast',
+    '#meta':'meta', '#metadata':'meta', '#check':'check', '#checklist':'check'
   };
-  const tool = map[(location.hash || '').toLowerCase()];
+  let tool = map[(location.hash || '').toLowerCase()];
+  // New artists who clicked a tool on the homepage signed up first: send them to that tool once.
+  if (!tool) {
+    try {
+      const next = localStorage.getItem('ssNext');
+      if (next) {
+        localStorage.removeItem('ssNext');
+        if (next.toLowerCase() === 'pricing') { window.location.href = 'pricing.html'; return; }
+        tool = map['#' + next.toLowerCase()];
+      }
+    } catch (e) {}
+  }
   if (!tool) return;
   switchTool(tool, null);
   // highlight the matching sidebar button
@@ -1521,12 +1534,26 @@ function switchTool(tool, sidebarBtn) {
     let restored = false;
     try {
       const saved = JSON.parse(localStorage.getItem('fcSaved') || 'null');
-      if (saved && saved.rows && saved.rows.length >= 2 && saved.ts && (Date.now() - saved.ts) < 2 * 60 * 60 * 1000) {
+      if (saved && saved.rows && saved.rows.length >= 2 && saved.ts && (Date.now() - saved.ts) < 24 * 60 * 60 * 1000) {
         saved.rows.forEach(r => fcAddRow(r.month, r.amount));
+        if (saved.currency) fcCurrency = String(saved.currency).toUpperCase();
         if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
         if (saved.city) document.getElementById('fc-city').value = saved.city;
-        if (saved.releases) document.getElementById('fc-releases').value = saved.releases;
+        if (saved.releases) {
+          const rm = String(saved.releases).match(/([\d.]+)\s*(songs|albums)?/i);
+          if (rm) {
+            document.getElementById('fc-releases').value = rm[1];
+            const rt = document.getElementById('fc-reltype'); if (rt && rm[2]) rt.value = rm[2].toLowerCase();
+          }
+        }
         if (saved.fxPref) fcSetFxPref(saved.fxPref);
+        const fxRow = document.getElementById('fc-fxpref-row');
+        if (fxRow && fcCurrency !== 'USD') {
+          fxRow.style.display = 'flex';
+          const nb = document.getElementById('fc-fx-native'); if (nb) nb.textContent = fcCurrency;
+        }
+        const ps = document.getElementById('fc-parse-status');
+        if (ps) ps.innerHTML = '\u2713 <strong style="color:var(--neon);">Your ' + saved.rows.length + ' months are back</strong> \u2014 hit Forecast when ready.' + (fcCurrency !== 'USD' ? ' \u00b7 amounts are in ' + fcCurrency : '');
         restored = true;
       }
     } catch(e) {}
@@ -2456,7 +2483,8 @@ function fcSetFxPref(v) {
   if (n) n.classList.toggle('active', v === 'native');
 }
 
-function fcCur() { return { USD:'$', AUD:'A$', NZD:'NZ$', CAD:'C$', EUR:'\u20ac', GBP:'\u00a3' }[fcCurrency] || '$'; }
+let fcDisplayCur = null; // currency the RESULTS are shown in (after any conversion); fcCurrency stays the statement's own
+function fcCur() { return { USD:'$', AUD:'A$', NZD:'NZ$', CAD:'C$', EUR:'\u20ac', GBP:'\u00a3' }[fcDisplayCur || fcCurrency] || '$'; }
 let fcFxCache = {};
 const FC_FX_APPROX = { AUD: 0.66, NZD: 0.61, CAD: 0.73, EUR: 1.08, GBP: 1.27 }; // last-resort ballparks
 async function fcFxRate(from) {
@@ -2620,6 +2648,7 @@ function fcCsvRender() {
     fcMonthly = null;
     return;
   }
+  fcDisplayCur = null;
   const cleaned = fcCsvClean(keys.map(k => ({ month: k, amount: Math.round(stack[k] * 100) / 100 })));
   fcMonthly = cleaned.monthly;
   const fxRow = document.getElementById('fc-fxpref-row');
@@ -2658,7 +2687,7 @@ function fcReset() {
   document.getElementById('fc-city').value = '';
   document.getElementById('fc-releases').value = '';
   const rt = document.getElementById('fc-reltype'); if (rt) rt.value = 'songs';
-  fcCurrency = 'USD';
+  fcCurrency = 'USD'; fcDisplayCur = null;
   document.getElementById('fc-result').style.display = 'none';
   document.getElementById('fc-placeholder').style.display = 'block';
   document.getElementById('fc-parse-status').textContent = '';
@@ -3025,7 +3054,8 @@ function openForecastAsset(i) {
 }
 
 async function runForecast() {
-  const monthly = fcGetMonthly();
+  const monthly = (fcGetMonthly() || []).map(m => ({ month: m.month, amount: m.amount })); // copy: conversion must never touch the source rows
+  fcDisplayCur = null;
   if (!monthly || monthly.length < 2) { alert('Almost there — one more month and we can read your trend. Upload another monthly report (they stack automatically) or add a month by hand.'); return; }
 
   // Remember the artist's inputs so they survive upgrades and page reloads
@@ -3053,7 +3083,7 @@ async function runForecast() {
       const fx = await fcFxRate(fromCur);
       monthly.forEach(m => { m.amount = Math.round(m.amount * fx.rate * 100) / 100; });
       fxNote = 'Converted from ' + fromCur + ' to USD at ' + fx.rate.toFixed(4) + (fx.approx ? ' (approximate rate)' : ' (today\'s rate)');
-      fcCurrency = 'USD';
+      fcDisplayCur = 'USD';
     } catch(e) {
       fxNote = 'Shown in ' + fromCur + ' (USD rate unavailable right now)';
     }
@@ -3081,8 +3111,8 @@ async function runForecast() {
       </div>`;
     let html = `<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">WHERE YOU ARE</div><div class="plan-detail" style="color:#e8e8f5;">Recent monthly average: <strong style="color:#fff;">${money(stats.avgMonthly)}</strong> · Trend: <strong style="color:#fff;">${stats.trend > 0 ? '+' : ''}${stats.trend}%/mo</strong> · ${stats.monthsOfData} months of data read${stats.fx ? ' \u00b7 ' + stats.fx : ''}</div></div>`;
     html += `<div class="plan-item"><div class="plan-date">STEADY PATH — 1 YEAR</div><div class="plan-detail">If nothing changes: <strong style="color:#fff;">${money(scenarios.steady.y1)}</strong> over the next 12 months</div></div>`;
-    html += lockRow('GROWTH SCENARIO — 1 / 3 / 5 YEARS', 'Your ceiling: $' + (scenarios.growth.y5) + ' over five years with the right moves');
-    html += lockRow('BREAKOUT SCENARIO — 1 / 3 / 5 YEARS', 'One viral moment changes this to $' + (scenarios.breakout.y5));
+    html += lockRow('GROWTH SCENARIO — 1 / 3 / 5 YEARS', 'Your ceiling: ' + money(scenarios.growth.y5) + ' over five years with the right moves');
+    html += lockRow('BREAKOUT SCENARIO — 1 / 3 / 5 YEARS', 'One viral moment changes this to ' + money(scenarios.breakout.y5));
     html += lockRow('ANALYST READ + YOUR NEXT MOVES', 'Four specific moves would shift your curve this quarter based on your trend');
     html += `<a href="pricing.html" style="display:block;text-align:center;background:var(--neon);color:#05050a;font-weight:800;font-size:13px;padding:13px;border-radius:10px;text-decoration:none;margin-top:12px;">Unlock your full forecast with Pro — $9.99/mo →</a>`;
     html += `<div style="text-align:center;margin-top:10px;"><a onclick="fcToPlan()" style="color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;">Free move while you decide: build this month's release plan →</a></div>`;
@@ -3109,7 +3139,7 @@ async function runForecast() {
         genre: document.getElementById('fc-genre').value.trim(),
         city: document.getElementById('fc-city').value.trim(),
         releasesPerYear: (document.getElementById('fc-releases').value.trim() + ' ' + (((document.getElementById('fc-reltype')||{}).value) || 'songs')).trim(),
-        currency: fcCurrency
+        currency: fcDisplayCur || fcCurrency
       })
     });
     const data = await res.json();
