@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Music Metadata Formatter: Fix Distributor Rejections | StudioSound.ai</title>
+<meta name="description" content="Format your track metadata and credits for DistroKid, TuneCore and every distributor, with warnings for the mistakes that get uploads rejected. Free, no account.">
+<link rel="canonical" href="https://studiosound.ai/metadata-formatter">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<meta property="og:title" content="Free Music Metadata Formatter: Fix Distributor Rejections | StudioSound.ai">
+<meta property="og:description" content="Format your track metadata and credits for DistroKid, TuneCore and every distributor, with warnings for the mistakes that get uploads rejected. Free, no account.">
+<meta property="og:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<meta property="og:url" content="https://studiosound.ai/metadata-formatter">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="StudioSound.ai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Music Metadata Formatter: Fix Distributor Rejections | StudioSound.ai">
+<meta name="twitter:description" content="Format your track metadata and credits for DistroKid, TuneCore and every distributor, with warnings for the mistakes that get uploads rejected. Free, no account.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#05050a; --surface:#0c0c14; --surface2:#11111b; --line:#1f1f2e;
+  --ink:#f4f4fa; --muted:#a3a3bd; --dim:#6e6e88;
+  --neon:#00FFD1; --gold:#FFC83D;
+}
+html{overflow-x:hidden;scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+img{display:block;max-width:100%;}
+:focus-visible{outline:2px solid var(--neon);outline-offset:3px;border-radius:6px;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+section{padding:96px 0;}
+h1,h2,h3{font-weight:800;color:var(--ink);}
+h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-width:22ch;}
+.sec-lede{color:var(--muted);font-size:17px;max-width:56ch;margin-top:14px;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:58px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(5,5,10,0.92);backdrop-filter:blur(10px);z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logoimg{height:40px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;align-items:center;}
+.navlink-wrap{position:relative;}
+.navlink-wrap:hover .dropdown,.navlink-wrap:focus-within .dropdown{display:block;}
+.navlink{color:#fff;font-size:13px;font-weight:600;padding:6px 11px;border-radius:6px;text-decoration:none;opacity:0.82;display:inline-block;background:none;border:none;font-family:inherit;cursor:pointer;}
+.navlink:hover{opacity:1;background:var(--surface);}
+.navlink.drop::after{content:' ▾';font-size:9px;}
+.dropdown{display:none;position:absolute;top:100%;left:0;padding-top:8px;min-width:270px;z-index:200;}
+.dropdown-inner{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.dropdown-item{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;}
+.dropdown-item:hover{background:var(--surface2);}
+.dropdown-name{color:#fff;font-size:13px;font-weight:700;}
+.dropdown-name .tag{color:var(--neon);font-size:10px;font-weight:800;margin-left:4px;}
+.dropdown-desc{color:var(--muted);font-size:11px;margin-top:1px;}
+.dropdown-note{border-top:1px solid var(--line);margin-top:6px;padding:10px 12px 4px;color:var(--dim);font-size:11px;line-height:1.5;}
+.navbtns{display:flex;gap:8px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-family:inherit;font-weight:800;text-decoration:none;cursor:pointer;transition:transform 0.15s,border-color 0.15s,background 0.15s;white-space:nowrap;}
+.btn-sm{padding:8px 16px;font-size:12px;}
+.btn-lg{padding:15px 28px;font-size:15px;}
+.btn-neon{background:var(--neon);color:#05050a;border:none;}
+.btn-neon:hover{transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:#fff;border:1px solid #3a3a52;}
+.btn-ghost:hover{border-color:var(--neon);}
+.menu-btn{display:none;background:var(--surface);border:1px solid #3a3a52;border-radius:8px;width:40px;height:36px;cursor:pointer;flex-direction:column;gap:4px;justify-content:center;align-items:center;}
+.hb{display:block;width:16px;height:2px;background:var(--neon);border-radius:2px;}
+.mobilemenu{display:none;position:fixed;top:58px;left:0;right:0;background:#07070f;border-bottom:1px solid var(--line);z-index:99;padding:8px 16px 16px;box-shadow:0 20px 40px rgba(0,0,0,0.6);max-height:calc(100vh - 58px);overflow-y:auto;}
+.mobilemenu.open{display:block;}
+.mobilemenu a{display:block;color:#fff;font-size:15px;font-weight:600;text-decoration:none;padding:12px 6px;border-bottom:1px solid #14141f;}
+.mobilemenu a.mm-cta{color:var(--neon);font-weight:800;border-bottom:none;}
+.pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:0.02em;}
+.pill.new{background:var(--neon);color:#05050a;}
+.pill.beta{border:1px solid var(--neon);color:var(--neon);}
+.pill.free{border:1px solid var(--gold);color:var(--gold);}
+/* FOOTER */
+.footer{background:#030308;border-top:1px solid var(--line);padding:48px 32px 24px;}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;max-width:1180px;margin-left:auto;margin-right:auto;}
+.footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.footer-logoimg{height:38px;width:auto;max-width:120px;border-radius:8px;object-fit:contain;}
+.footer-logoname{font-size:14px;font-weight:800;}
+.footer-desc{color:var(--muted);font-size:13px;line-height:1.7;max-width:240px;margin-bottom:16px;}
+.footer-social{display:flex;gap:10px;}
+.footer-social a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.footer-social a:hover{border-color:var(--neon);}
+.sicon{width:18px;height:18px;object-fit:contain;}
+.footer-col-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.footer-link{display:block;color:var(--muted);font-size:13px;text-decoration:none;margin-bottom:10px;}
+.footer-link:hover{color:var(--neon);}
+.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1180px;margin:0 auto;}
+.footer-copy{color:var(--dim);font-size:12px;}
+.footer-bottom-links{display:flex;gap:20px;}
+.footer-bottom-link{color:var(--dim);font-size:12px;text-decoration:none;}
+.footer-bottom-link:hover{color:var(--muted);}
+
+/* PUBLIC TOOL PAGES */
+.tp{padding:36px 0 88px;}
+.crumb{font-size:13px;color:var(--dim);}
+.crumb a{color:var(--muted);text-decoration:none;}
+.crumb a:hover{color:var(--neon);}
+.tp-head{margin:18px 0 30px;max-width:760px;}
+.tp-head h1{font-size:clamp(32px,4.4vw,52px);line-height:1.04;letter-spacing:-0.035em;margin-top:14px;}
+.tp-head .lede{color:var(--muted);font-size:17px;margin-top:14px;max-width:58ch;}
+.badge{display:inline-flex;gap:6px;align-items:center;font-size:11px;font-weight:800;letter-spacing:0.05em;color:var(--gold);border:1px solid rgba(255,200,61,0.5);border-radius:999px;padding:4px 11px;}
+.badge.neon{color:var(--neon);border-color:rgba(0,255,209,0.5);}
+.tool-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);gap:20px;align-items:start;}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;min-width:0;}
+.panel h2{font-size:18px;letter-spacing:-0.01em;max-width:none;line-height:1.3;}
+.panel .sub{color:var(--muted);font-size:14px;margin-top:4px;}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:1.5px dashed #34344c;border-radius:14px;padding:30px 16px;cursor:pointer;background:var(--bg);transition:border-color 0.15s,background 0.15s;margin-top:18px;width:100%;font-family:inherit;color:inherit;}
+.drop:hover,.drop.over{border-color:var(--neon);background:rgba(0,255,209,0.04);}
+.drop i{font-size:30px;color:var(--neon);margin-bottom:4px;}
+.drop b{font-size:15px;color:#fff;word-break:break-word;}
+.drop small{font-size:12px;color:var(--dim);}
+.drop.done{border-style:solid;border-color:rgba(0,255,209,0.45);}
+.drop.done b{color:var(--neon);}
+.field{margin-top:16px;min-width:0;}
+.field label,.lbl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.02em;}
+.input{width:100%;min-width:0;background:var(--bg);border:1px solid #2a2a3e;border-radius:10px;padding:11px 12px;color:#fff;font-family:inherit;font-size:15px;}
+.input:focus{outline:none;border-color:var(--neon);}
+select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#a3a3bd 50%),linear-gradient(135deg,#a3a3bd 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.status{font-size:14px;color:var(--muted);margin-top:14px;min-height:20px;line-height:1.5;}
+.status strong{color:#fff;}
+.status .ok{color:var(--neon);font-weight:700;}
+.status .err{color:#ff8a8a;font-weight:700;}
+.btn-block{width:100%;margin-top:16px;padding:14px;font-size:15px;}
+.btn[disabled]{opacity:0.4;cursor:not-allowed;transform:none;}
+.btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.btn-quiet{background:var(--surface2);color:#fff;border:1px solid #2a2a3e;padding:10px 16px;font-size:13px;}
+.btn-quiet:hover{border-color:var(--neon);}
+.tips{list-style:none;margin-top:10px;}
+.tips li{padding:14px 0;border-top:1px solid var(--line);}
+.tips li:first-child{border-top:none;}
+.tips b{display:block;font-size:11px;letter-spacing:0.08em;color:var(--neon);}
+.tips span{display:block;color:var(--muted);font-size:14px;margin-top:4px;line-height:1.55;}
+.fine{color:var(--dim);font-size:12px;margin-top:14px;line-height:1.6;}
+.placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:var(--dim);font-size:14px;border:1px solid var(--line);border-radius:14px;background:var(--bg);margin-top:16px;padding:40px 20px;aspect-ratio:1;}
+.placeholder i{font-size:34px;color:#3a3a52;}
+.preview-canvas{width:100%;height:auto;border-radius:12px;display:block;margin-top:16px;border:1px solid var(--line);}
+.privacy{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:13px;margin-top:16px;}
+.privacy i{color:var(--neon);font-size:16px;margin-top:2px;}
+
+/* after-use nudge */
+.nudge{display:none;margin-top:20px;border:1px solid rgba(0,255,209,0.4);background:linear-gradient(120deg,rgba(0,255,209,0.08),rgba(0,255,209,0.02) 60%);border-radius:16px;padding:20px 22px;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.nudge.show{display:flex;animation:nudgeIn 0.35s ease-out;}
+@keyframes nudgeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.nudge-text{flex:1 1 320px;min-width:0;}
+.nudge-text b{display:block;font-size:17px;color:#fff;}
+.nudge-text span{display:block;color:var(--muted);font-size:14px;margin-top:4px;line-height:1.5;}
+.nudge-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.nudge-x{background:none;border:none;color:var(--dim);font-family:inherit;font-size:13px;cursor:pointer;padding:8px;}
+.nudge-x:hover{color:#fff;}
+
+/* more free tools */
+.more{margin-top:72px;border-top:1px solid var(--line);padding-top:40px;}
+.more h2{font-size:24px;max-width:none;letter-spacing:-0.02em;}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px;}
+.more-card{display:block;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface);transition:border-color 0.15s;}
+.more-card:hover{border-color:rgba(255,200,61,0.6);}
+.more-card.feature:hover{border-color:rgba(0,255,209,0.6);}
+.more-card i{color:var(--gold);font-size:22px;}
+.more-card.feature i{color:var(--neon);}
+.more-card b{display:block;font-size:14px;margin-top:8px;color:#fff;}
+.more-card small{display:block;color:var(--dim);font-size:12px;margin-top:3px;line-height:1.45;}
+.seo{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+.seo h3{font-size:16px;letter-spacing:-0.01em;}
+.seo p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.6;}
+
+/* release checklist */
+.ck-progress{display:flex;align-items:center;gap:12px;margin-top:18px;}
+.ck-bar{flex:1;height:8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);overflow:hidden;}
+.ck-bar span{display:block;height:100%;width:0;background:var(--neon);transition:width 0.3s;}
+.ck-progress b{font-size:13px;color:var(--muted);white-space:nowrap;}
+.ck-phase{margin-top:18px;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:6px 16px 8px;}
+.ck-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 0 4px;flex-wrap:wrap;}
+.ck-head b{font-size:12px;letter-spacing:0.08em;color:var(--neon);}
+.ck-head span{font-size:12px;color:var(--gold);font-weight:700;}
+.ck-item{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid #15151f;cursor:pointer;font-size:15px;color:#e4e4f0;line-height:1.45;}
+.ck-item:first-of-type{border-top:none;}
+.ck-item input{accent-color:#00FFD1;width:18px;height:18px;margin-top:2px;flex-shrink:0;cursor:pointer;}
+.ck-item input:checked + span{color:var(--dim);text-decoration:line-through;}
+.ck-item a{color:var(--gold);font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;}
+@media(prefers-reduced-motion:reduce){ .ck-bar span{transition:none;} }
+
+/* split sheet rows */
+.sp-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.3fr) minmax(0,1.2fr) 72px 32px;grid-template-areas:"name role pro pct x";gap:8px;margin-bottom:8px;align-items:center;}
+.sp-row > :nth-child(1){grid-area:name;} .sp-row > :nth-child(2){grid-area:role;} .sp-row > :nth-child(3){grid-area:pro;} .sp-row > :nth-child(4){grid-area:pct;} .sp-row > :nth-child(5){grid-area:x;}
+@media(max-width:640px){
+  .sp-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 72px;grid-template-areas:"name name x" "role pro pct";padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:10px;}
+}
+
+@media(max-width:1000px){
+  .tool-grid{grid-template-columns:1fr;}
+  .more-grid{grid-template-columns:repeat(2,1fr);}
+  .seo{grid-template-columns:1fr;gap:20px;}
+}
+@media(max-width:640px){
+  .tp{padding:24px 0 64px;}
+  .panel{padding:18px;border-radius:16px;}
+  .tp-head .lede{font-size:16px;}
+  .nudge{padding:18px;}
+  .nudge-actions{width:100%;}
+  .nudge-actions .btn{flex:1;}
+}
+@media(prefers-reduced-motion:reduce){ .nudge.show{animation:none;} }
+
+
+@media(max-width:1000px){
+  .navlinks{display:none;}
+  .menu-btn{display:flex;}
+}
+@media(max-width:640px){
+  .wrap{padding:0 16px;}
+  .nav{padding:0 14px;}
+  .logoname{display:none;}
+  .logoimg{height:36px;}
+  .navbtns .btn-ghost{display:none;}
+  .footer{padding:40px 16px 24px;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .btn{transition:none;}
+}
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="navlinks">
+    <div class="navlink-wrap">
+      <button class="navlink drop" type="button">Studio</button>
+      <div class="dropdown"><div class="dropdown-inner">
+        <a class="dropdown-item" href="forecast.html" onclick="return go('forecast')">
+          <div class="dropdown-name">Earnings Forecast <span class="tag">NEW</span></div>
+          <div class="dropdown-desc">What your music earns in 1, 3 and 5 years</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('art')">
+          <div class="dropdown-name">Cover Art</div>
+          <div class="dropdown-desc">Two versions every time, 3000×3000</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('plan')">
+          <div class="dropdown-name">Release Planner</div>
+          <div class="dropdown-desc">A researched 30-day rollout</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('writer')">
+          <div class="dropdown-name">Lyric Writer</div>
+          <div class="dropdown-desc">English, Spanish and Spanglish</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('lyric')">
+          <div class="dropdown-name">Lyric Videos <span class="tag">BETA</span></div>
+          <div class="dropdown-desc">Your song and cover, timed line by line</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('merch')">
+          <div class="dropdown-name">Merch Mockups</div>
+          <div class="dropdown-desc">Your art on real products, with costs</div>
+        </a>
+        <a class="dropdown-item" href="tools.html">
+          <div class="dropdown-name">Free tools <span class="tag">NO ACCOUNT</span></div>
+          <div class="dropdown-desc">Resizer, MP3 to WAV, trimmer, split sheet, metadata, checklist</div>
+        </a>
+        <div class="dropdown-note">In development: song generator, AI video clips and the ad manager.</div>
+      </div></div>
+    </div>
+    <a class="navlink" href="features.html">Features</a>
+    <a class="navlink" href="distribution.html">Distribution</a>
+    <a class="navlink" href="community.html">Community</a>
+    <a class="navlink" href="blog.html">Blog</a>
+    <a class="navlink" href="pricing.html">Pricing</a>
+    <a class="navlink" href="contact.html">Contact</a>
+  </div>
+  <div class="navbtns" id="navbtns">
+    <a class="btn btn-sm btn-ghost" href="signin.html">Sign in</a>
+    <a class="btn btn-sm btn-neon" href="signup.html">Sign up free</a>
+  </div>
+  <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" onclick="toggleMenu(this)"><span class="hb"></span><span class="hb"></span><span class="hb"></span></button>
+</nav>
+<div class="mobilemenu" id="mobilemenu">
+  <a href="forecast.html" onclick="return go('forecast')">Earnings Forecast</a>
+  <a href="tools.html">Free tools</a>
+  <a href="features.html">Features</a>
+  <a href="distribution.html">Distribution</a>
+  <a href="community.html">Community</a>
+  <a href="blog.html">Blog</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="contact.html">Contact</a>
+  <a href="signin.html" id="mm-signin">Sign in</a>
+  <a href="signup.html" class="mm-cta" id="mm-cta">Sign up free</a>
+</div>
+
+<main class="tp">
+  <div class="wrap">
+    <div class="crumb"><a href="tools.html">Free tools</a> / Metadata Formatter</div>
+    <header class="tp-head">
+      <span class="badge"><i class="ti ti-lock-open"></i> FREE · NO ACCOUNT</span>
+      <h1>Clean metadata, first upload.</h1>
+      <p class="lede">Fill in your track details once. We flag the mistakes distributors reject and format everything to copy and paste. Free, no account.</p>
+    </header>
+
+    <div class="tool-grid">
+      <div class="panel">
+        <h2>Your track</h2>
+        <p class="sub">Fill it once, paste it into any distributor, upload clean the first time.</p>
+        <div class="row2">
+          <div class="field"><label for="md-artist">Artist name, as on streaming</label><input class="input" id="md-artist" placeholder="Exact spelling"></div>
+          <div class="field"><label for="md-title">Track title</label><input class="input" id="md-title" placeholder="No &quot;feat.&quot; in the title"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="md-feat">Featured artists</label><input class="input" id="md-feat" placeholder="Leave empty if none"></div>
+          <div class="field"><label for="md-version">Version / mix</label><input class="input" id="md-version" placeholder="e.g. Remix, Sped Up"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="md-genre">Primary genre</label><input class="input" id="md-genre" placeholder="e.g. Latin, Hip-Hop"></div>
+          <div class="field"><label for="md-lang">Language of lyrics</label><input class="input" id="md-lang" placeholder="e.g. English, Spanish"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="md-explicit">Explicit?</label><select class="input" id="md-explicit"><option>Clean</option><option>Explicit</option></select></div>
+          <div class="field"><label for="md-date">Release date</label><input class="input" id="md-date" type="date"></div>
+        </div>
+        <div class="field"><label for="md-writers">Songwriters: full legal names, one per line</label><textarea class="input" id="md-writers" rows="3" placeholder="John Michael Smith&#10;Maria Elena Garcia"></textarea></div>
+        <div class="field"><label for="md-producers">Producers, one per line</label><textarea class="input" id="md-producers" rows="2" placeholder="Producer name(s)"></textarea></div>
+        <div class="row2">
+          <div class="field"><label for="md-isrc">ISRC, if you have one</label><input class="input" id="md-isrc" placeholder="e.g. USRC12345678"></div>
+          <div class="field"><label for="md-copyright">&#8471; / &copy; year and owner</label><input class="input" id="md-copyright" placeholder="e.g. 2026 Your Name"></div>
+        </div>
+        <button class="btn btn-neon btn-block" type="button" onclick="mdBuild()"><i class="ti ti-list-check"></i> Check and format</button>
+        <div class="privacy"><i class="ti ti-shield-lock"></i><span>Nothing is saved or sent. It all stays on this page.</span></div>
+      </div>
+      <div class="panel">
+        <h2>Ready to paste</h2>
+        <p class="sub">Warnings flag anything distributors commonly reject.</p>
+        <div class="placeholder" id="md-placeholder" style="aspect-ratio:auto;min-height:260px;"><i class="ti ti-list-details"></i>Fill in the form and press Check and format.</div>
+        <div id="md-warnings"></div>
+        <textarea class="input" id="md-output" rows="16" readonly hidden style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;margin-top:12px;line-height:1.5;"></textarea>
+        <div class="btn-row" id="md-actions" hidden>
+          <button class="btn btn-quiet" type="button" onclick="mdCopy()"><i class="ti ti-copy"></i> Copy all</button>
+          <button class="btn btn-quiet" type="button" onclick="mdDownload()"><i class="ti ti-download"></i> Download .txt</button>
+        </div>
+        <div class="status" id="md-status"></div>
+      </div>
+    </div>
+
+    <div class="nudge" id="nudge" role="status">
+      <div class="nudge-text"><b>Metadata done. Got the cover yet?</b><span>Describe the song and the Studio gives you two 3000×3000 cover directions. Your free account includes 3.</span></div>
+      <div class="nudge-actions">
+        <a class="btn btn-sm btn-neon" href="signup.html" onclick="return go('art')">Make a cover free</a>
+        <button class="nudge-x" type="button" onclick="hideNudge()">No thanks</button>
+      </div>
+    </div>
+
+    <div class="seo">
+      <div><h3>Why do distributors reject metadata?</h3><p>The usual causes are "feat." or producer credits inside the title, all-caps titles, stage names where legal names are required, and artist names spelled differently from your existing profile.</p></div>
+      <div><h3>Do I need an ISRC?</h3><p>Every track needs one, but you don't have to buy it. Leave the field blank and nearly every distributor assigns one for free when you upload.</p></div>
+      <div><h3>What's the &#8471; line?</h3><p>The &#8471; (sound recording) and &copy; (composition) lines name the year and the owner. If you own your masters, it's simply the year and your name or label.</p></div>
+    </div>
+
+    <div class="more">
+      <h2>More free tools</h2>
+      <div class="more-grid">
+        <a class="more-card" href="release-checklist.html"><i class="ti ti-checklist"></i><b>Release Checklist</b><small>4 weeks out to the week after, with dates</small></a><a class="more-card" href="cover-resizer.html"><i class="ti ti-crop"></i><b>Cover Art Resizer</b><small>Any image to a 3000×3000 JPEG</small></a><a class="more-card" href="mp3-to-wav.html"><i class="ti ti-wave-sine"></i><b>MP3 to WAV</b><small>16-bit, 44.1 kHz for distributors</small></a><a class="more-card feature" href="forecast.html"><i class="ti ti-chart-line"></i><b>Earnings Forecast preview</b><small>Drop a royalty report, see your next 12 months</small></a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">
+        <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
+        <span class="footer-logoname">StudioSound.ai</span>
+      </div>
+      <p class="footer-desc">The AI studio built for independent music artists. Create. Release. Elevate.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/studiosoundai/" target="_blank" rel="noopener" aria-label="Instagram"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt=""/></a>
+        <a href="https://www.tiktok.com/@studiosoundai?lang=en" target="_blank" rel="noopener" aria-label="TikTok"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt=""/></a>
+        <a href="https://www.youtube.com/@StudioSoundAi" target="_blank" rel="noopener" aria-label="YouTube"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt=""/></a>
+        <a href="https://x.com/Studiosoundai" target="_blank" rel="noopener" aria-label="X"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="" style="filter:invert(1);"/></a>
+        <a href="https://www.facebook.com/share/1HHte5Nyzp/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt=""/></a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Studio</div>
+      <a class="footer-link" href="forecast.html" onclick="return go('forecast')">Earnings Forecast</a>
+      <a class="footer-link" href="signup.html" onclick="return go('art')">Cover Art</a>
+      <a class="footer-link" href="signup.html" onclick="return go('plan')">Release Planner</a>
+      <a class="footer-link" href="signup.html" onclick="return go('writer')">Lyric Writer</a>
+      <a class="footer-link" href="signup.html" onclick="return go('lyric')">Lyric Videos</a>
+      <a class="footer-link" href="signup.html" onclick="return go('merch')">Merch Mockups</a>
+      <a class="footer-link" href="tools.html">Free tools</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="distribution.html">Distribution</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <a class="footer-link" href="privacy.html">Privacy Policy</a>
+      <a class="footer-link" href="terms.html">Terms of Use</a>
+      <a class="footer-link" href="privacy.html#cookies">Cookie Policy</a>
+      <a class="footer-link" href="terms.html#ownership">Content Rights</a>
+      <a class="footer-link" href="privacy.html#security">Security</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 StudioSound.ai. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a class="footer-bottom-link" href="privacy.html">Privacy</a>
+      <a class="footer-bottom-link" href="terms.html">Terms</a>
+      <a class="footer-bottom-link" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- Routing: logged-in artists go straight to the tool; new artists sign up, then land on it ---------- */
+window.__ssSignedIn = false;
+// Free tools are public pages for everyone. The forecast preview is public too,
+// but signed-in artists open the full version in their Studio.
+const SS_PUBLIC = { forecast: 'forecast.html', tools: 'tools.html', resize: 'cover-resizer.html', audio: 'mp3-to-wav.html', trim: 'audio-trimmer.html', split: 'split-sheet.html', meta: 'metadata-formatter.html', check: 'release-checklist.html' };
+function go(tool) {
+  if (window.__ssSignedIn) { window.location.href = 'app.html#' + tool; return false; }
+  if (SS_PUBLIC[tool]) { window.location.href = SS_PUBLIC[tool]; return false; }
+  try { localStorage.setItem('ssNext', tool); } catch (e) {}
+  window.location.href = 'signup.html';
+  return false;
+}
+function toggleMenu(btn) {
+  const m = document.getElementById('mobilemenu');
+  const open = m.classList.toggle('open');
+  const b = btn || document.querySelector('.menu-btn');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+
+/* ---------- Drop zones: click or drag a file in ---------- */
+function wireDrop(zoneId, inputId, handler) {
+  const zone = document.getElementById(zoneId), input = document.getElementById(inputId);
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+  input.addEventListener('change', () => { if (input.files && input.files.length) handler(input.files); input.value = ''; });
+  ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('over'); }));
+  zone.addEventListener('drop', e => { if (e.dataTransfer && e.dataTransfer.files.length) handler(e.dataTransfer.files); });
+}
+function setDrop(zoneId, title) {
+  const z = document.getElementById(zoneId);
+  z.classList.add('done');
+  z.querySelector('b').textContent = '✓ ' + title;
+  const s = z.querySelector('small'); if (s) s.textContent = 'Drop another file to replace it';
+}
+const escHtml = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* ---------- After-use nudge: once per visit, never for signed-in artists ---------- */
+function showNudge() {
+  if (window.__ssSignedIn) return;
+  const n = document.getElementById('nudge');
+  if (!n) return;
+  const key = 'ssNudge:' + location.pathname;
+  try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
+  n.classList.add('show');
+  if (n.getBoundingClientRect().top > window.innerHeight) n.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function hideNudge() { const n = document.getElementById('nudge'); if (n) n.classList.remove('show'); }
+window.ssOnSignedIn = () => hideNudge();
+
+
+const mdWarnStyle = 'border-radius:10px;padding:10px 12px;font-size:13px;margin-top:8px;line-height:1.5;';
+function mdBuild() {
+  const g = id => document.getElementById(id).value.trim();
+  const artist = g('md-artist'), title = g('md-title'), feat = g('md-feat'), version = g('md-version'),
+        genre = g('md-genre'), lang = g('md-lang'), explicit = document.getElementById('md-explicit').value,
+        date = g('md-date'), isrc = g('md-isrc').toUpperCase().replace(/[-\s]/g, ''), cr = g('md-copyright');
+  const list = id => g(id).split('\n').map(w => w.trim()).filter(Boolean);
+  const writers = list('md-writers'), producers = list('md-producers');
+  const warnings = [];
+  if (!artist) warnings.push('Artist name is required.');
+  if (!title) warnings.push('Track title is required.');
+  if (/\b(feat\.?|ft\.?|featuring)\s/i.test(title)) warnings.push('Take "feat." out of the title. Featured artists go in their own field, and distributors reject this constantly.');
+  if (/\b(prod\.?|produced by)\b/i.test(title)) warnings.push('Take producer credits out of the title. They go in the producer field.');
+  if (title && title === title.toUpperCase() && /[A-Z]{4,}/.test(title)) warnings.push('All-caps titles get flagged by many stores. Use normal title case unless the name is stylized that way everywhere.');
+  if (!writers.length) warnings.push('Add at least one songwriter with their full legal name. Every distributor asks.');
+  writers.forEach(w => { if (w.split(/\s+/).length < 2) warnings.push('"' + w + '" doesn\'t look like a full legal name. Use first and last name so royalties can be paid.'); });
+  if (isrc && !/^[A-Z]{2}[A-Z0-9]{3}\d{7}$/.test(isrc)) warnings.push('That ISRC looks off. It should look like USRC12345678 (2 letters, 3 letters or numbers, 7 digits). Leave it blank and your distributor assigns one free.');
+  if (!cr) warnings.push('Add a ℗ / © line with the year and owner, e.g. "2026 Your Name".');
+  if (date) {
+    const days = Math.round((new Date(date + 'T12:00:00') - new Date()) / 86400000);
+    if (days < 28) warnings.push('Your release date is ' + (days < 0 ? 'in the past' : days + ' days away') + '. Upload at least 4 weeks ahead so you can pitch to editorial playlists.');
+  }
+  const lines = [
+    'TRACK METADATA (formatted with StudioSound.ai)', '',
+    'Artist name: ' + artist,
+    'Track title: ' + title + (version ? ' (' + version + ')' : ''),
+    feat ? 'Featured artists: ' + feat : null,
+    'Primary genre: ' + (genre || '—'),
+    'Lyrics language: ' + (lang || '—'),
+    'Explicit: ' + explicit,
+    date ? 'Release date: ' + date : null,
+    '',
+    'Songwriters (legal names):',
+    ...writers.map(w => '  • ' + w),
+    producers.length ? 'Producers:' : null,
+    ...producers.map(p => '  • ' + p),
+    '',
+    'ISRC: ' + (isrc || 'To be assigned by distributor'),
+    '℗ / ©: ' + (cr || '—'),
+  ].filter(x => x !== null);
+  document.getElementById('md-warnings').innerHTML = warnings.length
+    ? warnings.map(w => '<div style="' + mdWarnStyle + 'background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.5);color:#ffb3b3;">⚠ ' + escHtml(w) + '</div>').join('')
+    : '<div style="' + mdWarnStyle + 'background:rgba(0,255,209,0.07);border:1px solid rgba(0,255,209,0.5);color:var(--neon);">✓ Clean. No common distributor red flags found.</div>';
+  document.getElementById('md-placeholder').style.display = 'none';
+  const out = document.getElementById('md-output');
+  out.value = lines.join('\n'); out.hidden = false;
+  document.getElementById('md-actions').hidden = false;
+  document.getElementById('md-status').textContent = '';
+  if (window.innerWidth < 1000) document.getElementById('md-warnings').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function mdCopy() {
+  const out = document.getElementById('md-output'), st = document.getElementById('md-status');
+  const done = () => { st.innerHTML = '<span class="ok">Copied.</span> Paste it into your distributor upload.'; setTimeout(showNudge, 600); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(out.value).then(done, () => { out.select(); document.execCommand('copy'); done(); });
+  else { out.select(); document.execCommand('copy'); done(); }
+}
+function mdDownload() {
+  const out = document.getElementById('md-output');
+  const name = (document.getElementById('md-title').value.trim() || 'track').replace(/[^\w\- ]+/g, '').trim() || 'track';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out.value], { type: 'text/plain' }));
+  a.download = name + ' - metadata.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(showNudge, 600);
+}
+
+</script>
+<script>
+/* ---------- Session-aware header: signed-in artists see their studio, not Sign in ---------- */
+let sbClient = null;
+try {
+  sbClient = supabase.createClient(
+    'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+    'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+  );
+  sbClient.auth.getSession().then(({ data }) => {
+    if (!data.session) return;
+    window.__ssSignedIn = true;
+    const meta = data.session.user.user_metadata || {};
+    const first = String(meta.first_name || 'Artist').replace(/[<>&"]/g, '');
+    document.getElementById('navbtns').innerHTML =
+      '<button class="btn btn-sm btn-ghost" type="button" id="signout-btn">Sign out</button>' +
+      '<a class="btn btn-sm btn-neon" href="app.html"><i class="ti ti-sparkles"></i> Open Studio, ' + first + '</a>';
+    document.getElementById('signout-btn').onclick = async () => { await sbClient.auth.signOut(); window.location.reload(); };
+    const mmIn = document.getElementById('mm-signin'); if (mmIn) mmIn.remove();
+    const mmCta = document.getElementById('mm-cta'); if (mmCta) { mmCta.textContent = 'Open Studio'; mmCta.href = 'app.html'; }
+    if (typeof window.ssOnSignedIn === 'function') window.ssOnSignedIn(data.session);
+  });
+} catch (e) { console.warn('Session check skipped:', e); }
+</script>
+</body>
+</html>

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Music Earnings Forecast: What Will Your Streams Earn? | StudioSound.ai</title>
+<meta name="description" content="Upload your DistroKid, TuneCore or any distributor royalty report and preview your next 12 months of music earnings. Free, no account, and your report never leaves your browser.">
+<link rel="canonical" href="https://studiosound.ai/forecast">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
+<meta property="og:title" content="Free Music Earnings Forecast: What Will Your Streams Earn? | StudioSound.ai">
+<meta property="og:description" content="Upload your DistroKid, TuneCore or any distributor royalty report and preview your next 12 months of music earnings. Free, no account, and your report never leaves your browser.">
+<meta property="og:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<meta property="og:url" content="https://studiosound.ai/forecast">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="StudioSound.ai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Music Earnings Forecast: What Will Your Streams Earn? | StudioSound.ai">
+<meta name="twitter:description" content="Upload your DistroKid, TuneCore or any distributor royalty report and preview your next 12 months of music earnings. Free, no account, and your report never leaves your browser.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#05050a; --surface:#0c0c14; --surface2:#11111b; --line:#1f1f2e;
+  --ink:#f4f4fa; --muted:#a3a3bd; --dim:#6e6e88;
+  --neon:#00FFD1; --gold:#FFC83D;
+}
+html{overflow-x:hidden;scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+img{display:block;max-width:100%;}
+:focus-visible{outline:2px solid var(--neon);outline-offset:3px;border-radius:6px;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+section{padding:96px 0;}
+h1,h2,h3{font-weight:800;color:var(--ink);}
+h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-width:22ch;}
+.sec-lede{color:var(--muted);font-size:17px;max-width:56ch;margin-top:14px;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:58px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(5,5,10,0.92);backdrop-filter:blur(10px);z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logoimg{height:40px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;align-items:center;}
+.navlink-wrap{position:relative;}
+.navlink-wrap:hover .dropdown,.navlink-wrap:focus-within .dropdown{display:block;}
+.navlink{color:#fff;font-size:13px;font-weight:600;padding:6px 11px;border-radius:6px;text-decoration:none;opacity:0.82;display:inline-block;background:none;border:none;font-family:inherit;cursor:pointer;}
+.navlink:hover{opacity:1;background:var(--surface);}
+.navlink.drop::after{content:' ▾';font-size:9px;}
+.dropdown{display:none;position:absolute;top:100%;left:0;padding-top:8px;min-width:270px;z-index:200;}
+.dropdown-inner{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.dropdown-item{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;}
+.dropdown-item:hover{background:var(--surface2);}
+.dropdown-name{color:#fff;font-size:13px;font-weight:700;}
+.dropdown-name .tag{color:var(--neon);font-size:10px;font-weight:800;margin-left:4px;}
+.dropdown-desc{color:var(--muted);font-size:11px;margin-top:1px;}
+.dropdown-note{border-top:1px solid var(--line);margin-top:6px;padding:10px 12px 4px;color:var(--dim);font-size:11px;line-height:1.5;}
+.navbtns{display:flex;gap:8px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-family:inherit;font-weight:800;text-decoration:none;cursor:pointer;transition:transform 0.15s,border-color 0.15s,background 0.15s;white-space:nowrap;}
+.btn-sm{padding:8px 16px;font-size:12px;}
+.btn-lg{padding:15px 28px;font-size:15px;}
+.btn-neon{background:var(--neon);color:#05050a;border:none;}
+.btn-neon:hover{transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:#fff;border:1px solid #3a3a52;}
+.btn-ghost:hover{border-color:var(--neon);}
+.menu-btn{display:none;background:var(--surface);border:1px solid #3a3a52;border-radius:8px;width:40px;height:36px;cursor:pointer;flex-direction:column;gap:4px;justify-content:center;align-items:center;}
+.hb{display:block;width:16px;height:2px;background:var(--neon);border-radius:2px;}
+.mobilemenu{display:none;position:fixed;top:58px;left:0;right:0;background:#07070f;border-bottom:1px solid var(--line);z-index:99;padding:8px 16px 16px;box-shadow:0 20px 40px rgba(0,0,0,0.6);max-height:calc(100vh - 58px);overflow-y:auto;}
+.mobilemenu.open{display:block;}
+.mobilemenu a{display:block;color:#fff;font-size:15px;font-weight:600;text-decoration:none;padding:12px 6px;border-bottom:1px solid #14141f;}
+.mobilemenu a.mm-cta{color:var(--neon);font-weight:800;border-bottom:none;}
+.pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:0.02em;}
+.pill.new{background:var(--neon);color:#05050a;}
+.pill.beta{border:1px solid var(--neon);color:var(--neon);}
+.pill.free{border:1px solid var(--gold);color:var(--gold);}
+/* FOOTER */
+.footer{background:#030308;border-top:1px solid var(--line);padding:48px 32px 24px;}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;max-width:1180px;margin-left:auto;margin-right:auto;}
+.footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.footer-logoimg{height:38px;width:auto;max-width:120px;border-radius:8px;object-fit:contain;}
+.footer-logoname{font-size:14px;font-weight:800;}
+.footer-desc{color:var(--muted);font-size:13px;line-height:1.7;max-width:240px;margin-bottom:16px;}
+.footer-social{display:flex;gap:10px;}
+.footer-social a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.footer-social a:hover{border-color:var(--neon);}
+.sicon{width:18px;height:18px;object-fit:contain;}
+.footer-col-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.footer-link{display:block;color:var(--muted);font-size:13px;text-decoration:none;margin-bottom:10px;}
+.footer-link:hover{color:var(--neon);}
+.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1180px;margin:0 auto;}
+.footer-copy{color:var(--dim);font-size:12px;}
+.footer-bottom-links{display:flex;gap:20px;}
+.footer-bottom-link{color:var(--dim);font-size:12px;text-decoration:none;}
+.footer-bottom-link:hover{color:var(--muted);}
+
+/* PUBLIC TOOL PAGES */
+.tp{padding:36px 0 88px;}
+.crumb{font-size:13px;color:var(--dim);}
+.crumb a{color:var(--muted);text-decoration:none;}
+.crumb a:hover{color:var(--neon);}
+.tp-head{margin:18px 0 30px;max-width:760px;}
+.tp-head h1{font-size:clamp(32px,4.4vw,52px);line-height:1.04;letter-spacing:-0.035em;margin-top:14px;}
+.tp-head .lede{color:var(--muted);font-size:17px;margin-top:14px;max-width:58ch;}
+.badge{display:inline-flex;gap:6px;align-items:center;font-size:11px;font-weight:800;letter-spacing:0.05em;color:var(--gold);border:1px solid rgba(255,200,61,0.5);border-radius:999px;padding:4px 11px;}
+.badge.neon{color:var(--neon);border-color:rgba(0,255,209,0.5);}
+.tool-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);gap:20px;align-items:start;}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;min-width:0;}
+.panel h2{font-size:18px;letter-spacing:-0.01em;max-width:none;line-height:1.3;}
+.panel .sub{color:var(--muted);font-size:14px;margin-top:4px;}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:1.5px dashed #34344c;border-radius:14px;padding:30px 16px;cursor:pointer;background:var(--bg);transition:border-color 0.15s,background 0.15s;margin-top:18px;width:100%;font-family:inherit;color:inherit;}
+.drop:hover,.drop.over{border-color:var(--neon);background:rgba(0,255,209,0.04);}
+.drop i{font-size:30px;color:var(--neon);margin-bottom:4px;}
+.drop b{font-size:15px;color:#fff;word-break:break-word;}
+.drop small{font-size:12px;color:var(--dim);}
+.drop.done{border-style:solid;border-color:rgba(0,255,209,0.45);}
+.drop.done b{color:var(--neon);}
+.field{margin-top:16px;min-width:0;}
+.field label,.lbl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.02em;}
+.input{width:100%;min-width:0;background:var(--bg);border:1px solid #2a2a3e;border-radius:10px;padding:11px 12px;color:#fff;font-family:inherit;font-size:15px;}
+.input:focus{outline:none;border-color:var(--neon);}
+select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#a3a3bd 50%),linear-gradient(135deg,#a3a3bd 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.status{font-size:14px;color:var(--muted);margin-top:14px;min-height:20px;line-height:1.5;}
+.status strong{color:#fff;}
+.status .ok{color:var(--neon);font-weight:700;}
+.status .err{color:#ff8a8a;font-weight:700;}
+.btn-block{width:100%;margin-top:16px;padding:14px;font-size:15px;}
+.btn[disabled]{opacity:0.4;cursor:not-allowed;transform:none;}
+.btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.btn-quiet{background:var(--surface2);color:#fff;border:1px solid #2a2a3e;padding:10px 16px;font-size:13px;}
+.btn-quiet:hover{border-color:var(--neon);}
+.tips{list-style:none;margin-top:10px;}
+.tips li{padding:14px 0;border-top:1px solid var(--line);}
+.tips li:first-child{border-top:none;}
+.tips b{display:block;font-size:11px;letter-spacing:0.08em;color:var(--neon);}
+.tips span{display:block;color:var(--muted);font-size:14px;margin-top:4px;line-height:1.55;}
+.fine{color:var(--dim);font-size:12px;margin-top:14px;line-height:1.6;}
+.placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:var(--dim);font-size:14px;border:1px solid var(--line);border-radius:14px;background:var(--bg);margin-top:16px;padding:40px 20px;aspect-ratio:1;}
+.placeholder i{font-size:34px;color:#3a3a52;}
+.preview-canvas{width:100%;height:auto;border-radius:12px;display:block;margin-top:16px;border:1px solid var(--line);}
+.privacy{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:13px;margin-top:16px;}
+.privacy i{color:var(--neon);font-size:16px;margin-top:2px;}
+
+/* after-use nudge */
+.nudge{display:none;margin-top:20px;border:1px solid rgba(0,255,209,0.4);background:linear-gradient(120deg,rgba(0,255,209,0.08),rgba(0,255,209,0.02) 60%);border-radius:16px;padding:20px 22px;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.nudge.show{display:flex;animation:nudgeIn 0.35s ease-out;}
+@keyframes nudgeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.nudge-text{flex:1 1 320px;min-width:0;}
+.nudge-text b{display:block;font-size:17px;color:#fff;}
+.nudge-text span{display:block;color:var(--muted);font-size:14px;margin-top:4px;line-height:1.5;}
+.nudge-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.nudge-x{background:none;border:none;color:var(--dim);font-family:inherit;font-size:13px;cursor:pointer;padding:8px;}
+.nudge-x:hover{color:#fff;}
+
+/* more free tools */
+.more{margin-top:72px;border-top:1px solid var(--line);padding-top:40px;}
+.more h2{font-size:24px;max-width:none;letter-spacing:-0.02em;}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px;}
+.more-card{display:block;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface);transition:border-color 0.15s;}
+.more-card:hover{border-color:rgba(255,200,61,0.6);}
+.more-card.feature:hover{border-color:rgba(0,255,209,0.6);}
+.more-card i{color:var(--gold);font-size:22px;}
+.more-card.feature i{color:var(--neon);}
+.more-card b{display:block;font-size:14px;margin-top:8px;color:#fff;}
+.more-card small{display:block;color:var(--dim);font-size:12px;margin-top:3px;line-height:1.45;}
+.seo{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+.seo h3{font-size:16px;letter-spacing:-0.01em;}
+.seo p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.6;}
+
+/* release checklist */
+.ck-progress{display:flex;align-items:center;gap:12px;margin-top:18px;}
+.ck-bar{flex:1;height:8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);overflow:hidden;}
+.ck-bar span{display:block;height:100%;width:0;background:var(--neon);transition:width 0.3s;}
+.ck-progress b{font-size:13px;color:var(--muted);white-space:nowrap;}
+.ck-phase{margin-top:18px;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:6px 16px 8px;}
+.ck-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 0 4px;flex-wrap:wrap;}
+.ck-head b{font-size:12px;letter-spacing:0.08em;color:var(--neon);}
+.ck-head span{font-size:12px;color:var(--gold);font-weight:700;}
+.ck-item{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid #15151f;cursor:pointer;font-size:15px;color:#e4e4f0;line-height:1.45;}
+.ck-item:first-of-type{border-top:none;}
+.ck-item input{accent-color:#00FFD1;width:18px;height:18px;margin-top:2px;flex-shrink:0;cursor:pointer;}
+.ck-item input:checked + span{color:var(--dim);text-decoration:line-through;}
+.ck-item a{color:var(--gold);font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;}
+@media(prefers-reduced-motion:reduce){ .ck-bar span{transition:none;} }
+
+/* split sheet rows */
+.sp-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.3fr) minmax(0,1.2fr) 72px 32px;grid-template-areas:"name role pro pct x";gap:8px;margin-bottom:8px;align-items:center;}
+.sp-row > :nth-child(1){grid-area:name;} .sp-row > :nth-child(2){grid-area:role;} .sp-row > :nth-child(3){grid-area:pro;} .sp-row > :nth-child(4){grid-area:pct;} .sp-row > :nth-child(5){grid-area:x;}
+@media(max-width:640px){
+  .sp-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 72px;grid-template-areas:"name name x" "role pro pct";padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:10px;}
+}
+
+@media(max-width:1000px){
+  .tool-grid{grid-template-columns:1fr;}
+  .more-grid{grid-template-columns:repeat(2,1fr);}
+  .seo{grid-template-columns:1fr;gap:20px;}
+}
+@media(max-width:640px){
+  .tp{padding:24px 0 64px;}
+  .panel{padding:18px;border-radius:16px;}
+  .tp-head .lede{font-size:16px;}
+  .nudge{padding:18px;}
+  .nudge-actions{width:100%;}
+  .nudge-actions .btn{flex:1;}
+}
+@media(prefers-reduced-motion:reduce){ .nudge.show{animation:none;} }
+
+.note{background:rgba(255,200,61,0.07);border:1px solid rgba(255,200,61,0.35);border-left:3px solid var(--gold);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px;color:#e8e8f5;line-height:1.55;}
+.note strong{color:var(--gold);}
+.rep-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,209,0.08);border:1px solid rgba(0,255,209,0.35);border-radius:999px;padding:4px 6px 4px 12px;font-size:12px;color:#fff;max-width:100%;}
+.rep-chip button{background:none;border:none;color:var(--muted);font-weight:700;cursor:pointer;font-size:12px;padding:2px 6px;border-radius:999px;}
+.rep-chip button:hover{color:#fff;background:rgba(255,255,255,0.08);}
+#fc-reports{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+#fc-reports:empty{display:none;}
+.fx-row{display:none;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.fx-row span{color:var(--muted);font-size:11px;font-weight:800;letter-spacing:0.06em;}
+.fx-pill{background:transparent;border:1px solid #2a2a3e;color:var(--muted);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.fx-pill.active{background:rgba(0,255,209,0.12);border-color:var(--neon);color:var(--neon);}
+#fc-parse-status{font-size:13px;color:var(--muted);margin-top:12px;line-height:1.55;}
+#fc-parse-status:empty{display:none;}
+.rows-head{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;color:var(--dim);font-size:11px;font-weight:800;letter-spacing:0.06em;}
+.fc-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+details.opt{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;}
+details.opt summary{cursor:pointer;font-size:14px;font-weight:700;color:#fff;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+details.opt summary::-webkit-details-marker{display:none;}
+details.opt summary small{color:var(--dim);font-weight:500;font-size:12px;}
+details.opt[open] summary .chev{transform:rotate(180deg);}
+.chev{transition:transform 0.2s;color:var(--neon);}
+.signed-banner{display:none;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid rgba(0,255,209,0.4);background:rgba(0,255,209,0.06);border-radius:14px;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#e8e8f5;}
+.signed-banner.show{display:flex;}
+.fc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;}
+.stat small{display:block;color:var(--dim);font-size:11px;font-weight:700;letter-spacing:0.04em;}
+.stat b{display:block;font-size:20px;color:#fff;margin-top:2px;letter-spacing:-0.02em;}
+.fc-big{margin-top:18px;}
+.fc-big small{display:block;color:var(--muted);font-size:14px;}
+.fc-big b{display:block;font-size:clamp(36px,5vw,52px);color:var(--neon);letter-spacing:-0.035em;line-height:1.05;margin-top:4px;}
+.fc-chart{margin-top:16px;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:10px 6px 4px;}
+.fc-chart svg{display:block;width:100%;height:auto;}
+.fc-chart text{font-family:'Sora',sans-serif;}
+.locked{list-style:none;margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:6px 16px;}
+.locked li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);font-size:14px;color:var(--muted);}
+.locked li:first-child{border-top:none;}
+.locked li i{color:var(--gold);font-size:16px;margin-top:2px;}
+.fc-ctas{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+.fc-ctas .btn{width:100%;padding:14px;font-size:15px;}
+.fx-note{color:var(--dim);font-size:12px;margin-top:10px;}
+.example{color:var(--muted);font-size:14px;line-height:1.6;}
+.example li{margin:6px 0 0 18px;}
+@media(max-width:640px){ .fc-stats{grid-template-columns:1fr 1fr;} .fc-stats .stat:last-child{grid-column:span 2;} .stat b{font-size:18px;} }
+
+
+@media(max-width:1000px){
+  .navlinks{display:none;}
+  .menu-btn{display:flex;}
+}
+@media(max-width:640px){
+  .wrap{padding:0 16px;}
+  .nav{padding:0 14px;}
+  .logoname{display:none;}
+  .logoimg{height:36px;}
+  .navbtns .btn-ghost{display:none;}
+  .footer{padding:40px 16px 24px;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .btn{transition:none;}
+}
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="index.html">
+    <img class="logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
+    <span class="logoname">StudioSound.ai</span>
+  </a>
+  <div class="navlinks">
+    <div class="navlink-wrap">
+      <button class="navlink drop" type="button">Studio</button>
+      <div class="dropdown"><div class="dropdown-inner">
+        <a class="dropdown-item" href="forecast.html" onclick="return go('forecast')">
+          <div class="dropdown-name">Earnings Forecast <span class="tag">NEW</span></div>
+          <div class="dropdown-desc">What your music earns in 1, 3 and 5 years</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('art')">
+          <div class="dropdown-name">Cover Art</div>
+          <div class="dropdown-desc">Two versions every time, 3000×3000</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('plan')">
+          <div class="dropdown-name">Release Planner</div>
+          <div class="dropdown-desc">A researched 30-day rollout</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('writer')">
+          <div class="dropdown-name">Lyric Writer</div>
+          <div class="dropdown-desc">English, Spanish and Spanglish</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('lyric')">
+          <div class="dropdown-name">Lyric Videos <span class="tag">BETA</span></div>
+          <div class="dropdown-desc">Your song and cover, timed line by line</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('merch')">
+          <div class="dropdown-name">Merch Mockups</div>
+          <div class="dropdown-desc">Your art on real products, with costs</div>
+        </a>
+        <a class="dropdown-item" href="tools.html">
+          <div class="dropdown-name">Free tools <span class="tag">NO ACCOUNT</span></div>
+          <div class="dropdown-desc">Resizer, MP3 to WAV, trimmer, split sheet, metadata, checklist</div>
+        </a>
+        <div class="dropdown-note">In development: song generator, AI video clips and the ad manager.</div>
+      </div></div>
+    </div>
+    <a class="navlink" href="features.html">Features</a>
+    <a class="navlink" href="distribution.html">Distribution</a>
+    <a class="navlink" href="community.html">Community</a>
+    <a class="navlink" href="blog.html">Blog</a>
+    <a class="navlink" href="pricing.html">Pricing</a>
+    <a class="navlink" href="contact.html">Contact</a>
+  </div>
+  <div class="navbtns" id="navbtns">
+    <a class="btn btn-sm btn-ghost" href="signin.html">Sign in</a>
+    <a class="btn btn-sm btn-neon" href="signup.html">Sign up free</a>
+  </div>
+  <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" onclick="toggleMenu(this)"><span class="hb"></span><span class="hb"></span><span class="hb"></span></button>
+</nav>
+<div class="mobilemenu" id="mobilemenu">
+  <a href="forecast.html" onclick="return go('forecast')">Earnings Forecast</a>
+  <a href="tools.html">Free tools</a>
+  <a href="features.html">Features</a>
+  <a href="distribution.html">Distribution</a>
+  <a href="community.html">Community</a>
+  <a href="blog.html">Blog</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="contact.html">Contact</a>
+  <a href="signin.html" id="mm-signin">Sign in</a>
+  <a href="signup.html" class="mm-cta" id="mm-cta">Sign up free</a>
+</div>
+
+<main class="tp">
+  <div class="wrap">
+    <div class="crumb"><a href="tools.html">Free tools</a> / Earnings Forecast</div>
+    <header class="tp-head">
+      <span class="badge neon"><i class="ti ti-chart-line"></i> FREE PREVIEW · NO ACCOUNT</span>
+      <h1>What will your music earn next year?</h1>
+      <p class="lede">Drop the royalty report you already download from your distributor. See your real monthly average, your trend and your next 12 months in about a minute.</p>
+    </header>
+
+    <div class="signed-banner" id="fc-signed">
+      <span>You're signed in. Your Studio runs the forecast with everything your plan includes.</span>
+      <a class="btn btn-sm btn-neon" href="app.html#forecast" onclick="return fcToStudio()">Open it in my Studio</a>
+    </div>
+
+    <div class="tool-grid">
+      <div class="panel">
+        <h2>Your earnings</h2>
+        <p class="sub">DistroKid, TuneCore, Stop One, CD Baby: any report with dates and amounts. Add several months or several reports; they stack.</p>
+        <div class="drop" id="fc-drop" role="button" tabindex="0" aria-label="Upload your royalty report">
+          <i class="ti ti-upload"></i><b id="fc-label">Drop your royalty report here or click to choose</b><small>CSV, TSV or Excel · read in your browser, never uploaded</small>
+        </div>
+        <input type="file" id="fc-upload" accept=".csv,.tsv,.txt,.xls,.xlsx,text/csv" multiple hidden>
+        <div class="note"><strong>Best practice: upload the exact file your distributor gave you.</strong> Converted CSVs often round the cents away, and in streaming the cents are the money. Or type your monthly statement totals below.</div>
+        <div id="fc-reports"></div>
+        <div class="fx-row" id="fc-fxpref-row">
+          <span>FORECAST IN</span>
+          <input type="hidden" id="fc-fxpref" value="USD">
+          <button type="button" id="fc-fx-usd" class="fx-pill active" onclick="fcSetFxPref('USD')">USD</button>
+          <button type="button" id="fc-fx-native" class="fx-pill" onclick="fcSetFxPref('native')">AUD</button>
+        </div>
+        <div id="fc-parse-status"></div>
+
+        <details class="opt" id="fc-manual" open>
+          <summary><span id="fc-manual-title">Or type it in <small>· oldest month first</small></span><i class="ti ti-chevron-down chev"></i></summary>
+          <div class="field">
+          <div class="rows-head"><div>MONTH</div><div>WHAT YOU EARNED</div></div>
+          <div id="fc-rows"></div>
+          <div class="btn-row" style="margin-top:4px;">
+            <button class="btn btn-quiet" type="button" onclick="fcAddRow()"><i class="ti ti-plus"></i> Add month</button>
+            <button class="btn btn-quiet" type="button" onclick="fcReset()"><i class="ti ti-refresh"></i> Start fresh</button>
+          </div>
+          </div>
+        </details>
+
+        <details class="opt">
+          <summary><span>Your release plan <small>· optional</small></span><i class="ti ti-chevron-down chev"></i></summary>
+          <div class="field">
+            <label for="fc-releases">Releases planned this year</label>
+            <div class="row2">
+              <input class="input" id="fc-releases" type="number" min="0" placeholder="e.g. 6">
+              <select class="input" id="fc-reltype" aria-label="Songs or albums"><option value="songs">Songs</option><option value="albums">Albums</option></select>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="fc-genre">Genre</label><input class="input" id="fc-genre" placeholder="e.g. Latin, Hip-Hop"></div>
+            <div class="field"><label for="fc-city">City / region</label><input class="input" id="fc-city" placeholder="e.g. Atlanta"></div>
+          </div>
+          <p class="fine" style="margin-top:10px;">Your release plan bends the growth path in the full forecast. Genre and city carry over to your analyst report.</p>
+        </details>
+
+        <button class="btn btn-neon btn-block" id="fc-btn" type="button" onclick="fcPreview()"><i class="ti ti-chart-line"></i> Preview my forecast</button>
+        <div class="status" id="fc-run-status"></div>
+        <div class="privacy"><i class="ti ti-shield-lock"></i><span>Your report is read in your browser and never uploaded.</span></div>
+      </div>
+
+      <div class="panel" id="fc-out">
+        <h2>Your preview</h2>
+        <div id="fc-placeholder">
+          <p class="sub">Here's what you'll see, free:</p>
+          <ul class="example">
+            <li>Your recent monthly average and trend</li>
+            <li>How many months we read from your report</li>
+            <li>Your next 12 months if nothing changes, on a chart</li>
+          </ul>
+          <p class="sub" style="margin-top:14px;">The full forecast adds five-year paths for coasting, working the plan and a breakout, plus an analyst read and your next moves.</p>
+        </div>
+        <div id="fc-result" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">
+        <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
+        <span class="footer-logoname">StudioSound.ai</span>
+      </div>
+      <p class="footer-desc">The AI studio built for independent music artists. Create. Release. Elevate.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/studiosoundai/" target="_blank" rel="noopener" aria-label="Instagram"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt=""/></a>
+        <a href="https://www.tiktok.com/@studiosoundai?lang=en" target="_blank" rel="noopener" aria-label="TikTok"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt=""/></a>
+        <a href="https://www.youtube.com/@StudioSoundAi" target="_blank" rel="noopener" aria-label="YouTube"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt=""/></a>
+        <a href="https://x.com/Studiosoundai" target="_blank" rel="noopener" aria-label="X"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="" style="filter:invert(1);"/></a>
+        <a href="https://www.facebook.com/share/1HHte5Nyzp/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt=""/></a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Studio</div>
+      <a class="footer-link" href="forecast.html" onclick="return go('forecast')">Earnings Forecast</a>
+      <a class="footer-link" href="signup.html" onclick="return go('art')">Cover Art</a>
+      <a class="footer-link" href="signup.html" onclick="return go('plan')">Release Planner</a>
+      <a class="footer-link" href="signup.html" onclick="return go('writer')">Lyric Writer</a>
+      <a class="footer-link" href="signup.html" onclick="return go('lyric')">Lyric Videos</a>
+      <a class="footer-link" href="signup.html" onclick="return go('merch')">Merch Mockups</a>
+      <a class="footer-link" href="tools.html">Free tools</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <a class="footer-link" href="features.html">Features</a>
+      <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="distribution.html">Distribution</a>
+      <a class="footer-link" href="community.html">Community</a>
+      <a class="footer-link" href="blog.html">Blog</a>
+      <a class="footer-link" href="contact.html">Contact</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <a class="footer-link" href="privacy.html">Privacy Policy</a>
+      <a class="footer-link" href="terms.html">Terms of Use</a>
+      <a class="footer-link" href="privacy.html#cookies">Cookie Policy</a>
+      <a class="footer-link" href="terms.html#ownership">Content Rights</a>
+      <a class="footer-link" href="privacy.html#security">Security</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 StudioSound.ai. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a class="footer-bottom-link" href="privacy.html">Privacy</a>
+      <a class="footer-bottom-link" href="terms.html">Terms</a>
+      <a class="footer-bottom-link" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- Routing: logged-in artists go straight to the tool; new artists sign up, then land on it ---------- */
+window.__ssSignedIn = false;
+// Free tools are public pages for everyone. The forecast preview is public too,
+// but signed-in artists open the full version in their Studio.
+const SS_PUBLIC = { forecast: 'forecast.html', tools: 'tools.html', resize: 'cover-resizer.html', audio: 'mp3-to-wav.html', trim: 'audio-trimmer.html', split: 'split-sheet.html', meta: 'metadata-formatter.html', check: 'release-checklist.html' };
+function go(tool) {
+  if (window.__ssSignedIn) { window.location.href = 'app.html#' + tool; return false; }
+  if (SS_PUBLIC[tool]) { window.location.href = SS_PUBLIC[tool]; return false; }
+  try { localStorage.setItem('ssNext', tool); } catch (e) {}
+  window.location.href = 'signup.html';
+  return false;
+}
+function toggleMenu(btn) {
+  const m = document.getElementById('mobilemenu');
+  const open = m.classList.toggle('open');
+  const b = btn || document.querySelector('.menu-btn');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+
+/* ---------- Drop zones: click or drag a file in ---------- */
+function wireDrop(zoneId, inputId, handler) {
+  const zone = document.getElementById(zoneId), input = document.getElementById(inputId);
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+  input.addEventListener('change', () => { if (input.files && input.files.length) handler(input.files); input.value = ''; });
+  ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('over'); }));
+  zone.addEventListener('drop', e => { if (e.dataTransfer && e.dataTransfer.files.length) handler(e.dataTransfer.files); });
+}
+function setDrop(zoneId, title) {
+  const z = document.getElementById(zoneId);
+  z.classList.add('done');
+  z.querySelector('b').textContent = '✓ ' + title;
+  const s = z.querySelector('small'); if (s) s.textContent = 'Drop another file to replace it';
+}
+const escHtml = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* ---------- After-use nudge: once per visit, never for signed-in artists ---------- */
+function showNudge() {
+  if (window.__ssSignedIn) return;
+  const n = document.getElementById('nudge');
+  if (!n) return;
+  const key = 'ssNudge:' + location.pathname;
+  try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
+  n.classList.add('show');
+  if (n.getBoundingClientRect().top > window.innerHeight) n.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function hideNudge() { const n = document.getElementById('nudge'); if (n) n.classList.remove('show'); }
+window.ssOnSignedIn = () => hideNudge();
+
+let fcMonthly = null;
+
+function fcCsvLine(line, delim) {
+  // proper CSV split: respects "quoted, fields"
+  const out = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+    else if (ch === delim && !inQ) { out.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+const FC_MONTHS = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+
+function fcMonthKey(raw, dayFirst) {
+  const d = String(raw || '').replace(/"/g, '').trim();
+  if (!d) return null;
+  let m = d.match(/(\d{4})[-\/\.](\d{1,2})/);                    // 2024-08, 2024/8
+  if (m) return m[1] + '-' + String(m[2]).padStart(2, '0');
+  m = d.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);            // 8/1/2024 (US) or 01/08/2024 (intl)
+  if (m) { const mo = dayFirst ? m[2] : m[1]; if (+mo >= 1 && +mo <= 12) return m[3] + '-' + String(mo).padStart(2, '0'); return null; }
+  m = d.toLowerCase().match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s\-\.,]+(\d{4})/); // Aug 2024
+  if (m) return m[2] + '-' + FC_MONTHS[m[1]];
+  m = d.toLowerCase().match(/(\d{4})[\s\-\.,]+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/); // 2024 Aug
+  if (m) return m[1] + '-' + FC_MONTHS[m[2]];
+  return null;
+}
+
+let fcCsvReports = [];   // each uploaded report kept separately: {name, months:{'YYYY-MM':amt}} — removable
+let fcCurrency = 'USD';  // detected from the money column header, e.g. "Net Royalties (AUD)"
+function fcSetFxPref(v) {
+  const inp = document.getElementById('fc-fxpref');
+  if (inp) inp.value = v;
+  const u = document.getElementById('fc-fx-usd'), n = document.getElementById('fc-fx-native');
+  if (u) u.classList.toggle('active', v === 'USD');
+  if (n) n.classList.toggle('active', v === 'native');
+}
+
+let fcDisplayCur = null; // currency the RESULTS are shown in (after any conversion); fcCurrency stays the statement's own
+function fcCur() { return { USD:'$', AUD:'A$', NZD:'NZ$', CAD:'C$', EUR:'\u20ac', GBP:'\u00a3' }[fcDisplayCur || fcCurrency] || '$'; }
+let fcFxCache = {};
+const FC_FX_APPROX = { AUD: 0.66, NZD: 0.61, CAD: 0.73, EUR: 1.08, GBP: 1.27 }; // last-resort ballparks
+async function fcFxRate(from) {
+  if (fcFxCache[from]) return fcFxCache[from];
+  // 1) our own backend (server-side lookup — immune to ad-blockers)
+  try {
+    const r = await fetch('/api/fx?from=' + from);
+    const j = await r.json();
+    if (j && j.rate > 0) { fcFxCache[from] = { rate: j.rate, approx: false }; return fcFxCache[from]; }
+  } catch (e) { console.warn('FX via backend failed:', e); }
+  // 2) direct provider from the browser (er-api: reliable CORS)
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/' + from);
+    const j = await r.json();
+    if (j && j.rates && j.rates.USD) { fcFxCache[from] = { rate: j.rates.USD, approx: false }; return fcFxCache[from]; }
+  } catch (e) { console.warn('FX direct failed:', e); }
+  // 3) approximate baked rate — conversion still happens, clearly labeled
+  if (FC_FX_APPROX[from]) return { rate: FC_FX_APPROX[from], approx: true };
+  throw new Error('no rate for ' + from);
+}
+
+function fcParseCsv(input) {
+  if (!input.files || !input.files.length) return;
+  const files = Array.from(input.files);
+  input.value = '';   // allow re-selecting the same file later
+  let done = 0;
+  const finish = (f, ok) => {
+    if (!ok) document.getElementById('fc-parse-status').textContent =
+      'Couldn\'t read "' + f.name + '" — send us the header row and we\'ll add that format. You can still type months below.';
+    if (++done === files.length) fcCsvRender();
+  };
+  files.forEach(f => {
+    const isExcel = /\.xlsx?$/i.test(f.name);
+    const reader = new FileReader();
+    reader.onload = e => {
+      let text;
+      try {
+        if (isExcel) {
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: true });
+          text = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]], { rawNumbers: true });
+        } else {
+          text = e.target.result;
+        }
+      } catch (err) { finish(f, false); return; }
+      finish(f, fcIngestText(text, f.name));
+    };
+    reader.onerror = () => finish(f, false);
+    if (isExcel) reader.readAsArrayBuffer(f); else reader.readAsText(f);
+  });
+}
+
+function fcIngestText(text, fname) {
+  try {
+        const lines = text.split(/\r\n|\r|\n/).filter(l => l.trim());
+        const first = lines[0];
+        // delimiter: tab beats semicolon beats comma (DistroKid ships TSV)
+        const counts = { '\t': (first.match(/\t/g)||[]).length, ';': (first.match(/;/g)||[]).length, ',': (first.match(/,/g)||[]).length };
+        const delim = counts['\t'] >= 2 ? '\t' : (counts[';'] > counts[','] ? ';' : ',');
+        // headerless DistroKid-style file: first line is DATA (col2 = YYYY-MM, col13 = float)
+        const probe = fcCsvLine(first, delim);
+        const dkSig = r => r.length >= 14 && /^\d{4}-\d{2}$/.test((r[2]||'').trim()) && !isNaN(parseFloat(r[13]));
+        const dkHeaderless = lines.slice(0, 5).some(l => dkSig(fcCsvLine(l, delim)));
+        if (dkHeaderless) {
+          const months = {};
+          let added = 0;
+          lines.forEach(l => {
+            const r = fcCsvLine(l, delim);
+            const mk = (r[2]||'').trim();
+            const amt = parseFloat(r[13]);
+            if (/^\d{4}-\d{2}$/.test(mk) && !isNaN(amt)) { months[mk] = (months[mk]||0) + amt; added++; }
+          });
+          if (!added) throw new Error('no dated rows');
+          fcCsvReports.push({ name: fname, months: months });
+          return true;
+        }
+        const header = probe.map(h => h.toLowerCase().replace(/"/g, '').trim());
+        // score columns by name: money wants earnings words, hates counting words
+        let moneyIdx = -1, moneyBest = 0, dateIdx = -1, dateBest = 0;
+        header.forEach((h, i) => {
+          let ms = 0;
+          if (/earn/.test(h)) ms += 5;
+          if (/royal/.test(h)) ms += 5;
+          if (/net|payout/.test(h)) ms += 4;
+          if (/revenue/.test(h)) ms += 3;
+          if (/amount|usd|total/.test(h)) ms += 2;
+          if (/stream|unit|quantit|count|song|track|#|plays|downloads/.test(h)) ms -= 10;
+          if (ms > moneyBest) { moneyBest = ms; moneyIdx = i; }
+          let ds = 0;
+          if (/period/.test(h)) ds += 5;
+          if (/month/.test(h)) ds += 4;
+          if (/statement|reporting/.test(h)) ds += 3;
+          if (/date|sale/.test(h)) ds += 2;
+          if (/store|country|name|title|artist|type/.test(h)) ds -= 10;
+          if (ds > dateBest) { dateBest = ds; dateIdx = i; }
+        });
+        if (moneyIdx === -1) throw new Error('no money column');
+        const curM = header[moneyIdx].match(/\b(aud|usd|eur|gbp|cad|nzd)\b/) || header.join(' ').match(/\b(aud|nzd|cad|eur|gbp)\b/);
+        if (curM) fcCurrency = curM[1].toUpperCase();
+        const rows = lines.slice(1).map(l => fcCsvLine(l, delim));
+        // slash-date format: if any first number > 12 it's day-first (01/09/2025 = 1 Sep, not Jan 9)
+        let dayFirst = false;
+        if (dateIdx !== -1) {
+          for (const r of rows) {
+            const dm = String(r[dateIdx] || '').match(/(\d{1,2})[-\/](\d{1,2})[-\/]\d{4}/);
+            if (dm) { if (+dm[1] > 12) { dayFirst = true; break; } if (+dm[2] > 12) { dayFirst = false; break; } }
+          }
+        }
+        const months = {};
+        let added = 0;
+        rows.forEach(r => {
+          const amt = parseFloat(String(r[moneyIdx] || '').replace(/[",$\s]/g, ''));
+          if (isNaN(amt)) return;
+          const key = dateIdx !== -1 ? fcMonthKey(r[dateIdx], dayFirst) : null;
+          if (!key) return;
+          months[key] = (months[key] || 0) + amt;
+          added++;
+        });
+        if (!added) throw new Error('no dated rows');
+        fcCsvReports.push({ name: fname, months: months });
+        return true;
+  } catch (err) { return false; }
+}
+
+function fcCsvClean(monthly) {
+  // trim pre-launch dead months + set aside an incomplete trailing month
+  let lead = 0, partial = false;
+  if (monthly.length >= 4) {
+    const peak = Math.max.apply(null, monthly.map(m => m.amount));
+    while (lead < monthly.length - 3 && monthly[lead].amount < 5 && monthly[lead].amount < peak * 0.01) lead++;
+    const body = monthly.slice(lead);
+    if (body.length >= 4) {
+      const prev3 = body.slice(-4, -1).map(m => m.amount).sort((a, b) => a - b);
+      const med = prev3[1];
+      if (med > 0 && body[body.length - 1].amount < med * 0.4) partial = true;
+    }
+  }
+  return { monthly: monthly.slice(lead, partial ? monthly.length - 1 : monthly.length), lead: lead, partial: partial };
+}
+
+function fcRemoveReport(i) {
+  fcCsvReports.splice(i, 1);
+  fcCsvRender();
+}
+
+function fcCsvRender() {
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const chips = document.getElementById('fc-reports');
+  if (chips) chips.innerHTML = fcCsvReports.map((r, i) =>
+    '<span class="rep-chip">' +
+    esc(r.name) + ' <span style="color:var(--muted);">· ' + Object.keys(r.months).length + ' mo</span>' +
+    '<button type="button" onclick="fcRemoveReport(' + i + ')" title="Remove this report" aria-label="Remove this report">✕</button></span>'
+  ).join('');
+  const stack = {};
+  fcCsvReports.forEach(r => Object.keys(r.months).forEach(k => { stack[k] = (stack[k] || 0) + r.months[k]; }));
+  const keys = Object.keys(stack).sort();
+  if (!keys.length) {
+    document.getElementById('fc-label').textContent = 'Drop your royalty report here or click to choose';
+    document.getElementById('fc-rows').innerHTML = '';
+    fcAddRow(); fcAddRow(); fcAddRow();
+    document.getElementById('fc-parse-status').textContent = '';
+    fcMonthly = null;
+    return;
+  }
+  fcDisplayCur = null;
+  const cleaned = fcCsvClean(keys.map(k => ({ month: k, amount: Math.round(stack[k] * 100) / 100 })));
+  fcMonthly = cleaned.monthly;
+  const fxRow = document.getElementById('fc-fxpref-row');
+  if (fxRow) {
+    fxRow.style.display = fcCurrency !== 'USD' ? 'flex' : 'none';
+    if (fcCurrency !== 'USD') {
+      const nb = document.getElementById('fc-fx-native');
+      if (nb) nb.textContent = fcCurrency;
+    }
+  }
+  let cleanNote = fcCurrency !== 'USD' ? ' · amounts are in ' + fcCurrency : '';
+  if (cleaned.lead) cleanNote += ' · trimmed ' + cleaned.lead + ' near-zero month' + (cleaned.lead > 1 ? 's' : '') + ' from before your catalog was live';
+  if (cleaned.partial) cleanNote += ' · your latest month looks incomplete (statements lag), so it\'s set aside — type it back in below if it\'s real';
+  document.getElementById('fc-rows').innerHTML = '';
+  fcMonthly.slice(-24).forEach(m => fcAddRow(m.month, m.amount));
+  const total = fcMonthly.reduce((a, b) => a + b.amount, 0);
+  const nRep = fcCsvReports.length;
+  document.getElementById('fc-label').textContent = '✓ ' + nRep + ' report' + (nRep > 1 ? 's' : '') + ' loaded — add more anytime';
+  if (keys.length === 1) {
+    document.getElementById('fc-parse-status').innerHTML =
+      '✓ <strong style="color:var(--neon);">1 month found</strong> ($' + total.toFixed(2) + '). Forecasts need 2+ — <strong>upload your other monthly reports</strong> (they stack automatically) or add months by hand below.' + cleanNote;
+  } else {
+    document.getElementById('fc-parse-status').innerHTML =
+      '✓ <strong style="color:var(--neon);">' + fcMonthly.length + ' months ready</strong> (' + keys.length + ' found in ' + nRep + ' report' + (nRep > 1 ? 's' : '') + ') — forecast will use ' + fcCur() + total.toFixed(2) + '. Check the rows, add more, or hit Forecast.' + cleanNote;
+  }
+}
+
+function fcReset() {
+  try { localStorage.removeItem('fcSaved'); } catch(e) {}
+  fcCsvReports = [];
+  const chips = document.getElementById('fc-reports'); if (chips) chips.innerHTML = '';
+  document.getElementById('fc-label').textContent = 'Drop your royalty report here or click to choose';
+  document.getElementById('fc-rows').innerHTML = '';
+  fcAddRow(); fcAddRow(); fcAddRow();
+  document.getElementById('fc-genre').value = '';
+  document.getElementById('fc-city').value = '';
+  document.getElementById('fc-releases').value = '';
+  const rt = document.getElementById('fc-reltype'); if (rt) rt.value = 'songs';
+  fcCurrency = 'USD'; fcDisplayCur = null;
+  document.getElementById('fc-result').style.display = 'none';
+  document.getElementById('fc-placeholder').style.display = '';
+  document.getElementById('fc-parse-status').textContent = '';
+  fcMonthly = null;
+}
+
+function fcAddRow(month, amount) {
+  const wrap = document.getElementById('fc-rows');
+  const div = document.createElement('div');
+  div.className = 'fc-row';
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;';
+  div.innerHTML = `
+    <input class="input" placeholder="e.g. Jan 2026" value="${month || ''}"/>
+    <input class="input" type="number" step="0.01" min="0" placeholder="e.g. 150.00" value="${amount != null ? amount : ''}"/>`;
+  wrap.appendChild(div);
+}
+
+function fcGetMonthly() {
+  const rows = [];
+  document.querySelectorAll('#fc-rows .fc-row').forEach((r, i) => {
+    const amount = parseFloat(r.children[1].value);
+    if (isNaN(amount)) return;
+    rows.push({ month: r.children[0].value.trim() || ('Month ' + (i + 1)), amount: amount });
+  });
+  if (rows.length >= 2) return rows;
+  return fcMonthly;
+}
+
+function fcSongsPlanned() {
+  const n = parseFloat(document.getElementById('fc-releases').value) || 0;
+  const t = (document.getElementById('fc-reltype') || {}).value || 'songs';
+  return t === 'albums' ? n * 8 : n;   // an album ~8 songs of release energy
+}
+
+function fcProject(monthly) {
+  const amts = monthly.map(m => m.amount);
+  const n = amts.length;
+  const recent = amts.slice(-3);
+  const prior = amts.slice(-6, -3);
+  const avgRecent = recent.reduce((a,b)=>a+b,0) / recent.length;
+  let trend;
+  if (prior.length) {
+    const avgPrior = prior.reduce((a,b)=>a+b,0) / prior.length;
+    trend = avgPrior > 0 ? Math.pow(avgRecent / avgPrior, 1/3) - 1 : 0;
+  } else {
+    // short history: read growth across the whole span, first month to last
+    trend = (amts[0] > 0 && n > 1) ? Math.pow(amts[n-1] / amts[0], 1/(n-1)) - 1 : 0;
+  }
+  trend = Math.max(-0.12, Math.min(0.15, trend));
+
+  function run(g0, viral) {
+    // momentum fades: month-i growth = g0 * 0.965^i, so curves bend toward a
+    // plateau instead of compounding forever (or bleeding to zero on a decline)
+    let m = avgRecent, total = 0;
+    const marks = { series: [] };
+    for (let i = 1; i <= 60; i++) {
+      m = m * (1 + g0 * Math.pow(0.965, i));
+      let monthVal = m;
+      if (viral && i === 9) monthVal *= 3.2;           // one viral month
+      if (viral && (i === 10 || i === 11)) monthVal *= 1.6; // afterglow decays
+      total += monthVal;
+      marks.series.push(Math.round(total));
+      if (i === 12) marks.y1 = Math.round(total);
+      if (i === 36) marks.y3 = Math.round(total);
+      if (i === 60) marks.y5 = Math.round(total);
+    }
+    return marks;
+  }
+
+  const steadyG = Math.max(-0.03, Math.min(0.02, trend));       // coast: mild version of current trend, fading to long-tail
+  // your release plan bends the growth curve: ~6 songs/yr is the baseline plan;
+  // more output compounds harder, a thin plan grows slower (capped either way)
+  const relAdj = Math.max(-0.01, Math.min(0.02, (fcSongsPlanned() - 6) * 0.002));
+  const growthBase = Math.min(0.08, Math.max(0.03, trend + 0.06));
+  const growthG = Math.min(0.09, Math.max(0.02, growthBase + relAdj)); // working the plan: release cadence bends it, momentum fades
+  return {
+    stats: { avgMonthly: Math.round(avgRecent * 100) / 100, trend: Math.round(trend * 1000) / 10, monthsOfData: n },
+    scenarios: {
+      steady:   run(steadyG, false),
+      growth:   run(growthG, false),
+      breakout: run(growthG, true)
+    }
+  };
+}
+
+function fcMoney(v) {
+  v = v || 0;
+  return v >= 1000 ? fcCur() + (v/1000).toFixed(v >= 100000 ? 0 : 1) + 'k' : fcCur() + Math.round(v);
+}
+
+
+function fcMoneyFull(v) { return fcCur() + Math.round(v || 0).toLocaleString('en-US'); }
+
+/* ---------- inputs travel with the artist: into signup, the Studio, or checkout ---------- */
+let fcLastMonthly = null;
+function fcSaveInputs(monthly) {
+  try {
+    localStorage.setItem('fcSaved', JSON.stringify({
+      ts: Date.now(),
+      rows: monthly,
+      genre: document.getElementById('fc-genre').value,
+      city: document.getElementById('fc-city').value,
+      releases: (document.getElementById('fc-releases').value + ' ' + document.getElementById('fc-reltype').value).trim(),
+      currency: fcCurrency,
+      fxPref: document.getElementById('fc-fxpref').value || 'USD'
+    }));
+  } catch (e) {}
+}
+function fcCurrentRows() { return (fcGetMonthly() || []).map(m => ({ month: m.month, amount: m.amount })); }
+function fcToStudio() {
+  const rows = fcCurrentRows();
+  if (rows.length >= 2) fcSaveInputs(rows);
+  window.location.href = 'app.html#forecast';
+  return false;
+}
+function fcSaveAccount() {
+  if (fcLastMonthly) fcSaveInputs(fcLastMonthly);
+  try { localStorage.setItem('ssNext', 'forecast'); } catch (e) {}
+  window.location.href = 'signup.html';
+  return false;
+}
+function fcUnlockPro() {
+  if (fcLastMonthly) fcSaveInputs(fcLastMonthly);
+  try { localStorage.setItem('ssNext', 'pricing'); localStorage.setItem('ssCheckout', 'pro'); } catch (e) {}
+  window.location.href = 'signup.html';
+  return false;
+}
+
+/* ---------- the free preview: real numbers for year one, the five-year view locked ---------- */
+async function fcPreview() {
+  const status = document.getElementById('fc-run-status');
+  const monthly = fcCurrentRows();
+  fcDisplayCur = null;
+  if (monthly.length < 2) {
+    status.innerHTML = '<span class="err">One more month and we can read your trend.</span> Upload another monthly report (they stack) or type a month in.';
+    return;
+  }
+  status.textContent = '';
+  fcLastMonthly = monthly.map(m => ({ month: m.month, amount: m.amount }));
+  fcSaveInputs(fcLastMonthly);
+
+  let fxNote = '';
+  const fxPref = document.getElementById('fc-fxpref').value || 'USD';
+  if (fcCurrency !== 'USD' && fxPref === 'native') {
+    fxNote = 'Shown in ' + fcCurrency + ', your statement currency.';
+  } else if (fcCurrency !== 'USD') {
+    const btn = document.getElementById('fc-btn'); btn.disabled = true;
+    try {
+      const fx = await fcFxRate(fcCurrency);
+      monthly.forEach(m => { m.amount = Math.round(m.amount * fx.rate * 100) / 100; });
+      fxNote = 'Converted from ' + fcCurrency + ' to USD at ' + fx.rate.toFixed(4) + (fx.approx ? ' (approximate rate).' : " (today's rate).");
+      fcDisplayCur = 'USD';
+    } catch (e) {
+      fxNote = 'Shown in ' + fcCurrency + ' (USD rate unavailable right now).';
+    }
+    btn.disabled = false;
+  }
+
+  const { stats, scenarios } = fcProject(monthly);
+  const trend = (stats.trend > 0 ? '+' : '') + stats.trend + '%';
+  document.getElementById('fc-placeholder').style.display = 'none';
+  const r = document.getElementById('fc-result');
+  r.innerHTML =
+    '<div class="fc-stats">' +
+      '<div class="stat"><small>RECENT MONTHLY AVERAGE</small><b>' + fcMoneyFull(stats.avgMonthly) + '</b></div>' +
+      '<div class="stat"><small>TREND PER MONTH</small><b style="color:' + (stats.trend >= 0 ? 'var(--neon)' : '#ff8a8a') + ';">' + trend + '</b></div>' +
+      '<div class="stat"><small>MONTHS IN FORECAST</small><b>' + stats.monthsOfData + '</b></div>' +
+    '</div>' +
+    '<div class="fc-big"><small>Your next 12 months if nothing changes</small><b>' + fcMoneyFull(scenarios.steady.y1) + '</b></div>' +
+    '<div class="fc-chart" id="fc-chart" role="img" aria-label="Your first year of earnings. Years two to five are locked."></div>' +
+    '<ul class="locked">' +
+      '<li><i class="ti ti-lock"></i>Your five-year total on all three paths: coasting, working the plan, and a breakout</li>' +
+      '<li><i class="ti ti-lock"></i>The gap between coasting and working the plan, in dollars</li>' +
+      '<li><i class="ti ti-lock"></i>An analyst read on your numbers, genre and city, with your next moves</li>' +
+      '<li><i class="ti ti-lock"></i>Milestones, watch-outs and PDF or image export</li>' +
+    '</ul>' +
+    '<div class="fc-ctas" id="fc-ctas"></div>' +
+    (fxNote ? '<div class="fx-note">' + fxNote + '</div>' : '') +
+    '<p class="fine">Scenario estimates from your own history, not guarantees and not financial advice.</p>';
+  r.style.display = 'block';
+  fcRenderCtas();
+  fcDrawPreview(scenarios);
+  window.__fcScen = scenarios;
+  if (window.innerWidth < 1000) document.getElementById('fc-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fcRenderCtas() {
+  const c = document.getElementById('fc-ctas');
+  if (!c) return;
+  c.innerHTML = window.__ssSignedIn
+    ? '<a class="btn btn-neon" href="app.html#forecast" onclick="return fcToStudio()"><i class="ti ti-sparkles"></i> Open the full forecast in my Studio</a>'
+    : '<a class="btn btn-neon" href="signup.html" onclick="return fcSaveAccount()"><i class="ti ti-device-floppy"></i> Save my forecast with a free account</a>' +
+      '<a class="btn btn-ghost" href="pricing.html" onclick="return fcUnlockPro()"><i class="ti ti-lock-open"></i> Unlock the full forecast with Pro</a>' +
+      '<p class="fine" style="margin-top:2px;text-align:center;">Your months come with you, so you won\'t upload again. Pro is $9.99 a month, cancel anytime.</p>';
+}
+
+function fcDrawPreview(sc) {
+  const box = document.getElementById('fc-chart');
+  if (!box || !sc) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (t, a, p) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); if (p) p.appendChild(n); return n; };
+  const W = Math.max(300, Math.round(box.clientWidth - 12)), narrow = W < 480;
+  const H = Math.round(W * (narrow ? 0.72 : 0.56));
+  const pad = { l: 10, r: 14, t: 16, b: 28 };
+  const s = k => [0].concat(sc[k].series);
+  const S = { steady: s('steady'), growth: s('growth'), breakout: s('breakout') };
+  const ymax = Math.max(S.breakout[30], S.steady[12] * 1.6) * 1.05 || 1;
+  const Y1 = 0.42; // year one gets 42% of the width: it's the part they can read
+  const x = i => pad.l + (i <= 12 ? (i / 12) * Y1 : Y1 + ((i - 12) / 48) * (1 - Y1)) * (W - pad.l - pad.r);
+  const y = v => pad.t + (1 - v / ymax) * (H - pad.t - pad.b);
+  const path = arr => arr.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+  box.innerHTML = '';
+  const svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H }, box);
+  const defs = el('defs', {}, svg);
+  const cA = el('clipPath', { id: 'fcA' }, defs); el('rect', { x: 0, y: 0, width: x(12), height: H }, cA);
+  const cB = el('clipPath', { id: 'fcB' }, defs); el('rect', { x: x(12), y: 0, width: W, height: H }, cB);
+  const blur = el('filter', { id: 'fcBlur', x: '-10%', y: '-10%', width: '120%', height: '120%' }, defs);
+  el('feGaussianBlur', { stdDeviation: narrow ? 4 : 6 }, blur);
+  [0.25, 0.5, 0.75].forEach(f => el('line', { x1: pad.l, x2: W - pad.r, y1: y(ymax * f), y2: y(ymax * f), stroke: '#15151f' }, svg));
+  [3, 6, 9].forEach(i => el('line', { x1: x(i), x2: x(i), y1: y(0), y2: y(0) - 5, stroke: '#3a3a52' }, svg));
+  el('line', { x1: pad.l, x2: W - pad.r, y1: y(0), y2: y(0), stroke: '#1f1f2e' }, svg);
+  const draw = (g, ex) => {
+    el('path', { d: path(S.growth) + ' L' + x(60) + ' ' + y(0) + ' L' + x(0) + ' ' + y(0) + ' Z', fill: 'rgba(0,255,209,0.10)' }, g);
+    el('path', { d: path(S.steady), fill: 'none', stroke: '#8a8aa6', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, g);
+    el('path', { d: path(S.growth), fill: 'none', stroke: '#00FFD1', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    el('path', { d: path(S.breakout), fill: 'none', stroke: '#FFC83D', 'stroke-width': 2.5, 'stroke-dasharray': '7 6', 'stroke-linecap': 'round' }, g);
+  };
+  draw(el('g', { 'clip-path': 'url(#fcA)' }, svg));
+  const locked = el('g', { 'clip-path': 'url(#fcB)', filter: 'url(#fcBlur)', opacity: 0.5 }, svg);
+  draw(locked);
+  el('line', { x1: x(12), x2: x(12), y1: pad.t, y2: y(0), stroke: '#3a3a52', 'stroke-dasharray': '3 4' }, svg);
+  // lock badge over years 2-5
+  const cx = (x(12) + x(60)) / 2, cy = pad.t + (H - pad.t - pad.b) * 0.38;
+  const bw = narrow ? 150 : 190, bh = narrow ? 44 : 50;
+  el('rect', { x: cx - bw / 2, y: cy - bh / 2, width: bw, height: bh, rx: 12, fill: 'rgba(12,12,20,0.92)', stroke: 'rgba(255,200,61,0.5)' }, svg);
+  const t1 = el('text', { x: cx, y: cy - (narrow ? 2 : 3), 'text-anchor': 'middle', fill: '#FFC83D', 'font-size': narrow ? 12 : 14, 'font-weight': 800 }, svg); t1.textContent = 'Years 2 to 5 locked';
+  const t2 = el('text', { x: cx, y: cy + (narrow ? 13 : 15), 'text-anchor': 'middle', fill: '#a3a3bd', 'font-size': narrow ? 10 : 11.5 }, svg); t2.textContent = 'Full forecast · Pro';
+  // the one number they get: steady at 12 months
+  el('circle', { cx: x(12), cy: y(S.steady[12]), r: 4.5, fill: '#fff' }, svg);
+  const ly = Math.min(y(S.steady[12]) + 22, y(0) - 10);
+  const lbl = el('text', { x: x(12) - 8, y: ly, 'text-anchor': 'end', fill: '#fff', 'font-size': narrow ? 12 : 13, 'font-weight': 800 }, svg);
+  lbl.textContent = fcMoney(S.steady[12]) + ' in year one';
+  try {
+    const bb = lbl.getBBox();
+    const bg = el('rect', { x: bb.x - 6, y: bb.y - 3, width: bb.width + 12, height: bb.height + 6, rx: 6, fill: 'rgba(5,5,10,0.88)', stroke: '#2c2c40' });
+    svg.insertBefore(bg, lbl);
+  } catch (e) {}
+  const leg = el('g', {}, svg);
+  [['If you coast', '#8a8aa6'], ['Work the plan', '#00FFD1'], ['Breakout', '#FFC83D']].forEach(([t, c], k) => {
+    const yy = pad.t + 4 + k * (narrow ? 15 : 17);
+    el('rect', { x: pad.l + 4, y: yy - 7, width: 12, height: 3, rx: 1.5, fill: c }, leg);
+    const n = el('text', { x: pad.l + 22, y: yy - 2, fill: '#a3a3bd', 'font-size': narrow ? 10 : 11.5 }, leg); n.textContent = t;
+  });
+  [['Today', 0, 'start'], ['6 mo', 6, 'middle'], ['1 yr', 12, 'middle'], ['3 yr', 36, 'middle'], ['5 yr', 60, 'end']].forEach(([t, i, a]) => {
+    const n = el('text', { x: x(i), y: H - 8, 'text-anchor': a, fill: '#6e6e88', 'font-size': narrow ? 11 : 12 }, svg); n.textContent = t;
+  });
+}
+let fcRT; window.addEventListener('resize', () => { clearTimeout(fcRT); fcRT = setTimeout(() => { if (window.__fcScen) fcDrawPreview(window.__fcScen); }, 150); });
+
+/* ---------- once a report is read, fold the month list away so the button stays close ---------- */
+function fcSyncManual() {
+  const n = document.querySelectorAll('#fc-rows .fc-row').length;
+  const filled = Array.from(document.querySelectorAll('#fc-rows .fc-row')).filter(r => r.children[1].value !== '').length;
+  const d = document.getElementById('fc-manual'), t = document.getElementById('fc-manual-title');
+  if (fcCsvReports.length && filled >= 2) {
+    d.open = false;
+    t.innerHTML = 'Check your months <small>· ' + filled + ' loaded, tap to edit</small>';
+  } else {
+    d.open = true;
+    t.innerHTML = 'Or type it in <small>· oldest month first</small>';
+  }
+}
+const _fcCsvRender = fcCsvRender;
+fcCsvRender = function () { _fcCsvRender(); fcSyncManual(); };
+const _fcReset = fcReset;
+fcReset = function () { _fcReset(); fcSyncManual(); };
+
+/* ---------- drag & drop into the same parser the Studio uses ---------- */
+wireDrop('fc-drop', 'fc-upload', files => fcParseCsv({ files: files, value: '' }));
+document.getElementById('fc-upload').removeAttribute('onchange');
+
+/* ---------- welcome back: restore inputs saved in the last 24 hours ---------- */
+(function fcRestore() {
+  let restored = false;
+  try {
+    const saved = JSON.parse(localStorage.getItem('fcSaved') || 'null');
+    if (saved && saved.rows && saved.rows.length >= 2 && saved.ts && (Date.now() - saved.ts) < 24 * 60 * 60 * 1000) {
+      saved.rows.forEach(r => fcAddRow(r.month, r.amount));
+      if (saved.currency) fcCurrency = String(saved.currency).toUpperCase();
+      if (saved.genre) document.getElementById('fc-genre').value = saved.genre;
+      if (saved.city) document.getElementById('fc-city').value = saved.city;
+      const rm = String(saved.releases || '').match(/([\d.]+)\s*(songs|albums)?/i);
+      if (rm) { document.getElementById('fc-releases').value = rm[1]; if (rm[2]) document.getElementById('fc-reltype').value = rm[2].toLowerCase(); }
+      if (saved.fxPref) fcSetFxPref(saved.fxPref);
+      if (fcCurrency !== 'USD') {
+        document.getElementById('fc-fxpref-row').style.display = 'flex';
+        document.getElementById('fc-fx-native').textContent = fcCurrency;
+      }
+      document.getElementById('fc-parse-status').innerHTML = '<span class="ok">Welcome back.</span> Your ' + saved.rows.length + ' months are loaded.' + (fcCurrency !== 'USD' ? ' Amounts are in ' + fcCurrency + '.' : '');
+      restored = true;
+    }
+  } catch (e) {}
+  if (!restored) { fcAddRow(); fcAddRow(); fcAddRow(); }
+})();
+
+window.ssOnSignedIn = () => {
+  document.getElementById('fc-signed').classList.add('show');
+  fcRenderCtas();
+};
+
+</script>
+<script>
+/* ---------- Session-aware header: signed-in artists see their studio, not Sign in ---------- */
+let sbClient = null;
+try {
+  sbClient = supabase.createClient(
+    'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+    'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+  );
+  sbClient.auth.getSession().then(({ data }) => {
+    if (!data.session) return;
+    window.__ssSignedIn = true;
+    const meta = data.session.user.user_metadata || {};
+    const first = String(meta.first_name || 'Artist').replace(/[<>&"]/g, '');
+    document.getElementById('navbtns').innerHTML =
+      '<button class="btn btn-sm btn-ghost" type="button" id="signout-btn">Sign out</button>' +
+      '<a class="btn btn-sm btn-neon" href="app.html"><i class="ti ti-sparkles"></i> Open Studio, ' + first + '</a>';
+    document.getElementById('signout-btn').onclick = async () => { await sbClient.auth.signOut(); window.location.reload(); };
+    const mmIn = document.getElementById('mm-signin'); if (mmIn) mmIn.remove();
+    const mmCta = document.getElementById('mm-cta'); if (mmCta) { mmCta.textContent = 'Open Studio'; mmCta.href = 'app.html'; }
+    if (typeof window.ssOnSignedIn === 'function') window.ssOnSignedIn(data.session);
+  });
+} catch (e) { console.warn('Session check skipped:', e); }
+</script>
+</body>
+</html>
