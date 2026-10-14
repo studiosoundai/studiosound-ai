@@ -1371,7 +1371,7 @@ async function showAssetsPanel() {
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
         ${a.tool==='Forecast' && a.data && a.data.scenarios ? `<a onclick="openForecastAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Forecast →</a>` : ''}
-        ${a.data && a.data.videoUrl ? `<a onclick="playVideoAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">▶ Play</a> <a href="${a.data.videoUrl}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download Video ↓</a>` : ''}
+        ${a.data && a.data.videoUrl ? `<a onclick="playVideoAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">▶ Play</a> <a href="${lvDownloadUrl(a.data.videoUrl, a.name)}" download style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download Video ↓</a>` : ''}
         ${a.data && a.data.prompt ? ` <a onclick="copyPrompt(${i})" style="color:var(--muted);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Copy Prompt ⧉</a>` : ''}
       </div>
     </div>`).join('');
@@ -1394,7 +1394,7 @@ function playVideo(url, name) {
   wrap.innerHTML = `
     <video src="${url}" controls autoplay playsinline style="max-height:80vh;max-width:92vw;border-radius:14px;box-shadow:0 20px 80px rgba(0,0,0,0.8);"></video>
     <div style="display:flex;gap:10px;">
-      <a href="${url}" download style="background:var(--neon);color:#05050a;font-weight:800;font-size:12px;padding:10px 18px;border-radius:8px;text-decoration:none;">Download ↓</a>
+      <a href="${lvDownloadUrl(url, name)}" download style="background:var(--neon);color:#05050a;font-weight:800;font-size:12px;padding:10px 18px;border-radius:8px;text-decoration:none;">Download ↓</a>
       <button onclick="document.getElementById('video-modal').remove()" style="background:#1a1a2a;color:#fff;font-weight:700;font-size:12px;padding:10px 18px;border-radius:8px;border:0.5px solid var(--border);cursor:pointer;">Close ✕</button>
     </div>`;
   wrap.addEventListener('click', e => { if (e.target === wrap) wrap.remove(); });
@@ -3571,6 +3571,56 @@ function lvCurrentLine(t) {
 
 let lvSnap = null;
 
+// Pick the best format this browser can record. Order matters: H.264 MP4 plays everywhere.
+function lvPickMime() {
+  if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+  const prefs = [
+    'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+    'video/mp4;codecs=avc1.4D401F,mp4a.40.2',
+    'video/mp4;codecs=avc1,mp4a',
+    'video/mp4;codecs=avc1.42E01E,opus',
+    'video/mp4;codecs=avc1,opus',
+    'video/mp4',
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm'
+  ];
+  for (const m of prefs) { try { if (MediaRecorder.isTypeSupported(m)) return m; } catch(e) {} }
+  return '';
+}
+
+// After an export: buttons to save again, and on phones a Share sheet ("Save Video" puts it in Photos)
+function lvSaveButtonsHtml() {
+  const btn = 'display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:12px;padding:10px 16px;border-radius:8px;cursor:pointer;border:none;font-family:inherit;';
+  let html = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">';
+  let canShare = false;
+  try { canShare = !!(window._lvFile && navigator.canShare && navigator.canShare({ files: [window._lvFile] })); } catch(e) {}
+  if (canShare) html += '<button type="button" onclick="lvShareVideo()" style="' + btn + 'background:var(--neon);color:#05050a;">📲 Save to Photos / Share</button>';
+  html += '<button type="button" onclick="lvDownloadAgain()" style="' + btn + (canShare ? 'background:#1a1a2a;color:#fff;border:0.5px solid var(--border);' : 'background:var(--neon);color:#05050a;') + '">⬇ Download again</button>';
+  html += '</div>';
+  if (canShare) html += '<div style="color:var(--muted);margin-top:6px;">On iPhone: tap Save to Photos / Share, then “Save Video”.</div>';
+  return html;
+}
+function lvDownloadAgain() {
+  if (!window._lvBlobUrl) return;
+  const a = document.createElement('a');
+  a.href = window._lvBlobUrl; a.download = window._lvFileName || 'studiosound-lyric-video.mp4';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function lvShareVideo() {
+  if (!window._lvFile) return lvDownloadAgain();
+  try { await navigator.share({ files: [window._lvFile], title: window._lvFileName }); }
+  catch (e) { if (e && e.name !== 'AbortError') lvDownloadAgain(); }
+}
+
+// Supabase public URLs download (instead of opening a tab) with ?download=filename
+function lvDownloadUrl(url, name) {
+  if (!url) return url;
+  const ext = (url.split('?')[0].match(/\.(mp4|webm)$/i) || [, 'mp4'])[1].toLowerCase();
+  const fn = String(name || 'lyric-video').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'lyric-video';
+  return url + (url.includes('?') ? '&' : '?') + 'download=' + encodeURIComponent('studiosound-' + fn + '.' + ext);
+}
+
 async function lvRun(record) {
   lvStopAll();
   lvSnap = null;
@@ -3589,27 +3639,38 @@ async function lvRun(record) {
     const dest = lvAC.createMediaStreamDestination();
     lvSrc.connect(dest);
     dest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
-    let mime = 'video/webm;codecs=vp9,opus';
-    if(!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
-    if(!MediaRecorder.isTypeSupported(mime)) mime = '';
+    // MP4 (H.264) first: it plays and saves everywhere, including iPhone Photos,
+    // Instagram and TikTok. WebM is only the fallback for browsers that can't record MP4.
+    const mime = lvPickMime();
     const lvBitrate = lvPlayDur > 75 ? 2000000 : 3500000;
     lvRecorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: lvBitrate } : undefined);
     const chunks = [];
     lvRecorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
-    lvRecorder.onstop = async () => {
-      const blob = new Blob(chunks, { type: 'video/webm' });
+    lvRecorder.onstop = async (ev) => {
+      const recType = (ev && ev.target && ev.target.mimeType) || mime || 'video/webm';
+      const isMp4 = /mp4/i.test(recType);
+      const ext = isMp4 ? 'mp4' : 'webm';
+      const blob = new Blob(chunks, { type: isMp4 ? 'video/mp4' : 'video/webm' });
+      const safeTitle = (document.getElementById('lv-title').value.trim() || 'lyric-video').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'lyric-video';
+      const fileName = 'studiosound-' + safeTitle + '.' + ext;
+      if (window._lvBlobUrl) { try { URL.revokeObjectURL(window._lvBlobUrl); } catch(e) {} }
+      window._lvBlobUrl = URL.createObjectURL(blob);
+      window._lvFile = null;
+      try { window._lvFile = new File([blob], fileName, { type: blob.type }); } catch(e) {}
+      window._lvFileName = fileName;
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'studiosound-lyric-video.webm';
-      a.click();
+      a.href = window._lvBlobUrl;
+      a.download = fileName;
+      document.body.appendChild(a); a.click(); a.remove();
       const lvName = document.getElementById('lv-title').value.trim() || ('Lyric Video ' + new Date().toLocaleDateString());
       const status = document.getElementById('lv-export-status');
       status.innerHTML = '✓ Downloaded! Now saving a copy to My Assets...';
-      let videoUrl = null;
+      let videoUrl = null, cloudTried = false;
       try {
         if (blob.size < 45 * 1048576 && currentUser) {
-          const path = currentUser.id + '/lyricvideo-' + Date.now() + '.webm';
-          const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'video/webm' });
+          cloudTried = true;
+          const path = currentUser.id + '/lyricvideo-' + Date.now() + '.' + ext;
+          const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: blob.type });
           if (!upErr) videoUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
           else console.error('video upload', upErr);
         }
@@ -3619,9 +3680,13 @@ async function lvRun(record) {
       const sizeMB = (blob.size / 1048576).toFixed(1);
       window._lvExpDone = true;
       status.innerHTML = (videoUrl
-        ? '✓ Downloaded and saved to My Assets (' + sizeMB + ' MB) — play or re-download it there anytime.'
-        : '✓ Downloaded (' + sizeMB + ' MB)! Too large for a cloud copy — the file on your device is your copy. 15s and 30s clips always save to My Assets.')
-        + ' <a onclick="lvToPlan()" style="color:var(--neon);font-weight:700;cursor:pointer;">Next: plan the rollout →</a>';
+        ? '✓ Your ' + ext.toUpperCase() + ' is ready (' + sizeMB + ' MB) and saved to My Assets — play or re-download it there anytime.'
+        : (cloudTried
+          ? '✓ Your ' + ext.toUpperCase() + ' is ready (' + sizeMB + ' MB). We couldn\'t save a cloud copy this time, so save it to your device now.'
+          : '✓ Your ' + ext.toUpperCase() + ' is ready (' + sizeMB + ' MB). It\'s too large for a cloud copy, so save it to your device now. 15s and 30s clips always save to My Assets.'))
+        + lvSaveButtonsHtml()
+        + (isMp4 ? '' : '<div style="color:#ffcf6b;margin-top:8px;">This browser can only record WebM, which some phones and apps won\'t open. For an MP4 that plays everywhere, export in Chrome or Safari.</div>')
+        + '<div style="margin-top:8px;"><a onclick="lvToPlan()" style="color:var(--neon);font-weight:700;cursor:pointer;">Next: plan the rollout →</a></div>';
     };
     lvRecorder.start();
     const lenSelStatus = document.getElementById('lv-length').value;
