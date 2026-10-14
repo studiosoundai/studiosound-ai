@@ -90,6 +90,19 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
 .gap-text{color:var(--muted);font-size:14px;line-height:1.5;max-width:34ch;}
 .chart-cap{color:var(--dim);font-size:12px;margin-top:10px;}
 
+/* KICKER + STATS + TOOL POINTS */
+.kicker{display:inline-block;font-size:13px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--neon);margin-bottom:18px;}
+.kicker span{color:#fff;}
+.stats{margin-top:56px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;}
+.stat{padding:28px 20px;text-align:center;border-left:1px solid var(--line);}
+.stat:first-child{border-left:none;}
+.stat-num{font-size:clamp(28px,3.2vw,40px);font-weight:800;color:var(--neon);letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;}
+.stat-label{color:var(--muted);font-size:13px;margin-top:8px;line-height:1.45;}
+.tool-points{list-style:none;margin-top:12px;}
+.tool-points li{display:flex;gap:8px;color:#d4d4e4;font-size:13.5px;line-height:1.45;margin-top:6px;}
+.tool-points li::before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;background:var(--neon);margin-top:7px;}
+
 /* WORKS WITH */
 .works{padding:40px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);}
 .works-grid{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr);gap:40px;align-items:center;}
@@ -219,6 +232,11 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
   .hero-lede{font-size:16px;}
   .hero-ctas .btn{flex:1 1 100%;}
   .works-facts{grid-template-columns:1fr;gap:16px;}
+  .stats{margin-top:40px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .stat{padding:22px 12px;}
+  .stat:nth-child(3){border-left:none;}
+  .stat:nth-child(n+3){border-top:1px solid var(--line);}
   .chain{grid-template-columns:1fr;}
   .tools{grid-template-columns:1fr;}
   .tool.wide{grid-column:span 1;}
@@ -306,6 +324,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
+      <div class="kicker">Create. Release. <span>Drop like a major.</span></div>
       <h1>See what your music will earn in five years.</h1>
       <p class="hero-lede"><strong>Your distributor just became your studio.</strong> Drop the royalty report you already have and get your 1, 3 and 5-year curve. Then plan the release, make the cover and cut the lyric video that change it.</p>
       <div class="hero-ctas">
@@ -342,6 +361,16 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
       <p class="fact"><strong>Cleaned before it's projected</strong>Months before your catalog went live are trimmed, and a statement that's still filling in gets flagged instead of read as a crash.</p>
       <p class="fact"><strong>Any currency</strong>AUD, EUR, GBP, CAD and NZD statements convert to USD at today's rate, or stay in your own currency with one tap.</p>
     </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="wrap stats">
+  <div class="stats-grid" id="statsbar">
+    <div class="stat"><div class="stat-num" id="s1" data-target="1800" data-suffix="+">1,800+</div><div class="stat-label">Independent artists using StudioSound</div></div>
+    <div class="stat"><div class="stat-num">&lt;30s</div><div class="stat-label">Average cover art generation time</div></div>
+    <div class="stat"><div class="stat-num" id="s2" data-target="12000" data-suffix="+">12,000+</div><div class="stat-label">Pieces of content generated</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Content ownership, yours forever</div></div>
   </div>
 </div>
 
@@ -396,28 +425,52 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
         <div class="tool-media"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="" loading="lazy"/></div>
         <div class="tool-body">
           <h3>Cover Art</h3>
-          <p>One photoreal version and one stylized version per generation. Add up to three photos and three reference covers. 3000×3000, ready for every store.</p>
+          <p>Label-quality artwork from a title, genre and mood.</p>
+          <ul class="tool-points">
+            <li>Two versions side by side: one photoreal, one stylized</li>
+            <li>Upload your photo and the AI puts you on the cover</li>
+            <li>3000×3000 JPEG, ready for every store</li>
+            <li>Your title on the art, or keep it clean. No watermark.</li>
+          </ul>
         </div>
       </a>
       <a class="tool" href="signup.html" onclick="return go('plan')">
         <div class="tool-media"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="" loading="lazy"/></div>
         <div class="tool-body">
           <h3>Release Planner</h3>
-          <p>A day-by-day 30-day rollout built from web research on you, your city and your genre. Export it as a PDF.</p>
+          <p>A personalized 30-day roadmap built around your release date.</p>
+          <ul class="tool-points">
+            <li>Specific dates and post times for your city</li>
+            <li>Genre-specific playlist and curator pitching</li>
+            <li>Pre-save campaign and press outreach</li>
+            <li>Adapts to your career stage and budget. Export as PDF.</li>
+          </ul>
         </div>
       </a>
       <a class="tool" href="signup.html" onclick="return go('lyric')">
         <div class="tool-media"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="" loading="lazy"/></div>
         <div class="tool-body">
           <h3>Lyric Videos <span class="pill beta">BETA</span></h3>
-          <p>Drop your song and lyrics. Auto-lyrics syncs every line, and your cover can be the background.</p>
+          <p>Professional lyric videos without a videographer.</p>
+          <ul class="tool-points">
+            <li>Upload your song and lyrics; auto-lyrics times every line</li>
+            <li>Vertical 9:16 for TikTok, Reels and Shorts</li>
+            <li>10 font styles, your cover as the background</li>
+            <li>Saves as MP4, ready to post</li>
+          </ul>
         </div>
       </a>
       <a class="tool" href="signup.html" onclick="return go('merch')">
         <div class="tool-media"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/hoodie-mockup.png.png" alt="" loading="lazy"/></div>
         <div class="tool-body">
           <h3>Merch Mockups</h3>
-          <p>See your art on tees, hoodies, hats and posters, with print-on-demand and bulk pricing side by side.</p>
+          <p>Upload your art and see it on real products instantly.</p>
+          <ul class="tool-points">
+            <li>Real AI-generated mockups, not just overlays</li>
+            <li>Tees, hoodies, hats, phone cases, posters and more</li>
+            <li>Full cost breakdown: print-on-demand vs bulk</li>
+            <li>8 product types, 8 color options</li>
+          </ul>
         </div>
       </a>
       <a class="tool" href="signup.html" onclick="return go('writer')">
@@ -553,7 +606,8 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
 <!-- CLOSE -->
 <section class="close">
   <div class="wrap">
-    <h2>Talent should be the only barrier to success in music.</h2>
+    <div class="kicker">Talent should be the only barrier to success in music.</div>
+    <h2>Create. Release. Drop like a major.</h2>
     <p>Start with the numbers you already have. It takes about a minute.</p>
     <a class="btn btn-lg btn-neon" href="forecast.html" onclick="return go('forecast')"><i class="ti ti-chart-line"></i> Forecast my earnings</a>
   </div>
@@ -769,6 +823,27 @@ document.getElementById('gap-avg').textContent = fmt$(EX.avg);
 drawHero();
 drawMini('mini-chart', 240, 180, true);
 drawMini('wide-chart', 720, 200, true);
+/* ---------- Stats count up when they scroll into view (numbers live in the HTML, easy to edit) ---------- */
+(function () {
+  const bar = document.getElementById('statsbar');
+  if (!bar || reduceMotion || !('IntersectionObserver' in window)) return;
+  const els = bar.querySelectorAll('[data-target]');
+  els.forEach(el => { el.textContent = '0' + (el.dataset.suffix || ''); });
+  const io = new IntersectionObserver(entries => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    els.forEach(el => {
+      const target = +el.dataset.target, suffix = el.dataset.suffix || '', t0 = performance.now(), dur = 1800;
+      (function step(now) {
+        const p = Math.max(0, Math.min(1, (now - t0) / dur)), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * e).toLocaleString('en-US') + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }, { threshold: 0.3 });
+  io.observe(bar);
+})();
+
 let rT;
 window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(drawHero, 120); });
 </script>
