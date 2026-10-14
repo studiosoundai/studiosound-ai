@@ -220,7 +220,20 @@ body{overflow:auto;height:auto;}
 .ad-steps{margin:0;padding-left:18px;color:#e0e0f0;font-size:12px;line-height:1.6;}
 .ad-steps li{margin-bottom:5px;}
 .ad-video-status{color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5;}
-@media(max-width:768px){ .ad-formats{grid-template-columns:1fr 1fr;} .ad-grid2{grid-template-columns:1fr;} }
+.ad-step{color:var(--neon);font-size:10px;font-weight:800;letter-spacing:0.1em;margin:18px 0 10px;padding-top:14px;border-top:0.5px solid var(--border);}
+.ad-step:first-of-type{margin-top:4px;}
+.ad-hint{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:11px;line-height:1.5;background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:8px 10px;}
+.ad-hint i{color:var(--neon);font-size:14px;margin-top:1px;}
+.ad-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ad-opt{text-align:left;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;font-family:'Sora',sans-serif;color:#fff;transition:border-color 0.15s;}
+.ad-opt:hover{border-color:#3a3a52;}
+.ad-opt.active{border-color:var(--neon);background:#00FFD10d;box-shadow:inset 0 0 0 0.5px var(--neon);}
+.ad-opt b{display:block;font-size:13px;}
+.ad-opt small{display:block;color:var(--muted);font-size:10.5px;margin-top:2px;line-height:1.4;}
+.ad-opt .reach{color:var(--neon);font-weight:700;}
+.ad-opt.wide{grid-column:1/-1;}
+.ad-profile{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:768px){ .ad-formats{grid-template-columns:1fr 1fr;} .ad-grid2{grid-template-columns:1fr;} .ad-profile{grid-template-columns:1fr;} }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -878,19 +891,21 @@ body{overflow:auto;height:auto;}
             <span class="ad-plat"><i class="ti ti-brand-tiktok"></i> TikTok <small>NEXT</small></span>
             <span class="ad-plat"><i class="ti ti-brand-google"></i> Google & YouTube <small>AFTER</small></span>
           </div>
+          <div class="ad-step">1 · ABOUT YOU</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Song title <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-title" placeholder="e.g. Me Llamas"/></div>
             <div class="form-group"><label class="form-label">Artist name <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-artist" placeholder="As it appears on Spotify"/></div>
+            <div class="form-group"><label class="form-label">Instagram or TikTok handle <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-handle" placeholder="@yourname"/></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Goal</label>
-              <select class="form-select" id="ad-goal" onchange="adGoalChanged()">
-                <option value="streams">Streams: send people to the song</option>
-                <option value="presave">Pre-saves before release</option>
-                <option value="followers">Instagram followers</option>
-                <option value="views">Video views (awareness)</option>
-              </select>
-            </div>
+            <div class="form-group"><label class="form-label">Genre</label><input class="form-input" id="ad-genre" placeholder="e.g. Latin trap"/></div>
+            <div class="form-group"><label class="form-label">Where you're from</label><input class="form-input" id="ad-city" placeholder="e.g. Bronx, NY"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Similar artists <span style="color:#5a5a72;">(optional)</span></label><input class="form-input" id="ad-similar" placeholder="Leave blank and we'll find them"/></div>
+          <div class="ad-hint"><i class="ti ti-search"></i> We research you online using your handle to find where you're from, where your fans are and which artists your fans also listen to. That's who your ads will target.</div>
+
+          <div class="ad-step">2 · THE SONG</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Song title <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-title" placeholder="e.g. Me Llamas"/></div>
             <div class="form-group"><label class="form-label">Release</label>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                 <select class="form-select" id="ad-status" onchange="adRefresh()"><option value="out">Out now</option><option value="upcoming">Coming soon</option></select>
@@ -898,17 +913,28 @@ body{overflow:auto;height:auto;}
               </div>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group"><label class="form-label">Genre</label><input class="form-input" id="ad-genre" placeholder="e.g. Latin trap"/></div>
-            <div class="form-group"><label class="form-label">Your city / where your fans are</label><input class="form-input" id="ad-city" placeholder="e.g. Atlanta, Miami, Puerto Rico"/></div>
-          </div>
-          <div class="form-group"><label class="form-label">Similar artists</label><input class="form-input" id="ad-similar" placeholder="e.g. Eladio Carrión, Myke Towers, Rauw Alejandro"/></div>
           <div class="form-group"><label class="form-label">Hook line from the song</label><input class="form-input" id="ad-hook" placeholder="The line people will remember"/></div>
           <div class="form-group"><label class="form-label">What's the song about? <span style="color:#5a5a72;">(optional)</span></label><textarea class="form-textarea" id="ad-vibe" style="min-height:56px;" placeholder="Mood, story, who it's for"></textarea></div>
-          <div class="form-row">
-            <div class="form-group"><label class="form-label">Total budget ($)</label><input class="form-input" id="ad-budget" type="number" min="0" step="5" placeholder="e.g. 100"/></div>
+
+          <div class="ad-step">3 · YOUR GOAL</div>
+          <input type="hidden" id="ad-goal" value="streams"/>
+          <div class="ad-options" id="ad-goal-opts">
+            <button type="button" class="ad-opt active" data-v="streams" onclick="adSetGoal('streams')"><b>Streams</b><small>Send people to the song on Spotify, Apple Music and more</small></button>
+            <button type="button" class="ad-opt" data-v="presave" onclick="adSetGoal('presave')"><b>Pre-saves</b><small>Build up saves before release day</small></button>
+            <button type="button" class="ad-opt" data-v="followers" onclick="adSetGoal('followers')"><b>Followers</b><small>Grow your Instagram</small></button>
+            <button type="button" class="ad-opt" data-v="views" onclick="adSetGoal('views')"><b>Video views</b><small>Get your song in front of the most people</small></button>
+          </div>
+
+          <div class="ad-step">4 · YOUR BUDGET</div>
+          <input type="hidden" id="ad-budget-mode" value="recommend"/>
+          <div class="ad-options ad-budgets" id="ad-budget-opts"></div>
+          <div class="form-row" id="ad-custom-row" style="display:none;margin-top:8px;">
+            <div class="form-group"><label class="form-label">Total budget ($)</label><input class="form-input" id="ad-budget" type="number" min="5" step="5" placeholder="e.g. 150" oninput="adRenderBudgets()"/></div>
             <div class="form-group"><label class="form-label">For how many days</label><input class="form-input" id="ad-days" type="number" min="1" max="90" value="7"/></div>
           </div>
+          <div class="ad-hint" style="margin-top:8px;"><i class="ti ti-info-circle"></i> Reach numbers are ballparks for US audiences, not promises. Ads usually reach more people for the money in Latin America and fewer in big US cities.</div>
+
+          <div class="ad-step">5 · LINK & CREATIVE</div>
           <div class="form-group"><label class="form-label">Where the ad sends people</label><input class="form-input" id="ad-link" placeholder="Your smart link, pre-save link or release page"/></div>
 
           <div class="form-row">
@@ -932,7 +958,7 @@ body{overflow:auto;height:auto;}
           <div class="gen-title">Your Ad Kit</div>
           <div class="gen-sub">Creatives, copy, targeting and budget, ready for Ads Manager</div>
           <div class="result-placeholder" id="ad-placeholder"><i class="ti ti-speakerphone"></i><p>Fill in your song details, add your cover, and build your kit. Add your song too and you'll get a 15-second video ad.</p></div>
-          <div class="loading" id="ad-loading"><div class="loading-spinner"></div><div class="loading-text">Writing your ads and planning your budget...</div></div>
+          <div class="loading" id="ad-loading"><div class="loading-spinner"></div><div class="loading-text" id="ad-loading-text">Researching you and your fans...</div></div>
           <div class="error-msg" id="ad-error"></div>
           <div id="ad-result" style="display:none;"></div>
         </div>
@@ -1669,7 +1695,7 @@ function switchTool(tool, sidebarBtn) {
     if (!restored) { fcAddRow(); fcAddRow(); fcAddRow(); }
   }
   if(tool === 'check') renderChecklist();
-  if(tool === 'ads') adRefresh();
+  if(tool === 'ads') { adRenderBudgets(); adRefresh(); }
   if(sidebarBtn) {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
     sidebarBtn.classList.add('active');
@@ -2517,6 +2543,48 @@ function adGoalChanged() {
   if (g === 'presave') document.getElementById('ad-status').value = 'upcoming';
   adRefresh();
 }
+function adSetGoal(v) {
+  document.getElementById('ad-goal').value = v;
+  document.querySelectorAll('#ad-goal-opts .ad-opt').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  adGoalChanged();
+}
+
+// Ballpark reach: US music ads typically run ~$5-$12 per 1,000 impressions, ~1.5 views per person
+const AD_TIERS = [
+  { v: 'recommend', label: 'Recommend one for me', sub: 'We pick a budget from your goal and audience' },
+  { v: '25', amt: 25, days: 5, label: '$25 test', sub: '5 days · see which ad wins' },
+  { v: '50', amt: 50, days: 7, label: '$50 starter', sub: '7 days · a small push for one song' },
+  { v: '100', amt: 100, days: 7, label: '$100 push', sub: '7 days · most common for a single' },
+  { v: '250', amt: 250, days: 14, label: '$250 release campaign', sub: '14 days · a proper rollout' },
+  { v: 'custom', label: 'Custom amount', sub: 'Set your own budget and days' }
+];
+function adNice(n) { const p = Math.pow(10, Math.max(0, String(Math.round(n)).length - 2)); return (Math.round(n / p) * p).toLocaleString('en-US'); }
+function adReach(amount) {
+  if (!(amount > 0)) return '';
+  return 'roughly ' + adNice(amount / 12 * 1000 / 1.5) + '\u2013' + adNice(amount / 5 * 1000 / 1.5) + ' people';
+}
+function adRenderBudgets() {
+  const mode = document.getElementById('ad-budget-mode').value;
+  const box = document.getElementById('ad-budget-opts');
+  const custom = parseFloat((document.getElementById('ad-budget') || {}).value) || 0;
+  box.innerHTML = AD_TIERS.map(t => {
+    const reach = t.amt ? adReach(t.amt) : (t.v === 'custom' && custom ? adReach(custom) : '');
+    return '<button type="button" class="ad-opt' + (t.v === 'recommend' || t.v === 'custom' ? ' wide' : '') + (mode === t.v ? ' active' : '') + '" onclick="adSetBudget(\'' + t.v + '\')"><b>' + t.label + '</b><small>' + t.sub + (reach ? ' · <span class="reach">' + reach + '</span>' : '') + '</small></button>';
+  }).join('');
+  document.getElementById('ad-custom-row').style.display = mode === 'custom' ? 'grid' : 'none';
+}
+function adSetBudget(v) {
+  document.getElementById('ad-budget-mode').value = v;
+  adRenderBudgets();
+  if (v === 'custom') { const b = document.getElementById('ad-budget'); if (b) b.focus(); }
+}
+function adBudgetPayload() {
+  const mode = document.getElementById('ad-budget-mode').value;
+  if (mode === 'recommend') return { budgetMode: 'recommend' };
+  if (mode === 'custom') return { budgetMode: 'set', budget: document.getElementById('ad-budget').value, days: document.getElementById('ad-days').value };
+  const t = AD_TIERS.find(x => x.v === mode);
+  return { budgetMode: 'set', budget: t.amt, days: t.days };
+}
 
 function adLoadCover(files) {
   const f = files && files[0];
@@ -2772,6 +2840,22 @@ function renderAdKit(kit) {
   let h = '';
   if (kit.angle) h += '<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">THE ANGLE</div><div class="plan-detail" style="color:#e8e8f5;">' + adEsc(kit.angle) + '</div></div>';
 
+  // what we found
+  const ap = kit.artist_profile;
+  if (ap) {
+    const tags = arr => (arr || []).map(x => '<span>' + adEsc(x) + '</span>').join('');
+    h += '<div class="ad-sec"><div class="ad-sec-title">WHAT WE FOUND ABOUT YOU</div>' +
+      (ap.found ? '' : '<div class="ad-video-status" style="color:#ffcf6b;margin:0 0 8px;">We couldn\u2019t find much about you online yet, so targeting uses your genre and what you told us. Double-check the details below.</div>') +
+      '<div class="ad-profile">' +
+      '<div class="ad-kv"><b>FROM</b><span>' + adEsc(ap.from || '\u2014') + '</span></div>' +
+      '<div class="ad-kv"><b>GENRE</b><span>' + adEsc(ap.genre || '\u2014') + '</span></div>' +
+      '<div class="ad-kv"><b>WHERE YOUR FANS ARE</b><div class="ad-tags">' + tags(ap.fan_locations) + '</div></div>' +
+      '<div class="ad-kv"><b>AUDIENCE</b><span>' + adEsc(ap.audience || '\u2014') + '</span></div>' +
+      '<div class="ad-kv" style="grid-column:1/-1;"><b>FANS ALSO LISTEN TO</b><div class="ad-tags">' + tags(ap.similar_big) + '</div>' +
+      ((ap.similar_peers || []).length ? '<span style="display:block;margin-top:6px;color:var(--muted);font-size:11px;">Artists at your level: ' + adEsc(ap.similar_peers.join(', ')) + '</span>' : '') + '</div>' +
+      '</div></div>';
+  }
+
   // creatives
   h += '<div class="ad-sec"><div class="ad-sec-title">AD CREATIVES</div>';
   h += '<div class="ad-chips">' + (kit.on_image_text || []).map((t, i) => '<button type="button" class="ad-chip' + (i === 0 ? ' active' : '') + '" onclick="adPickText(' + i + ')">' + adEsc(t) + '</button>').join('') + '</div>';
@@ -2801,7 +2885,11 @@ function renderAdKit(kit) {
     '</div></div>';
 
   // budget
+  const brc = kit.budget_recommendation || {};
+  const total = parseFloat(brc.amount) || 0;
   h += '<div class="ad-sec"><div class="ad-sec-title">BUDGET PLAN' + (b.daily ? ' · ABOUT $' + adEsc(b.daily) + ' A DAY' : '') + '</div>' +
+    (total ? '<div class="plan-item" style="border-left:3px solid var(--neon);margin-bottom:6px;"><div class="plan-date">' + (brc.recommended ? 'RECOMMENDED FOR YOU: ' : 'YOUR BUDGET: ') + '$' + adEsc(total) + (brc.days ? ' OVER ' + adEsc(brc.days) + ' DAYS' : '') + '</div><div class="plan-detail" style="color:#e8e8f5;">' +
+      (brc.why ? adEsc(brc.why) + ' ' : '') + 'Ballpark reach: <strong style="color:var(--neon);">' + adReach(total) + '</strong>. Estimates, not promises.</div></div>' : '') +
     (b.summary ? '<div class="plan-item"><div class="plan-detail" style="color:#e8e8f5;">' + adEsc(b.summary) + '</div></div>' : '') +
     (b.phases || []).map(ph => '<div class="plan-item" style="margin-top:6px;"><div class="plan-date">' + adEsc(ph.days) + ' · ' + adEsc(ph.spend) + '</div><div class="plan-detail">' + adEsc(ph.action) + '</div></div>').join('') + '</div>';
 
@@ -2825,20 +2913,28 @@ async function generateAds() {
   const artist = document.getElementById('ad-artist').value.trim();
   const err = document.getElementById('ad-error');
   err.style.display = 'none';
+  const handle = document.getElementById('ad-handle').value.trim();
   if (!title || !artist) { err.textContent = 'Add your song title and artist name.'; err.style.display = 'block'; return; }
+  if (!handle) { err.textContent = 'Add your Instagram or TikTok handle so we research the right artist.'; err.style.display = 'block'; return; }
+  if (document.getElementById('ad-budget-mode').value === 'custom' && !(parseFloat(document.getElementById('ad-budget').value) > 0)) { err.textContent = 'Enter your custom budget, or pick one of the options.'; err.style.display = 'block'; return; }
   if (!adCoverImg) { err.textContent = 'Add your cover art so we can build your ad images.'; err.style.display = 'block'; return; }
   const v = id => document.getElementById(id).value.trim();
   const payload = {
-    platform: 'meta', title, artist,
+    platform: 'meta', title, artist, handle,
     goal: v('ad-goal'), status: v('ad-status'), releaseDate: v('ad-date'),
     genre: v('ad-genre'), city: v('ad-city'), similar: v('ad-similar'),
-    hookLine: v('ad-hook'), vibe: v('ad-vibe'),
-    budget: v('ad-budget'), days: v('ad-days'), link: v('ad-link')
+    hookLine: v('ad-hook'), vibe: v('ad-vibe'), link: v('ad-link'),
+    budgetMode: 'recommend'
   };
+  Object.assign(payload, adBudgetPayload());
   document.getElementById('ad-placeholder').style.display = 'none';
   document.getElementById('ad-result').style.display = 'none';
   document.getElementById('ad-loading').classList.add('active');
   document.getElementById('ad-btn').disabled = true;
+  const lt = document.getElementById('ad-loading-text');
+  const msgs = ['Researching you and your fans...', 'Finding artists your fans also listen to...', 'Writing your ads...', 'Planning your budget...'];
+  let mi = 0; lt.textContent = msgs[0];
+  const mt = setInterval(() => { mi = Math.min(mi + 1, msgs.length - 1); lt.textContent = msgs[mi]; }, 7000);
   try {
     const res = await fetch('/api/generate-ads', { method: 'POST', headers: await authHeaders(), body: JSON.stringify(payload) });
     const data = await res.json();
@@ -2856,7 +2952,9 @@ async function generateAds() {
       addRecent(null, name, 'Ad Kit', thumb);
       saveAsset('Ad Kit', name, thumb, Object.assign({}, data, { _inputs: payload }));
     }
+    clearInterval(mt);
   } catch (e) {
+    clearInterval(mt);
     document.getElementById('ad-loading').classList.remove('active');
     document.getElementById('ad-placeholder').style.display = 'flex';
     err.textContent = 'Something went wrong building your ad kit. Please try again.';
@@ -2871,7 +2969,10 @@ function openAdAsset(i) {
   switchTool('ads', null);
   const inp = a.data._inputs || {};
   const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
-  set('ad-title', inp.title); set('ad-artist', inp.artist); set('ad-goal', inp.goal); set('ad-status', inp.status);
+  set('ad-title', inp.title); set('ad-artist', inp.artist); set('ad-handle', inp.handle); set('ad-status', inp.status);
+  if (inp.goal) adSetGoal(inp.goal);
+  if (inp.budgetMode === 'recommend' || !inp.budget) adSetBudget('recommend');
+  else { const t = AD_TIERS.find(x => x.amt === parseFloat(inp.budget) && x.days === parseInt(inp.days, 10)); if (t) adSetBudget(t.v); else { adSetBudget('custom'); } }
   set('ad-date', inp.releaseDate); set('ad-genre', inp.genre); set('ad-city', inp.city); set('ad-similar', inp.similar);
   set('ad-hook', inp.hookLine); set('ad-vibe', inp.vibe); set('ad-budget', inp.budget); set('ad-days', inp.days); set('ad-link', inp.link);
   renderAdKit(a.data);
