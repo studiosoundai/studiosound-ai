@@ -35,6 +35,39 @@ const PLATFORMS = {
   },
 };
 
+const BUDGET_TIERS = [25, 50, 100, 250];
+const TIER_DAYS = { 25: 5, 50: 7, 100: 7, 250: 14 };
+
+// STAGE 1: live web research on the artist, so targeting is built on who they really are
+async function researchArtist(artist, handle, genre, city) {
+  try {
+    const r = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini-search-preview',
+        web_search_options: { search_context_size: 'medium' },
+        messages: [{
+          role: 'user',
+          content: `Research the independent music artist "${artist}"${handle ? ' (social handle: ' + handle + ')' : ''}${genre ? ', genre: ' + genre : ''}${city ? ', says they are from or based in: ' + city : ''}. Many artists share names, so use the handle to identify the exact person and only report findings about them.
+
+Report concise notes on:
+1. WHERE THEY'RE FROM: hometown or base city, and country.
+2. WHERE THEIR FANS ARE: cities or countries where their listeners or followers concentrate, if you can find any signal (Spotify "where people listen", tour dates, local press).
+3. GENRE: their genre and subgenre as fans would describe it.
+4. AUDIENCE SIZE: rough follower or monthly-listener counts you can actually find.
+5. SIMILAR ARTISTS: 5-8 well-known artists their fans also listen to (big enough to exist as Meta ad interests), plus 2-3 peer-level artists at a similar size.
+
+If you can't find the artist, say "ARTIST NOT FOUND ONLINE" and still give genre-appropriate similar artists for ${genre || 'their genre'}. Only report what you actually find; never invent numbers.`
+        }]
+      })
+    });
+    const d = await r.json();
+    if (d.error) { console.error('ads research error', d.error); return null; }
+    return d.choices && d.choices[0] && d.choices[0].message.content;
+  } catch (e) { console.error('ads research failed', e); return null; }
+}
+
 const clip = (s, n) => {
   s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s;
@@ -62,18 +95,30 @@ export default async function handler(req, res) {
     artist,
     genre: clip(body.genre, 60),
     city: clip(body.city, 120),
+    handle: clip(body.handle, 80),
     similar: clip(body.similar, 300),
     goal: GOALS[body.goal] ? body.goal : 'streams',
     status: body.status === 'upcoming' ? 'upcoming' : 'out',
     releaseDate: clip(body.releaseDate, 20),
     hookLine: clip(body.hookLine, 200),
     vibe: clip(body.vibe, 400),
+    budgetMode: body.budgetMode === 'recommend' ? 'recommend' : 'set',
     budget: Math.max(0, Math.min(100000, parseFloat(body.budget) || 0)),
     days: Math.max(1, Math.min(90, parseInt(body.days, 10) || 7)),
     link: clip(body.link, 300),
   };
 
+  if (inputs.budgetMode === 'set' && !inputs.budget) inputs.budgetMode = 'recommend';
+
   try {
+    const research = await researchArtist(inputs.artist, inputs.handle, inputs.genre, inputs.city);
+    const researchBlock = research
+      ? `LIVE WEB RESEARCH ON THIS ARTIST (gathered just now; build targeting on this, and prefer it over guesses):\n${research}`
+      : 'No web research available. Use the details given and genre-level targeting.';
+    const budgetLine = inputs.budgetMode === 'recommend'
+      ? `Budget: the artist wants you to RECOMMEND one. Pick exactly one of ${BUDGET_TIERS.map(x => '$' + x).join(', ')} based on their goal and audience size (new artists with small followings: $25-$50 test first; established local artists or a single with momentum: $100; a full release push with an existing fan base: $250). Days: ${BUDGET_TIERS.map(x => '$' + x + ' = ' + TIER_DAYS[x] + ' days').join(', ')}.`
+      : `Budget: $${inputs.budget} over ${inputs.days} days (the artist set this; plan around it exactly).`;
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -84,7 +129,7 @@ export default async function handler(req, res) {
         model: 'gpt-4o-mini',
         response_format: { type: 'json_object' },
         temperature: 0.8,
-        max_tokens: 2200,
+        max_tokens: 2600,
         messages: [
           {
             role: 'system',
@@ -100,16 +145,29 @@ RELEASE
 - Song: "${inputs.title}" by ${inputs.artist}
 - Status: ${inputs.status === 'upcoming' ? 'coming soon' + (inputs.releaseDate ? ' (release date ' + inputs.releaseDate + ')' : '') : 'out now'}
 - Genre: ${inputs.genre || 'not specified'}
-- Artist's city / where fans are: ${inputs.city || 'not specified'}
-- Similar artists: ${inputs.similar || 'not specified'}
+- Artist's social handle: ${inputs.handle || 'not provided'}
+- Artist says they're from / fans are in: ${inputs.city || 'not specified (use the research)'}
+- Similar artists the artist named: ${inputs.similar || 'none (use the research)'}
 - Hook line from the song: ${inputs.hookLine || 'not provided'}
 - Vibe / what the song is about: ${inputs.vibe || 'not provided'}
 - Goal: ${GOALS[inputs.goal]}
-- Total budget: ${inputs.budget ? '$' + inputs.budget : 'not set — recommend a starter budget'} over ${inputs.days} days
+- ${budgetLine}
 - Landing link: ${inputs.link || 'not provided'}
+
+${researchBlock}
 
 Return ONLY JSON in exactly this shape:
 {
+  "artist_profile": {
+    "found": true,
+    "from": "hometown or base city, country (or what the artist told you)",
+    "fan_locations": ["2-5 cities or countries where their listeners are, from the research or best inference"],
+    "genre": "genre / subgenre",
+    "audience": "one line on audience size from the research, or 'Not enough public data found'",
+    "similar_big": ["4-6 well-known similar artists usable as Meta interests"],
+    "similar_peers": ["2-3 peer-level similar artists, or empty"]
+  },
+  "budget_recommendation": { "amount": 50, "days": 7, "why": "one sentence on why this budget fits this artist and goal" },
   "angle": "one sentence: the creative angle of this campaign and why it fits the song",
   "on_image_text": ["3 options, max 6 words each, for text on the ad image/video"],
   "primary_text": ["3 variations with different angles (hook-first, story, social-proof-free FOMO), each max 300 chars, hook in first 125 chars"],
@@ -158,8 +216,23 @@ Return ONLY JSON in exactly this shape:
     if (!META_CTAS[kit.cta]) kit.cta = inputs.goal === 'presave' ? 'SIGN_UP' : (inputs.goal === 'views' ? 'WATCH_MORE' : 'LISTEN_NOW');
     kit.cta_label = META_CTAS[kit.cta];
     kit.platform = platform;
+    // budget: snap recommendations to our tiers, echo the artist's own choice otherwise
+    const br = kit.budget_recommendation || {};
+    if (inputs.budgetMode === 'recommend') {
+      let amt = parseFloat(br.amount) || 50;
+      amt = BUDGET_TIERS.reduce((a, b) => Math.abs(b - amt) < Math.abs(a - amt) ? b : a);
+      kit.budget_recommendation = { amount: amt, days: TIER_DAYS[amt], why: clip(br.why, 240), recommended: true };
+    } else {
+      kit.budget_recommendation = { amount: inputs.budget, days: inputs.days, why: '', recommended: false };
+    }
+    const ap = kit.artist_profile || {};
+    kit.artist_profile = {
+      found: !!research && !/ARTIST NOT FOUND ONLINE/i.test(research) && ap.found !== false,
+      from: clip(ap.from, 120), genre: clip(ap.genre, 80), audience: clip(ap.audience, 200),
+      fan_locations: arr(ap.fan_locations, 5, 60), similar_big: arr(ap.similar_big, 6, 60), similar_peers: arr(ap.similar_peers, 3, 60)
+    };
 
-    logGeneration(gate.userId, 'ads', inputs, kit);
+    logGeneration(gate.userId, 'ads', Object.assign({}, inputs, { research }), kit);
     return res.status(200).json(kit);
   } catch (err) {
     console.error('Ads error:', err);
