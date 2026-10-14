@@ -130,6 +130,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
 .tool{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;transition:border-color 0.15s;}
 .tool:hover{border-color:rgba(0,255,209,0.55);}
 .tool.wide{grid-column:span 2;}
+.tool.free-wide{grid-column:1/-1;}
 .tool-media{aspect-ratio:3/1;overflow:hidden;background:var(--surface2);border-bottom:1px solid var(--line);}
 .tool.wide .tool-media{aspect-ratio:auto;height:200px;}
 .tool-media img{width:100%;height:100%;object-fit:cover;}
@@ -286,11 +287,15 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
           <div class="dropdown-name">Merch Mockups</div>
           <div class="dropdown-desc">Your art on real products, with costs</div>
         </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('ads')">
+          <div class="dropdown-name">Ad Generator <span class="tag">NEW</span></div>
+          <div class="dropdown-desc">Meta ads for your song, ready to run</div>
+        </a>
         <a class="dropdown-item" href="tools.html">
           <div class="dropdown-name">Free tools <span class="tag">NO ACCOUNT</span></div>
           <div class="dropdown-desc">Resizer, MP3 to WAV, trimmer, split sheet, metadata, checklist</div>
         </a>
-        <div class="dropdown-note">In development: song generator, AI video clips and the ad manager.</div>
+        <div class="dropdown-note">In development: song generator, AI video clips, TikTok and Google ads.</div>
       </div></div>
     </div>
     <a class="navlink" href="features.html">Features</a>
@@ -480,7 +485,20 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
           <p>Write a verse from scratch or finish the hook you're stuck on, in English, Spanish or Spanglish.</p>
         </div>
       </a>
-      <div class="tool wide">
+      <a class="tool wide" href="signup.html" onclick="return go('ads')">
+        <div class="tool-media"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ad-generator.png.png" alt="Ad images for Feed, Square and Reels made by the Ad Generator" loading="lazy"/></div>
+        <div class="tool-body">
+          <h3>Ad Generator <span class="pill new">NEW</span></h3>
+          <p>A ready-to-run Meta ad kit for your song.</p>
+          <ul class="tool-points">
+            <li>Ad images for Feed, Reels and Stories, plus a 15-second video</li>
+            <li>Three versions of the copy to test against each other</li>
+            <li>Who to target and how to split your budget</li>
+            <li>Step-by-step setup in Meta Ads Manager</li>
+          </ul>
+        </div>
+      </a>
+      <div class="tool wide free-wide">
         <div class="tool-body">
           <h3>Free tools <span class="pill free">NO ACCOUNT NEEDED</span></h3>
           <p>The small jobs every release needs. They run in your browser, so nothing is uploaded and nobody asks you to sign up.</p>
@@ -528,6 +546,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
           <li><i class="ti ti-check"></i>3 cover generations, 2 versions each</li>
           <li><i class="ti ti-check"></i>1 release plan a month</li>
           <li><i class="ti ti-check"></i>2 merch mockups</li>
+          <li><i class="ti ti-check"></i>2 Meta ad kits</li>
           <li><i class="ti ti-check"></i>3 Lyric Writer sessions</li>
           <li><i class="ti ti-check"></i>Lyric videos with 2 auto-lyric syncs</li>
           <li><i class="ti ti-check"></i>All free tools (these work without an account too)</li>
@@ -543,6 +562,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
           <li><i class="ti ti-check"></i>100 cover generations, 2 versions each</li>
           <li><i class="ti ti-check"></i>Unlimited release plans</li>
           <li><i class="ti ti-check"></i>50 merch mockups</li>
+          <li><i class="ti ti-check"></i>30 Meta ad kits</li>
           <li><i class="ti ti-check"></i>200 Lyric Writer sessions</li>
           <li><i class="ti ti-check"></i>30 auto-lyric syncs</li>
         </ul>
@@ -557,6 +577,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
           <li><i class="ti ti-check"></i>300 cover generations, 2 versions each</li>
           <li><i class="ti ti-check"></i>Unlimited release plans</li>
           <li><i class="ti ti-check"></i>100 merch mockups</li>
+          <li><i class="ti ti-check"></i>100 Meta ad kits</li>
           <li><i class="ti ti-check"></i>500 Lyric Writer sessions</li>
           <li><i class="ti ti-check"></i>100 auto-lyric syncs</li>
           <li><i class="ti ti-check"></i>Priority support</li>
@@ -564,7 +585,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
       </div>
     </div>
     <div class="price-foot">
-      <span>Limits reset every month. Song generation, AI video clips and the ad manager are in development and not part of any plan yet.</span>
+      <span>Limits reset every month. Song generation, AI video clips and TikTok and Google ads are in development and not part of any plan yet.</span>
       <a href="pricing.html">Compare plans and yearly pricing</a>
     </div>
   </div>
@@ -638,6 +659,7 @@ h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-
       <a class="footer-link" href="signup.html" onclick="return go('writer')">Lyric Writer</a>
       <a class="footer-link" href="signup.html" onclick="return go('lyric')">Lyric Videos</a>
       <a class="footer-link" href="signup.html" onclick="return go('merch')">Merch Mockups</a>
+      <a class="footer-link" href="signup.html" onclick="return go('ads')">Ad Generator</a>
       <a class="footer-link" href="tools.html">Free tools</a>
     </div>
     <div>

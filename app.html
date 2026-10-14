@@ -187,6 +187,40 @@ body{overflow:auto;height:auto;}
 #fc-reports span{max-width:100%;overflow:hidden;text-overflow:ellipsis;}
 .dual-results.show{grid-template-columns:1fr;}
 }
+
+/* ===== AD GENERATOR ===== */
+.ad-platforms{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.ad-plat{display:inline-flex;align-items:center;gap:6px;border:0.5px solid var(--border);background:#0f0f1a;color:var(--muted);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;cursor:default;}
+.ad-plat.active{border-color:var(--neon);color:var(--neon);background:#00FFD112;}
+.ad-plat small{font-size:9px;font-weight:800;letter-spacing:0.05em;color:#5a5a72;}
+.ad-drop{border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;}
+.ad-drop:hover{border-color:var(--neon);}
+.ad-drop b{display:block;color:#fff;font-size:12px;}
+.ad-drop small{color:var(--muted);font-size:10px;}
+.ad-sec{margin-top:16px;}
+.ad-sec-title{color:var(--neon);font-size:10px;font-weight:800;letter-spacing:0.08em;margin-bottom:8px;}
+.ad-formats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:end;}
+.ad-format canvas{width:100%;height:auto;display:block;border-radius:8px;border:0.5px solid var(--border);background:#0f0f1a;}
+.ad-format .lbl{color:var(--muted);font-size:10px;font-weight:700;margin:6px 0 4px;}
+.ad-format button{width:100%;}
+.ad-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.ad-chip{border:0.5px solid var(--border);background:#0f0f1a;color:#e0e0f0;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.ad-chip.active{border-color:var(--neon);color:var(--neon);}
+.ad-copy{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;gap:10px;align-items:flex-start;}
+.ad-copy p{flex:1;color:#e8e8f5;font-size:12px;line-height:1.55;margin:0;white-space:pre-wrap;}
+.ad-copy .meta{color:#5a5a72;font-size:9px;font-weight:700;margin-top:4px;}
+.ad-copy button{background:transparent;border:0.5px solid var(--border);color:#fff;border-radius:6px;padding:5px 9px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;flex-shrink:0;}
+.ad-copy button:hover{border-color:var(--neon);}
+.ad-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ad-kv{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;}
+.ad-kv b{display:block;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:0.06em;margin-bottom:4px;}
+.ad-kv span{color:#e8e8f5;font-size:12px;line-height:1.5;}
+.ad-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.ad-tags span{background:#00FFD110;border:0.5px solid #00FFD140;color:#cffff5;border-radius:12px;padding:3px 9px;font-size:11px;}
+.ad-steps{margin:0;padding-left:18px;color:#e0e0f0;font-size:12px;line-height:1.6;}
+.ad-steps li{margin-bottom:5px;}
+.ad-video-status{color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5;}
+@media(max-width:768px){ .ad-formats{grid-template-columns:1fr 1fr;} .ad-grid2{grid-template-columns:1fr;} }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -222,7 +256,7 @@ body{overflow:auto;height:auto;}
   </div>
   <div class="sidebar-section">
     <div class="sidebar-label">MARKETING</div>
-    <button class="sidebar-item"><i class="ti ti-chart-bar"></i> AI Ad Manager <span class="soon">SOON</span></button>
+    <button class="sidebar-item" onclick="switchTool('ads',this)"><i class="ti ti-speakerphone"></i> Ad Generator <span class="badge">NEW</span></button>
     <button class="sidebar-item"><i class="ti ti-scissors"></i> Video Clipping <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-calendar"></i> Auto Posting <span class="soon">SOON</span></button>
   </div>
@@ -308,11 +342,11 @@ body{overflow:auto;height:auto;}
         <div class="tool-name">Merch Mockups</div>
         <div class="tool-desc">See your art on real products instantly</div>
       </div>
-      <div class="tool-card">
-        <div class="tool-badge soon">SOON</div>
-        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/music-video-generator.png.png" alt="Song Generator"/></div>
-        <div class="tool-name">AI Song Generator</div>
-        <div class="tool-desc">Turn your ideas into full tracks</div>
+      <div class="tool-card" onclick="switchTool('ads',null);setToolActive(this)">
+        <div class="tool-badge live">NEW</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ad-generator.png.png" alt="Ad Generator"/></div>
+        <div class="tool-name">Ad Generator</div>
+        <div class="tool-desc">Meta ads for your song, ready to run</div>
       </div>
     </div>
 
@@ -832,6 +866,79 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
+
+    <!-- AD GENERATOR -->
+    <div id="tool-ads" class="hidden">
+      <div class="generator" style="align-items:start;">
+        <div class="gen-panel">
+          <div class="gen-title">📣 Ad Generator</div>
+          <div class="gen-sub">Get a ready-to-run ad kit for your song: ad images and a 15-second video, copy to test, who to target, how to split your budget, and step-by-step setup.</div>
+          <div class="ad-platforms">
+            <span class="ad-plat active"><i class="ti ti-brand-meta"></i> Meta · Instagram & Facebook</span>
+            <span class="ad-plat"><i class="ti ti-brand-tiktok"></i> TikTok <small>NEXT</small></span>
+            <span class="ad-plat"><i class="ti ti-brand-google"></i> Google & YouTube <small>AFTER</small></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Song title <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-title" placeholder="e.g. Me Llamas"/></div>
+            <div class="form-group"><label class="form-label">Artist name <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-artist" placeholder="As it appears on Spotify"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Goal</label>
+              <select class="form-select" id="ad-goal" onchange="adGoalChanged()">
+                <option value="streams">Streams: send people to the song</option>
+                <option value="presave">Pre-saves before release</option>
+                <option value="followers">Instagram followers</option>
+                <option value="views">Video views (awareness)</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Release</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <select class="form-select" id="ad-status" onchange="adRefresh()"><option value="out">Out now</option><option value="upcoming">Coming soon</option></select>
+                <input class="form-input" id="ad-date" type="date" title="Release date"/>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Genre</label><input class="form-input" id="ad-genre" placeholder="e.g. Latin trap"/></div>
+            <div class="form-group"><label class="form-label">Your city / where your fans are</label><input class="form-input" id="ad-city" placeholder="e.g. Atlanta, Miami, Puerto Rico"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Similar artists</label><input class="form-input" id="ad-similar" placeholder="e.g. Eladio Carrión, Myke Towers, Rauw Alejandro"/></div>
+          <div class="form-group"><label class="form-label">Hook line from the song</label><input class="form-input" id="ad-hook" placeholder="The line people will remember"/></div>
+          <div class="form-group"><label class="form-label">What's the song about? <span style="color:#5a5a72;">(optional)</span></label><textarea class="form-textarea" id="ad-vibe" style="min-height:56px;" placeholder="Mood, story, who it's for"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Total budget ($)</label><input class="form-input" id="ad-budget" type="number" min="0" step="5" placeholder="e.g. 100"/></div>
+            <div class="form-group"><label class="form-label">For how many days</label><input class="form-input" id="ad-days" type="number" min="1" max="90" value="7"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Where the ad sends people</label><input class="form-input" id="ad-link" placeholder="Your smart link, pre-save link or release page"/></div>
+
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Cover art <span style="color:var(--neon);">*</span></label>
+              <div class="ad-drop" onclick="document.getElementById('ad-cover').click()"><b id="ad-cover-label">Upload your cover</b><small>JPG or PNG, square works best</small></div>
+              <input type="file" id="ad-cover" accept="image/*" style="display:none;" onchange="adLoadCover(this.files)"/>
+              <a id="ad-use-latest" onclick="adUseLatestCover()" style="display:none;color:var(--neon);font-size:11px;font-weight:700;cursor:pointer;margin-top:6px;">Use the cover I just made →</a>
+            </div>
+            <div class="form-group"><label class="form-label">Song (for the video ad)</label>
+              <div class="ad-drop" onclick="document.getElementById('ad-audio').click()"><b id="ad-audio-label">Upload your song</b><small>MP3, WAV or M4A</small></div>
+              <input type="file" id="ad-audio" accept="audio/*,.mp3,.m4a,.wav,.aac" style="display:none;" onchange="adLoadAudio(this.files)"/>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><span style="color:var(--muted);font-size:11px;">Hook starts at</span><input class="form-input" id="ad-start" type="number" min="0" step="0.5" value="0" style="width:80px;padding:6px 8px;"/><span style="color:var(--muted);font-size:11px;">sec</span></div>
+            </div>
+          </div>
+
+          <button class="gen-btn" id="ad-btn" onclick="generateAds()"><i class="ti ti-speakerphone"></i> Build my Meta ad kit</button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">You run the ads in your own Meta Ads Manager, with your own card. StudioSound never touches your ad account. Results depend on your song, budget and targeting.</div>
+        </div>
+
+        <div class="gen-panel">
+          <div class="gen-title">Your Ad Kit</div>
+          <div class="gen-sub">Creatives, copy, targeting and budget, ready for Ads Manager</div>
+          <div class="result-placeholder" id="ad-placeholder"><i class="ti ti-speakerphone"></i><p>Fill in your song details, add your cover, and build your kit. Add your song too and you'll get a 15-second video ad.</p></div>
+          <div class="loading" id="ad-loading"><div class="loading-spinner"></div><div class="loading-text">Writing your ads and planning your budget...</div></div>
+          <div class="error-msg" id="ad-error"></div>
+          <div id="ad-result" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- EARNINGS FORECAST -->
     <div id="tool-forecast" class="hidden">
       <div class="generator" style="align-items:start;">
@@ -1295,7 +1402,8 @@ function applyDeepLink() {
     '#writer':'writer', '#lyrics':'writer', '#lyric':'lyric', '#video':'lyric',
     '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split',
     '#forecast':'forecast', '#earnings':'forecast',
-    '#meta':'meta', '#metadata':'meta', '#check':'check', '#checklist':'check'
+    '#meta':'meta', '#metadata':'meta', '#check':'check', '#checklist':'check',
+    '#ads':'ads', '#ad':'ads', '#adgenerator':'ads'
   };
   let tool = map[(location.hash || '').toLowerCase()];
   // New artists who clicked a tool on the homepage signed up first: send them to that tool once.
@@ -1362,13 +1470,14 @@ async function showAssetsPanel() {
   }
   grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb" ${a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
+      <div class="recent-thumb" ${a.tool==='Ad Kit' && a.data && a.data.primary_text ? `onclick="openAdAsset(${i})" style="cursor:pointer;" title="Open this ad kit"` : a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
         <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
         <div class="recent-name">${a.name || a.tool}</div>
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
+        ${a.tool==='Ad Kit' && a.data && a.data.primary_text ? `<a onclick="openAdAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Ad Kit →</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
         ${a.tool==='Forecast' && a.data && a.data.scenarios ? `<a onclick="openForecastAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Forecast →</a>` : ''}
         ${a.data && a.data.videoUrl ? `<a onclick="playVideoAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">▶ Play</a> <a href="${lvDownloadUrl(a.data.videoUrl, a.name)}" download style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download Video ↓</a>` : ''}
@@ -1525,7 +1634,7 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -1560,6 +1669,7 @@ function switchTool(tool, sidebarBtn) {
     if (!restored) { fcAddRow(); fcAddRow(); fcAddRow(); }
   }
   if(tool === 'check') renderChecklist();
+  if(tool === 'ads') adRefresh();
   if(sidebarBtn) {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
     sidebarBtn.classList.add('active');
@@ -2390,6 +2500,382 @@ function printChecklist() {
     '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
   w.document.close(); w.focus();
   setTimeout(() => w.print(), 400);
+}
+
+// ====== AD GENERATOR (Meta first; TikTok and Google plug into the same kit) ======
+const AD_FORMATS = {
+  feed:   { w: 1080, h: 1350, label: 'Feed · 4:5' },
+  story:  { w: 1080, h: 1920, label: 'Reels & Stories · 9:16' },
+  square: { w: 1080, h: 1080, label: 'Square · 1:1' }
+};
+let adCoverImg = null, adAudioBuf = null, adKit = null, adText = '', adRecording = false;
+
+function adEsc(t) { return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function adGoalChanged() {
+  const g = document.getElementById('ad-goal').value;
+  if (g === 'presave') document.getElementById('ad-status').value = 'upcoming';
+  adRefresh();
+}
+
+function adLoadCover(files) {
+  const f = files && files[0];
+  if (!f) return;
+  const img = new Image();
+  img.onload = () => { adCoverImg = img; document.getElementById('ad-cover-label').textContent = '✓ ' + f.name; adRefresh(); };
+  img.src = URL.createObjectURL(f);
+}
+
+function adUseLatestCover() {
+  if (!selectedArtUrl) return;
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => { adCoverImg = img; document.getElementById('ad-cover-label').textContent = '✓ Your latest cover'; adRefresh(); };
+  img.onerror = () => { document.getElementById('ad-cover-label').textContent = 'Couldn’t load it. Download your cover and upload it here.'; };
+  img.src = selectedArtUrl;
+}
+
+async function adLoadAudio(files) {
+  const f = files && files[0];
+  if (!f) return;
+  const lbl = document.getElementById('ad-audio-label');
+  lbl.textContent = 'Reading ' + f.name + '...';
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    adAudioBuf = await ac.decodeAudioData(await f.arrayBuffer());
+    if (ac.close) ac.close();
+    lbl.textContent = '✓ ' + f.name + ' (' + Math.round(adAudioBuf.duration) + 's)';
+    adRefresh();
+  } catch (e) { adAudioBuf = null; lbl.textContent = 'Couldn’t read that file. Try an MP3 or WAV.'; }
+}
+
+// soft blurred background that works in every browser (no ctx.filter needed)
+function adBlurBg(ctx, img, W, H) {
+  const s = document.createElement('canvas'); s.width = 32; s.height = 32;
+  const sc = s.getContext('2d');
+  sc.drawImage(img, 0, 0, 32, 32);
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  const side = Math.max(W, H) * 1.15;
+  ctx.drawImage(s, (W - side) / 2, (H - side) / 2, side, side);
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgba(5,5,10,0.55)'); g.addColorStop(0.5, 'rgba(5,5,10,0.30)'); g.addColorStop(1, 'rgba(5,5,10,0.80)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+
+function adWrap(ctx, text, maxW) {
+  const words = String(text).split(/\s+/).filter(Boolean), lines = [];
+  let line = '';
+  words.forEach(w => {
+    const t = line ? line + ' ' + w : w;
+    if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t;
+  });
+  if (line) lines.push(line);
+  return lines.slice(0, 3);
+}
+
+function adCtaLine() {
+  const goal = document.getElementById('ad-goal').value;
+  const upcoming = document.getElementById('ad-status').value === 'upcoming';
+  if (goal === 'presave' || upcoming) return 'PRE-SAVE NOW';
+  if (goal === 'followers') return 'FOLLOW FOR MORE';
+  return 'OUT NOW EVERYWHERE';
+}
+
+// draw one creative. p = 0..1 animation progress (video), or null for a still
+function adDraw(canvas, fmt, p) {
+  const F = AD_FORMATS[fmt], W = F.w, H = F.h;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, W, H);
+  if (!adCoverImg) return;
+  adBlurBg(ctx, adCoverImg, W, H);
+  const artist = document.getElementById('ad-artist').value.trim();
+  const title = document.getElementById('ad-title').value.trim();
+  const anim = p != null;
+  // layout: Stories keep text out of the top ~14% and bottom ~20% (Meta safe zones)
+  const isStory = fmt === 'story';
+  const topText = isStory ? H * 0.15 : H * 0.06;
+  const textFont = Math.round(W * (fmt === 'square' ? 0.060 : 0.068));
+  ctx.font = '800 ' + textFont + 'px Sora, Arial, sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  const lines = adWrap(ctx, (adText || title).toUpperCase(), W * 0.86);
+  const lineH = textFont * 1.12;
+  const textBlockH = lines.length * lineH;
+  const coverY = Math.round(topText + textBlockH + W * 0.045);
+  // everything under the cover (artist, title, status line) needs ~0.23W; Stories keep the bottom 20% clear
+  const bottomLimit = isStory ? H * 0.80 : H - W * 0.035;
+  const coverSize = Math.round(Math.max(W * 0.34, Math.min(W * (isStory ? 0.78 : 0.70), bottomLimit - coverY - W * 0.235)));
+  const cx = (W - coverSize) / 2;
+  // cover with a slow push-in on video
+  const zoom = anim ? 1 + 0.06 * p : 1;
+  const cs = coverSize * zoom, cxz = (W - cs) / 2, cyz = coverY - (cs - coverSize) / 2;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 18;
+  const side = Math.min(adCoverImg.width, adCoverImg.height);
+  ctx.drawImage(adCoverImg, (adCoverImg.width - side) / 2, (adCoverImg.height - side) / 2, side, side, cxz, cyz, cs, cs);
+  ctx.restore();
+  // hook text (fades/slides in on video)
+  const tIn = anim ? Math.min(1, p / 0.08) : 1;
+  ctx.globalAlpha = tIn;
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 18;
+  lines.forEach((ln, i) => ctx.fillText(ln, W / 2, topText + i * lineH + (1 - tIn) * 30));
+  ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  // artist — title
+  const metaY = coverY + coverSize + W * 0.05;
+  ctx.font = '700 ' + Math.round(W * 0.042) + 'px Sora, Arial, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(artist ? artist : '', W / 2, metaY);
+  ctx.font = '500 ' + Math.round(W * 0.036) + 'px Sora, Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.fillText(title ? '“' + title + '”' : '', W / 2, metaY + W * 0.056);
+  // status line (plain text with a rule, not a fake button)
+  const ctaA = anim ? Math.max(0, Math.min(1, (p - 0.55) / 0.1)) : 1;
+  if (ctaA > 0) {
+    ctx.globalAlpha = ctaA;
+    const ctaY = metaY + W * 0.13;
+    ctx.font = '800 ' + Math.round(W * 0.034) + 'px Sora, Arial, sans-serif';
+    ctx.fillStyle = '#00FFD1';
+    const cta = adCtaLine();
+    ctx.fillText(cta, W / 2, ctaY);
+    const tw = ctx.measureText(cta).width;
+    ctx.fillRect((W - tw) / 2, ctaY + W * 0.045, tw, Math.max(3, W * 0.004));
+    ctx.globalAlpha = 1;
+  }
+}
+
+function adRefresh() {
+  const latest = document.getElementById('ad-use-latest');
+  if (latest) latest.style.display = (selectedArtUrl && !adCoverImg) ? 'inline-block' : 'none';
+  if (!adKit) return;
+  Object.keys(AD_FORMATS).forEach(f => { const c = document.getElementById('ad-cv-' + f); if (c) adDraw(c, f, null); });
+  const vb = document.getElementById('ad-video-btn');
+  if (vb) vb.disabled = !adAudioBuf || !adCoverImg || adRecording;
+  const vs = document.getElementById('ad-video-status');
+  if (vs && !adRecording && !window._adVideoUrl) vs.textContent = adAudioBuf ? 'Records 15 seconds of your song from the hook start, in real time.' : 'Upload your song on the left to make the video ad.';
+}
+
+function adPickText(i) {
+  if (!adKit) return;
+  adText = adKit.on_image_text[i] || '';
+  document.querySelectorAll('.ad-chip').forEach((c, j) => c.classList.toggle('active', j === i));
+  const inp = document.getElementById('ad-text-edit'); if (inp) inp.value = adText;
+  adRefresh();
+}
+
+function adCopyText(btn, text) {
+  const done = () => { const o = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => btn.textContent = o, 1200); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
+  else { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); done(); }
+}
+
+function adDownload(fmt) {
+  const c = document.getElementById('ad-cv-' + fmt);
+  if (!c || !adCoverImg) return;
+  try {
+    c.toBlob(b => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = adFileBase() + '-' + fmt + '-' + AD_FORMATS[fmt].w + 'x' + AD_FORMATS[fmt].h + '.jpg';
+      document.body.appendChild(a); a.click(); a.remove();
+    }, 'image/jpeg', 0.92);
+  } catch (e) { alert('This cover can’t be exported. Download your cover first, then upload it here.'); }
+}
+
+function adFileBase() {
+  const t = (document.getElementById('ad-title').value.trim() || 'ad').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-');
+  return 'studiosound-ad-' + (t || 'ad');
+}
+
+async function adRecordVideo() {
+  if (!adAudioBuf || !adCoverImg || adRecording) return;
+  const mime = lvPickMime();
+  if (!window.MediaRecorder) { document.getElementById('ad-video-status').textContent = 'This browser can’t record video. Try Chrome or Safari.'; return; }
+  adRecording = true; window._adVideoUrl = null; adRefresh();
+  const status = document.getElementById('ad-video-status');
+  const c = document.getElementById('ad-cv-video');
+  c.style.display = 'block';
+  const DUR = 15;
+  const start = Math.max(0, Math.min(adAudioBuf.duration - 1, parseFloat(document.getElementById('ad-start').value) || 0));
+  const playDur = Math.min(DUR, adAudioBuf.duration - start);
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  const src = ac.createBufferSource(); src.buffer = adAudioBuf;
+  const gain = ac.createGain(); src.connect(gain);
+  const dest = ac.createMediaStreamDestination(); gain.connect(dest); gain.connect(ac.destination);
+  adDraw(c, 'story', 0);
+  const stream = c.captureStream(30);
+  dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+  const rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 4000000 } : undefined);
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = (ev) => {
+    const type = (ev && ev.target && ev.target.mimeType) || mime || 'video/webm';
+    const isMp4 = /mp4/i.test(type);
+    const blob = new Blob(chunks, { type: isMp4 ? 'video/mp4' : 'video/webm' });
+    window._adVideoUrl = URL.createObjectURL(blob);
+    window._adVideoName = adFileBase() + '-reels-15s.' + (isMp4 ? 'mp4' : 'webm');
+    window._adVideoFile = null;
+    try { window._adVideoFile = new File([blob], window._adVideoName, { type: blob.type }); } catch (e) {}
+    adRecording = false;
+    try { ac.close(); } catch (e) {}
+    let canShare = false;
+    try { canShare = !!(window._adVideoFile && navigator.canShare && navigator.canShare({ files: [window._adVideoFile] })); } catch (e) {}
+    status.innerHTML = '✓ Your 15-second ' + (isMp4 ? 'MP4' : 'WebM') + ' is ready (' + (blob.size / 1048576).toFixed(1) + ' MB). ' +
+      '<a onclick="adSaveVideo()" style="color:var(--neon);font-weight:700;cursor:pointer;">Download video</a>' +
+      (canShare ? ' · <a onclick="adShareVideo()" style="color:var(--neon);font-weight:700;cursor:pointer;">Save to Photos / Share</a>' : '') +
+      (isMp4 ? '' : '<br>This browser records WebM. Meta accepts it, but for an MP4 use Chrome or Safari.');
+    adSaveVideo();
+    adRefresh();
+  };
+  // keep the screen awake while it films
+  let wake = null;
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(w => wake = w).catch(() => {}); } catch (e) {}
+  rec.start();
+  const t0 = ac.currentTime;
+  src.start(0, start, playDur);
+  // fade the song out over the last second
+  gain.gain.setValueAtTime(1, t0 + Math.max(0, playDur - 1));
+  gain.gain.linearRampToValueAtTime(0.0001, t0 + playDur);
+  const tick = () => {
+    const el = ac.currentTime - t0;
+    const p = Math.min(1, el / playDur);
+    adDraw(c, 'story', p);
+    status.textContent = '🎬 Filming your video ad in real time: ' + Math.max(0, Math.ceil(playDur - el)) + 's left. Keep this screen open.';
+    if (el < playDur && adRecording) requestAnimationFrame(tick);
+  };
+  tick();
+  src.onended = () => { setTimeout(() => { if (rec.state === 'recording') rec.stop(); if (wake) { try { wake.release(); } catch (e) {} } }, 150); };
+}
+
+function adSaveVideo() {
+  if (!window._adVideoUrl) return;
+  const a = document.createElement('a');
+  a.href = window._adVideoUrl; a.download = window._adVideoName || 'studiosound-ad.mp4';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function adShareVideo() {
+  if (!window._adVideoFile) return adSaveVideo();
+  try { await navigator.share({ files: [window._adVideoFile], title: window._adVideoName }); }
+  catch (e) { if (e && e.name !== 'AbortError') adSaveVideo(); }
+}
+
+function adCopyBlock(label, items, max) {
+  return '<div class="ad-sec"><div class="ad-sec-title">' + label + '</div>' +
+    items.map(t => '<div class="ad-copy"><div style="flex:1;"><p>' + adEsc(t) + '</p><div class="meta">' + String(t).length + ' / ' + max + ' characters</div></div>' +
+      '<button type="button" onclick="adCopyText(this, ' + adEsc(JSON.stringify(t)) + ')">Copy</button></div>').join('') + '</div>';
+}
+
+function renderAdKit(kit) {
+  adKit = kit;
+  adText = (kit.on_image_text && kit.on_image_text[0]) || '';
+  const a = kit.audience || {}, b = kit.budget_plan || {};
+  let h = '';
+  if (kit.angle) h += '<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">THE ANGLE</div><div class="plan-detail" style="color:#e8e8f5;">' + adEsc(kit.angle) + '</div></div>';
+
+  // creatives
+  h += '<div class="ad-sec"><div class="ad-sec-title">AD CREATIVES</div>';
+  h += '<div class="ad-chips">' + (kit.on_image_text || []).map((t, i) => '<button type="button" class="ad-chip' + (i === 0 ? ' active' : '') + '" onclick="adPickText(' + i + ')">' + adEsc(t) + '</button>').join('') + '</div>';
+  h += '<input class="form-input" id="ad-text-edit" value="' + adEsc(adText) + '" oninput="adText=this.value;adRefresh()" placeholder="Text on the ad" style="margin-bottom:10px;"/>';
+  h += '<div class="ad-formats">' + Object.keys(AD_FORMATS).map(f =>
+    '<div class="ad-format"><canvas id="ad-cv-' + f + '"></canvas><div class="lbl">' + AD_FORMATS[f].label + '</div>' +
+    '<button type="button" class="result-btn" onclick="adDownload(\'' + f + '\')"><i class="ti ti-download"></i> JPG</button></div>').join('') + '</div>';
+  h += '<div style="margin-top:12px;"><canvas id="ad-cv-video" style="display:none;width:160px;border-radius:8px;border:0.5px solid var(--border);margin-bottom:8px;"></canvas>' +
+    '<button type="button" class="result-btn primary" id="ad-video-btn" onclick="adRecordVideo()" style="width:100%;"><i class="ti ti-movie"></i> Make the 15-second Reels video</button>' +
+    '<div class="ad-video-status" id="ad-video-status"></div></div>';
+  if (!adCoverImg) h += '<div class="ad-video-status" style="color:#ffcf6b;">Upload your cover on the left to see your ad images.</div>';
+  h += '</div>';
+
+  // copy
+  h += adCopyBlock('PRIMARY TEXT · test all 3', kit.primary_text || [], 300);
+  h += adCopyBlock('HEADLINES', kit.headlines || [], 40);
+  h += adCopyBlock('DESCRIPTIONS', kit.descriptions || [], 30);
+
+  // setup
+  h += '<div class="ad-sec"><div class="ad-sec-title">CAMPAIGN SETUP</div><div class="ad-grid2">' +
+    '<div class="ad-kv"><b>OBJECTIVE</b><span>' + adEsc(kit.objective) + '</span></div>' +
+    '<div class="ad-kv"><b>BUTTON</b><span>' + adEsc(kit.cta_label || kit.cta) + '</span></div>' +
+    '<div class="ad-kv"><b>LOCATIONS</b><div class="ad-tags">' + (a.locations || []).map(x => '<span>' + adEsc(x) + '</span>').join('') + '</div></div>' +
+    '<div class="ad-kv"><b>AGE</b><span>' + adEsc((a.age_min || 18) + ' to ' + (a.age_max || 34)) + '</span></div>' +
+    '<div class="ad-kv" style="grid-column:1/-1;"><b>INTERESTS</b><div class="ad-tags">' + (a.interests || []).map(x => '<span>' + adEsc(x) + '</span>').join('') + '</div>' + (a.note ? '<span style="display:block;margin-top:6px;color:var(--muted);font-size:11px;">' + adEsc(a.note) + '</span>' : '') + '</div>' +
+    '<div class="ad-kv" style="grid-column:1/-1;"><b>PLACEMENTS</b><span>' + adEsc(kit.placements) + '</span></div>' +
+    '</div></div>';
+
+  // budget
+  h += '<div class="ad-sec"><div class="ad-sec-title">BUDGET PLAN' + (b.daily ? ' · ABOUT $' + adEsc(b.daily) + ' A DAY' : '') + '</div>' +
+    (b.summary ? '<div class="plan-item"><div class="plan-detail" style="color:#e8e8f5;">' + adEsc(b.summary) + '</div></div>' : '') +
+    (b.phases || []).map(ph => '<div class="plan-item" style="margin-top:6px;"><div class="plan-date">' + adEsc(ph.days) + ' · ' + adEsc(ph.spend) + '</div><div class="plan-detail">' + adEsc(ph.action) + '</div></div>').join('') + '</div>';
+
+  // steps
+  h += '<div class="ad-sec"><div class="ad-sec-title">SET IT UP IN META ADS MANAGER</div><ol class="ad-steps">' + (kit.setup_steps || []).map(s => '<li>' + adEsc(String(s).replace(/^\d+[\.\)]\s*/, '')) + '</li>').join('') + '</ol>' +
+    '<a href="https://adsmanager.facebook.com/" target="_blank" rel="noopener" class="result-btn" style="margin-top:8px;text-decoration:none;"><i class="ti ti-external-link"></i> Open Meta Ads Manager</a></div>';
+
+  // watch
+  h += '<div class="ad-sec"><div class="ad-sec-title">AFTER 48 HOURS, CHECK</div>' + (kit.what_to_watch || []).map(w => '<div class="plan-item" style="margin-top:6px;"><div class="plan-detail">' + adEsc(w) + '</div></div>').join('') +
+    (kit.landing_tip ? '<div class="plan-item" style="margin-top:6px;border-left:3px solid #FFC83D;"><div class="plan-date" style="color:#FFC83D;">WHERE TO SEND PEOPLE</div><div class="plan-detail">' + adEsc(kit.landing_tip) + '</div></div>' : '') + '</div>';
+
+  h += '<div style="color:#5a5a72;font-size:10px;margin-top:12px;line-height:1.6;">Ad performance isn’t guaranteed. Start small, keep what works, cut what doesn’t.</div>';
+  const r = document.getElementById('ad-result');
+  r.innerHTML = h; r.style.display = 'block';
+  document.getElementById('ad-placeholder').style.display = 'none';
+  adRefresh();
+}
+
+async function generateAds() {
+  const title = document.getElementById('ad-title').value.trim();
+  const artist = document.getElementById('ad-artist').value.trim();
+  const err = document.getElementById('ad-error');
+  err.style.display = 'none';
+  if (!title || !artist) { err.textContent = 'Add your song title and artist name.'; err.style.display = 'block'; return; }
+  if (!adCoverImg) { err.textContent = 'Add your cover art so we can build your ad images.'; err.style.display = 'block'; return; }
+  const v = id => document.getElementById(id).value.trim();
+  const payload = {
+    platform: 'meta', title, artist,
+    goal: v('ad-goal'), status: v('ad-status'), releaseDate: v('ad-date'),
+    genre: v('ad-genre'), city: v('ad-city'), similar: v('ad-similar'),
+    hookLine: v('ad-hook'), vibe: v('ad-vibe'),
+    budget: v('ad-budget'), days: v('ad-days'), link: v('ad-link')
+  };
+  document.getElementById('ad-placeholder').style.display = 'none';
+  document.getElementById('ad-result').style.display = 'none';
+  document.getElementById('ad-loading').classList.add('active');
+  document.getElementById('ad-btn').disabled = true;
+  try {
+    const res = await fetch('/api/generate-ads', { method: 'POST', headers: await authHeaders(), body: JSON.stringify(payload) });
+    const data = await res.json();
+    document.getElementById('ad-loading').classList.remove('active');
+    if (data.error === 'limit_reached') {
+      document.getElementById('ad-placeholder').style.display = 'flex';
+      showLimit('ad-error', 'ad kits');
+    } else if (data.error || !data.primary_text) {
+      throw new Error(data.error || 'No kit returned');
+    } else {
+      renderAdKit(data);
+      const name = title + ' — Meta ads';
+      let thumb = null;
+      try { const t = document.createElement('canvas'); adDraw(t, 'feed', null); const s = document.createElement('canvas'); s.width = 540; s.height = 675; s.getContext('2d').drawImage(t, 0, 0, 540, 675); thumb = s.toDataURL('image/png'); } catch (e) {}
+      addRecent(null, name, 'Ad Kit', thumb);
+      saveAsset('Ad Kit', name, thumb, Object.assign({}, data, { _inputs: payload }));
+    }
+  } catch (e) {
+    document.getElementById('ad-loading').classList.remove('active');
+    document.getElementById('ad-placeholder').style.display = 'flex';
+    err.textContent = 'Something went wrong building your ad kit. Please try again.';
+    err.style.display = 'block';
+  }
+  document.getElementById('ad-btn').disabled = false;
+}
+
+function openAdAsset(i) {
+  const a = assetsCache[i];
+  if (!a || !a.data) return;
+  switchTool('ads', null);
+  const inp = a.data._inputs || {};
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+  set('ad-title', inp.title); set('ad-artist', inp.artist); set('ad-goal', inp.goal); set('ad-status', inp.status);
+  set('ad-date', inp.releaseDate); set('ad-genre', inp.genre); set('ad-city', inp.city); set('ad-similar', inp.similar);
+  set('ad-hook', inp.hookLine); set('ad-vibe', inp.vibe); set('ad-budget', inp.budget); set('ad-days', inp.days); set('ad-link', inp.link);
+  renderAdKit(a.data);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ====== NEXT-STEP FLOW (keeps artists moving tool to tool) ======
