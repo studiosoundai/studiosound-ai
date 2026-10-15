@@ -36,6 +36,11 @@ const PLATFORMS = {
 };
 
 const BUDGET_TIERS = [25, 50, 100, 250];
+const LANGS = {
+  en: 'English',
+  es: 'Spanish (natural, the way Latin artists talk to fans on Instagram; not formal or translated-sounding)',
+  spanglish: 'Spanglish (mix Spanish and English naturally inside sentences, the way bilingual Latin fans actually talk)',
+};
 const TIER_DAYS = { 25: 5, 50: 7, 100: 7, 250: 14 };
 
 // STAGE 1: live web research on the artist, so targeting is built on who they really are
@@ -106,6 +111,7 @@ export default async function handler(req, res) {
     budget: Math.max(0, Math.min(100000, parseFloat(body.budget) || 0)),
     days: Math.max(1, Math.min(90, parseInt(body.days, 10) || 7)),
     link: clip(body.link, 300),
+    lang: LANGS[body.lang] ? body.lang : 'en',
   };
 
   if (inputs.budgetMode === 'set' && !inputs.budget) inputs.budgetMode = 'recommend';
@@ -153,6 +159,7 @@ RELEASE
 - Goal: ${GOALS[inputs.goal]}
 - ${budgetLine}
 - Landing link: ${inputs.link || 'not provided'}
+- AD COPY LANGUAGE: write on_image_text, primary_text, headlines and descriptions in ${LANGS[inputs.lang]}. Write everything else (angle, objective, audience, budget, setup_steps, what_to_watch, landing_tip) in English so the artist can follow the setup.
 
 ${researchBlock}
 
