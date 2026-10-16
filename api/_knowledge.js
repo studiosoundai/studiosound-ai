@@ -1,0 +1,129 @@
+// api/_knowledge.js
+// What the Studio Assistant knows. Files starting with "_" are private helpers,
+// not public routes. UPDATE THIS FILE IN THE SAME UPLOAD WHENEVER A FEATURE SHIPS
+// OR A PRICE/LIMIT CHANGES, so the assistant always matches the site.
+// Never put costs, margins, API details, other artists' data or unannounced plans here.
+
+export const KNOWLEDGE = {
+  platform: `STUDIOSOUND.AI
+StudioSound.ai is an all-in-one studio for independent artists: forecast earnings, plan the release, make the cover, cut the lyric video, make merch mockups and ads. Brand line: "Create. Release. Drop like a major." Built by the team behind Stop One Distribution.
+Everything an artist makes saves to My Assets (left sidebar) to reopen, replay or re-download.
+Artists own everything they make: covers, plans, lyrics, videos and ads are theirs to release, print and promote.`,
+
+  pricing: `PLANS AND LIMITS (limits reset on the 1st of every month; unused ones don't roll over)
+- Free, $0, no card: Earnings Forecast preview, 3 cover generations (2 versions each), 1 release plan a month, 3 Lyric Writer sessions, lyric videos with 2 auto-lyric syncs, 2 merch mockups, 2 Meta ad kits, all free tools.
+- Pro, $9.99/month, or $6.99/month billed yearly ($83.88/year): 3 full forecasts a month (five-year paths, analyst read, PDF and image export), 100 cover generations on the highest-quality cover engine, unlimited release plans, 200 Lyric Writer sessions, 30 auto-lyric syncs, 50 merch mockups, 30 Meta ad kits.
+- Premium, $24.99/month, or $16.99/month billed yearly ($203.88/year): 10 full forecasts a month, 300 cover generations, unlimited release plans, 500 Lyric Writer sessions, 100 auto-lyric syncs, 100 merch mockups, 100 Meta ad kits, priority support.
+- Upgrade at studiosound.ai/pricing. Cancel, switch plans or change monthly/yearly from Settings (billing portal); access stays until the end of the paid period.
+- Hit a limit: that tool pauses until the 1st, or upgrade to keep going. Other tools keep working.`,
+
+  forecast: `EARNINGS FORECAST
+- Upload the royalty report you download from your distributor (DistroKid, TuneCore, Stop One, CD Baby, or any CSV/TSV/Excel with dates and amounts), or type monthly totals by hand, oldest month first.
+- Best practice: upload the exact file the distributor gave you. Converted CSVs often round the cents away.
+- Several reports stack automatically (e.g. one per month). Each report shows as a chip with an ✕ to remove it. "Start fresh" clears everything.
+- Months before the catalog went live are trimmed, and a latest month that looks incomplete (statements lag) is set aside; type it back in if it's real.
+- Needs at least 2 months to read a trend.
+- Non-USD statements (AUD, EUR, GBP, CAD, NZD) are detected; forecast in USD at today's rate or keep your own currency with the toggle.
+- Three paths over 1, 3 and 5 years: coasting (if nothing changes), working the plan (steady releases; the "releases planned this year" field bends this curve), and the plan plus one viral moment.
+- Free preview (also public at studiosound.ai/forecast, no account): recent monthly average, trend, months read, next 12 months if nothing changes. Pro/Premium add the five-year paths, the gap, an analyst read with next moves, milestones, watch-outs, PDF and image export.
+- The report is read in the browser and never uploaded; only monthly totals, genre and city are sent for the full report.
+- It's scenarios from the artist's own history, not a guarantee and not financial advice.`,
+
+  cover: `COVER ART GENERATOR
+- Two versions every generation: Version A hyper-photorealistic, Version B stylized/artistic. Pick the one that sounds like the record.
+- Options: song title on the artwork (toggle), artist name on the cover, color palette, Parental Advisory sticker, up to 3 photos of people (the AI puts you on the cover), up to 3 reference covers for inspiration (it makes an original in that spirit, not a copy; artists are responsible for rights to what they upload).
+- Downloads are exactly 3000×3000 JPEG, the Spotify/Apple/distributor spec. No watermark.
+- Pro and Premium use the highest-quality engine (best at rendering text).`,
+
+  plan: `RELEASE PLANNER
+- Enter project name, artist name exactly as on Spotify, social handle (so it researches the right artist), release date, genre, career stage, city, budget and details.
+- It researches the artist and their lane on the live web, then builds a personalized 30-day rollout: strategy summary, artist snapshot, budget breakdown, tactics working right now in their genre, and a dated timeline from 4 weeks out to 1 week after.
+- Export as PDF. Plans save to My Assets and reopen there.`,
+
+  lyrics: `AI LYRIC WRITER
+- Writes from a description in English, Spanish or Spanglish: full song, verse + hook, or hook only; explicit or clean.
+- One click sends the lyrics into the Lyric Video Creator.`,
+
+  lyricvideo: `LYRIC VIDEO CREATOR (BETA)
+- Drop the song and lyrics. Auto-Lyrics pulls the lyrics timed to the vocal (counts as an auto-lyric sync), or tap along to sync by hand.
+- Vertical 9:16 for TikTok, Reels and Shorts. Font styles, colors, background motion with a speed control, cover as background. Full song or 15s/30s hook clips.
+- Rendering happens in real time on the device, so a 3-minute song takes about 3 minutes; keep the screen open.
+- Saves as MP4 in Chrome, Safari and Edge (Firefox can only record WebM). On phones, "Save to Photos / Share" then "Save Video" puts it in the camera roll. "Download again" is there after export.
+- A cloud copy saves to My Assets when the file is under about 45 MB (15s and 30s clips always fit); otherwise the file on the device is the copy.`,
+
+  merch: `MERCH MOCKUPS
+- Upload art and see it on real AI-generated product mockups: tees, hoodies, hats, phone cases, posters, tote bags, sweatpants, jackets (8 products, 8 colors).
+- Shows a cost breakdown: print-on-demand vs bulk, plus a suggested retail range.`,
+
+  ads: `AD GENERATOR (META: INSTAGRAM AND FACEBOOK)
+- Builds a ready-to-run Meta ad kit. The artist runs it in their own Meta Ads Manager with their own card; StudioSound never touches their ad account.
+- Steps: about you (artist name, Instagram/TikTok handle, genre, where you're from, similar artists optional), the song (title, out now or coming soon, release date, copy language, hook line, what it's about), goal (Streams, Pre-saves, Followers, Video views), budget, link, cover, song, and a video or photo of the artist (recommended).
+- It researches the artist online with the handle to find where they're from, where fans are and which bigger artists their fans also listen to; that becomes the targeting. If nothing is found, it targets by genre and says so.
+- Budget options: "Recommend one for me", $25 test (5 days), $50 starter (7 days), $100 push (7 days), $250 release campaign (14 days), or custom. Ballpark US reach: $25 ≈ 1,400–3,300 people, $50 ≈ 2,800–6,700, $100 ≈ 5,600–13,000, $250 ≈ 14,000–33,000. These are estimates, not promises; Latin America is usually cheaper, big US cities pricier.
+- The kit: what we found about you, ad images for Feed 4:5, Reels/Stories 9:16 and Square 1:1, a 15-second Reels video (needs the song uploaded; with artist footage the artist fills the frame), 3 primary texts, 3 headlines, 2 descriptions, objective, button, locations, age, interests, placements, budget plan by phase, step-by-step Ads Manager setup, what to check after 48 hours, and where to send people.
+- Copy language: English, Spanish or Spanglish. Font, text color and accent color are changeable; "Match my cover" picks the accent from the cover.
+- Test-then-scale: run all 3 ads for about 3 days, then put the rest of the budget behind the winner. Don't change anything for the first 48 hours.
+- Send ads to a release page or smart link with a Meta pixel rather than straight to Spotify, so clicks can be tracked and retargeted.
+- TikTok ad kits are next, then Google/YouTube. An ad manager that launches ads for you is in development.`,
+
+  freetools: `FREE TOOLS (work without an account at studiosound.ai/tools, and inside the Studio)
+- Cover Resizer (studiosound.ai/cover-resizer): any image to a 3000×3000 JPEG (or 1080×1080 for Instagram); non-square images are center-cropped; warns if the image is too small.
+- MP3 to WAV (studiosound.ai/mp3-to-wav): 16-bit / 44.1 kHz WAV for distributors. It can't restore quality an MP3 already lost; export WAV from the session when possible.
+- Audio Trimmer (studiosound.ai/audio-trimmer): cut a clip with a waveform, 15s/30s buttons, download WAV. TikTok sounds work best at 15–30s starting on the hook.
+- Split Sheet (studiosound.ai/split-sheet): names, roles, PRO, shares that total 100%, printable for everyone to sign. A record of an agreement, not legal advice.
+- Metadata Formatter (studiosound.ai/metadata-formatter): flags common rejections ("feat." in the title, all-caps, missing legal songwriter names, bad ISRC, missing ℗/© line, release date under 4 weeks away) and formats copy-paste metadata.
+- Release Checklist (studiosound.ai/release-checklist): 4 weeks out to the week after, with real dates when a release date is added; ticks save on the device; printable.
+- All of them run in the browser; files are never uploaded.`,
+
+  distribution: `STOP ONE DISTRIBUTION
+- StudioSound is built by the team behind Stop One Distribution, an independent distributor based in Atlanta.
+- Distribution to Spotify, Apple Music, Amazon, Tidal, Deezer, TikTok, Instagram and 150+ platforms.
+- Artists keep their rights: "we distribute, you own" — masters stay with the artist.
+- Real people: an experienced independent distribution team, not a faceless upload portal. Applications are reviewed by a human and answered within 48 hours.
+- What Stop One artists get:
+  - YouTube Content ID: their music is registered so uploads that use it are identified and monetized for them.
+  - Royalty splitting: earnings can be split automatically with producers, writers and other collaborators, so nobody has to chase payments.
+  - Monthly payments.
+  - Playlist pitching: editorial and independent playlist pitching.
+  - Royalty advances: artists can get advances against future earnings to fund things like marketing, radio or tour support. Eligibility and amounts depend on the artist; the team reviews each case.
+  - Discounted studio sessions at the Stop One studio in Atlanta.
+- Apply at studiosound.ai/distribution (tell the team about yourself and your music).
+- The assistant doesn't have fees, payout dates, split percentages, advance amounts or anything about an existing Stop One account: for those, point them to the distribution page or support. Never quote numbers for these.`,
+
+  support: `SUPPORT AND COMMUNITY
+- Bugs, billing, account or login problems: email support@studiosound.ai.
+- Community: Discord at discord.gg/SN6uRybqK.
+- In development (not part of any plan yet, no dates promised): song generator, AI video clips, TikTok and Google ad kits, an ad manager that launches ads for you.`,
+
+  playbook: `INDEPENDENT RELEASE PLAYBOOK (give this kind of advice, adapted to the artist)
+- Upload to the distributor at least 4 weeks before release; pitch in Spotify for Artists as soon as the song appears (at least 7 days ahead, earlier is better).
+- Before uploading: WAV master, 3000×3000 cover, clean metadata with legal songwriter names, signed split sheet if anyone else worked on the song.
+- Content: batch-film 10–15 short clips in one session; post 1–2 a day hook-first; the first second decides the scroll. Sped-up/slowed versions and fan pages help on TikTok.
+- Pre-save link 3 weeks out; announce the date everywhere and update bios/link-in-bio.
+- Release week: confirm it's live everywhere, post everywhere, message day-ones personally, repost every share.
+- Weeks 2–4 after release are when most indie songs grow; don't go quiet. Check Spotify for Artists data and double down on what's working.
+- Release cadence matters: catalog decays without new music; steady releases (e.g. every 6–8 weeks) bend the earnings curve.
+- Ads: start with a small test, keep the winner, cut the rest; ads that show the artist usually beat cover-only ads.
+- Splits: agree the day the song is made, use legal names, everyone signs and keeps a copy.`,
+};
+
+export const TOOL_NAMES = {
+  forecast: 'Earnings Forecast', art: 'Cover Art Generator', plan: 'Release Planner', merch: 'Merch Mockups',
+  writer: 'AI Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', resize: 'Cover Resizer',
+  audio: 'MP3 to WAV', trim: 'Audio Trimmer', split: 'Split Sheet', meta: 'Metadata Formatter',
+  check: 'Release Checklist', assets: 'My Assets', settings: 'Settings',
+};
+
+const TOOL_SECTION = {
+  forecast: 'forecast', art: 'cover', plan: 'plan', merch: 'merch', writer: 'lyrics', lyric: 'lyricvideo',
+  ads: 'ads', resize: 'freetools', audio: 'freetools', trim: 'freetools', split: 'freetools', meta: 'freetools', check: 'freetools',
+};
+
+// Everything is small enough to send in full today; the open tool's section goes first.
+// When this file grows, switch this to keyword retrieval so only matching sections are sent.
+export function buildKnowledge(tool) {
+  const first = TOOL_SECTION[tool];
+  const keys = Object.keys(KNOWLEDGE);
+  const ordered = first ? [first, ...keys.filter(k => k !== first)] : keys;
+  return ordered.map(k => KNOWLEDGE[k]).join('\n\n');
+}
