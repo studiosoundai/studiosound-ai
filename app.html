@@ -1670,6 +1670,7 @@ function closeSidebar() {
 }
 
 function switchTool(tool, sidebarBtn) {
+  window.__ssTool = tool;
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
@@ -4558,5 +4559,140 @@ function loadRecent(index) {
   }
 }
 </script>
+<!-- STUDIO ASSISTANT -->
+<style>
+#sa-btn{position:fixed;right:20px;bottom:20px;z-index:9000;display:none;align-items:center;gap:8px;background:var(--neon);color:#05050a;border:none;border-radius:999px;padding:12px 18px;font-family:'Sora',sans-serif;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 10px 40px rgba(0,255,209,0.25);}
+#sa-btn i{font-size:18px;}
+#sa-btn.show{display:inline-flex;}
+#sa-panel{position:fixed;right:20px;bottom:20px;z-index:9001;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 40px);background:#0b0b14;border:0.5px solid #2a2a3e;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,0.7);display:none;flex-direction:column;overflow:hidden;font-family:'Sora',sans-serif;}
+#sa-panel.open{display:flex;}
+.sa-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:0.5px solid #1f1f2e;}
+.sa-head b{color:#fff;font-size:14px;}
+.sa-head .sa-tag{font-size:9px;font-weight:800;color:var(--neon);border:0.5px solid var(--neon);border-radius:20px;padding:2px 7px;}
+.sa-head small{display:block;color:var(--muted);font-size:10px;margin-top:1px;}
+.sa-head .sa-x{margin-left:auto;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 6px;}
+.sa-head .sa-new{background:none;border:0.5px solid #2a2a3e;color:var(--muted);font-size:10px;font-weight:700;border-radius:8px;padding:5px 8px;cursor:pointer;font-family:inherit;}
+.sa-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.sa-m{max-width:88%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;}
+.sa-m.bot{align-self:flex-start;background:#14141f;color:#e8e8f5;border:0.5px solid #1f1f2e;border-top-left-radius:4px;}
+.sa-m.me{align-self:flex-end;background:#00FFD1;color:#05050a;font-weight:600;border-top-right-radius:4px;}
+.sa-m.err{align-self:stretch;background:rgba(255,107,107,0.08);border:0.5px solid rgba(255,107,107,0.5);color:#ffb3b3;font-size:12px;}
+.sa-m a{color:var(--neon);}
+.sa-m.me a{color:#05050a;}
+.sa-typing{align-self:flex-start;color:var(--muted);font-size:12px;padding:4px 2px;}
+.sa-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.sa-chip{background:#0f0f1a;border:0.5px solid #2a2a3e;color:#e0e0f0;border-radius:20px;padding:6px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-align:left;}
+.sa-chip:hover{border-color:var(--neon);}
+.sa-input{display:flex;gap:8px;padding:12px;border-top:0.5px solid #1f1f2e;align-items:flex-end;}
+.sa-input textarea{flex:1;resize:none;background:#0f0f1a;border:0.5px solid #2a2a3e;border-radius:10px;padding:10px 12px;color:#fff;font-family:inherit;font-size:13px;max-height:120px;min-height:40px;outline:none;}
+.sa-input textarea:focus{border-color:var(--neon);}
+.sa-input button{background:var(--neon);color:#05050a;border:none;border-radius:10px;width:42px;height:40px;cursor:pointer;font-size:18px;flex-shrink:0;}
+.sa-input button:disabled{opacity:0.4;cursor:default;}
+.sa-foot{color:#5a5a72;font-size:9.5px;text-align:center;padding:0 12px 10px;}
+@media(max-width:600px){
+  #sa-btn{right:14px;bottom:14px;padding:12px 14px;}
+  #sa-btn span{display:none;}
+  #sa-panel{right:0;bottom:0;width:100vw;max-width:100vw;height:100%;max-height:100%;border-radius:0;}
+}
+</style>
+<button id="sa-btn" type="button" onclick="saOpen()" aria-label="Ask the Studio Assistant"><i class="ti ti-message-circle"></i><span>Ask the Studio</span></button>
+<div id="sa-panel" role="dialog" aria-label="Studio Assistant">
+  <div class="sa-head">
+    <div><b>Studio Assistant</b> <span class="sa-tag">BETA</span><small>Ask about any tool, or get feedback on your release</small></div>
+    <button class="sa-new" type="button" onclick="saReset()" title="Start a new chat">New</button>
+    <button class="sa-x" type="button" onclick="saClose()" aria-label="Close">×</button>
+  </div>
+  <div class="sa-msgs" id="sa-msgs" aria-live="polite"></div>
+  <div class="sa-input">
+    <textarea id="sa-text" rows="1" placeholder="Ask anything about your release..." onkeydown="saKey(event)" oninput="saGrow(this)"></textarea>
+    <button id="sa-send" type="button" onclick="saSend()" aria-label="Send"><i class="ti ti-send"></i></button>
+  </div>
+  <div class="sa-foot">AI can make mistakes. For billing or account help: support@studiosound.ai</div>
+</div>
+<script>
+(function () {
+  const KEY = 'ssChat';
+  let msgs = [];
+  let busy = false;
+  try { msgs = JSON.parse(sessionStorage.getItem(KEY) || '[]'); } catch (e) { msgs = []; }
+  const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(msgs.slice(-30))); } catch (e) {} };
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const linkify = t => esc(t)
+    .replace(/\b(studiosound\.ai\/[\w\-\/#]*)/g, '<a href="https://$1" target="_blank" rel="noopener">$1</a>')
+    .replace(/\b([\w.+-]+@studiosound\.ai)\b/g, '<a href="mailto:$1">$1</a>')
+    .replace(/\*\*(.+?)\*\*/g, '$1');
+
+  const SUGGEST = {
+    _: ['What should I do first in the Studio?', 'How do I plan a release?', 'What do I get with Pro?'],
+    forecast: ['Which file should I upload?', 'Why is my latest month missing?', 'How do I grow my curve?'],
+    art: ['How do I put myself on the cover?', 'Which version should I pick?', 'Does it meet Spotify specs?'],
+    plan: ['What budget should I put in?', 'How far ahead should I plan?', 'Review my release idea'],
+    lyric: ['How do I save the video to my phone?', 'Auto-lyrics got a line wrong', 'Best clip length for TikTok?'],
+    writer: ['Help me finish my hook', 'Make this verse hit harder', 'Write a Spanglish chorus idea'],
+    merch: ['What should I sell first?', 'Print-on-demand or bulk?', 'What price should I charge?'],
+    ads: ['Which budget should I pick?', 'Which goal is right for me?', 'How do I set this up in Meta?'],
+    resize: ['What size does Spotify want?', 'Why was my cover rejected?', 'What should I do next?'],
+    audio: ['Does DistroKid accept MP3?', '16-bit or 24-bit?', 'What should I do next?'],
+    trim: ['Best TikTok sound length?', 'Where should my clip start?', 'What should I do next?'],
+    split: ['How do splits usually work?', 'What is a PRO?', 'What should I do next?'],
+    meta: ['Why do uploads get rejected?', 'Do I need an ISRC?', 'What goes in the ℗ line?'],
+    check: ['What matters most this week?', 'How do I pitch to Spotify?', 'What should I post on release day?']
+  };
+
+  function render() {
+    const box = document.getElementById('sa-msgs');
+    let h = '';
+    if (!msgs.length) {
+      h += '<div class="sa-m bot">Hey! I’m your Studio Assistant. Ask me how any tool works, paste lyrics or a release idea for honest feedback, or ask what to do next with your music.</div>';
+      const list = SUGGEST[window.__ssTool] || SUGGEST._;
+      h += '<div class="sa-chips">' + list.map(q => '<button type="button" class="sa-chip" data-q="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>';
+    }
+    msgs.forEach(m => { h += '<div class="sa-m ' + (m.role === 'user' ? 'me' : (m.err ? 'err' : 'bot')) + '">' + linkify(m.content) + '</div>'; });
+    if (busy) h += '<div class="sa-typing">Studio Assistant is typing…</div>';
+    box.innerHTML = h;
+    box.querySelectorAll('.sa-chip').forEach(b => b.onclick = () => { document.getElementById('sa-text').value = b.dataset.q; saSend(); });
+    box.scrollTop = box.scrollHeight;
+    document.getElementById('sa-send').disabled = busy;
+  }
+
+  window.saOpen = () => { document.getElementById('sa-panel').classList.add('open'); document.getElementById('sa-btn').classList.remove('show'); render(); setTimeout(() => document.getElementById('sa-text').focus(), 50); };
+  window.saClose = () => { document.getElementById('sa-panel').classList.remove('open'); document.getElementById('sa-btn').classList.add('show'); };
+  window.saReset = () => { msgs = []; save(); render(); };
+  window.saGrow = el => { el.style.height = 'auto'; el.style.height = Math.min(120, el.scrollHeight) + 'px'; };
+  window.saKey = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saSend(); } };
+
+  window.saSend = async () => {
+    const ta = document.getElementById('sa-text');
+    const text = ta.value.trim();
+    if (!text || busy) return;
+    ta.value = ''; saGrow(ta);
+    msgs.push({ role: 'user', content: text }); busy = true; save(); render();
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST', headers: await authHeaders(),
+        body: JSON.stringify({ tool: window.__ssTool || null, messages: msgs.filter(m => !m.err).slice(-12).map(m => ({ role: m.role, content: m.content })) })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.error === 'limit_reached') msgs.push({ role: 'assistant', err: true, content: 'You’ve used all your assistant messages for this month. They reset on the 1st, or upgrade at studiosound.ai/pricing.' });
+      else if (data.reply) msgs.push({ role: 'assistant', content: data.reply });
+      else msgs.push({ role: 'assistant', err: true, content: data.error && data.error !== 'not_enabled' ? data.error : 'Something went wrong. Try again in a moment.' });
+    } catch (e) {
+      msgs.push({ role: 'assistant', err: true, content: 'Couldn’t reach the assistant. Check your connection and try again.' });
+    }
+    busy = false; save(); render();
+  };
+
+  // Only show the assistant to accounts it's switched on for (founders first, then everyone)
+  window.saInit = async () => {
+    try {
+      const res = await fetch('/api/chat', { headers: await authHeaders() });
+      const data = await res.json();
+      if (data && data.enabled) document.getElementById('sa-btn').classList.add('show');
+    } catch (e) {}
+  };
+  saInit();
+})();
+</script>
+
 </body>
 </html>
