@@ -77,18 +77,21 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 
   distribution: `STOP ONE DISTRIBUTION
 - StudioSound is built by the team behind Stop One Distribution, an independent distributor based in Atlanta.
-- Distribution to Spotify, Apple Music, Amazon, Tidal, Deezer, TikTok, Instagram and 150+ platforms.
-- Artists keep their rights: "we distribute, you own" — masters stay with the artist.
-- Real people: an experienced independent distribution team, not a faceless upload portal. Applications are reviewed by a human and answered within 48 hours.
-- What Stop One artists get:
-  - YouTube Content ID: their music is registered so uploads that use it are identified and monetized for them.
-  - Royalty splitting: earnings can be split automatically with producers, writers and other collaborators, so nobody has to chase payments.
-  - Monthly payments.
-  - Playlist pitching: editorial and independent playlist pitching.
-  - Royalty advances: artists can get advances against future earnings to fund things like marketing, radio or tour support. Eligibility and amounts depend on the artist; the team reviews each case.
-  - Discounted studio sessions at the Stop One studio in Atlanta.
-- Apply at studiosound.ai/distribution (tell the team about yourself and your music).
-- The assistant doesn't have fees, payout dates, split percentages, advance amounts or anything about an existing Stop One account: for those, point them to the distribution page or support. Never quote numbers for these.`,
+- THE PLAN: free to join, no upfront or yearly fee. The artist keeps 85% of their earnings and Stop One keeps 15%. Every service below comes with that one plan.
+- Distribution to Spotify, Apple Music, Amazon, Tidal, Deezer, TikTok, Instagram and 150+ platforms. Artists keep their rights: masters stay with the artist.
+- Release timing: releases can go live in as little as 24-48 hours, but Stop One recommends submitting 7-14 days ahead so stores fully ingest the release (for example so it can hit Spotify Release Radar) and there's proper time for playlist pitching.
+- Artist portal: real-time analytics and stats from every platform including socials, earnings, playlist pitching and free tools in one dashboard.
+- Artist page: every artist gets an artist page they control (artist page consultation and building included), and they can swap their featured releases whenever they want.
+- YouTube Content ID: music is registered so YouTube uploads that use it are identified and monetized for the artist.
+- Royalty splitting: earnings can be split automatically with producers, writers and collaborators.
+- Monthly payments.
+- Playlist pitching: editorial and independent playlists.
+- Royalty advances: artists who meet certain criteria can get advances against future earnings. Amounts are based on monthly earnings and projected future revenue; for high earners they can reach the millions. To see if they qualify, artists fill out the advance form: https://docs.google.com/forms/d/e/1FAIpQLScE-rz_4SOlTBc6BMclEDg-BNeBNoc45Ro9Adz_5LdlCktTHA/viewform (it's also linked from the Earnings Forecast results). The Earnings Forecast is a good first look at the numbers an advance is based on. Never estimate or promise an advance amount for a specific artist.
+- Studio: access to Stop One's platinum, million-dollar studio in Atlanta, with discounted sessions for Stop One artists.
+- What makes Stop One different from DistroKid and other upload-only distributors: there's always a real person to reach out to who helps scale the artist's career, a real music staff at their fingertips, a better analytics dashboard, playlist pitching, an artist page, advances and studio access, all in the free plan.
+- Be honest about the 85/15 split if an artist compares with distributors that charge a yearly fee and pay 100%: explain that Stop One is free to join and the 15% covers the team, pitching, analytics, artist page and the rest, so the artist can decide what's worth more to them.
+- Apply at studiosound.ai/distribution.
+- The assistant doesn't have payout dates, advance criteria details, or anything about an existing Stop One account: for those, point them to the distribution page or support. Never quote advance amounts.`,
 
   support: `SUPPORT AND COMMUNITY
 - Bugs, billing, account or login problems: email support@studiosound.ai.
