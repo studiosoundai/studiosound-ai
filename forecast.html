@@ -249,6 +249,11 @@ details.opt[open] summary .chev{transform:rotate(180deg);}
 .fc-ctas{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
 .fc-ctas .btn{width:100%;padding:14px;font-size:15px;}
 .fx-note{color:var(--dim);font-size:12px;margin-top:10px;}
+.advance{margin-top:16px;border:1px solid rgba(255,200,61,0.45);background:rgba(255,200,61,0.06);border-radius:14px;padding:16px;}
+.advance b{display:block;color:var(--gold);font-size:13px;letter-spacing:0.02em;}
+.advance span{display:block;color:var(--muted);font-size:14px;margin-top:6px;line-height:1.55;}
+.advance a{display:inline-block;margin-top:10px;color:var(--gold);font-weight:800;font-size:14px;text-decoration:none;}
+.advance a:hover{text-decoration:underline;}
 .example{color:var(--muted);font-size:14px;line-height:1.6;}
 .example li{margin:6px 0 0 18px;}
 @media(max-width:640px){ .fc-stats{grid-template-columns:1fr 1fr;} .fc-stats .stat:last-child{grid-column:span 2;} .stat b{font-size:18px;} }
@@ -958,6 +963,7 @@ async function fcPreview() {
       '<li><i class="ti ti-lock"></i>Milestones, watch-outs and PDF or image export</li>' +
     '</ul>' +
     '<div class="fc-ctas" id="fc-ctas"></div>' +
+    '<div class="advance"><b>Could you qualify for an advance?</b><span>Stop One Distribution offers royalty advances to artists who meet its criteria, based on monthly earnings and projected future revenue: the numbers in this forecast. Free to join, you keep 85%.</span><a href="https://docs.google.com/forms/d/e/1FAIpQLScE-rz_4SOlTBc6BMclEDg-BNeBNoc45Ro9Adz_5LdlCktTHA/viewform" target="_blank" rel="noopener">See if you qualify &rarr;</a></div>' +
     (fxNote ? '<div class="fx-note">' + fxNote + '</div>' : '') +
     '<p class="fine">Scenario estimates from your own history, not guarantees and not financial advice.</p>';
   r.style.display = 'block';
