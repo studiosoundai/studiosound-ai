@@ -3733,6 +3733,16 @@ function fcExportPdf() {
   setTimeout(() => w.print(), 500);
 }
 
+// Stop One royalty advances are based on monthly earnings + projected revenue, which is exactly what the forecast shows
+const SS_ADVANCE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScE-rz_4SOlTBc6BMclEDg-BNeBNoc45Ro9Adz_5LdlCktTHA/viewform';
+function fcAdvanceHtml() {
+  return `<div class="plan-item" style="margin-top:12px;border:1px solid #FFC83D66;background:#FFC83D0d;">
+    <div class="plan-date" style="color:#FFC83D;">COULD YOU QUALIFY FOR AN ADVANCE?</div>
+    <div class="plan-detail" style="margin-bottom:10px;">Stop One Distribution offers royalty advances to artists who meet its criteria, based on monthly earnings and projected future revenue: the numbers in this forecast. Free to join, you keep 85%.</div>
+    <a href="${SS_ADVANCE_URL}" target="_blank" rel="noopener" class="result-btn" style="width:100%;justify-content:center;padding:11px;text-decoration:none;border-color:#FFC83D;color:#FFC83D;">See if you qualify →</a>
+  </div>`;
+}
+
 function fcRenderFull(stats, scenarios, data) {
   data = data || {};
   document.getElementById('fc-placeholder').style.display = 'none';
@@ -3770,6 +3780,7 @@ function fcRenderFull(stats, scenarios, data) {
       data.watch_outs.map(m => `<div class="plan-detail" style="margin-bottom:4px;">⚠️ ${m}</div>`).join('') + `</div>`;
   }
   if (!data.analysis) html += `<div style="color:var(--muted);font-size:11px;margin-top:8px;">This is a saved preview — run a fresh forecast on Pro for your full analyst report and moves.</div>`;
+  html += fcAdvanceHtml();
   html += nextStepHtml('The Growth curve only happens with a real rollout. Turn these numbers into your 30-day plan — we\'ll research you across the web and build it step by step.', 'Build My Release Plan', 'fcToPlan()');
   html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
   if (data.analysis) {
@@ -3856,6 +3867,7 @@ async function runForecast() {
     html += lockRow('ANALYST READ + YOUR NEXT MOVES', 'Four specific moves would shift your curve this quarter based on your trend');
     html += `<a href="pricing.html" style="display:block;text-align:center;background:var(--neon);color:#05050a;font-weight:800;font-size:13px;padding:13px;border-radius:10px;text-decoration:none;margin-top:12px;">Unlock your full forecast with Pro — $9.99/mo →</a>`;
     html += `<div style="text-align:center;margin-top:10px;"><a onclick="fcToPlan()" style="color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;">Free move while you decide: build this month's release plan →</a></div>`;
+    html += fcAdvanceHtml();
     html += `<div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">Scenario estimates from your historical data — not guarantees, not financial advice.</div>`;
     document.getElementById('fc-result').innerHTML = html;
     document.getElementById('fc-result').style.display = 'block';
@@ -4618,7 +4630,8 @@ function loadRecent(index) {
   const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(msgs.slice(-30))); } catch (e) {} };
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const linkify = t => esc(t)
-    .replace(/\b(studiosound\.ai\/[\w\-\/#]*)/g, '<a href="https://$1" target="_blank" rel="noopener">$1</a>')
+    .replace(/(https?:\/\/[^\s<)]+[^\s<).,!?])/g, (u) => '<a href="' + u + '" target="_blank" rel="noopener">' + (u.includes('docs.google.com/forms') ? 'the form' : u) + '</a>')
+    .replace(/(^|[^\/\w.])(studiosound\.ai\/[\w\-\/#]*)/g, '$1<a href="https://$2" target="_blank" rel="noopener">$2</a>')
     .replace(/\b([\w.+-]+@studiosound\.ai)\b/g, '<a href="mailto:$1">$1</a>')
     .replace(/\*\*(.+?)\*\*/g, '$1');
 
