@@ -3,139 +3,274 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — StudioSound.ai</title>
-<meta name="description" content="Music marketing tips, AI tools, and release strategies for independent artists.">
+<title>Blog: Release Strategy, Marketing and AI Tools for Artists | StudioSound.ai</title>
+<meta name="description" content="Release strategy, music marketing, Meta ads, playlist pitching, merch and AI cover art tips for independent artists.">
+<link rel="canonical" href="https://studiosound.ai/blog">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/app-icon.png.png">
-<meta property="og:title" content="Blog — StudioSound.ai">
-<meta property="og:description" content="Music marketing tips, AI tools, and release strategies for independent artists.">
+<meta property="og:title" content="Blog: Release Strategy, Marketing and AI Tools for Artists | StudioSound.ai">
+<meta property="og:description" content="Release strategy, music marketing, Meta ads, playlist pitching, merch and AI cover art tips for independent artists.">
 <meta property="og:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
 <meta property="og:url" content="https://studiosound.ai/blog">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="StudioSound.ai">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Blog — StudioSound.ai">
-<meta name="twitter:description" content="Music marketing tips, AI tools, and release strategies for independent artists.">
+<meta name="twitter:title" content="Blog: Release Strategy, Marketing and AI Tools for Artists | StudioSound.ai">
+<meta name="twitter:description" content="Release strategy, music marketing, Meta ads, playlist pitching, merch and AI cover art tips for independent artists.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/og-image.png.png">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--neon:#00FFD1;--bg:#05050a;--card:#0d0d14;--border:#2a2a3a;--text:#fff;--muted:#c0c0d8;}
-body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:54px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logoimg{height:42px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;display:block;}
-.logoname{font-size:15px;font-weight:800;color:#fff;}
-.navlinks{display:flex;gap:2px;}
-.navlink{color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:5px 11px;border-radius:6px;transition:all 0.15s;text-decoration:none;opacity:0.7;}
-.navlink:hover{opacity:1;background:#0d0d14;}
-.navlink.active{opacity:1;color:var(--neon);}
-.navbtns{display:flex;gap:8px;}
-.btn-ghost{border:0.5px solid #3a3a52;color:#fff;background:transparent;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
-.btn-ghost:hover{border-color:var(--neon);}
-.btn-neon{background:var(--neon);color:#05050a;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;}
-.hero{padding:72px 32px 56px;text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,#00FFD110 0%,transparent 70%);pointer-events:none;}
-.hero-label{color:var(--neon);font-size:11px;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;}
-.hero-title{font-size:48px;font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:14px;color:#fff;}
-.hero-title .neon{color:var(--neon);}
-.hero-sub{color:var(--muted);font-size:15px;font-weight:500;max-width:480px;margin:0 auto;line-height:1.7;}
-.categories{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 32px 40px;}
-.cat-btn{background:var(--card);border:0.5px solid var(--border);border-radius:24px;padding:8px 18px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:'Sora',sans-serif;}
-.cat-btn:hover{border-color:var(--neon);color:#fff;}
-.cat-btn.active{background:var(--neon);color:#05050a;border-color:var(--neon);}
-.featured{padding:0 32px 48px;}
-.featured-inner{background:var(--card);border:0.5px solid var(--border);border-radius:22px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
-.featured-inner:hover{border-color:var(--neon);}
-.featured-grid{display:grid;grid-template-columns:1fr 1fr;}
-.featured-visual{background:radial-gradient(circle at 50% 42%,#00FFD114 0%,transparent 72%),#08080f;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.featured-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-.featured-visual::after{content:'FEATURED';position:absolute;top:16px;left:16px;background:var(--neon);color:#05050a;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;font-family:'Sora',sans-serif;z-index:2;}
-.featured-content{padding:40px;display:flex;flex-direction:column;justify-content:center;}
-.post-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:10px;}
-.featured-title{font-size:24px;font-weight:900;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.3;}
-.featured-excerpt{color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:16px;}
-.post-meta{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px;font-weight:500;margin-bottom:16px;}
-.post-meta i{font-size:13px;}
-.read-btn{display:inline-flex;align-items:center;gap:6px;color:var(--neon);font-size:12px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;}
-.article-full{display:none;padding:0 40px 40px;border-top:0.5px solid var(--border);margin-top:20px;}
-.article-full.open{display:block;}
-.article-full p{color:#e0e0f0;font-size:13px;line-height:1.9;margin-bottom:16px;}
-.article-full h3{color:#fff;font-size:16px;font-weight:800;margin-bottom:10px;margin-top:24px;}
-.article-full ul{margin:0 0 16px 20px;}
-.article-full ul li{color:#e0e0f0;font-size:13px;line-height:1.9;margin-bottom:6px;}
-.article-full .tip-box{background:#00FFD110;border:0.5px solid var(--neon);border-radius:10px;padding:16px;margin:16px 0;}
-.article-full .tip-box p{color:var(--neon);font-weight:600;margin:0;}
-.collapse-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;margin-top:16px;}
-.collapse-btn:hover{color:#fff;}
-.blog-section{padding:0 32px 72px;}
-.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.blog-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s;}
-.blog-card:hover{border-color:var(--neon);}
-.blog-card.hidden{display:none;}
-.blog-visual{height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.blog-visual img{width:100%;height:100%;object-fit:cover;display:block;}
-.blog-content{padding:20px;}
-.blog-cat{color:var(--neon);font-size:10px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
-.blog-title{color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.01em;margin-bottom:8px;line-height:1.4;}
-.blog-excerpt{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:12px;}
-.blog-meta{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:500;margin-bottom:12px;}
-.blog-read-btn{display:inline-flex;align-items:center;gap:4px;color:var(--neon);font-size:11px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;}
-.blog-article{display:none;border-top:0.5px solid var(--border);padding-top:16px;margin-top:4px;}
-.blog-article.open{display:block;}
-.blog-article p{color:#e0e0f0;font-size:12px;line-height:1.9;margin-bottom:12px;}
-.blog-article h3{color:#fff;font-size:13px;font-weight:800;margin-bottom:8px;margin-top:16px;}
-.blog-article ul{margin:0 0 12px 16px;}
-.blog-article ul li{color:#e0e0f0;font-size:12px;line-height:1.8;margin-bottom:4px;}
-.blog-article .tip{background:#00FFD110;border:0.5px solid var(--neon);border-radius:8px;padding:12px;margin:12px 0;}
-.blog-article .tip p{color:var(--neon);font-weight:600;margin:0;font-size:11px;}
-.blog-collapse{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;background:none;border:none;font-family:'Sora',sans-serif;padding:0;margin-top:12px;}
-.newsletter{padding:0 32px 72px;}
-.newsletter-inner{background:linear-gradient(135deg,#0a1a14,#05050a,#0a0a1a);border:0.5px solid var(--neon);border-radius:22px;padding:48px;text-align:center;}
-.newsletter-title{font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;color:#fff;}
-.newsletter-title .neon{color:var(--neon);}
-.newsletter-sub{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7;}
-.newsletter-form{display:flex;gap:10px;max-width:480px;margin:0 auto;}
-.newsletter-input{flex:1;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:12px 16px;color:#fff;font-size:13px;outline:none;font-family:'Sora',sans-serif;}
-.newsletter-input:focus{border-color:var(--neon);}
-.newsletter-input::placeholder{color:#5a5a72;}
-.newsletter-btn{background:var(--neon);color:#05050a;border:none;border-radius:10px;padding:12px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;}
-.newsletter-note{color:#5a5a72;font-size:11px;margin-top:12px;}
-.footer{background:#030308;border-top:0.5px solid var(--border);padding:24px 32px 16px;}
-.footer-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
-.footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logoimg{height:34px;width:auto;max-width:110px;border-radius:7px;object-fit:contain;display:block;}
-.footer-logoname{font-size:13px;font-weight:800;color:#fff;}
-.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
-.footer-link{color:#c0c0d8;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.15s;}
-.footer-link:hover{color:var(--neon);}
-.footer-social{display:flex;gap:12px;}
-.footer-social-link{color:#c0c0d8;font-size:20px;text-decoration:none;transition:color 0.15s;display:inline-flex;}
-.footer-social-link:hover{color:var(--neon);}
-.footer-copy{color:#6b6b80;font-size:11px;text-align:center;border-top:0.5px solid var(--border);padding-top:14px;}
-@media(max-width:768px){
-.navlinks{display:none;}
-.hero{padding:48px 16px 36px;}
-.hero-title{font-size:32px;}
-.featured{padding:0 16px 36px;}
-.featured-grid{grid-template-columns:1fr;}
-.featured-visual{min-height:200px;}
-.blog-section,.newsletter{padding-left:16px;padding-right:16px;}
-.blog-grid{grid-template-columns:1fr;}
-.newsletter-form{flex-direction:column;}
-.article-full{padding:0 20px 20px;}
+:root{
+  --bg:#05050a; --surface:#0c0c14; --surface2:#11111b; --line:#1f1f2e;
+  --ink:#f4f4fa; --muted:#a3a3bd; --dim:#6e6e88;
+  --neon:#00FFD1; --gold:#FFC83D;
 }
-.sicon{width:18px;height:18px;object-fit:contain;display:inline-block;vertical-align:middle;}
+html{overflow-x:hidden;scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+img{display:block;max-width:100%;}
+:focus-visible{outline:2px solid var(--neon);outline-offset:3px;border-radius:6px;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+section{padding:96px 0;}
+h1,h2,h3{font-weight:800;color:var(--ink);}
+h2{font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-0.03em;max-width:22ch;}
+.sec-lede{color:var(--muted);font-size:17px;max-width:56ch;margin-top:14px;}
 
-.menu-btn{display:none;background:#0d0d14;border:0.5px solid #3a3a52;border-radius:8px;width:38px;height:36px;cursor:pointer;flex-direction:column;gap:4px;justify-content:center;align-items:center;flex-shrink:0;}
-.hb{display:block;width:16px;height:2px;background:#00FFD1;border-radius:2px;}
-.mobilemenu{display:none;position:fixed;top:54px;left:0;right:0;background:#07070f;border-bottom:0.5px solid #2a2a3a;z-index:99;padding:10px 16px 16px;box-shadow:0 20px 40px rgba(0,0,0,0.6);}
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:58px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(5,5,10,0.92);backdrop-filter:blur(10px);z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logoimg{height:40px;width:auto;max-width:140px;border-radius:9px;object-fit:contain;}
+.logoname{font-size:15px;font-weight:800;color:#fff;}
+.navlinks{display:flex;gap:2px;align-items:center;}
+.navlink-wrap{position:relative;}
+.navlink-wrap:hover .dropdown,.navlink-wrap:focus-within .dropdown{display:block;}
+.navlink{color:#fff;font-size:13px;font-weight:600;padding:6px 11px;border-radius:6px;text-decoration:none;opacity:0.82;display:inline-block;background:none;border:none;font-family:inherit;cursor:pointer;}
+.navlink:hover{opacity:1;background:var(--surface);}
+.navlink.drop::after{content:' ▾';font-size:9px;}
+.dropdown{display:none;position:absolute;top:100%;left:0;padding-top:8px;min-width:270px;z-index:200;}
+.dropdown-inner{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.dropdown-item{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;}
+.dropdown-item:hover{background:var(--surface2);}
+.dropdown-name{color:#fff;font-size:13px;font-weight:700;}
+.dropdown-name .tag{color:var(--neon);font-size:10px;font-weight:800;margin-left:4px;}
+.dropdown-desc{color:var(--muted);font-size:11px;margin-top:1px;}
+.dropdown-note{border-top:1px solid var(--line);margin-top:6px;padding:10px 12px 4px;color:var(--dim);font-size:11px;line-height:1.5;}
+.navbtns{display:flex;gap:8px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-family:inherit;font-weight:800;text-decoration:none;cursor:pointer;transition:transform 0.15s,border-color 0.15s,background 0.15s;white-space:nowrap;}
+.btn-sm{padding:8px 16px;font-size:12px;}
+.btn-lg{padding:15px 28px;font-size:15px;}
+.btn-neon{background:var(--neon);color:#05050a;border:none;}
+.btn-neon:hover{transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:#fff;border:1px solid #3a3a52;}
+.btn-ghost:hover{border-color:var(--neon);}
+.menu-btn{display:none;background:var(--surface);border:1px solid #3a3a52;border-radius:8px;width:40px;height:36px;cursor:pointer;flex-direction:column;gap:4px;justify-content:center;align-items:center;}
+.hb{display:block;width:16px;height:2px;background:var(--neon);border-radius:2px;}
+.mobilemenu{display:none;position:fixed;top:58px;left:0;right:0;background:#07070f;border-bottom:1px solid var(--line);z-index:99;padding:8px 16px 16px;box-shadow:0 20px 40px rgba(0,0,0,0.6);max-height:calc(100vh - 58px);overflow-y:auto;}
 .mobilemenu.open{display:block;}
-.mobilemenu a{display:block;color:#fff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 8px;border-bottom:0.5px solid #14141f;}
-.mobilemenu a:last-child{border-bottom:none;color:#00FFD1;font-weight:800;}
-@media(max-width:768px){.menu-btn{display:flex;}}
+.mobilemenu a{display:block;color:#fff;font-size:15px;font-weight:600;text-decoration:none;padding:12px 6px;border-bottom:1px solid #14141f;}
+.mobilemenu a.mm-cta{color:var(--neon);font-weight:800;border-bottom:none;}
+.pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:0.02em;}
+.pill.new{background:var(--neon);color:#05050a;}
+.pill.beta{border:1px solid var(--neon);color:var(--neon);}
+.pill.free{border:1px solid var(--gold);color:var(--gold);}
+/* FOOTER */
+.footer{background:#030308;border-top:1px solid var(--line);padding:48px 32px 24px;}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;max-width:1180px;margin-left:auto;margin-right:auto;}
+.footer-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.footer-logoimg{height:38px;width:auto;max-width:120px;border-radius:8px;object-fit:contain;}
+.footer-logoname{font-size:14px;font-weight:800;}
+.footer-desc{color:var(--muted);font-size:13px;line-height:1.7;max-width:240px;margin-bottom:16px;}
+.footer-social{display:flex;gap:10px;}
+.footer-social a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.footer-social a:hover{border-color:var(--neon);}
+.sicon{width:18px;height:18px;object-fit:contain;}
+.footer-col-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.footer-link{display:block;color:var(--muted);font-size:13px;text-decoration:none;margin-bottom:10px;}
+.footer-link:hover{color:var(--neon);}
+.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1180px;margin:0 auto;}
+.footer-copy{color:var(--dim);font-size:12px;}
+.footer-bottom-links{display:flex;gap:20px;}
+.footer-bottom-link{color:var(--dim);font-size:12px;text-decoration:none;}
+.footer-bottom-link:hover{color:var(--muted);}
+/* FAQ */
+.faq-grid{display:grid;grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr);gap:56px;}
+.faq details{border-bottom:1px solid var(--line);}
+.faq details:first-child{border-top:1px solid var(--line);}
+.faq summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:700;font-size:16px;display:flex;justify-content:space-between;gap:16px;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary i{color:var(--neon);transition:transform 0.2s;flex-shrink:0;margin-top:3px;}
+.faq details[open] summary i{transform:rotate(45deg);}
+.faq details p{color:var(--muted);font-size:15px;padding:0 0 20px;max-width:62ch;}
+/* CLOSE */
+.close{padding:110px 0;text-align:center;border-top:1px solid var(--line);background:radial-gradient(ellipse at center top,rgba(0,255,209,0.08),transparent 60%);}
+.close h2{max-width:20ch;margin:0 auto;font-size:clamp(30px,4vw,52px);}
+.close p{color:var(--muted);margin:16px auto 30px;max-width:46ch;}
+.pg-hero{padding:72px 0 40px;position:relative;overflow:hidden;}
+.pg-hero::before{content:'';position:absolute;top:-160px;right:-140px;width:640px;height:560px;background:radial-gradient(closest-side,rgba(0,255,209,0.08),transparent);pointer-events:none;}
+.kicker{display:inline-block;font-size:12px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--neon);margin-bottom:16px;}
+.pg-hero h1{font-size:clamp(36px,5vw,62px);line-height:1.03;letter-spacing:-0.035em;max-width:16ch;}
+.pg-hero .lede{color:var(--muted);font-size:18px;margin-top:18px;max-width:58ch;line-height:1.6;}
+.pg-hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;}
+.pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:0.02em;vertical-align:middle;}
+.pill.new{background:var(--neon);color:#05050a;}
+.pill.beta{border:1px solid var(--neon);color:var(--neon);}
+.pill.free{border:1px solid var(--gold);color:var(--gold);}
+.sec{padding:72px 0;border-top:1px solid var(--line);}
+.sec h2{font-size:clamp(28px,3.4vw,42px);line-height:1.08;letter-spacing:-0.03em;max-width:24ch;}
+.sec .sec-lede{margin-top:12px;}
+
+/* feature rows */
+.feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:56px 0;border-top:1px solid var(--line);}
+.feat:nth-of-type(even) .feat-media{order:2;}
+.feat-media{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--surface);aspect-ratio:3/2;}
+.feat-media img{width:100%;height:100%;object-fit:cover;}
+.feat h3{font-size:clamp(24px,2.6vw,32px);letter-spacing:-0.02em;line-height:1.15;}
+.feat p{color:var(--muted);font-size:16px;margin-top:10px;line-height:1.6;}
+.feat ul{list-style:none;margin-top:16px;}
+.feat li{display:flex;gap:10px;color:#dadaea;font-size:15px;margin-top:8px;line-height:1.5;}
+.feat li::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--neon);margin-top:8px;}
+.feat .btn{margin-top:22px;}
+.feat .lim{color:var(--dim);font-size:13px;margin-top:12px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px;}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;text-decoration:none;display:block;}
+a.card:hover{border-color:rgba(0,255,209,0.55);}
+.card i{font-size:24px;color:var(--neon);}
+.card b{display:block;color:#fff;font-size:16px;margin-top:10px;}
+.card span{display:block;color:var(--muted);font-size:14px;margin-top:6px;line-height:1.55;}
+.card.gold i{color:var(--gold);}
+.note{display:flex;gap:10px;color:var(--muted);font-size:14px;line-height:1.6;margin-top:22px;}
+.note i{color:var(--gold);font-size:18px;margin-top:2px;}
+.band{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,0.7fr);gap:32px;align-items:center;background:linear-gradient(120deg,rgba(0,255,209,0.08),rgba(0,255,209,0.01) 70%);border:1px solid rgba(0,255,209,0.35);border-radius:20px;padding:34px;margin-top:8px;}
+.band h2{font-size:clamp(26px,3vw,38px);line-height:1.08;letter-spacing:-0.03em;}
+.band p{color:var(--muted);font-size:16px;margin-top:10px;line-height:1.6;}
+.band .big{font-size:clamp(44px,6vw,72px);font-weight:800;color:var(--neon);letter-spacing:-0.04em;line-height:1;}
+.band .big small{display:block;font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0;margin-top:8px;}
+.mini-chart{width:100%;height:100%;display:block;background:var(--surface);}
+
+/* distribution */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px;}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;}
+.step .n{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+.step b{display:block;color:#fff;margin-top:12px;font-size:15px;}
+.step span{display:block;color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;}
+.cmp{width:100%;border-collapse:collapse;margin-top:28px;font-size:15px;}
+.cmp th,.cmp td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);}
+.cmp th{color:var(--muted);font-size:13px;font-weight:800;}
+.cmp th.hot{color:var(--neon);}
+.cmp td:first-child{color:#fff;font-weight:600;}
+.cmp td{color:#dadaea;}
+.yes{color:var(--neon);font-weight:800;}
+.no{color:#4a4a62;}
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;}
+.form-frame{margin-top:28px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;}
+.form-frame iframe{display:block;width:100%;height:1400px;border:0;}
+.fine{color:var(--dim);font-size:13px;margin-top:12px;line-height:1.6;}
+.fine a{color:var(--neon);}
+
+/* community */
+.socials{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px;}
+.social{display:flex;flex-direction:column;align-items:flex-start;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;}
+.social:hover{border-color:rgba(0,255,209,0.55);}
+.social img{width:28px;height:28px;object-fit:contain;}
+.social b{color:#fff;font-size:15px;}
+.social span{color:var(--muted);font-size:13px;line-height:1.45;}
+.covers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px;}
+.covers figure{margin:0;}
+.covers img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;border:1px solid var(--line);}
+.covers figcaption{color:var(--muted);font-size:13px;margin-top:8px;}
+
+/* blog */
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.cat{background:var(--surface);border:1px solid #2c2c40;color:var(--muted);border-radius:999px;padding:7px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+.cat.active{border-color:var(--neon);color:var(--neon);}
+.posts{display:flex;flex-direction:column;gap:14px;margin-top:28px;}
+.post{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px 28px;}
+.post[hidden]{display:none;}
+.post .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--dim);font-size:12px;}
+.post .meta .tag{color:var(--neon);font-weight:800;letter-spacing:0.08em;}
+.post h2{font-size:clamp(21px,2.4vw,27px);line-height:1.2;letter-spacing:-0.02em;margin-top:10px;max-width:none;}
+.post .dek{color:var(--muted);font-size:15px;margin-top:8px;line-height:1.6;max-width:70ch;}
+.post details{margin-top:14px;}
+.post summary{list-style:none;cursor:pointer;color:var(--neon);font-weight:800;font-size:14px;display:inline-flex;gap:6px;align-items:center;}
+.post summary::-webkit-details-marker{display:none;}
+.post details[open] summary .more{display:none;}
+.post details:not([open]) summary .less{display:none;}
+.post .body{margin-top:18px;max-width:70ch;}
+.post .body h3{font-size:18px;margin:22px 0 8px;letter-spacing:-0.01em;}
+.post .body p{color:#cfcfe0;font-size:16px;line-height:1.7;margin-top:10px;}
+.post .body ul{margin:10px 0 0 20px;color:#cfcfe0;font-size:16px;line-height:1.7;}
+.post .body .tip{background:rgba(0,255,209,0.06);border:1px solid rgba(0,255,209,0.3);border-left:3px solid var(--neon);border-radius:10px;padding:12px 14px;margin-top:16px;color:#e8e8f5;font-size:15px;line-height:1.6;}
+.post .body a{color:var(--neon);font-weight:700;}
+.newsletter{text-align:center;padding:72px 0;border-top:1px solid var(--line);}
+.newsletter h2{margin:0 auto;font-size:clamp(26px,3vw,38px);max-width:22ch;line-height:1.1;letter-spacing:-0.03em;}
+.newsletter p{color:var(--muted);margin:12px auto 0;max-width:50ch;}
+.nl-form{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;}
+.nl-form input{flex:1 1 280px;max-width:380px;background:var(--surface);border:1px solid #2a2a3e;border-radius:999px;padding:14px 20px;color:#fff;font-family:inherit;font-size:15px;}
+.nl-form input:focus{outline:none;border-color:var(--neon);}
+.nl-note{color:var(--dim);font-size:13px;margin-top:12px;}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:28px;align-items:start;}
+.c-list{display:flex;flex-direction:column;gap:12px;}
+.c-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+.c-item small{display:block;color:var(--dim);font-size:11px;font-weight:800;letter-spacing:0.08em;}
+.c-item a,.c-item span{display:block;color:#fff;font-size:16px;font-weight:700;margin-top:4px;text-decoration:none;}
+.c-item a:hover{color:var(--neon);}
+.c-item p{color:var(--muted);font-size:13px;margin-top:4px;}
+.c-form{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px;}
+.c-form h2{font-size:22px;max-width:none;}
+.c-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.c-form label{display:block;color:var(--muted);font-size:12px;font-weight:700;margin:14px 0 6px;}
+.c-form input,.c-form select,.c-form textarea{width:100%;background:var(--bg);border:1px solid #2a2a3e;border-radius:10px;padding:12px;color:#fff;font-family:inherit;font-size:15px;}
+.c-form textarea{min-height:130px;resize:vertical;}
+.c-form input:focus,.c-form select:focus,.c-form textarea:focus{outline:none;border-color:var(--neon);}
+.c-form .btn{width:100%;margin-top:18px;padding:14px;font-size:15px;}
+.c-status{font-size:14px;margin-top:12px;min-height:20px;color:var(--muted);}
+
+@media(max-width:1000px){
+  .feat{grid-template-columns:1fr;gap:24px;padding:44px 0;}
+  .feat:nth-of-type(even) .feat-media{order:0;}
+  .grid3,.socials{grid-template-columns:repeat(2,1fr);}
+  .steps{grid-template-columns:repeat(2,1fr);}
+  .band,.contact-grid,.faq-grid{grid-template-columns:1fr;}
+  .covers{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:640px){
+  .pg-hero{padding:44px 0 24px;}
+  .pg-hero .lede{font-size:16px;}
+  .pg-hero .ctas .btn{flex:1 1 100%;}
+  .sec{padding:56px 0;}
+  .grid3,.grid2,.steps,.socials{grid-template-columns:1fr;}
+  .band{padding:24px;}
+  .post{padding:20px;}
+  .c-form .row2{grid-template-columns:1fr;}
+  .form-frame iframe{height:1600px;}
+  .cmp{font-size:14px;min-width:520px;}
+}
+
+
+@media(max-width:1000px){
+  .navlinks{display:none;}
+  .menu-btn{display:flex;}
+}
+@media(max-width:640px){
+  .wrap{padding:0 16px;}
+  .nav{padding:0 14px;}
+  .logoname{display:none;}
+  .logoimg{height:36px;}
+  .navbtns .btn-ghost{display:none;}
+  .footer{padding:40px 16px 24px;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .btn{transition:none;}
+}
+
 </style>
 </head>
 <body>
@@ -146,475 +281,354 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overfl
     <span class="logoname">StudioSound.ai</span>
   </a>
   <div class="navlinks">
-    <span class="navlink">Studio Suite</span>
-    <span class="navlink">AI Playground</span>
-    <span class="navlink" onclick="window.location.href='features.html'">Features</span>
-    <span class="navlink" onclick="window.location.href='community.html'">Community</span>
-    <span class="navlink" onclick="window.location.href='distribution.html'">Distribution</span>
-    <span class="navlink active">Blog</span>
-    <span class="navlink" onclick="window.location.href='pricing.html'">Pricing</span>
-    <span class="navlink" onclick="window.location.href='contact.html'">Contact Us</span>
+    <div class="navlink-wrap">
+      <button class="navlink drop" type="button">Studio</button>
+      <div class="dropdown"><div class="dropdown-inner">
+        <a class="dropdown-item" href="forecast.html" onclick="return go('forecast')">
+          <div class="dropdown-name">Earnings Forecast <span class="tag">NEW</span></div>
+          <div class="dropdown-desc">What your music earns in 1, 3 and 5 years</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('art')">
+          <div class="dropdown-name">Cover Art</div>
+          <div class="dropdown-desc">Two versions every time, 3000×3000</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('plan')">
+          <div class="dropdown-name">Release Planner</div>
+          <div class="dropdown-desc">A researched 30-day rollout</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('writer')">
+          <div class="dropdown-name">Lyric Writer</div>
+          <div class="dropdown-desc">English, Spanish and Spanglish</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('lyric')">
+          <div class="dropdown-name">Lyric Videos <span class="tag">BETA</span></div>
+          <div class="dropdown-desc">Your song and cover, timed line by line</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('merch')">
+          <div class="dropdown-name">Merch Mockups</div>
+          <div class="dropdown-desc">Your art on real products, with costs</div>
+        </a>
+        <a class="dropdown-item" href="signup.html" onclick="return go('ads')">
+          <div class="dropdown-name">Ad Generator <span class="tag">NEW</span></div>
+          <div class="dropdown-desc">Meta ads for your song, ready to run</div>
+        </a>
+        <a class="dropdown-item" href="tools.html">
+          <div class="dropdown-name">Free tools <span class="tag">NO ACCOUNT</span></div>
+          <div class="dropdown-desc">Resizer, MP3 to WAV, trimmer, split sheet, metadata, checklist</div>
+        </a>
+        <div class="dropdown-note">In development: song generator, AI video clips, TikTok and Google ads.</div>
+      </div></div>
+    </div>
+    <a class="navlink" href="features.html">Features</a>
+    <a class="navlink" href="distribution.html">Distribution</a>
+    <a class="navlink" href="community.html">Community</a>
+    <a class="navlink" href="blog.html">Blog</a>
+    <a class="navlink" href="pricing.html">Pricing</a>
+    <a class="navlink" href="contact.html">Contact</a>
   </div>
-  <div class="navbtns">
-    <button class="btn-ghost" onclick="window.location.href='signin.html'">Sign In</button>
-    <button class="btn-neon" onclick="window.location.href='signup.html'">Sign Up Free</button>
+  <div class="navbtns" id="navbtns">
+    <a class="btn btn-sm btn-ghost" href="signin.html">Sign in</a>
+    <a class="btn btn-sm btn-neon" href="signup.html">Sign up free</a>
   </div>
-  <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('mobilemenu').classList.toggle('open')"><span class="hb"></span><span class="hb"></span><span class="hb"></span></button>
+  <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" onclick="toggleMenu(this)"><span class="hb"></span><span class="hb"></span><span class="hb"></span></button>
 </nav>
 <div class="mobilemenu" id="mobilemenu">
-  <a href="index.html">Home</a>
+  <a href="forecast.html" onclick="return go('forecast')">Earnings Forecast</a>
+  <a href="tools.html">Free tools</a>
   <a href="features.html">Features</a>
-  <a href="community.html">Community</a>
   <a href="distribution.html">Distribution</a>
+  <a href="community.html">Community</a>
   <a href="blog.html">Blog</a>
   <a href="pricing.html">Pricing</a>
-  <a href="contact.html">Contact Us</a>
-  <a href="signin.html">Sign In</a>
-  <a href="signup.html">Sign Up Free →</a>
+  <a href="contact.html">Contact</a>
+  <a href="signin.html" id="mm-signin">Sign in</a>
+  <a href="signup.html" class="mm-cta" id="mm-cta">Sign up free</a>
 </div>
 
-<div class="hero">
-  <div class="hero-label">THE BLOG</div>
-  <h1 class="hero-title">Tips, strategies and <span class="neon">insights</span><br>for independent artists.</h1>
-  <p class="hero-sub">Music marketing, AI tools, release strategies, and everything you need to drop like a major.</p>
-</div>
-
-<div class="categories">
-  <button class="cat-btn active" onclick="filterCat('all',this)">All</button>
-  <button class="cat-btn" onclick="filterCat('Music Marketing',this)">Music Marketing</button>
-  <button class="cat-btn" onclick="filterCat('AI Tools',this)">AI Tools</button>
-  <button class="cat-btn" onclick="filterCat('Release Strategy',this)">Release Strategy</button>
-  <button class="cat-btn" onclick="filterCat('Artist Tips',this)">Artist Tips</button>
-  <button class="cat-btn" onclick="filterCat('Merch & Products',this)">Merch & Products</button>
-  <button class="cat-btn" onclick="filterCat('Industry News',this)">Industry News</button>
-</div>
-
-<!-- FEATURED -->
-<div class="featured">
-  <div class="featured-inner">
-    <div class="featured-grid">
-      <div class="featured-visual"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art Generator"/></div>
-      <div class="featured-content">
-        <div class="post-cat">AI TOOLS</div>
-        <h2 class="featured-title">How to Generate Professional Cover Art in Under 30 Seconds Using AI</h2>
-        <p class="featured-excerpt">Independent artists used to spend $50-200 on Fiverr for a single cover art and wait days. Here's exactly how to use AI to create label-quality artwork instantly.</p>
-        <div class="post-meta">
-          <span><i class="ti ti-user"></i> StudioSound Team</span>
-          <span><i class="ti ti-calendar"></i> July 1, 2026</span>
-          <span><i class="ti ti-clock"></i> 5 min read</span>
-        </div>
-        <button class="read-btn" onclick="toggleFeatured(this)"><i class="ti ti-arrow-right"></i> Read Full Article</button>
-      </div>
-    </div>
-    <div class="article-full" id="featured-article">
-      <h3>The Old Way Was Expensive and Slow</h3>
-      <p>Before AI, independent artists had two options for cover art: spend $50-200 on Fiverr and wait 3-5 days, or use Canva and end up with something that screamed "I made this myself." Neither option was great. Major labels had in-house design teams. Independent artists had... nothing.</p>
-      <p>That gap is now completely closed. With StudioSound.ai's Cover Art Generator, you can generate two unique, label-quality cover arts in under 30 seconds. No design skills. No waiting. No paying a stranger on the internet.</p>
-      <h3>How to Write a Great Cover Art Prompt</h3>
-      <p>The key to stunning AI cover art is in the prompt. Here's the formula that works every time:</p>
-      <ul>
-        <li><strong>Setting:</strong> Where is the scene? (city at night, empty highway, studio, rooftop)</li>
-        <li><strong>Lighting:</strong> What's the light like? (neon lights, golden hour, dramatic shadows, moonlight)</li>
-        <li><strong>Mood:</strong> How should it feel? (dark and mysterious, energetic, emotional, luxurious)</li>
-        <li><strong>Colors:</strong> What palette? (gold and black, purple and blue, warm oranges)</li>
-        <li><strong>Style:</strong> Cinematic? Abstract? Photorealistic? Illustrated?</li>
-      </ul>
-      <div class="tip-box"><p>💡 Pro tip: Always end your prompt with "no text, no words, purely visual" — this prevents the AI from adding random letters to your artwork.</p></div>
-      <h3>Using Your Own Photo</h3>
-      <p>StudioSound.ai lets you upload a photo of yourself and incorporate it into the cover art. Click "Add Image" in the generator, upload your photo, then describe the scene around you. The AI will place you in the cover art environment you describe. This is how major artists get that cinematic look — now you can do it in seconds.</p>
-      <h3>Version A vs Version B</h3>
-      <p>One of StudioSound.ai's biggest advantages is that every generation gives you two completely different results from two different AI models. Version A tends to be more photorealistic and cinematic. Version B is more artistic, painterly, and graphic. You pick whichever one fits your vision — or generate again until you get exactly what you want.</p>
-      <p>Ready to try it? <a href="signup.html" style="color:var(--neon);font-weight:700;">Create your free account</a> and generate your first cover art in the next 2 minutes.</p>
-      <button class="collapse-btn" onclick="toggleFeatured(this)"><i class="ti ti-chevron-up"></i> Collapse Article</button>
+<main>
+<section class="pg-hero">
+  <div class="wrap">
+    <div class="kicker">The Blog</div>
+    <h1>Tips and strategy for independent artists.</h1>
+    <p class="lede">Music marketing, release strategy, AI tools and everything you need to drop like a major.</p>
+  </div>
+</section>
+<section class="sec" style="border-top:none;padding-top:8px;">
+  <div class="wrap">
+    <div class="cats"><button type="button" class="cat active" data-cat="all" onclick="filterCat('all', this)">All</button><button type="button" class="cat" data-cat="marketing" onclick="filterCat('marketing', this)">Music Marketing</button><button type="button" class="cat" data-cat="ai" onclick="filterCat('ai', this)">AI Tools</button><button type="button" class="cat" data-cat="release" onclick="filterCat('release', this)">Release Strategy</button><button type="button" class="cat" data-cat="tips" onclick="filterCat('tips', this)">Artist Tips</button><button type="button" class="cat" data-cat="merch" onclick="filterCat('merch', this)">Merch & Products</button><button type="button" class="cat" data-cat="news" onclick="filterCat('news', this)">Industry News</button></div>
+    <div class="posts">
+    <article class="post" data-cat="ai">
+      <div class="meta"><span class="tag">AI TOOLS</span><span>July 1, 2026</span><span>·</span><span>5 min read</span></div>
+      <h2>How to Generate Professional Cover Art in Under 30 Seconds Using AI</h2>
+      <p class="dek">Independent artists used to spend $50–200 on Fiverr for a single cover and wait days. Here's how to get label-quality artwork in seconds.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>The old way was expensive and slow</h3>
+<p>Before AI, independent artists had two options for cover art: spend $50–200 on Fiverr and wait 3–5 days, or use Canva and end up with something that screamed "I made this myself." Major labels had in-house design teams. Independent artists had nothing.</p>
+<p>That gap is closed. With StudioSound's Cover Art Generator you get two label-quality covers in under 30 seconds. No design skills, no waiting.</p>
+<h3>How to write a great cover prompt</h3>
+<ul><li><b>Setting:</b> where is the scene? (city at night, empty highway, studio, rooftop)</li><li><b>Lighting:</b> neon, golden hour, dramatic shadows, moonlight</li><li><b>Mood:</b> dark and mysterious, energetic, emotional, luxurious</li><li><b>Colors:</b> gold and black, purple and blue, warm oranges</li><li><b>Style:</b> cinematic, abstract, photorealistic, illustrated</li></ul>
+<div class="tip">💡 Want your title on the cover? Turn on "Include the title as text" and the generator places it for you. Want a clean image instead? Turn it off and add "no text, no words" to your description.</div>
+<h3>Put yourself on the cover</h3>
+<p>Upload up to three photos and describe the scene around you. The AI places you in it. That's how artists get the cinematic, "this came from a label" look.</p>
+<h3>Version A vs Version B</h3>
+<p>Every generation gives you two directions: Version A is photoreal and cinematic, Version B is more artistic and graphic. Pick the one that fits, or generate again.</p>
+<p>Ready? <a href="signup.html" onclick="return go('art')">Make your first cover free →</a></p></div></details>
+    </article>
+    <article class="post" data-cat="release">
+      <div class="meta"><span class="tag">RELEASE STRATEGY</span><span>July 2, 2026</span><span>·</span><span>7 min read</span></div>
+      <h2>The 30-Day Release Plan: How to Launch Like a Major Label</h2>
+      <p class="dek">Most independent artists drop music with zero strategy. Here's the 30-day roadmap that gets your music on playlists and in front of new fans.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>Why most independent releases underperform</h3>
+<p>The number one reason isn't the music, it's the lack of strategy. Most artists finish a song, upload it, post it once and wonder why nobody listened. Labels plan releases 8–12 weeks ahead with a specific move for every platform.</p>
+<h3>The 30-day roadmap</h3>
+<ul><li><b>30–21 days out:</b> lock your artwork, set up the pre-save, pitch to Spotify editorial</li><li><b>20–14 days out:</b> start teaser content on TikTok and Instagram, reach out to blogs</li><li><b>13–7 days out:</b> drop a snippet, push the pre-save, contact playlist curators</li><li><b>6–1 days out:</b> full promo push, announce the date everywhere</li><li><b>Release day:</b> post everywhere, go live, thank your fans</li><li><b>Week after:</b> keep posting daily, answer comments, pitch more playlists</li></ul>
+<div class="tip">💡 The <a href="signup.html" onclick="return go('plan')">Release Planner</a> builds a personalized version of this around your genre, city and release date, and the free <a href="release-checklist.html">Release Checklist</a> gives you the dates.</div>
+<h3>The most overlooked step</h3>
+<p>Spotify for Artists lets you pitch one unreleased song to editorial playlists, and it has to be at least 7 days before release. Most artists miss the window. If you distribute with <a href="distribution.html">Stop One</a>, submit 7–14 days out so there's time to pitch.</p></div></details>
+    </article>
+    <article class="post" data-cat="merch">
+      <div class="meta"><span class="tag">MERCH & PRODUCTS</span><span>July 3, 2026</span><span>·</span><span>6 min read</span></div>
+      <h2>Print on Demand vs Bulk Orders: What Every Artist Needs to Know</h2>
+      <p class="dek">Should you use print on demand or order 50 hoodies upfront? We break down the numbers for every fanbase size.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>Print on demand: the safe start</h3>
+<p>With print on demand (POD) you list merch online, a fan orders, and the printer makes and ships it. You never touch inventory. The cost per item is higher (a hoodie runs about $28–34) but there's no upfront cost and no risk.</p>
+<p>POD is perfect for your first drop or a small following. Test which designs your fans actually want before investing in bulk.</p>
+<h3>Bulk orders: when it makes sense</h3>
+<p>Once a design sells, bulk drops your cost a lot. A hoodie that's about $30 on POD can be $14–18 each in runs of 50+.</p>
+<ul><li><b>Under 500 followers:</b> stick with POD</li><li><b>500–2,000:</b> small POD runs first</li><li><b>2,000–10,000:</b> consider bulk for proven sellers</li><li><b>10,000+:</b> bulk usually wins</li></ul>
+<div class="tip">💡 <a href="signup.html" onclick="return go('merch')">Merch Mockups</a> shows your design on any product with the POD vs bulk breakdown built in, before you spend a dollar.</div>
+<h3>The real numbers</h3>
+<p>A hoodie with your cover art: POD cost $30, sells for $65, $35 profit. Bulk cost $16, $49 profit. Sell 50 and that's $700 more, but only once you know the design moves.</p></div></details>
+    </article>
+    <article class="post" data-cat="marketing">
+      <div class="meta"><span class="tag">MUSIC MARKETING</span><span>July 4, 2026</span><span>·</span><span>5 min read</span></div>
+      <h2>TikTok vs Instagram Reels: Where Should Independent Artists Post?</h2>
+      <p class="dek">Both can blow up your music, but they work differently. Here's where to put your energy.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>TikTok: the discovery engine</h3>
+<p>TikTok shows your content to people who don't follow you yet, which is real organic reach for new artists. It works best for songs with a hook that hits in the first 3 seconds.</p>
+<h3>Instagram Reels: the fanbase builder</h3>
+<p>Reels reach is usually lower, but the fans you build there are more loyal. If TikTok is discovery, Instagram is where discovery turns into real fans who stream, come to shows and buy merch.</p>
+<ul><li>Post to TikTok first as your discovery platform</li><li>Repost your best clips to Reels, re-exported without the TikTok watermark</li><li>Use Stories to go deeper with existing fans</li><li>Aim for 3–4 posts a week on both, minimum</li></ul>
+<div class="tip">💡 Cut the hook with the free <a href="audio-trimmer.html">Audio Trimmer</a>, or turn it into a vertical lyric video in the <a href="signup.html" onclick="return go('lyric')">Lyric Video Creator</a>.</div>
+<h3>Know your genre</h3>
+<p>Gospel, R&B and Country artists often build stronger communities on Instagram and Facebook. Hip-Hop, Drill and Electronic often move faster on TikTok. Put your energy where your audience already is.</p></div></details>
+    </article>
+    <article class="post" data-cat="ai">
+      <div class="meta"><span class="tag">AI TOOLS</span><span>July 5, 2026</span><span>·</span><span>4 min read</span></div>
+      <h2>How to Write the Perfect AI Prompt for Your Music Cover Art</h2>
+      <p class="dek">The difference between a generic AI image and a stunning cover is in the prompt. Here are the words that work.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>Why most AI covers look generic</h3>
+<p>Type "hip hop album cover" and you get a stock photo. The AI needs direction. The more specific you are, the better the result.</p>
+<h3>The prompt formula</h3>
+<ul><li><b>Subject:</b> a lone figure, a skyline, floating objects</li><li><b>Environment:</b> dark alley, rooftop at sunset, underwater</li><li><b>Lighting:</b> neon signs, moonlight, golden hour, studio strobes</li><li><b>Color palette:</b> dark blues and purples, gold and black, warm earth tones</li><li><b>Mood:</b> one or two words</li><li><b>Style:</b> cinematic, photoreal, illustrated, gritty</li></ul>
+<div class="tip">💡 Example: "A hooded figure on the edge of a rooftop over a rainy city at night. Purple and blue neon reflections on wet streets. Cinematic, moody." Leave title text to the title toggle so the lettering comes out clean.</div>
+<h3>Genre tips</h3>
+<p>Trap and Drill: "luxury," "gold," "marble," "dramatic studio lighting," "high contrast." R&B and Soul: "soft glow," "warm tones," "silhouette," "sunset." Gospel: "light beams," "golden," "uplifting," "radiant."</p>
+<p><a href="signup.html" onclick="return go('art')">Open the Cover Art Generator →</a></p></div></details>
+    </article>
+    <article class="post" data-cat="tips">
+      <div class="meta"><span class="tag">ARTIST TIPS</span><span>July 6, 2026</span><span>·</span><span>5 min read</span></div>
+      <h2>Pre-Save Campaigns: The Underrated Tool That Helps Your Release Land</h2>
+      <p class="dek">A strong pre-save campaign gives your release a first-day push. Here's how to run one that works.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>What a pre-save does</h3>
+<p>A pre-save lets fans save your upcoming release before it drops. On release day it lands in their library automatically, which helps create the early spike in streams that tells the algorithm people care.</p>
+<h3>Why it matters</h3>
+<p>Release Radar goes out to your followers on Spotify every Friday. Strong early activity from pre-saves and followers gives your song a better shot at being pushed further.</p>
+<ul><li>Set up your pre-save link 2–3 weeks before release</li><li>Use a smart-link service or your distributor's pre-save link</li><li>Post it in your Stories daily starting 2 weeks out</li><li>Offer something back: early access, exclusive content, a shoutout</li><li>DM your most engaged fans and ask them directly</li></ul>
+<div class="tip">💡 Even 50 pre-saves can make a difference for an emerging artist. It's free and takes 10 minutes.</div>
+<h3>What to post</h3>
+<p>Post your cover with the pre-save link, pin it, and put it in every Story. Need ads behind it? The <a href="signup.html" onclick="return go('ads')">Ad Generator</a> has a Pre-saves goal.</p></div></details>
+    </article>
+    <article class="post" data-cat="marketing">
+      <div class="meta"><span class="tag">MUSIC MARKETING</span><span>July 7, 2026</span><span>·</span><span>9 min read</span></div>
+      <h2>How to Run Your First Music Ad on Meta for Under $50</h2>
+      <p class="dek">Meta ads don't have to be expensive or complicated. Here's how to run your first campaign and learn who your fans really are.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>Why Meta ads work for music</h3>
+<p>Meta lets you reach people by music taste, age and location, including fans of artists similar to you. For a small budget that's targeting you can't get anywhere else.</p>
+<h3>Setting up your first campaign</h3>
+<ul><li><b>Step 1:</b> create an ad account in Meta Ads Manager</li><li><b>Step 2:</b> pick Traffic as the objective and optimize for landing page views</li><li><b>Step 3:</b> run about $5–7 a day for 7–10 days</li><li><b>Step 4:</b> target ages 18–34, similar-artist and genre interests, your city first</li><li><b>Step 5:</b> run 3 versions for 3 days, then keep the winner</li></ul>
+<div class="tip">💡 The <a href="signup.html" onclick="return go('ads')">Ad Generator</a> builds all of this for you: ad images and a 15-second video, 3 versions of the copy, targeting from research on your fans, a budget plan and step-by-step setup.</div>
+<h3>What to expect</h3>
+<p>Results vary a lot by song, creative and city. Treat your first $50 as a test: you're learning which ad and which audience respond, so your next campaign is cheaper and sharper. Ads that show you performing usually beat cover-only ads.</p>
+<h3>Where to send people</h3>
+<p>Send ads to a release page or smart link with a Meta pixel instead of straight to Spotify, so you can see who clicked and reach them again next drop.</p></div></details>
+    </article>
+    <article class="post" data-cat="news">
+      <div class="meta"><span class="tag">INDUSTRY NEWS</span><span>July 8, 2026</span><span>·</span><span>6 min read</span></div>
+      <h2>The State of Independent Music: Why Now Is the Moment</h2>
+      <p class="dek">Independent artists have more reach than ever, and more competition. Here's what that means for you.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>Independent music is winning</h3>
+<p>Independent artists and labels now account for a large and growing share of what people stream. The tools that used to belong to major labels (distribution, marketing, design, data) are available to anyone with a phone.</p>
+<h3>And it's crowded</h3>
+<p>Well over 100,000 new tracks hit streaming services every day. Getting music out is easy now; getting it heard is the hard part.</p>
+<div class="tip">💡 The artists winning right now treat their music like a business: a plan for every release, consistent content, professional presentation, and an eye on their numbers. Start with the <a href="forecast.html">Earnings Forecast</a> to see where you stand.</div>
+<h3>What this means for you</h3>
+<p>The barrier to entry is close to zero. The barrier to success is execution. The most consistent and strategic artists win, not always the most talented. Pick your tools, build your plan, and show up every week.</p></div></details>
+    </article>
+    <article class="post" data-cat="release">
+      <div class="meta"><span class="tag">RELEASE STRATEGY</span><span>July 9, 2026</span><span>·</span><span>7 min read</span></div>
+      <h2>How to Pitch Your Music to Spotify Editorial Playlists</h2>
+      <p class="dek">Editorial placement can change your career. Here's the honest truth about pitching the right way.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>What editorial playlists are</h3>
+<p>Spotify editorial playlists are curated by Spotify's editorial team. A placement can bring a big wave of new listeners, and independent artists can and do get on them.</p>
+<h3>How the pitch works</h3>
+<p>Spotify for Artists lets you pitch one unreleased song, at least 7 days before release.</p>
+<ul><li>Fill out every field: genre, mood, instruments, culture, city</li><li>Describe the song clearly: what it is, who it's for, what makes it different</li><li>Choose accurate mood and genre tags, since they decide which editors see it</li><li>Submit as early as you can</li></ul>
+<div class="tip">💡 Know your lane. Pitch for the playlists your song actually fits, and make sure your metadata is clean first with the free <a href="metadata-formatter.html">Metadata Formatter</a>.</div>
+<h3>What helps you get placed</h3>
+<p>Song quality, listener signals and timing. Strong pre-saves, people listening all the way through, and early momentum all help, which is why your rollout starts weeks before the drop. Stop One also pitches its artists' releases to editorial and independent playlists.</p></div></details>
+    </article>
+    <article class="post" data-cat="tips">
+      <div class="meta"><span class="tag">ARTIST TIPS</span><span>July 10, 2026</span><span>·</span><span>8 min read</span></div>
+      <h2>Building Your Brand as an Independent Artist</h2>
+      <p class="dek">Your music is the product. Your brand is why people choose you. Here's how to build one that stands out.</p>
+      <details><summary><span class="more">Read the article →</span><span class="less">Close article ↑</span></summary><div class="body"><h3>What an artist brand is</h3>
+<p>Your brand is everything people think and feel when they hear your name: your visuals, your sound, how you show up online, the energy you bring to every release.</p>
+<h3>The four pillars</h3>
+<ul><li><b>Visual identity:</b> consistent colors, fonts and look across covers, your grid and thumbnails</li><li><b>Sound identity:</b> the lane you own, so people know how to recommend you</li><li><b>Personality:</b> mysterious, vulnerable, funny, raw. Pick it and be consistent</li><li><b>Story:</b> why you make music. People connect with stories more than songs</li></ul>
+<div class="tip">💡 Your cover is often someone's first impression. A consistent visual style across releases builds recognition faster than almost anything else.</div>
+<h3>Consistency beats perfection</h3>
+<p>Don't wait until everything is perfect. The artists who win show up every week, not once every three months with one perfect post.</p>
+<p><a href="signup.html" onclick="return go('art')">Start building your visual brand →</a></p></div></details>
+    </article>
     </div>
   </div>
-</div>
-
-<!-- BLOG GRID -->
-<div class="blog-section">
-  <div class="blog-grid">
-
-    <!-- ARTICLE 1 -->
-    <div class="blog-card" data-cat="Release Strategy">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1f0f3a,#2a1a50);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Plan Generator" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">RELEASE STRATEGY</div>
-        <div class="blog-title">The 30-Day Release Plan: How to Launch Like a Major Label</div>
-        <div class="blog-excerpt">Most independent artists drop music with zero strategy. Here's the exact 30-day roadmap that gets your music on playlists and in front of new fans.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 2, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>Why Most Independent Releases Fail</h3>
-          <p>The number one reason independent releases underperform isn't the music — it's the lack of strategy. Most artists finish a song, upload it to DistroKid, post it on Instagram, and wonder why nobody listened. Major labels don't operate this way. They plan releases 8-12 weeks in advance with a specific strategy for every platform.</p>
-          <h3>The 30-Day Roadmap</h3>
-          <ul>
-            <li><strong>Day 30-21 before release:</strong> Lock your artwork, set up pre-save, pitch to Spotify editorial playlists</li>
-            <li><strong>Day 20-14 before release:</strong> Start teaser content on TikTok and Instagram, reach out to music blogs</li>
-            <li><strong>Day 13-7 before release:</strong> Drop a snippet, run a pre-save campaign, contact playlist curators</li>
-            <li><strong>Day 6-1 before release:</strong> Full promotional push, announce release date everywhere</li>
-            <li><strong>Release day:</strong> Post everywhere simultaneously, go live on Instagram, thank your fans</li>
-            <li><strong>Week 1 after release:</strong> Keep posting daily, respond to comments, pitch to more playlists</li>
-          </ul>
-          <div class="tip"><p>💡 Use StudioSound.ai's Release Planner to get a personalized version of this roadmap built around your specific genre, city, and release date.</p></div>
-          <h3>The Most Overlooked Step</h3>
-          <p>Playlist pitching is where most artists drop the ball. Spotify for Artists lets you pitch ONE unreleased song to editorial playlists — but you have to do it at least 7 days before release. Most artists miss this window entirely. Set a reminder right now.</p>
-          <p>Ready to build your release plan? <a href="signup.html" style="color:var(--neon);font-weight:700;">Try the Release Planner free →</a></p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 2 -->
-    <div class="blog-card" data-cat="Merch & Products">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0f3a1f,#1a5030);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/hoodie-mockup.png.png" alt="Hoodie Mockup" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">MERCH & PRODUCTS</div>
-        <div class="blog-title">Print on Demand vs Bulk Orders: What Every Artist Needs to Know</div>
-        <div class="blog-excerpt">Should you use Printful for print on demand or order 50 hoodies upfront? We break down the real numbers for every fanbase size.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 3, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>Print on Demand — The Safe Starting Point</h3>
-          <p>Print on demand (POD) means you list your merch online, someone orders it, the printer makes it and ships it directly to your fan. You never touch inventory. The cost is higher per item — a hoodie costs $28-34 through Printful — but you have zero upfront cost and zero risk.</p>
-          <p>POD is perfect if you have under 1,000 followers or you're releasing merch for the first time. Test what designs and products your fans actually want before investing in bulk.</p>
-          <h3>Bulk Orders — When It Makes Sense</h3>
-          <p>Once you know a design sells, bulk ordering drops your cost dramatically. A hoodie that costs $30 through POD might cost $14-18 each in bulk orders of 50+ units. That's a margin jump from about 30% to 60-70%.</p>
-          <ul>
-            <li>Under 500 followers: Stick with print on demand</li>
-            <li>500-2,000 followers: Test with small POD runs first</li>
-            <li>2,000-10,000 followers: Consider bulk for your best-selling items</li>
-            <li>10,000+ followers: Bulk orders almost always make more financial sense</li>
-          </ul>
-          <div class="tip"><p>💡 Use StudioSound.ai's Merch Mockup Studio to see exactly what your design looks like on any product before you spend a single dollar. The cost breakdown is built right in.</p></div>
-          <h3>The Real Numbers</h3>
-          <p>A black hoodie with your cover art: POD cost $30, retail $65 = $35 profit per sale. Bulk cost $16, retail $65 = $49 profit per sale. At 50 hoodies sold that's $700 more profit just from switching to bulk. The math is clear — but only when you know the design will sell.</p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 3 -->
-    <div class="blog-card" data-cat="Music Marketing">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#3a1f0f,#502a1a);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok-content-maker.png.png" alt="TikTok Content Maker" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">MUSIC MARKETING</div>
-        <div class="blog-title">TikTok vs Instagram Reels: Where Should Independent Artists Post in 2026?</div>
-        <div class="blog-excerpt">Both platforms can blow up your music — but they work completely differently. Here's where to focus your energy based on your genre.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 4, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>TikTok — The Discovery Engine</h3>
-          <p>TikTok's algorithm is the most powerful music discovery tool ever built. A song can go from zero to a million streams in 48 hours if the right video lands. The key is TikTok shows your content to people who don't follow you — which means real organic reach for new artists.</p>
-          <p>TikTok works best for: Hip-Hop, Drill, Pop, Afrobeats, Electronic, and any genre with a hook that hits in the first 3 seconds. If your song has a viral moment — a line, a beat drop, a vocal run — TikTok is where you push it.</p>
-          <h3>Instagram Reels — The Fanbase Builder</h3>
-          <p>Instagram Reels reach is lower than TikTok but the fans you build there are more loyal. Instagram is where your core fanbase lives, engages, and buys. If TikTok is for discovery, Instagram is for converting that discovery into real fans.</p>
-          <ul>
-            <li>Post to TikTok first — use it as your discovery platform</li>
-            <li>Cross-post your best TikToks to Instagram Reels</li>
-            <li>Use Instagram Stories to build deeper connection with existing fans</li>
-            <li>Post on both at least 3-4 times per week minimum</li>
-          </ul>
-          <div class="tip"><p>💡 The best strategy in 2026: Create content natively for TikTok, then repurpose to Reels. Never just download and repost — always re-export without the TikTok watermark.</p></div>
-          <h3>The Genre Factor</h3>
-          <p>Gospel, R&B Soul, and Country artists tend to build stronger fanbases on Instagram and Facebook. Hip-Hop, Drill, and Electronic artists tend to explode faster on TikTok. Know your genre and put your energy where your audience actually is.</p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 4 -->
-    <div class="blog-card" data-cat="AI Tools">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0a0a1a,#0f0f2a);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/latin-cover-art-gritty.png.png" alt="AI generated cover art example" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">AI TOOLS</div>
-        <div class="blog-title">How to Write the Perfect AI Prompt for Your Music Cover Art</div>
-        <div class="blog-excerpt">The difference between a generic AI image and a stunning cover art is 90% in the prompt. Here are the exact words that get the best results.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 4 min read · July 5, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>Why Most AI Cover Arts Look Generic</h3>
-          <p>When artists first use AI for cover art they type something like "hip hop album cover" and get something that looks like a stock photo. The AI needs direction. The more specific you are, the better the result — every single time.</p>
-          <h3>The Perfect Prompt Formula</h3>
-          <p>Use this structure for every cover art prompt:</p>
-          <ul>
-            <li><strong>Subject:</strong> Who or what is the main focus? (a lone figure, a city skyline, floating objects)</li>
-            <li><strong>Environment:</strong> Where is it set? (dark alley, rooftop at sunset, underwater)</li>
-            <li><strong>Lighting:</strong> What's the light source? (neon signs, moonlight, golden hour, studio strobes)</li>
-            <li><strong>Color palette:</strong> What colors dominate? (dark blues and purples, gold and black, warm earth tones)</li>
-            <li><strong>Mood:</strong> One or two words describing the feeling</li>
-            <li><strong>Style:</strong> Cinematic, photorealistic, illustrated, abstract, gritty</li>
-            <li><strong>Ending:</strong> Always add "no text, no words, no letters, purely visual"</li>
-          </ul>
-          <div class="tip"><p>💡 Example: "A hooded figure standing at the edge of a rooftop overlooking a rainy city at night. Neon purple and blue reflections on wet streets below. Cinematic, dramatic, moody atmosphere. No text, no words, purely visual."</p></div>
-          <h3>Genre-Specific Tips</h3>
-          <p>For Trap and Drill: Use words like "luxury," "gold," "marble," "dramatic studio lighting," "high contrast." For R&B and Soul: Use "soft glow," "warm tones," "silhouette," "sunset," "emotional." For Gospel: Use "light beams," "heavenly," "golden," "uplifting," "radiant."</p>
-          <p>Try generating right now — <a href="signup.html" style="color:var(--neon);font-weight:700;">open the Cover Art Generator →</a></p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 5 -->
-    <div class="blog-card" data-cat="Artist Tips">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0828,#2d1045);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/pre-save-campaign.png.png" alt="Pre-Save Campaign" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">ARTIST TIPS</div>
-        <div class="blog-title">Pre-Save Campaigns: The Underrated Tool That Gets Your Music on Playlists</div>
-        <div class="blog-excerpt">A strong pre-save campaign signals to Spotify's algorithm that your release deserves playlist placement. Here's how to run one that works.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 5 min read · July 6, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>What Is a Pre-Save Campaign?</h3>
-          <p>A pre-save campaign lets fans save your upcoming release to their Spotify library before it drops. On release day, all pre-saves automatically add the song to their library and notify them — which creates a spike in streams in the first 24-48 hours. That spike tells Spotify's algorithm your song deserves more exposure.</p>
-          <h3>Why Pre-Saves Matter</h3>
-          <p>Spotify's Release Radar playlist — which goes out to every artist's followers every Friday — is the most powerful free promotional tool on the platform. Pre-saves increase the chance your song gets pushed harder. More pre-saves = stronger first-day performance = better algorithmic placement.</p>
-          <ul>
-            <li>Set up your pre-save link at least 2-3 weeks before release</li>
-            <li>Use free tools like ToneDen, Feature.fm, or SubmitHub for pre-save links</li>
-            <li>Post your pre-save link daily in your stories starting 2 weeks out</li>
-            <li>Offer something in return — exclusive content, early access, a shoutout</li>
-            <li>DM your most engaged fans directly and ask them to pre-save</li>
-          </ul>
-          <div class="tip"><p>💡 Even 50 pre-saves can make a real difference for an emerging artist. Don't sleep on this step — it's completely free and takes 10 minutes to set up.</p></div>
-          <h3>What to Post</h3>
-          <p>Post your cover art with the pre-save link. Use the caption "Drop saved? 🔗 in bio" and update your bio link to the pre-save page. Pin the post. Put it in every story. Make it impossible to miss. The more urgency you create around the pre-save, the more fans will actually do it.</p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 6 -->
-    <div class="blog-card" data-cat="Music Marketing">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0f2a1f,#1a4030);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/meta-ad-creator.png.png" alt="Meta Ad Creator" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">MUSIC MARKETING</div>
-        <div class="blog-title">How to Run Your First Music Ad on Meta for Under $50</div>
-        <div class="blog-excerpt">Meta ads don't have to be expensive or complicated. Here's a step-by-step guide to running your first music promotion campaign and actually getting streams.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 9 min read · July 7, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>Why Meta Ads Work for Music</h3>
-          <p>Meta's ad platform lets you target people by music taste, age, location, and behavior. You can show your music to people who follow artists similar to you — people who are already proven fans of your genre. No other platform offers targeting this specific for this cheap.</p>
-          <h3>Setting Up Your First Campaign</h3>
-          <ul>
-            <li><strong>Step 1:</strong> Go to business.facebook.com and create an ad account</li>
-            <li><strong>Step 2:</strong> Choose "Traffic" as your campaign objective — send people to your Spotify link</li>
-            <li><strong>Step 3:</strong> Set your budget to $5/day for 10 days = $50 total</li>
-            <li><strong>Step 4:</strong> Target: Ages 18-34, your genre interests, your city first then expand</li>
-            <li><strong>Step 5:</strong> Use your cover art as the ad image with a simple caption</li>
-          </ul>
-          <div class="tip"><p>💡 The best performing music ads use a 15-30 second video clip of the most viral moment in your song — the hook, the drop, the line that gets stuck in your head. Start there.</p></div>
-          <h3>What to Expect</h3>
-          <p>With $50 and good targeting you can realistically get 200-500 link clicks to your Spotify. Not every click converts to a stream but even a 30% conversion rate is 60-150 new streams. More importantly you're building brand awareness and data — after your first campaign you'll know exactly who responds to your music and you can target more precisely next time.</p>
-          <h3>The Creative Is Everything</h3>
-          <p>Your ad creative — the image or video — determines whether people stop scrolling. Use your StudioSound.ai cover art as the image. Make sure it looks professional. A great image with a mediocre song will outperform a bad image with a great song every time in paid advertising.</p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 7 -->
-    <div class="blog-card" data-cat="Industry News">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#2a1808,#3a2010);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ep-album-art.png.png" alt="EP and Album Art" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">INDUSTRY NEWS</div>
-        <div class="blog-title">The State of Independent Music in 2026: What the Numbers Say</div>
-        <div class="blog-excerpt">Independent artists now earn more than ever before — but the competition is fiercer too. Here's what the data says about where the industry is heading.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 6 min read · July 8, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>Independent Music Is Winning</h3>
-          <p>For the first time in music history, independent artists and labels account for more than 40% of global music consumption. The tools that used to be exclusive to major labels — distribution, marketing, production, design — are now accessible to anyone with an internet connection and $10/month.</p>
-          <h3>The Numbers</h3>
-          <ul>
-            <li>Over 100,000 songs are uploaded to Spotify every single day</li>
-            <li>Independent artists earned $3.8 billion in streaming revenue in 2025</li>
-            <li>The average independent artist earns 82% of their streaming revenue — vs 16% on a major label deal</li>
-            <li>TikTok has broken more independent artists in the last 3 years than radio did in 30</li>
-          </ul>
-          <div class="tip"><p>💡 The opportunity has never been bigger. But the competition has never been fiercer either. The artists who win in 2026 are the ones who treat their music like a business — with strategy, consistency, and professional presentation.</p></div>
-          <h3>What This Means for You</h3>
-          <p>The playing field has never been more level. A bedroom artist with the right tools, the right strategy, and consistent execution can compete directly with major label releases. The barrier to entry is essentially zero. The barrier to success is execution — and that's where StudioSound.ai comes in.</p>
-          <p>The artists winning right now aren't necessarily the most talented — they're the most consistent and the most strategic. Pick your tools, build your plan, and execute every single day.</p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 8 -->
-    <div class="blog-card" data-cat="Release Strategy">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#0a1828,#102040);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/press-kit-generator.png.png" alt="Press Kit Generator" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">RELEASE STRATEGY</div>
-        <div class="blog-title">How to Get Your Music on Spotify Editorial Playlists as an Independent Artist</div>
-        <div class="blog-excerpt">Editorial playlist placement can change your career overnight. Here's the honest truth about what it takes and how to pitch the right way.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 7 min read · July 9, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>What Are Editorial Playlists?</h3>
-          <p>Spotify editorial playlists — like RapCaviar, New Music Friday, and Today's Top Hits — are curated by Spotify's in-house editorial team. Getting on one can mean millions of streams overnight. They're the most coveted placement in the streaming era, and yes, independent artists can get on them.</p>
-          <h3>The Pitch Process</h3>
-          <p>Spotify for Artists gives you ONE pitch per unreleased song — and you must submit it at least 7 days before release. Here's how to make your pitch count:</p>
-          <ul>
-            <li>Fill out every field in the pitch form — genre, mood, instrumentation, city</li>
-            <li>Write a compelling description of the song in 500 characters or less</li>
-            <li>Be specific about what makes this song unique and who it's for</li>
-            <li>Select the most accurate mood and genre tags — these determine which editors see your pitch</li>
-            <li>Submit early — the earlier before release, the more time editors have to listen</li>
-          </ul>
-          <div class="tip"><p>💡 Spotify editors listen to every pitch. But they're listening for quality, authenticity, and fit for their specific playlist. Don't pitch RapCaviar if you make Gospel. Know your lane and pitch accordingly.</p></div>
-          <h3>What Actually Gets You Placed</h3>
-          <p>Editorial placement comes down to three things: song quality, listener data, and timing. Songs with strong pre-save numbers, high completion rates (people listening all the way through), and early streaming momentum are more likely to get editorial support. This is why your release strategy — starting weeks before the drop — directly impacts your chances of editorial placement.</p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 9 -->
-    <div class="blog-card" data-cat="Artist Tips">
-      <div class="blog-visual" style="background:linear-gradient(135deg,#1a0f28,#251540);"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png" alt="Social Media Kit" loading="lazy"/></div>
-      <div class="blog-content">
-        <div class="blog-cat">ARTIST TIPS</div>
-        <div class="blog-title">Building Your Brand as an Independent Artist: The Complete Guide</div>
-        <div class="blog-excerpt">Your music is the product. Your brand is why people choose you over everyone else. Here's how to build an artist brand that stands out in 2026.</div>
-        <div class="blog-meta"><span><i class="ti ti-clock"></i> 8 min read · July 10, 2026</span></div>
-        <button class="blog-read-btn" onclick="toggleArticle(this)"><i class="ti ti-arrow-right"></i> Read More</button>
-        <div class="blog-article">
-          <h3>What Is an Artist Brand?</h3>
-          <p>Your artist brand is everything people think and feel when they hear your name. It's your visual identity, your sound, your personality online, the energy you bring to every post and every release. Strong brands are immediately recognizable — you know a Drake release before you even hear it. That level of brand consistency is what you're building toward.</p>
-          <h3>The Four Pillars of Artist Branding</h3>
-          <ul>
-            <li><strong>Visual Identity:</strong> Consistent colors, fonts, and aesthetic across all platforms. Your cover art, your Instagram grid, your TikTok thumbnails should all feel like they belong to the same world.</li>
-            <li><strong>Sound Identity:</strong> What genre and sonic territory do you own? The clearer your sound, the easier it is for people to recommend you to others.</li>
-            <li><strong>Personality:</strong> How do you show up online? Mysterious? Vulnerable? Funny? Raw? Pick a lane and be consistent.</li>
-            <li><strong>Story:</strong> Why do you make music? What are you trying to say? People connect with stories more than songs.</li>
-          </ul>
-          <div class="tip"><p>💡 Your cover art is often the first impression someone has of your music. Make it count. A consistent visual style across all your releases builds brand recognition faster than almost anything else.</p></div>
-          <h3>Consistency Beats Perfection</h3>
-          <p>The biggest mistake independent artists make is waiting until everything is perfect before posting. Post consistently, even when you don't feel ready. The artists who win in 2026 are the ones who show up every single day — not the ones who post one perfect thing every three months. Volume and consistency beat perfection every time.</p>
-          <p>Start building your visual brand today — <a href="signup.html" style="color:var(--neon);font-weight:700;">generate your first cover art free →</a></p>
-          <button class="blog-collapse" onclick="toggleArticle(this)"><i class="ti ti-chevron-up"></i> Collapse</button>
-        </div>
-      </div>
-    </div>
-
+</section>
+<section class="newsletter">
+  <div class="wrap">
+    <h2>Get the tips in your inbox every week.</h2>
+    <p>Music marketing tips, tool updates and release strategy guides. Free, no spam.</p>
+    <div class="nl-form"><input type="email" id="newsletter-email" placeholder="Your email address" autocomplete="email"/><button class="btn btn-lg btn-neon" type="button" onclick="subscribeNewsletter()">Subscribe free</button></div>
+    <div class="nl-note" id="nl-note">No spam. Unsubscribe anytime.</div>
   </div>
-</div>
+</section>
+</main>
 
-<!-- NEWSLETTER -->
-<div class="newsletter">
-  <div class="newsletter-inner">
-    <h2 class="newsletter-title">Get the latest tips delivered<br>to your <span class="neon">inbox weekly.</span></h2>
-    <p class="newsletter-sub">Join 1,800+ independent artists getting music marketing tips, AI tool updates, and release strategy guides every week. Free — no spam ever.</p>
-    <div class="newsletter-form">
-      <input class="newsletter-input" placeholder="Enter your email address" type="email" id="newsletter-email"/>
-      <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe Free</button>
-    </div>
-    <div class="newsletter-note">No spam. Unsubscribe anytime. We respect your inbox.</div>
+<section class="close">
+  <div class="wrap">
+    <div class="kicker">Talent should be the only barrier to success in music.</div>
+    <h2>Create. Release. Drop like a major.</h2>
+    <p>Start with the numbers you already have. It takes about a minute.</p>
+    <a class="btn btn-lg btn-neon" href="forecast.html" onclick="return go('forecast')"><i class="ti ti-chart-line"></i> Forecast my earnings</a>
   </div>
-</div>
+</section>
 
-<!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-logo">
-      <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
-      <span class="footer-logoname">StudioSound.ai</span>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">
+        <img class="footer-logoimg" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/fox-side-logo.png.png" alt="StudioSound.ai"/>
+        <span class="footer-logoname">StudioSound.ai</span>
+      </div>
+      <p class="footer-desc">The AI studio built for independent music artists. Create. Release. Elevate.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/studiosoundai/" target="_blank" rel="noopener" aria-label="Instagram"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt=""/></a>
+        <a href="https://www.tiktok.com/@studiosoundai?lang=en" target="_blank" rel="noopener" aria-label="TikTok"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt=""/></a>
+        <a href="https://www.youtube.com/@StudioSoundAi" target="_blank" rel="noopener" aria-label="YouTube"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt=""/></a>
+        <a href="https://x.com/Studiosoundai" target="_blank" rel="noopener" aria-label="X"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="" style="filter:invert(1);"/></a>
+        <a href="https://www.facebook.com/share/1HHte5Nyzp/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt=""/></a>
+      </div>
     </div>
-    <div class="footer-links">
-      <a class="footer-link" href="index.html">Home</a>
+    <div>
+      <div class="footer-col-title">Studio</div>
+      <a class="footer-link" href="forecast.html" onclick="return go('forecast')">Earnings Forecast</a>
+      <a class="footer-link" href="signup.html" onclick="return go('art')">Cover Art</a>
+      <a class="footer-link" href="signup.html" onclick="return go('plan')">Release Planner</a>
+      <a class="footer-link" href="signup.html" onclick="return go('writer')">Lyric Writer</a>
+      <a class="footer-link" href="signup.html" onclick="return go('lyric')">Lyric Videos</a>
+      <a class="footer-link" href="signup.html" onclick="return go('merch')">Merch Mockups</a>
+      <a class="footer-link" href="signup.html" onclick="return go('ads')">Ad Generator</a>
+      <a class="footer-link" href="tools.html">Free tools</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
       <a class="footer-link" href="features.html">Features</a>
       <a class="footer-link" href="pricing.html">Pricing</a>
+      <a class="footer-link" href="distribution.html">Distribution</a>
       <a class="footer-link" href="community.html">Community</a>
       <a class="footer-link" href="blog.html">Blog</a>
       <a class="footer-link" href="contact.html">Contact</a>
     </div>
-    <div class="footer-social">
-      <a class="footer-social-link" href="https://www.instagram.com/studiosoundai/" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/instagram.png.png" alt="Instagram"/></a>
-      <a class="footer-social-link" href="https://www.tiktok.com/@studiosoundai?lang=en" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tiktok.png.png" alt="TikTok"/></a>
-      <a class="footer-social-link" href="https://www.youtube.com/@StudioSoundAi" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/youtube.png.png" alt="YouTube"/></a>
-      <a class="footer-social-link" href="https://x.com/Studiosoundai" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/x.png.png" alt="X" style="filter:invert(1);"/></a>
-      <a class="footer-social-link" href="https://www.facebook.com/share/1HHte5Nyzp/?mibextid=wwXIfr" target="_blank"><img class="sicon" src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/facebook.png.png" alt="Facebook"/></a>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <a class="footer-link" href="privacy.html">Privacy Policy</a>
+      <a class="footer-link" href="terms.html">Terms of Use</a>
+      <a class="footer-link" href="privacy.html#cookies">Cookie Policy</a>
+      <a class="footer-link" href="terms.html#ownership">Content Rights</a>
+      <a class="footer-link" href="privacy.html#security">Security</a>
     </div>
   </div>
-  <div class="footer-copy">© 2026 StudioSound.ai — The AI Studio for Independent Artists. All rights reserved.</div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 StudioSound.ai. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a class="footer-bottom-link" href="privacy.html">Privacy</a>
+      <a class="footer-bottom-link" href="terms.html">Terms</a>
+      <a class="footer-bottom-link" href="contact.html">Contact</a>
+    </div>
+  </div>
 </footer>
 
 <script>
+/* ---------- Routing: logged-in artists go straight to the tool; new artists sign up, then land on it ---------- */
+window.__ssSignedIn = false;
+// Free tools are public pages for everyone. The forecast preview is public too,
+// but signed-in artists open the full version in their Studio.
+const SS_PUBLIC = { forecast: 'forecast.html', tools: 'tools.html', resize: 'cover-resizer.html', audio: 'mp3-to-wav.html', trim: 'audio-trimmer.html', split: 'split-sheet.html', meta: 'metadata-formatter.html', check: 'release-checklist.html' };
+function go(tool) {
+  if (window.__ssSignedIn) { window.location.href = 'app.html#' + tool; return false; }
+  if (SS_PUBLIC[tool]) { window.location.href = SS_PUBLIC[tool]; return false; }
+  try { localStorage.setItem('ssNext', tool); } catch (e) {}
+  window.location.href = 'signup.html';
+  return false;
+}
+function toggleMenu(btn) {
+  const m = document.getElementById('mobilemenu');
+  const open = m.classList.toggle('open');
+  const b = btn || document.querySelector('.menu-btn');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+
 function filterCat(cat, el) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.blog-card').forEach(card => {
-    if(cat === 'all') {
-      card.classList.remove('hidden');
-    } else {
-      const cardCat = card.getAttribute('data-cat');
-      card.classList.toggle('hidden', cardCat !== cat);
-    }
-  });
+  document.querySelectorAll('.cat').forEach(b => b.classList.toggle('active', b === el));
+  document.querySelectorAll('.post').forEach(p => { p.hidden = !(cat === 'all' || p.dataset.cat === cat); });
 }
-
-function toggleFeatured(btn) {
-  const article = document.getElementById('featured-article');
-  const isOpen = article.classList.contains('open');
-  article.classList.toggle('open', !isOpen);
-  if(!isOpen) {
-    btn.innerHTML = '<i class="ti ti-chevron-up"></i> Collapse Article';
-    article.scrollIntoView({behavior:'smooth', block:'start'});
-  } else {
-    btn.innerHTML = '<i class="ti ti-arrow-right"></i> Read Full Article';
-  }
-}
-
-function toggleArticle(btn) {
-  const article = btn.nextElementSibling || btn.parentElement.querySelector('.blog-article');
-  const blogArticle = btn.classList.contains('blog-read-btn')
-    ? btn.parentElement.querySelector('.blog-article')
-    : btn.closest('.blog-article');
-
-  if(btn.classList.contains('blog-read-btn')) {
-    const isOpen = blogArticle.classList.contains('open');
-    blogArticle.classList.toggle('open', !isOpen);
-    btn.innerHTML = isOpen
-      ? '<i class="ti ti-arrow-right"></i> Read More'
-      : '<i class="ti ti-chevron-up"></i> Reading...';
-    if(!isOpen) blogArticle.scrollIntoView({behavior:'smooth', block:'start'});
-  } else {
-    blogArticle.classList.remove('open');
-    const readBtn = blogArticle.parentElement.querySelector('.blog-read-btn');
-    if(readBtn) readBtn.innerHTML = '<i class="ti ti-arrow-right"></i> Read More';
-  }
-}
-
-const sbBlog = supabase.createClient(
-  'https://ewkuvwokbyioqxnrzqbu.supabase.co',
-  'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
-);
-
 async function subscribeNewsletter() {
-  const input = document.getElementById('newsletter-email');
-  const note = document.querySelector('.newsletter-note');
+  const input = document.getElementById('newsletter-email'), note = document.getElementById('nl-note');
   const email = input.value.trim().toLowerCase();
-  if(!email || !email.includes('@') || !email.includes('.')) {
-    note.textContent = 'Please enter a valid email address.';
-    note.style.color = '#ff6b6b';
-    return;
-  }
-  const { error } = await sbBlog.from('newsletter_subscribers').insert({ email: email });
-  if(error) {
-    if(String(error.code) === '23505') {
-      note.textContent = "You're already on the list! 🎵";
-      note.style.color = 'var(--neon)';
-    } else {
-      note.textContent = 'Something went wrong — please try again.';
-      note.style.color = '#ff6b6b';
-    }
-    return;
-  }
-  input.value = '';
-  note.textContent = "You're in! Welcome to the StudioSound community 🎵";
-  note.style.color = 'var(--neon)';
+  if (!/^\S+@\S+\.\S+$/.test(email)) { note.textContent = 'Please enter a valid email address.'; note.style.color = '#ff8a8a'; return; }
+  try {
+    const sb = window.supabase.createClient('https://ewkuvwokbyioqxnrzqbu.supabase.co', 'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84');
+    const { error } = await sb.from('newsletter_subscribers').insert({ email: email });
+    if (error && String(error.code) !== '23505') throw error;
+    input.value = '';
+    note.textContent = error ? "You're already on the list! 🎵" : "You're in! Welcome to the StudioSound community 🎵";
+    note.style.color = 'var(--neon)';
+  } catch (e) { note.textContent = 'Something went wrong. Please try again.'; note.style.color = '#ff8a8a'; }
 }
+
+</script>
+<script>
+/* ---------- Session-aware header: signed-in artists see their studio, not Sign in ---------- */
+let sbClient = null;
+try {
+  sbClient = supabase.createClient(
+    'https://ewkuvwokbyioqxnrzqbu.supabase.co',
+    'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84'
+  );
+  sbClient.auth.getSession().then(({ data }) => {
+    if (!data.session) return;
+    window.__ssSignedIn = true;
+    const meta = data.session.user.user_metadata || {};
+    const first = String(meta.first_name || 'Artist').replace(/[<>&"]/g, '');
+    document.getElementById('navbtns').innerHTML =
+      '<button class="btn btn-sm btn-ghost" type="button" id="signout-btn">Sign out</button>' +
+      '<a class="btn btn-sm btn-neon" href="app.html"><i class="ti ti-sparkles"></i> Open Studio, ' + first + '</a>';
+    document.getElementById('signout-btn').onclick = async () => { await sbClient.auth.signOut(); window.location.reload(); };
+    const mmIn = document.getElementById('mm-signin'); if (mmIn) mmIn.remove();
+    const mmCta = document.getElementById('mm-cta'); if (mmCta) { mmCta.textContent = 'Open Studio'; mmCta.href = 'app.html'; }
+    if (typeof window.ssOnSignedIn === 'function') window.ssOnSignedIn(data.session);
+  });
+} catch (e) { console.warn('Session check skipped:', e); }
 </script>
 </body>
 </html>
