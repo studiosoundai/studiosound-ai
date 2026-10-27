@@ -263,6 +263,14 @@ body{overflow:auto;height:auto;}
 .mx-toggle button.active{background:var(--neon);color:#05050a;}
 .mx-time{height:4px;background:#1a1a2a;border-radius:99px;margin-top:12px;overflow:hidden;}
 .mx-time span{display:block;height:100%;width:0;background:#FFC83D;}
+.mx-ab{transition:border-color .15s,box-shadow .15s;}
+.mx-ab.side-b{border-color:var(--neon);box-shadow:0 0 0 1px #00FFD155 inset;}
+.mx-ab.side-a{border-color:#FFC83D;box-shadow:0 0 0 1px #FFC83D55 inset;}
+.mx-now{margin-top:12px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.mx-now b{font-family:'Sora',sans-serif;font-size:15px;letter-spacing:1px;}
+.mx-ab.side-b .mx-now b{color:var(--neon);} .mx-ab.side-a .mx-now b{color:#FFC83D;}
+.mx-toggle button#mx-ab-a.active{background:#FFC83D;}
+.mx-key{display:inline-block;border:1px solid #2a2a3e;border-radius:5px;padding:0 5px;font-size:10px;color:var(--text);}
 .mx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .mx-stat{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px;}
 .mx-stat small{display:block;color:var(--muted);font-size:9.5px;font-weight:800;letter-spacing:0.06em;}
@@ -2775,11 +2783,13 @@ async function mxShow(job, d) {
     }
   } catch (e) { console.warn('preview decode', e); }
   const diff = (after.lufs != null && before.lufs != null) ? (after.lufs - before.lufs) : 0;
-  let h = '<div class="mx-ab">' +
+  let h = '<div class="mx-ab side-b" id="mx-ab">' +
     '<div class="mx-ab-row"><button type="button" class="mx-play" id="mx-play" onclick="mxToggle()" aria-label="Play">▶</button>' +
     (mxBufA ? '<div class="mx-toggle"><button type="button" id="mx-ab-a" onclick="mxSwitch(\'a\')">Original</button><button type="button" id="mx-ab-b" class="active" onclick="mxSwitch(\'b\')">Mastered</button></div>' : '<span style="color:var(--muted);font-size:12px;">Mastered preview</span>') +
     '</div>' +
     (mxBufA ? '<label style="display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px;margin-top:10px;cursor:pointer;"><input type="checkbox" id="mx-match" onchange="mxApplyGains()" style="accent-color:#00FFD1;"/> Match volume for a fair comparison (louder always sounds "better")</label>' : '') +
+    (mxBufA ? '<div class="mx-now"><span>You\'re hearing:</span><b id="mx-now-label">MASTERED</b><span id="mx-now-detail"></span></div>' +
+      '<div class="mx-note">Press play, then flip the switch while it plays: the song keeps going and only the version changes. Keyboard: <span class="mx-key">A</span> original · <span class="mx-key">B</span> mastered · <span class="mx-key">Space</span> play/pause.</div>' : '') +
     '<div class="mx-time"><span id="mx-time"></span></div>' +
     '<div class="mx-note">The loudest 30 seconds of your song' + (m.preview_start ? ', from ' + Math.floor(m.preview_start / 60) + ':' + String(Math.round(m.preview_start % 60)).padStart(2, '0') : '') + '.</div></div>';
   h += '<div class="mx-stats">' +
@@ -2787,6 +2797,11 @@ async function mxShow(job, d) {
     '<div class="mx-stat"><small>PEAK</small><b>' + (after.true_peak != null ? after.true_peak : '?') + ' dBTP</b></div>' +
     '<div class="mx-stat"><small>SOUND</small><b>' + (MX_STYLE_NAMES[style] || 'Balanced') + '</b></div></div>';
   h += '<div class="mx-note" style="color:var(--neon);">✓ Streaming-ready: peaks stay under -1 dBTP so stores won’t distort it.</div>';
+  if (before.lufs != null && before.lufs > -12 && style !== 'reference') {
+    h += '<div class="plan-item" style="margin-top:10px;border:1px solid #FFC83D;background:#FFC83D10;"><div class="plan-date" style="color:#FFC83D;">YOUR FILE WAS ALREADY LOUD</div>' +
+      '<div class="plan-detail">It came in at ' + before.lufs + ' LUFS, so it looks mastered already or has a limiter on the master bus. That leaves little for mastering to improve, which is why the two versions sound close. ' +
+      'For the best result, bounce the mix again with the limiter and any mastering plugins on the master bus turned off, then upload that.</div></div>';
+  }
   h += '<button type="button" class="gen-btn" id="mx-dl" onclick="mxDownload()" style="margin-top:12px;"><i class="ti ti-download"></i> Download full master (WAV 24-bit)</button>';
   h += '<div class="mx-note" id="mx-dl-note">' + (d.downloaded ? 'Already downloaded. Downloading again is free.' : 'Uses 1 of your monthly masters. Re-downloads of this master are free for 14 days.') + '</div>';
   h += '<div class="result-actions" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
@@ -2796,6 +2811,7 @@ async function mxShow(job, d) {
   const r = document.getElementById('mx-result');
   r.innerHTML = h; r.style.display = 'block';
   r.dataset.diff = String(diff);
+  mxSide = 'b'; mxUpdateNow();
   document.getElementById('mx-progress').style.display = 'none';
   if (!d._reopen) {
     const nm = (mxMeta ? mxMeta.name : 'Song').replace(/\.[^.]+$/, '') + ' — ' + (MX_STYLE_NAMES[style] || 'Master');
@@ -2804,7 +2820,18 @@ async function mxShow(job, d) {
   }
 }
 
+function mxUpdateNow() {
+  const box = document.getElementById('mx-ab'); if (!box) return;
+  box.classList.toggle('side-a', mxSide === 'a'); box.classList.toggle('side-b', mxSide === 'b');
+  const lab = document.getElementById('mx-now-label'); if (lab) lab.textContent = mxSide === 'a' ? 'ORIGINAL' : 'MASTERED';
+  const det = document.getElementById('mx-now-detail'); if (!det) return;
+  const diff = parseFloat(document.getElementById('mx-result').dataset.diff || '0');
+  const match = (document.getElementById('mx-match') || {}).checked;
+  det.textContent = match ? '· volumes matched, so you\'re hearing tone and punch, not loudness'
+    : (Math.abs(diff) >= 0.5 ? '· the master is ' + Math.abs(diff).toFixed(1) + ' dB ' + (diff > 0 ? 'louder' : 'quieter') : '· about the same loudness as your mix');
+}
 function mxApplyGains() {
+  mxUpdateNow();
   if (!mxGainA || !mxGainB || !mxAC) return;
   const diff = parseFloat(document.getElementById('mx-result').dataset.diff || '0');
   const match = (document.getElementById('mx-match') || {}).checked;
@@ -2813,6 +2840,14 @@ function mxApplyGains() {
   mxGainA.gain.setTargetAtTime(mxSide === 'a' ? 1 : 0, t, 0.02);
   mxGainB.gain.setTargetAtTime(mxSide === 'b' ? bLevel : 0, t, 0.02);
 }
+document.addEventListener('keydown', e => {
+  if (window.__ssTool !== 'master' || !document.getElementById('mx-ab') || document.getElementById('mx-result').style.display === 'none') return;
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName || '')) return;
+  const k = e.key.toLowerCase();
+  if (k === 'a' && document.getElementById('mx-ab-a')) { mxSwitch('a'); e.preventDefault(); }
+  else if (k === 'b' && document.getElementById('mx-ab-b')) { mxSwitch('b'); e.preventDefault(); }
+  else if (k === ' ') { mxToggle(); e.preventDefault(); }
+});
 function mxSwitch(side) {
   mxSide = side;
   ['a', 'b'].forEach(s => { const b = document.getElementById('mx-ab-' + s); if (b) b.classList.toggle('active', s === side); });
