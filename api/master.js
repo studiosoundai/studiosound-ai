@@ -1,7 +1,7 @@
 import { checkAndCount, logGeneration } from './_usage.js';
 
 // AI Mastering
-// POST { action: 'start', input_path, reference_path?, style, loudness, file_name }  -> { job }
+// POST { action: 'start', input_path, reference_path?, style, loudness, strength?, file_name }  -> { job }
 // GET  (no job)                                                                    -> { enabled }
 // GET  ?job=<id>                                                                    -> { status, metrics, preview_url, downloaded, error }
 // POST { action: 'download', job }                                                 -> { url }   (uses 1 master the first time)
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const job = await getJob(req.query && req.query.job, user.id);
     if (!job) return res.status(404).json({ error: 'Not found' });
-    const out = { status: job.status, metrics: job.metrics || null, downloaded: job.downloaded, error: job.error || null, style: job.style, loudness: job.loudness };
+    const out = { status: job.status, metrics: job.metrics || null, downloaded: job.downloaded, error: job.error || null, style: job.style, loudness: job.loudness, strength: job.strength };
     if (job.status === 'done' && job.preview_path && !job.purged) out.preview_url = await sign(job.preview_path, 3600);
     if (job.purged) out.error = 'This master has expired. Files are kept for 14 days; master the song again.';
     return res.status(200).json(out);
@@ -96,6 +96,7 @@ export default async function handler(req, res) {
       status: 'queued',
       style: STYLES.includes(body.style) ? body.style : 'balanced',
       loudness: LOUDNESS.includes(body.loudness) ? body.loudness : 'standard',
+      strength: Math.min(1.7, Math.max(0.4, Number(body.strength) || 1)),
       file_name: String(body.file_name || 'song').slice(0, 120),
       input_path: body.input_path,
       reference_path: body.reference_path || null,
@@ -125,7 +126,7 @@ export default async function handler(req, res) {
       });
       return res.status(503).json({ error: 'The mastering server is waking up. Try again in a minute.', job: job.id });
     }
-    logGeneration(gate.userId, 'master_preview', { style: row.style, loudness: row.loudness, reference: !!row.reference_path }, { job: job.id });
+    logGeneration(gate.userId, 'master_preview', { style: row.style, loudness: row.loudness, strength: row.strength, reference: !!row.reference_path }, { job: job.id });
     return res.status(200).json({ job: job.id });
   }
 
