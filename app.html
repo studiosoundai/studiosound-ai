@@ -270,6 +270,12 @@ body{overflow:auto;height:auto;}
 .mx-now b{font-family:'Sora',sans-serif;font-size:15px;letter-spacing:1px;}
 .mx-ab.side-b .mx-now b{color:var(--neon);} .mx-ab.side-a .mx-now b{color:#FFC83D;}
 .mx-toggle button#mx-ab-a.active{background:#FFC83D;}
+.mx-strength{margin-top:4px;}
+.mx-strength input[type=range]{width:100%;accent-color:#00FFD1;cursor:pointer;}
+.mx-strength-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:2px;}
+.mx-strength-labels span.on{color:var(--neon);font-weight:800;}
+.mx-time{cursor:pointer;height:8px;position:relative;}
+.mx-clock{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums;}
 .mx-key{display:inline-block;border:1px solid #2a2a3e;border-radius:5px;padding:0 5px;font-size:10px;color:var(--text);}
 .mx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .mx-stat{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px;}
@@ -294,13 +300,13 @@ body{overflow:auto;height:auto;}
   <div class="sidebar-section">
     <div class="sidebar-label">TOOLS</div>
     <button class="sidebar-item" onclick="switchTool('forecast',this)"><i class="ti ti-chart-line"></i> Earnings Forecast <span class="badge">NEW</span></button>
+    <button class="sidebar-item mx-gate" style="display:none;" onclick="switchTool('master',this)"><i class="ti ti-adjustments-horizontal"></i> AI Mastering <span class="badge">NEW</span></button>
+    <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
     <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
-    <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
     <button class="sidebar-item" onclick="switchTool('writer',this)"><i class="ti ti-pencil"></i> AI Lyric Writer <span class="badge">LIVE</span></button>
-    <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
-    <button class="sidebar-item mx-gate" style="display:none;" onclick="switchTool('master',this)"><i class="ti ti-adjustments-horizontal"></i> AI Mastering <span class="badge">NEW</span></button>
+    <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
@@ -967,16 +973,23 @@ body{overflow:auto;height:auto;}
               <button type="button" class="mx-opt" data-v="loud" onclick="mxSetLoud('loud')"><b>Loud</b><small>-8 LUFS · competitive</small></button>
             </div>
             <div class="mx-note">Spotify and Apple turn every song to a similar volume, so louder isn't always better. Standard is a safe pick.</div>
+
+            <div class="ad-step">4 · STRENGTH <span id="mx-strength-name" style="color:#fff;margin-left:6px;">Normal</span></div>
+            <div class="mx-strength">
+              <input type="range" id="mx-strength" min="0" max="4" step="1" value="2" oninput="mxSetStrength(this.value)" aria-label="Mastering strength"/>
+              <div class="mx-strength-labels" id="mx-strength-labels"><span>Light</span><span>Gentle</span><span class="on">Normal</span><span>Strong</span><span>Max</span></div>
+            </div>
+            <div class="mx-note" id="mx-strength-note">How much the sound changes. Light keeps it close to your mix; Max adds the most punch, tone and density.</div>
           </div>
 
           <button class="gen-btn" id="mx-btn" onclick="mxStart()" style="margin-top:14px;"><i class="ti ti-adjustments-horizontal"></i> Master my song · free preview</button>
-          <div class="mx-note" id="mx-plan-note">Previews are free. Downloading a full master uses 1 of your monthly masters: Pro 2, Premium 10.</div>
+          <div class="mx-note" id="mx-plan-note">Previews of the whole song are free. Downloading the full master uses 1 of your monthly masters: Free 1, Pro 5, Premium unlimited.</div>
         </div>
 
         <div class="gen-panel">
           <div class="gen-title">Your Master</div>
           <div class="gen-sub">Before and after, side by side</div>
-          <div class="result-placeholder" id="mx-placeholder"><i class="ti ti-adjustments-horizontal"></i><p>Upload your mix, pick a sound and hit Master. You'll hear the loudest 30 seconds of your song before and after.</p></div>
+          <div class="result-placeholder" id="mx-placeholder"><i class="ti ti-adjustments-horizontal"></i><p>Upload your mix, pick a sound and hit Master. You'll hear your whole song before and after, starting at the loudest part.</p></div>
           <div id="mx-progress" style="display:none;">
             <div class="mx-steps">
               <div class="mx-stepline" id="mx-s1"><span class="dot">1</span>Uploading your mix <span id="mx-up-pct" style="margin-left:auto;"></span></div>
@@ -2656,6 +2669,15 @@ const MX_SB_URL = 'https://ewkuvwokbyioqxnrzqbu.supabase.co';
 const MX_SB_KEY = 'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84';
 const MX_STYLE_NAMES = { balanced: 'Balanced', warm: 'Warm', punchy: 'Punchy', open: 'Open', vocal: 'Vocal Forward', reference: 'Matched to your reference' };
 const MX_LOUD_NAMES = { streaming: 'Streaming (-14 LUFS)', standard: 'Standard (-10 LUFS)', loud: 'Loud (-8 LUFS)' };
+const MX_STRENGTHS = [0.5, 0.75, 1.0, 1.3, 1.6];
+const MX_STRENGTH_NAMES = ['Light', 'Gentle', 'Normal', 'Strong', 'Max'];
+function mxStrengthName(v) { let i = 0, best = 9; MX_STRENGTHS.forEach((x, j) => { if (Math.abs(x - v) < best) { best = Math.abs(x - v); i = j; } }); return MX_STRENGTH_NAMES[i]; }
+function mxSetStrength(i) {
+  i = Number(i);
+  document.getElementById('mx-strength-name').textContent = MX_STRENGTH_NAMES[i];
+  document.querySelectorAll('#mx-strength-labels span').forEach((el, j) => el.classList.toggle('on', j === i));
+}
+let mxPos = 0, mxDur = 0;
 let mxFile = null, mxRef = null, mxInputPath = null, mxRefPath = null, mxJob = null, mxPoll = null;
 let mxAC = null, mxBufA = null, mxBufB = null, mxSrcA = null, mxSrcB = null, mxGainA = null, mxGainB = null, mxStartAt = 0, mxPlaying = false, mxSide = 'b', mxRaf = null, mxMeta = null;
 
@@ -2731,12 +2753,13 @@ async function mxStart() {
     const res = await fetch('/api/master', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({
       action: 'start', input_path: mxInputPath, reference_path: style === 'reference' ? mxRefPath : null,
       style: style === 'reference' ? 'balanced' : style, loudness: document.getElementById('mx-loudness').value,
+      strength: MX_STRENGTHS[Number(document.getElementById('mx-strength').value)] || 1,
       file_name: mxFile ? mxFile.name : 'song' }) });
     const data = await res.json();
     if (data.error === 'limit_reached') { showLimit('mx-error', 'mastering previews'); throw null; }
     if (!data.job) throw new Error(data.error || 'Couldn’t start mastering.');
     mxJob = data.job;
-    mxMeta = { style, loudness: document.getElementById('mx-loudness').value, name: mxFile ? mxFile.name : 'song' };
+    mxMeta = { style, loudness: document.getElementById('mx-loudness').value, strength: MX_STRENGTHS[Number(document.getElementById('mx-strength').value)] || 1, name: mxFile ? mxFile.name : 'song' };
     await mxWait(mxJob);
   } catch (e) {
     if (e) mxErr(e.message || 'Something went wrong. Try again.');
@@ -2777,12 +2800,15 @@ async function mxShow(job, d) {
     mxBufB = await mxDecode(pb);
     if (mxFile) {
       const full = await mxDecode(await mxFile.arrayBuffer());
-      const sr = full.sampleRate, start = Math.floor((m.preview_start || 0) * sr), len = Math.min(mxBufB.duration * sr, full.length - start);
+      const sr = full.sampleRate, start = m.full_preview ? 0 : Math.floor((m.preview_start || 0) * sr), len = Math.min(mxBufB.duration * sr, full.length - start);
       mxBufA = mxAC.createBuffer(full.numberOfChannels, Math.max(1, Math.floor(len)), sr);
       for (let c = 0; c < full.numberOfChannels; c++) mxBufA.copyToChannel(full.getChannelData(c).subarray(start, start + Math.floor(len)), c);
     }
   } catch (e) { console.warn('preview decode', e); }
   const diff = (after.lufs != null && before.lufs != null) ? (after.lufs - before.lufs) : 0;
+  mxDur = mxBufB ? mxBufB.duration : 0;
+  mxPos = (m.full_preview && m.preview_start && m.preview_start < mxDur - 5) ? m.preview_start : 0;   // start at the chorus
+  const strengthV = m.strength != null ? m.strength : (mxMeta && mxMeta.strength) || d.strength;
   let h = '<div class="mx-ab side-b" id="mx-ab">' +
     '<div class="mx-ab-row"><button type="button" class="mx-play" id="mx-play" onclick="mxToggle()" aria-label="Play">▶</button>' +
     (mxBufA ? '<div class="mx-toggle"><button type="button" id="mx-ab-a" onclick="mxSwitch(\'a\')">Original</button><button type="button" id="mx-ab-b" class="active" onclick="mxSwitch(\'b\')">Mastered</button></div>' : '<span style="color:var(--muted);font-size:12px;">Mastered preview</span>') +
@@ -2790,12 +2816,14 @@ async function mxShow(job, d) {
     (mxBufA ? '<label style="display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px;margin-top:10px;cursor:pointer;"><input type="checkbox" id="mx-match" onchange="mxApplyGains()" style="accent-color:#00FFD1;"/> Match volume for a fair comparison (louder always sounds "better")</label>' : '') +
     (mxBufA ? '<div class="mx-now"><span>You\'re hearing:</span><b id="mx-now-label">MASTERED</b><span id="mx-now-detail"></span></div>' +
       '<div class="mx-note">Press play, then flip the switch while it plays: the song keeps going and only the version changes. Keyboard: <span class="mx-key">A</span> original · <span class="mx-key">B</span> mastered · <span class="mx-key">Space</span> play/pause.</div>' : '') +
-    '<div class="mx-time"><span id="mx-time"></span></div>' +
-    '<div class="mx-note">The loudest 30 seconds of your song' + (m.preview_start ? ', from ' + Math.floor(m.preview_start / 60) + ':' + String(Math.round(m.preview_start % 60)).padStart(2, '0') : '') + '.</div></div>';
+    '<div class="mx-time" id="mx-seek" onclick="mxSeek(event)" title="Click to jump"><span id="mx-time"></span></div>' +
+    '<div class="mx-clock"><span id="mx-clock-pos">' + mxFmt(mxPos) + '</span><span>' + mxFmt(mxDur) + '</span></div>' +
+    '<div class="mx-note">' + (m.full_preview ? 'Your whole song, before and after. It starts at the loudest part' + (mxPos ? ' (' + mxFmt(mxPos) + ')' : '') + '; click the bar to jump anywhere.'
+      : 'The loudest 30 seconds of your song' + (m.preview_start ? ', from ' + mxFmt(m.preview_start) : '') + '.') + '</div></div>';
   h += '<div class="mx-stats">' +
     '<div class="mx-stat"><small>LOUDNESS</small><b>' + (before.lufs != null ? before.lufs : '?') + ' → ' + (after.lufs != null ? after.lufs : '?') + ' LUFS</b></div>' +
     '<div class="mx-stat"><small>PEAK</small><b>' + (after.true_peak != null ? after.true_peak : '?') + ' dBTP</b></div>' +
-    '<div class="mx-stat"><small>SOUND</small><b>' + (MX_STYLE_NAMES[style] || 'Balanced') + '</b></div></div>';
+    '<div class="mx-stat"><small>SOUND</small><b>' + (MX_STYLE_NAMES[style] || 'Balanced') + (style !== 'reference' && strengthV && Math.abs(strengthV - 1) > 0.01 ? ' · ' + mxStrengthName(strengthV) : '') + '</b></div></div>';
   h += '<div class="mx-note" style="color:var(--neon);">✓ Streaming-ready: peaks stay under -1 dBTP so stores won’t distort it.</div>';
   if (before.lufs != null && before.lufs > -12 && style !== 'reference') {
     h += '<div class="plan-item" style="margin-top:10px;border:1px solid #FFC83D;background:#FFC83D10;"><div class="plan-date" style="color:#FFC83D;">YOUR FILE WAS ALREADY LOUD</div>' +
@@ -2810,13 +2838,14 @@ async function mxShow(job, d) {
   h += '<div class="plan-item" style="margin-top:12px;border:1px solid var(--neon);background:#00FFD10a;"><div class="plan-date" style="color:var(--neon);">READY TO RELEASE?</div><div class="plan-detail" style="margin-bottom:8px;">Put your master out with Stop One: free to join, you keep 85%, playlist pitching and a real team behind you.</div><a href="distribution.html" target="_blank" rel="noopener" class="result-btn primary" style="text-decoration:none;justify-content:center;padding:10px;">Distribute with Stop One →</a></div>';
   const r = document.getElementById('mx-result');
   r.innerHTML = h; r.style.display = 'block';
+  mxDrawPos();
   r.dataset.diff = String(diff);
   mxSide = 'b'; mxUpdateNow();
   document.getElementById('mx-progress').style.display = 'none';
   if (!d._reopen) {
     const nm = (mxMeta ? mxMeta.name : 'Song').replace(/\.[^.]+$/, '') + ' — ' + (MX_STYLE_NAMES[style] || 'Master');
     addRecent(null, nm, 'Master', null);
-    saveAsset('Master', nm, null, { job: job, metrics: m, style: style, loudness: mxMeta ? mxMeta.loudness : d.loudness });
+    saveAsset('Master', nm, null, { job: job, metrics: m, style: style, loudness: mxMeta ? mxMeta.loudness : d.loudness, strength: strengthV || 1 });
   }
 }
 
@@ -2853,30 +2882,51 @@ function mxSwitch(side) {
   ['a', 'b'].forEach(s => { const b = document.getElementById('mx-ab-' + s); if (b) b.classList.toggle('active', s === side); });
   mxApplyGains();
 }
-function mxStop() {
-  [mxSrcA, mxSrcB].forEach(s => { if (s) { try { s.stop(); } catch (e) {} } });
-  mxSrcA = mxSrcB = null; mxPlaying = false; cancelAnimationFrame(mxRaf);
-  const p = document.getElementById('mx-play'); if (p) p.textContent = '▶';
+function mxFmt(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
+function mxDrawPos() {
+  const el = document.getElementById('mx-time'); if (el && mxDur) el.style.width = Math.min(100, mxPos / mxDur * 100) + '%';
+  const c = document.getElementById('mx-clock-pos'); if (c) c.textContent = mxFmt(mxPos);
 }
-function mxToggle() {
-  if (mxPlaying) { mxStop(); return; }
+function mxStop(keepPos) {
+  if (mxPlaying && mxAC) mxPos = Math.min(mxDur, mxPos + (mxAC.currentTime - mxStartAt));
+  [mxSrcA, mxSrcB].forEach(s => { if (s) { s.onended = null; try { s.stop(); } catch (e) {} } });
+  mxSrcA = mxSrcB = null; mxPlaying = false; cancelAnimationFrame(mxRaf);
+  if (keepPos === false) mxPos = 0;
+  const p = document.getElementById('mx-play'); if (p) p.textContent = '▶';
+  mxDrawPos();
+}
+function mxPlayFrom(pos) {
   if (!mxBufB) return;
   if (mxAC.state === 'suspended') mxAC.resume();
+  mxPos = Math.max(0, Math.min(pos, mxDur - 0.05));
   mxGainA = mxAC.createGain(); mxGainB = mxAC.createGain();
   mxGainA.connect(mxAC.destination); mxGainB.connect(mxAC.destination);
   const t = mxAC.currentTime + 0.05;
-  if (mxBufA) { mxSrcA = mxAC.createBufferSource(); mxSrcA.buffer = mxBufA; mxSrcA.connect(mxGainA); mxSrcA.start(t); }
-  mxSrcB = mxAC.createBufferSource(); mxSrcB.buffer = mxBufB; mxSrcB.connect(mxGainB); mxSrcB.start(t);
+  if (mxBufA && mxPos < mxBufA.duration) { mxSrcA = mxAC.createBufferSource(); mxSrcA.buffer = mxBufA; mxSrcA.connect(mxGainA); mxSrcA.start(t, mxPos); }
+  mxSrcB = mxAC.createBufferSource(); mxSrcB.buffer = mxBufB; mxSrcB.connect(mxGainB); mxSrcB.start(t, mxPos);
   mxGainA.gain.value = 0; mxGainB.gain.value = 0; mxApplyGains();
   mxStartAt = t; mxPlaying = true;
   document.getElementById('mx-play').textContent = '❚❚';
-  mxSrcB.onended = () => mxStop();
+  const src = mxSrcB;
+  src.onended = () => { if (src === mxSrcB) { mxStop(); mxPos = 0; mxDrawPos(); } };
   const tick = () => {
-    const el = document.getElementById('mx-time');
-    if (el) el.style.width = Math.min(100, (mxAC.currentTime - mxStartAt) / mxBufB.duration * 100) + '%';
-    if (mxPlaying) mxRaf = requestAnimationFrame(tick);
+    if (!mxPlaying) return;
+    const cur = Math.min(mxDur, mxPos + Math.max(0, mxAC.currentTime - mxStartAt));
+    const el = document.getElementById('mx-time'); if (el && mxDur) el.style.width = (cur / mxDur * 100) + '%';
+    const c = document.getElementById('mx-clock-pos'); if (c) c.textContent = mxFmt(cur);
+    mxRaf = requestAnimationFrame(tick);
   };
   tick();
+}
+function mxToggle() {
+  if (mxPlaying) { mxStop(); return; }
+  mxPlayFrom(mxPos >= mxDur - 0.1 ? 0 : mxPos);
+}
+function mxSeek(e) {
+  const bar = document.getElementById('mx-seek'); if (!bar || !mxDur) return;
+  const r = bar.getBoundingClientRect();
+  const pos = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * mxDur;
+  if (mxPlaying) { mxStop(); mxPlayFrom(pos); } else { mxPos = pos; mxDrawPos(); }
 }
 
 async function mxDownload() {
@@ -2887,7 +2937,7 @@ async function mxDownload() {
     const res = await fetch('/api/master', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'download', job: mxJob }) });
     const d = await res.json();
     if (d.error === 'limit_reached') {
-      note.innerHTML = (d.plan === 'free' ? 'Full master downloads are part of Pro (2 a month) and Premium (10 a month). ' : 'You’ve used your masters for this month. They reset on the 1st. ') +
+      note.innerHTML = (d.plan === 'free' ? 'You’ve used your free master for this month. Pro includes 5 a month and Premium is unlimited. ' : (d.plan === 'pro' ? 'You’ve used your 5 masters for this month. They reset on the 1st, or go unlimited with Premium. ' : 'You’ve reached this month’s master limit. It resets on the 1st. ')) +
         '<a href="pricing.html" style="color:var(--neon);font-weight:700;">See plans →</a>';
     } else if (d.url) {
       const a = document.createElement('a'); a.href = d.url; a.rel = 'noopener';
@@ -2918,7 +2968,7 @@ async function openMasterAsset(i) {
   const a = assetsCache[i];
   if (!a || !a.data || !a.data.job) return;
   switchTool('master', null);
-  mxFile = null; mxJob = a.data.job; mxMeta = { style: a.data.style, loudness: a.data.loudness, name: a.name };
+  mxFile = null; mxJob = a.data.job; mxMeta = { style: a.data.style, loudness: a.data.loudness, strength: a.data.strength, name: a.name };
   document.getElementById('mx-placeholder').style.display = 'none';
   try {
     const r = await fetch('/api/master?job=' + encodeURIComponent(mxJob), { headers: await authHeaders() });
