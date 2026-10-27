@@ -363,12 +363,13 @@ body{overflow:auto;height:auto;}
         <div class="welcome-sub">Pick a tool and start creating. We'll guide you every step of the way.</div>
         <div class="welcome-pills">
           <div class="wpill"><i class="ti ti-chart-line"></i> Earnings Forecast</div>
+          <div class="wpill mx-gate" style="display:none;"><i class="ti ti-adjustments-horizontal"></i> AI Mastering</div>
+          <div class="wpill"><i class="ti ti-video"></i> Lyric Videos</div>
           <div class="wpill"><i class="ti ti-disc"></i> Cover Art</div>
           <div class="wpill"><i class="ti ti-rocket"></i> Release Planner</div>
           <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups</div>
           <div class="wpill"><i class="ti ti-pencil"></i> Lyric Writer</div>
-          <div class="wpill"><i class="ti ti-video"></i> Lyric Videos</div>
-          <div class="wpill mx-gate" style="display:none;"><i class="ti ti-adjustments-horizontal"></i> AI Mastering</div>
+          <div class="wpill"><i class="ti ti-speakerphone"></i> Ad Generator</div>
           <div class="wpill"><i class="ti ti-wand"></i> + 4 Free Utilities</div>
         </div>
       </div>
@@ -382,41 +383,53 @@ body{overflow:auto;height:auto;}
     <!-- TOOLS GRID -->
     <div class="section-label">YOUR TOOLS</div>
     <div class="tools-grid">
-      <div class="tool-card" onclick="switchTool('forecast',null);setToolActive(this)">
+      <div data-tool="forecast" class="tool-card" onclick="switchTool('forecast',null);setToolActive(this)">
         <div class="tool-badge live">NEW</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Earnings Forecast"/></div>
         <div class="tool-name">Earnings Forecast</div>
         <div class="tool-desc">See what your music earns in 1, 3 & 5 years</div>
       </div>
-      <div class="tool-card active" onclick="switchTool('art',null);setToolActive(this)">
+      <div data-tool="master" class="tool-card mx-gate" style="display:none;" onclick="switchTool('master',null);setToolActive(this)">
+        <div class="tool-badge live">NEW</div>
+        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20320%20120%27%3E%3Crect%20width%3D%27320%27%20height%3D%27120%27%20fill%3D%27%23071413%27%2F%3E%3Crect%20x%3D%2714.0%27%20y%3D%2756.0%27%20width%3D%274%27%20height%3D%278.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2721.4%27%20y%3D%2742.2%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2728.8%27%20y%3D%2742.1%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2736.2%27%20y%3D%2743.7%27%20width%3D%274%27%20height%3D%2732.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2743.6%27%20y%3D%2739.8%27%20width%3D%274%27%20height%3D%2740.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2751.0%27%20y%3D%2745.5%27%20width%3D%274%27%20height%3D%2729.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2758.4%27%20y%3D%2749.8%27%20width%3D%274%27%20height%3D%2720.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2765.8%27%20y%3D%2741.8%27%20width%3D%274%27%20height%3D%2736.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2773.2%27%20y%3D%2744.1%27%20width%3D%274%27%20height%3D%2731.8%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2780.6%27%20y%3D%2741.5%27%20width%3D%274%27%20height%3D%2737.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2788.0%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2795.4%27%20y%3D%2751.3%27%20width%3D%274%27%20height%3D%2717.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27102.8%27%20y%3D%2745.7%27%20width%3D%274%27%20height%3D%2728.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27110.2%27%20y%3D%2737.8%27%20width%3D%274%27%20height%3D%2744.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27117.6%27%20y%3D%2738.5%27%20width%3D%274%27%20height%3D%2743.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27125.0%27%20y%3D%2731.0%27%20width%3D%274%27%20height%3D%2758.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27132.4%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.5%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27139.8%27%20y%3D%2752.4%27%20width%3D%274%27%20height%3D%2715.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27147.2%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27154.6%27%20y%3D%2740.2%27%20width%3D%274%27%20height%3D%2739.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27162.0%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27169.4%27%20y%3D%2728.9%27%20width%3D%274%27%20height%3D%2762.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27176.8%27%20y%3D%2742.3%27%20width%3D%274%27%20height%3D%2735.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27184.2%27%20y%3D%2746.0%27%20width%3D%274%27%20height%3D%2727.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27191.6%27%20y%3D%2740.7%27%20width%3D%274%27%20height%3D%2738.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27199.0%27%20y%3D%2740.1%27%20width%3D%274%27%20height%3D%2739.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27206.4%27%20y%3D%2730.5%27%20width%3D%274%27%20height%3D%2759.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27213.8%27%20y%3D%2730.9%27%20width%3D%274%27%20height%3D%2758.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27221.2%27%20y%3D%2753.1%27%20width%3D%274%27%20height%3D%2713.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27228.6%27%20y%3D%2747.8%27%20width%3D%274%27%20height%3D%2724.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27236.0%27%20y%3D%2747.3%27%20width%3D%274%27%20height%3D%2725.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27243.4%27%20y%3D%2742.7%27%20width%3D%274%27%20height%3D%2734.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27250.8%27%20y%3D%2735.7%27%20width%3D%274%27%20height%3D%2748.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27258.2%27%20y%3D%2742.9%27%20width%3D%274%27%20height%3D%2734.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27265.6%27%20y%3D%2753.8%27%20width%3D%274%27%20height%3D%2712.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27273.0%27%20y%3D%2748.4%27%20width%3D%274%27%20height%3D%2723.1%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27280.4%27%20y%3D%2747.2%27%20width%3D%274%27%20height%3D%2725.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27287.8%27%20y%3D%2738.7%27%20width%3D%274%27%20height%3D%2742.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27295.2%27%20y%3D%2736.0%27%20width%3D%274%27%20height%3D%2748.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27302.6%27%20y%3D%2748.8%27%20width%3D%274%27%20height%3D%2722.3%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3C%2Fsvg%3E" alt="AI Mastering"/></div>
+        <div class="tool-name">AI Mastering</div>
+        <div class="tool-desc">Streaming-ready masters with a free preview</div>
+      </div>
+      <div data-tool="lyric" class="tool-card" onclick="switchTool('lyric',null);setToolActive(this)">
+        <div class="tool-badge live">BETA</div>
+        <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png" alt="Lyric Videos"/></div>
+        <div class="tool-name">Lyric Video Creator</div>
+        <div class="tool-desc">Your song and cover, timed line by line</div>
+      </div>
+      <div data-tool="art" class="tool-card active" onclick="switchTool('art',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/cover-art-generator.png.png" alt="Cover Art"/></div>
         <div class="tool-name">Cover Art Generator</div>
         <div class="tool-desc">Generate label-quality artwork in seconds</div>
       </div>
-      <div class="tool-card" onclick="switchTool('plan',null);setToolActive(this)">
+      <div data-tool="plan" class="tool-card" onclick="switchTool('plan',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png" alt="Release Planner"/></div>
         <div class="tool-name">Release Planner</div>
         <div class="tool-desc">Your personalized 30-day roadmap</div>
       </div>
-      <div class="tool-card" onclick="switchTool('merch',null);setToolActive(this)">
+      <div data-tool="merch" class="tool-card" onclick="switchTool('merch',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png" alt="Merch Mockups"/></div>
         <div class="tool-name">Merch Mockups</div>
         <div class="tool-desc">See your art on real products instantly</div>
       </div>
-      <div class="tool-card" onclick="switchTool('ads',null);setToolActive(this)">
+      <div data-tool="writer" class="tool-card" onclick="switchTool('writer',null);setToolActive(this)">
+        <div class="tool-badge live">LIVE</div>
+        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20120%27%3E%3Crect%20width%3D%27120%27%20height%3D%27120%27%20fill%3D%27%230f0f1a%27%2F%3E%3Ctext%20x%3D%2712%27%20y%3D%2744%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%23d8d8ea%27%3ELate%20nights%2C%3C%2Ftext%3E%3Ctext%20x%3D%2712%27%20y%3D%2766%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%2300FFD1%27%3Emi%20gente%3C%2Ftext%3E%3Ctext%20x%3D%2712%27%20y%3D%2788%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%23d8d8ea%27%3Estill%20here%3C%2Ftext%3E%3C%2Fsvg%3E" alt="AI Lyric Writer"/></div>
+        <div class="tool-name">AI Lyric Writer</div>
+        <div class="tool-desc">Finish the verse or hook you're stuck on</div>
+      </div>
+      <div data-tool="ads" class="tool-card" onclick="switchTool('ads',null);setToolActive(this)">
         <div class="tool-badge live">NEW</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ad-generator.png.png" alt="Ad Generator"/></div>
         <div class="tool-name">Ad Generator</div>
         <div class="tool-desc">Meta ads for your song, ready to run</div>
-      </div>
-      <div class="tool-card mx-gate" style="display:none;" onclick="switchTool('master',null);setToolActive(this)">
-        <div class="tool-badge live">NEW</div>
-        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20320%20120%27%3E%3Crect%20width%3D%27320%27%20height%3D%27120%27%20fill%3D%27%23071413%27%2F%3E%3Crect%20x%3D%2714.0%27%20y%3D%2756.0%27%20width%3D%274%27%20height%3D%278.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2721.4%27%20y%3D%2742.2%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2728.8%27%20y%3D%2742.1%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2736.2%27%20y%3D%2743.7%27%20width%3D%274%27%20height%3D%2732.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2743.6%27%20y%3D%2739.8%27%20width%3D%274%27%20height%3D%2740.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2751.0%27%20y%3D%2745.5%27%20width%3D%274%27%20height%3D%2729.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2758.4%27%20y%3D%2749.8%27%20width%3D%274%27%20height%3D%2720.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2765.8%27%20y%3D%2741.8%27%20width%3D%274%27%20height%3D%2736.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2773.2%27%20y%3D%2744.1%27%20width%3D%274%27%20height%3D%2731.8%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2780.6%27%20y%3D%2741.5%27%20width%3D%274%27%20height%3D%2737.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2788.0%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2795.4%27%20y%3D%2751.3%27%20width%3D%274%27%20height%3D%2717.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27102.8%27%20y%3D%2745.7%27%20width%3D%274%27%20height%3D%2728.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27110.2%27%20y%3D%2737.8%27%20width%3D%274%27%20height%3D%2744.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27117.6%27%20y%3D%2738.5%27%20width%3D%274%27%20height%3D%2743.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27125.0%27%20y%3D%2731.0%27%20width%3D%274%27%20height%3D%2758.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27132.4%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.5%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27139.8%27%20y%3D%2752.4%27%20width%3D%274%27%20height%3D%2715.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27147.2%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27154.6%27%20y%3D%2740.2%27%20width%3D%274%27%20height%3D%2739.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27162.0%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27169.4%27%20y%3D%2728.9%27%20width%3D%274%27%20height%3D%2762.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27176.8%27%20y%3D%2742.3%27%20width%3D%274%27%20height%3D%2735.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27184.2%27%20y%3D%2746.0%27%20width%3D%274%27%20height%3D%2727.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27191.6%27%20y%3D%2740.7%27%20width%3D%274%27%20height%3D%2738.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27199.0%27%20y%3D%2740.1%27%20width%3D%274%27%20height%3D%2739.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27206.4%27%20y%3D%2730.5%27%20width%3D%274%27%20height%3D%2759.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27213.8%27%20y%3D%2730.9%27%20width%3D%274%27%20height%3D%2758.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27221.2%27%20y%3D%2753.1%27%20width%3D%274%27%20height%3D%2713.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27228.6%27%20y%3D%2747.8%27%20width%3D%274%27%20height%3D%2724.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27236.0%27%20y%3D%2747.3%27%20width%3D%274%27%20height%3D%2725.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27243.4%27%20y%3D%2742.7%27%20width%3D%274%27%20height%3D%2734.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27250.8%27%20y%3D%2735.7%27%20width%3D%274%27%20height%3D%2748.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27258.2%27%20y%3D%2742.9%27%20width%3D%274%27%20height%3D%2734.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27265.6%27%20y%3D%2753.8%27%20width%3D%274%27%20height%3D%2712.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27273.0%27%20y%3D%2748.4%27%20width%3D%274%27%20height%3D%2723.1%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27280.4%27%20y%3D%2747.2%27%20width%3D%274%27%20height%3D%2725.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27287.8%27%20y%3D%2738.7%27%20width%3D%274%27%20height%3D%2742.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27295.2%27%20y%3D%2736.0%27%20width%3D%274%27%20height%3D%2748.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27302.6%27%20y%3D%2748.8%27%20width%3D%274%27%20height%3D%2722.3%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3C%2Fsvg%3E" alt="AI Mastering"/></div>
-        <div class="tool-name">AI Mastering</div>
-        <div class="tool-desc">Streaming-ready masters with a free preview</div>
       </div>
     </div>
 
@@ -1597,9 +1610,9 @@ function showFirstWin() {
       <div style="color:var(--neon);font-size:11px;font-weight:800;letter-spacing:0.08em;margin-bottom:6px;">START HERE — YOUR FIRST WIN TAKES ABOUT 60 SECONDS</div>
       <div style="color:#e8e8f5;font-size:13px;margin-bottom:14px;">Pick one. We'll walk you through it.</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
-        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('art',null);setToolActive(document.querySelector('.tool-card:nth-child(2)'))">🎨 Make my cover art</button>
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('art',null);setToolActive(document.querySelector('.tool-card[data-tool=art]'))">🎨 Make my cover art</button>
         <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('lyric',null)">🎬 Turn my song into a lyric video</button>
-        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('forecast',null);setToolActive(document.querySelector('.tool-card:nth-child(1)'))">📈 See what my music could earn</button>
+        <button class="result-btn primary" style="justify-content:center;padding:14px;font-size:12px;" onclick="switchTool('forecast',null);setToolActive(document.querySelector('.tool-card[data-tool=forecast]'))">📈 See what my music could earn</button>
       </div>
     </div>`;
 }
@@ -1680,7 +1693,7 @@ function openPlanAsset(i) {
   const a = assetsCache[i];
   if (!a || !a.data) return;
   switchTool('plan', null);
-  setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+  setToolActive(document.querySelector('.tool-card[data-tool=art]'));
   document.getElementById('plan-name').value = a.name || '';
   renderPlan(a.data);
   window.scrollTo({top:0, behavior:'smooth'});
@@ -1840,7 +1853,7 @@ function switchTool(tool, sidebarBtn) {
 
 function setToolActive(el) {
   document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
+  if (el) el.classList.add('active');
 }
 
 // ====== EXAMPLE PROMPTS ======
@@ -2844,8 +2857,9 @@ async function mxShow(job, d) {
   document.getElementById('mx-progress').style.display = 'none';
   if (!d._reopen) {
     const nm = (mxMeta ? mxMeta.name : 'Song').replace(/\.[^.]+$/, '') + ' — ' + (MX_STYLE_NAMES[style] || 'Master');
-    addRecent(null, nm, 'Master', null);
-    saveAsset('Master', nm, null, { job: job, metrics: m, style: style, loudness: mxMeta ? mxMeta.loudness : d.loudness, strength: strengthV || 1 });
+    const mxData = { job: job, metrics: m, style: style, loudness: mxMeta ? mxMeta.loudness : d.loudness, strength: strengthV || 1 };
+    addRecent(null, nm, 'Master', null, mxData);
+    saveAsset('Master', nm, null, mxData);
   }
 }
 
@@ -2966,17 +2980,31 @@ mxInit();
 
 async function openMasterAsset(i) {
   const a = assetsCache[i];
-  if (!a || !a.data || !a.data.job) return;
+  if (a && a.data && a.data.job) await mxOpenJob(a.data, a.name);
+}
+
+// Reopen a saved master (from My Assets or Recent Generations)
+async function mxOpenJob(data, name) {
   switchTool('master', null);
-  mxFile = null; mxJob = a.data.job; mxMeta = { style: a.data.style, loudness: a.data.loudness, strength: a.data.strength, name: a.name };
+  setToolActive(document.querySelector('.tool-card[data-tool=master]'));
+  const res = document.getElementById('mx-result');
+  if (data.job === mxJob && res.style.display !== 'none' && res.innerHTML) {      // already on screen
+    res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  mxStop(false); mxErr('');
+  mxFile = null; mxJob = data.job; mxMeta = { style: data.style, loudness: data.loudness, strength: data.strength, name: name || 'Song' };
   document.getElementById('mx-placeholder').style.display = 'none';
+  document.getElementById('mx-progress').style.display = 'none';
+  res.style.display = 'block';
+  res.innerHTML = '<div class="mx-note" style="padding:20px 0;text-align:center;">Loading your master…</div>';
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
   try {
     const r = await fetch('/api/master?job=' + encodeURIComponent(mxJob), { headers: await authHeaders() });
     const d = await r.json();
     if (d.status === 'done' && d.preview_url) { d._reopen = true; await mxShow(mxJob, d); }
-    else { mxErr(d.error || 'This master isn’t available anymore.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
-  } catch (e) { mxErr('Couldn’t load that master.'); }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    else { res.innerHTML = ''; res.style.display = 'none'; mxErr(d.error || 'This master isn’t available anymore. Files are kept for 14 days.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
+  } catch (e) { res.innerHTML = ''; res.style.display = 'none'; mxErr('Couldn’t load that master.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
 }
 
 // ====== AD GENERATOR (Meta first; TikTok and Google plug into the same kit) ======
@@ -3586,7 +3614,7 @@ function fcToPlan() {
   const city = document.getElementById('fc-city').value.trim();
   if (city) document.getElementById('plan-city').value = city;
   switchTool('plan', null);
-  setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+  setToolActive(document.querySelector('.tool-card[data-tool=plan]'));
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -3594,7 +3622,7 @@ function planToArt() {
   const name = document.getElementById('plan-name').value.trim();
   if (name) document.getElementById('art-title').value = name;
   switchTool('art', null);
-  setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+  setToolActive(document.querySelector('.tool-card[data-tool=art]'));
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -3614,7 +3642,7 @@ function artToVideo() {
 
 function lvToPlan() {
   switchTool('plan', null);
-  setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+  setToolActive(document.querySelector('.tool-card[data-tool=plan]'));
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -4236,7 +4264,7 @@ function openForecastAsset(i) {
   const a = assetsCache[i];
   if (!a || !a.data || !a.data.scenarios) return;
   switchTool('forecast', null);
-  setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+  setToolActive(document.querySelector('.tool-card[data-tool=forecast]'));
   fcRenderFull(a.data.stats, a.data.scenarios, a.data.report || {});
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
@@ -4971,15 +4999,14 @@ function loadRecent(index) {
   if(!item) return;
   if(item.type === 'Forecast' && item.data && item.data.scenarios) {
     switchTool('forecast', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(1)'));
+    setToolActive(document.querySelector('.tool-card[data-tool=forecast]'));
     fcRenderFull(item.data.stats, item.data.scenarios, item.data.report || {});
     window.scrollTo({top: 0, behavior: 'smooth'});
     return;
   }
-  if(item.type === 'Master' && mxJob) {
-    switchTool('master', null);
-    document.getElementById('mx-result').scrollIntoView({behavior:'smooth', block:'start'});
-    return;
+  if(item.type === 'Master') {
+    if (item.data && item.data.job) { mxOpenJob(item.data, item.name); return; }
+    if (mxJob) { switchTool('master', null); document.getElementById('mx-result').scrollIntoView({behavior:'smooth', block:'start'}); return; }
   }
   if(item.type === 'Lyric Video' && item.data && item.data.videoUrl) {
     playVideo(item.data.videoUrl, item.name);
@@ -4987,7 +5014,7 @@ function loadRecent(index) {
   }
   if(item.type === 'Release Plan' && item.data) {
     switchTool('plan', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(3)'));
+    setToolActive(document.querySelector('.tool-card[data-tool=plan]'));
     document.getElementById('plan-name').value = item.name || '';
     renderPlan(item.data);
     window.scrollTo({top:0, behavior:'smooth'});
@@ -4996,7 +5023,7 @@ function loadRecent(index) {
   if(!item.imageUrl) return;
   if(item.type === 'Cover Art') {
     switchTool('art', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(2)'));
+    setToolActive(document.querySelector('.tool-card[data-tool=art]'));
     document.getElementById('art-placeholder').style.display = 'none';
     document.getElementById('art-dual').classList.remove('show');
     document.getElementById('art-single-img').src = item.imageUrl;
@@ -5005,7 +5032,7 @@ function loadRecent(index) {
     window.scrollTo({top:0, behavior:'smooth'});
   } else if(item.type === 'Merch Mockup') {
     switchTool('merch', null);
-    setToolActive(document.querySelector('.tool-card:nth-child(4)'));
+    setToolActive(document.querySelector('.tool-card[data-tool=merch]'));
     document.getElementById('merch-placeholder').style.display = 'none';
     document.getElementById('merch-result-img').src = item.imageUrl;
     document.getElementById('merch-result').classList.add('show');
