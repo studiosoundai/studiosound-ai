@@ -238,6 +238,37 @@ body{overflow:auto;height:auto;}
 .ad-style input[type=color]{width:44px;height:34px;border:0.5px solid var(--border);border-radius:8px;background:#0f0f1a;padding:3px;cursor:pointer;}
 .ad-profile{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 @media(max-width:768px){ .ad-formats{grid-template-columns:1fr 1fr;} .ad-grid2{grid-template-columns:1fr;} .ad-profile{grid-template-columns:1fr;} }
+
+/* ===== AI MASTERING ===== */
+.mx-styles{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mx-opt{text-align:left;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;font-family:'Sora',sans-serif;color:#fff;}
+.mx-opt:hover{border-color:#3a3a52;}
+.mx-opt.active{border-color:var(--neon);background:#00FFD10d;box-shadow:inset 0 0 0 0.5px var(--neon);}
+.mx-opt b{display:block;font-size:13px;}
+.mx-opt small{display:block;color:var(--muted);font-size:10.5px;margin-top:2px;line-height:1.4;}
+.mx-opt.wide{grid-column:1/-1;}
+.mx-loud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mx-steps{display:flex;flex-direction:column;gap:8px;margin:6px 0 12px;}
+.mx-stepline{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;}
+.mx-stepline .dot{width:18px;height:18px;border-radius:50%;border:1px solid #2a2a3e;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.mx-stepline.on{color:#fff;} .mx-stepline.on .dot{border-color:var(--neon);color:var(--neon);}
+.mx-stepline.done{color:var(--neon);} .mx-stepline.done .dot{background:var(--neon);border-color:var(--neon);color:#05050a;}
+.mx-bar{height:6px;border-radius:99px;background:#1a1a2a;overflow:hidden;}
+.mx-bar span{display:block;height:100%;width:0;background:var(--neon);transition:width 0.2s;}
+.mx-ab{background:#0f0f1a;border:0.5px solid var(--border);border-radius:12px;padding:14px;}
+.mx-ab-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.mx-play{width:46px;height:46px;border-radius:50%;background:var(--neon);color:#05050a;border:none;font-size:20px;cursor:pointer;flex-shrink:0;}
+.mx-toggle{display:inline-flex;background:#05050a;border:0.5px solid var(--border);border-radius:99px;padding:3px;}
+.mx-toggle button{background:none;border:none;color:var(--muted);font-family:'Sora',sans-serif;font-weight:800;font-size:12px;padding:7px 14px;border-radius:99px;cursor:pointer;}
+.mx-toggle button.active{background:var(--neon);color:#05050a;}
+.mx-time{height:4px;background:#1a1a2a;border-radius:99px;margin-top:12px;overflow:hidden;}
+.mx-time span{display:block;height:100%;width:0;background:#FFC83D;}
+.mx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.mx-stat{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px;}
+.mx-stat small{display:block;color:var(--muted);font-size:9.5px;font-weight:800;letter-spacing:0.06em;}
+.mx-stat b{display:block;color:#fff;font-size:15px;margin-top:3px;}
+.mx-note{color:var(--muted);font-size:11px;line-height:1.5;margin-top:8px;}
+@media(max-width:768px){ .mx-loud{grid-template-columns:1fr;} .mx-stats{grid-template-columns:1fr 1fr;} }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -261,6 +292,7 @@ body{overflow:auto;height:auto;}
     <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
     <button class="sidebar-item" onclick="switchTool('writer',this)"><i class="ti ti-pencil"></i> AI Lyric Writer <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
+    <button class="sidebar-item mx-gate" style="display:none;" onclick="switchTool('master',this)"><i class="ti ti-adjustments-horizontal"></i> AI Mastering <span class="badge">NEW</span></button>
     <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
@@ -322,6 +354,7 @@ body{overflow:auto;height:auto;}
           <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups</div>
           <div class="wpill"><i class="ti ti-pencil"></i> Lyric Writer</div>
           <div class="wpill"><i class="ti ti-video"></i> Lyric Videos</div>
+          <div class="wpill mx-gate" style="display:none;"><i class="ti ti-adjustments-horizontal"></i> AI Mastering</div>
           <div class="wpill"><i class="ti ti-wand"></i> + 4 Free Utilities</div>
         </div>
       </div>
@@ -364,6 +397,12 @@ body{overflow:auto;height:auto;}
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ad-generator.png.png" alt="Ad Generator"/></div>
         <div class="tool-name">Ad Generator</div>
         <div class="tool-desc">Meta ads for your song, ready to run</div>
+      </div>
+      <div class="tool-card mx-gate" style="display:none;" onclick="switchTool('master',null);setToolActive(this)">
+        <div class="tool-badge live">NEW</div>
+        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20320%20120%27%3E%3Crect%20width%3D%27320%27%20height%3D%27120%27%20fill%3D%27%23071413%27%2F%3E%3Crect%20x%3D%2714.0%27%20y%3D%2756.0%27%20width%3D%274%27%20height%3D%278.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2721.4%27%20y%3D%2742.2%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2728.8%27%20y%3D%2742.1%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2736.2%27%20y%3D%2743.7%27%20width%3D%274%27%20height%3D%2732.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2743.6%27%20y%3D%2739.8%27%20width%3D%274%27%20height%3D%2740.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2751.0%27%20y%3D%2745.5%27%20width%3D%274%27%20height%3D%2729.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2758.4%27%20y%3D%2749.8%27%20width%3D%274%27%20height%3D%2720.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2765.8%27%20y%3D%2741.8%27%20width%3D%274%27%20height%3D%2736.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2773.2%27%20y%3D%2744.1%27%20width%3D%274%27%20height%3D%2731.8%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2780.6%27%20y%3D%2741.5%27%20width%3D%274%27%20height%3D%2737.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2788.0%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2795.4%27%20y%3D%2751.3%27%20width%3D%274%27%20height%3D%2717.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27102.8%27%20y%3D%2745.7%27%20width%3D%274%27%20height%3D%2728.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27110.2%27%20y%3D%2737.8%27%20width%3D%274%27%20height%3D%2744.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27117.6%27%20y%3D%2738.5%27%20width%3D%274%27%20height%3D%2743.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27125.0%27%20y%3D%2731.0%27%20width%3D%274%27%20height%3D%2758.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27132.4%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.5%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27139.8%27%20y%3D%2752.4%27%20width%3D%274%27%20height%3D%2715.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27147.2%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27154.6%27%20y%3D%2740.2%27%20width%3D%274%27%20height%3D%2739.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27162.0%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27169.4%27%20y%3D%2728.9%27%20width%3D%274%27%20height%3D%2762.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27176.8%27%20y%3D%2742.3%27%20width%3D%274%27%20height%3D%2735.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27184.2%27%20y%3D%2746.0%27%20width%3D%274%27%20height%3D%2727.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27191.6%27%20y%3D%2740.7%27%20width%3D%274%27%20height%3D%2738.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27199.0%27%20y%3D%2740.1%27%20width%3D%274%27%20height%3D%2739.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27206.4%27%20y%3D%2730.5%27%20width%3D%274%27%20height%3D%2759.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27213.8%27%20y%3D%2730.9%27%20width%3D%274%27%20height%3D%2758.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27221.2%27%20y%3D%2753.1%27%20width%3D%274%27%20height%3D%2713.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27228.6%27%20y%3D%2747.8%27%20width%3D%274%27%20height%3D%2724.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27236.0%27%20y%3D%2747.3%27%20width%3D%274%27%20height%3D%2725.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27243.4%27%20y%3D%2742.7%27%20width%3D%274%27%20height%3D%2734.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27250.8%27%20y%3D%2735.7%27%20width%3D%274%27%20height%3D%2748.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27258.2%27%20y%3D%2742.9%27%20width%3D%274%27%20height%3D%2734.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27265.6%27%20y%3D%2753.8%27%20width%3D%274%27%20height%3D%2712.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27273.0%27%20y%3D%2748.4%27%20width%3D%274%27%20height%3D%2723.1%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27280.4%27%20y%3D%2747.2%27%20width%3D%274%27%20height%3D%2725.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27287.8%27%20y%3D%2738.7%27%20width%3D%274%27%20height%3D%2742.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27295.2%27%20y%3D%2736.0%27%20width%3D%274%27%20height%3D%2748.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27302.6%27%20y%3D%2748.8%27%20width%3D%274%27%20height%3D%2722.3%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3C%2Fsvg%3E" alt="AI Mastering"/></div>
+        <div class="tool-name">AI Mastering</div>
+        <div class="tool-desc">Streaming-ready masters with a free preview</div>
       </div>
     </div>
 
@@ -884,6 +923,66 @@ body{overflow:auto;height:auto;}
     </div>
 
 
+    <!-- AI MASTERING -->
+    <div id="tool-master" class="hidden">
+      <div class="generator" style="align-items:start;">
+        <div class="gen-panel">
+          <div class="gen-title">🎚️ AI Mastering</div>
+          <div class="gen-sub">Upload your final mix and get a loud, clean, streaming-ready master. Hear a free before/after preview first; download the full WAV when it sounds right.</div>
+
+          <div class="ad-step">1 · YOUR MIX</div>
+          <div class="ad-drop" id="mx-drop" onclick="document.getElementById('mx-file').click()"><b id="mx-file-label">Upload your mix</b><small>WAV, AIFF or FLAC is best · MP3 works · up to 12 minutes</small></div>
+          <input type="file" id="mx-file" accept=".wav,.aif,.aiff,.flac,.mp3,.m4a,audio/*" style="display:none;" onchange="mxPick(this.files)"/>
+          <div class="mx-note" id="mx-file-note">Leave some headroom: your mix should peak around -3 to -6 dB with no limiter on the master bus.</div>
+
+          <div class="ad-step">2 · THE SOUND</div>
+          <input type="hidden" id="mx-style" value="balanced"/>
+          <div class="mx-styles" id="mx-styles">
+            <button type="button" class="mx-opt active" data-v="balanced" onclick="mxSetStyle('balanced')"><b>Balanced</b><small>Clean and even. Works for almost anything.</small></button>
+            <button type="button" class="mx-opt" data-v="warm" onclick="mxSetStyle('warm')"><b>Warm</b><small>Fuller low end, softer highs. R&B, soul, ballads.</small></button>
+            <button type="button" class="mx-opt" data-v="punchy" onclick="mxSetStyle('punchy')"><b>Punchy</b><small>Tight kick and bass, more bite. Hip-hop, trap, drill.</small></button>
+            <button type="button" class="mx-opt" data-v="open" onclick="mxSetStyle('open')"><b>Open</b><small>Brighter and wider. Pop, Latin, afrobeats.</small></button>
+            <button type="button" class="mx-opt" data-v="vocal" onclick="mxSetStyle('vocal')"><b>Vocal Forward</b><small>Brings the vocal up front. Lyric-led songs.</small></button>
+            <button type="button" class="mx-opt" data-v="reference" onclick="mxSetStyle('reference')"><b>Match a song</b><small>Upload a song you love; we match its sound.</small></button>
+          </div>
+          <div id="mx-ref-wrap" style="display:none;margin-top:8px;">
+            <div class="ad-drop" onclick="document.getElementById('mx-ref').click()"><b id="mx-ref-label">Upload the reference song</b><small>A finished, released song in the same style</small></div>
+            <input type="file" id="mx-ref" accept=".wav,.aif,.aiff,.flac,.mp3,.m4a,audio/*" style="display:none;" onchange="mxPickRef(this.files)"/>
+          </div>
+
+          <div id="mx-loud-wrap">
+            <div class="ad-step">3 · LOUDNESS</div>
+            <input type="hidden" id="mx-loudness" value="standard"/>
+            <div class="mx-loud" id="mx-loud">
+              <button type="button" class="mx-opt" data-v="streaming" onclick="mxSetLoud('streaming')"><b>Streaming</b><small>-14 LUFS · most dynamic</small></button>
+              <button type="button" class="mx-opt active" data-v="standard" onclick="mxSetLoud('standard')"><b>Standard</b><small>-10 LUFS · today's norm</small></button>
+              <button type="button" class="mx-opt" data-v="loud" onclick="mxSetLoud('loud')"><b>Loud</b><small>-8 LUFS · competitive</small></button>
+            </div>
+            <div class="mx-note">Spotify and Apple turn every song to a similar volume, so louder isn't always better. Standard is a safe pick.</div>
+          </div>
+
+          <button class="gen-btn" id="mx-btn" onclick="mxStart()" style="margin-top:14px;"><i class="ti ti-adjustments-horizontal"></i> Master my song · free preview</button>
+          <div class="mx-note" id="mx-plan-note">Previews are free. Downloading a full master uses 1 of your monthly masters: Pro 2, Premium 10.</div>
+        </div>
+
+        <div class="gen-panel">
+          <div class="gen-title">Your Master</div>
+          <div class="gen-sub">Before and after, side by side</div>
+          <div class="result-placeholder" id="mx-placeholder"><i class="ti ti-adjustments-horizontal"></i><p>Upload your mix, pick a sound and hit Master. You'll hear the loudest 30 seconds of your song before and after.</p></div>
+          <div id="mx-progress" style="display:none;">
+            <div class="mx-steps">
+              <div class="mx-stepline" id="mx-s1"><span class="dot">1</span>Uploading your mix <span id="mx-up-pct" style="margin-left:auto;"></span></div>
+              <div class="mx-bar"><span id="mx-up-bar"></span></div>
+              <div class="mx-stepline" id="mx-s2"><span class="dot">2</span>Mastering (about 30–90 seconds)</div>
+              <div class="mx-stepline" id="mx-s3"><span class="dot">3</span>Preview ready</div>
+            </div>
+          </div>
+          <div class="error-msg" id="mx-error"></div>
+          <div id="mx-result" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- AD GENERATOR -->
     <div id="tool-ads" class="hidden">
       <div class="generator" style="align-items:start;">
@@ -1399,7 +1498,8 @@ const TOOL_THUMBS = {
   'Forecast': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/release-plan-generator.png.png',
   'Lyrics': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
   'Lyric Video': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/lyric-video-creator.png.png',
-  'Merch Mockup': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png'
+  'Merch Mockup': 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/tshirt-mockup.png.png',
+  'Master': 'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20320%20120%27%3E%3Crect%20width%3D%27320%27%20height%3D%27120%27%20fill%3D%27%23071413%27%2F%3E%3Crect%20x%3D%2714.0%27%20y%3D%2756.0%27%20width%3D%274%27%20height%3D%278.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2721.4%27%20y%3D%2742.2%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2728.8%27%20y%3D%2742.1%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2736.2%27%20y%3D%2743.7%27%20width%3D%274%27%20height%3D%2732.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2743.6%27%20y%3D%2739.8%27%20width%3D%274%27%20height%3D%2740.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2751.0%27%20y%3D%2745.5%27%20width%3D%274%27%20height%3D%2729.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2758.4%27%20y%3D%2749.8%27%20width%3D%274%27%20height%3D%2720.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2765.8%27%20y%3D%2741.8%27%20width%3D%274%27%20height%3D%2736.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2773.2%27%20y%3D%2744.1%27%20width%3D%274%27%20height%3D%2731.8%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2780.6%27%20y%3D%2741.5%27%20width%3D%274%27%20height%3D%2737.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2788.0%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2795.4%27%20y%3D%2751.3%27%20width%3D%274%27%20height%3D%2717.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27102.8%27%20y%3D%2745.7%27%20width%3D%274%27%20height%3D%2728.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27110.2%27%20y%3D%2737.8%27%20width%3D%274%27%20height%3D%2744.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27117.6%27%20y%3D%2738.5%27%20width%3D%274%27%20height%3D%2743.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27125.0%27%20y%3D%2731.0%27%20width%3D%274%27%20height%3D%2758.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27132.4%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.5%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27139.8%27%20y%3D%2752.4%27%20width%3D%274%27%20height%3D%2715.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27147.2%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27154.6%27%20y%3D%2740.2%27%20width%3D%274%27%20height%3D%2739.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27162.0%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27169.4%27%20y%3D%2728.9%27%20width%3D%274%27%20height%3D%2762.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27176.8%27%20y%3D%2742.3%27%20width%3D%274%27%20height%3D%2735.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27184.2%27%20y%3D%2746.0%27%20width%3D%274%27%20height%3D%2727.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27191.6%27%20y%3D%2740.7%27%20width%3D%274%27%20height%3D%2738.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27199.0%27%20y%3D%2740.1%27%20width%3D%274%27%20height%3D%2739.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27206.4%27%20y%3D%2730.5%27%20width%3D%274%27%20height%3D%2759.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27213.8%27%20y%3D%2730.9%27%20width%3D%274%27%20height%3D%2758.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27221.2%27%20y%3D%2753.1%27%20width%3D%274%27%20height%3D%2713.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27228.6%27%20y%3D%2747.8%27%20width%3D%274%27%20height%3D%2724.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27236.0%27%20y%3D%2747.3%27%20width%3D%274%27%20height%3D%2725.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27243.4%27%20y%3D%2742.7%27%20width%3D%274%27%20height%3D%2734.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27250.8%27%20y%3D%2735.7%27%20width%3D%274%27%20height%3D%2748.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27258.2%27%20y%3D%2742.9%27%20width%3D%274%27%20height%3D%2734.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27265.6%27%20y%3D%2753.8%27%20width%3D%274%27%20height%3D%2712.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27273.0%27%20y%3D%2748.4%27%20width%3D%274%27%20height%3D%2723.1%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27280.4%27%20y%3D%2747.2%27%20width%3D%274%27%20height%3D%2725.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27287.8%27%20y%3D%2738.7%27%20width%3D%274%27%20height%3D%2742.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27295.2%27%20y%3D%2736.0%27%20width%3D%274%27%20height%3D%2748.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27302.6%27%20y%3D%2748.8%27%20width%3D%274%27%20height%3D%2722.3%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3C%2Fsvg%3E'
 };
 function toolThumb(tool) {
   return TOOL_THUMBS[tool] || 'https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/social-media-kit.png.png';
@@ -1442,7 +1542,7 @@ function applyDeepLink() {
     '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split',
     '#forecast':'forecast', '#earnings':'forecast',
     '#meta':'meta', '#metadata':'meta', '#check':'check', '#checklist':'check',
-    '#ads':'ads', '#ad':'ads', '#adgenerator':'ads'
+    '#ads':'ads', '#ad':'ads', '#adgenerator':'ads', '#master':'master', '#mastering':'master'
   };
   let tool = map[(location.hash || '').toLowerCase()];
   // New artists who clicked a tool on the homepage signed up first: send them to that tool once.
@@ -1509,13 +1609,14 @@ async function showAssetsPanel() {
   }
   grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb" ${a.tool==='Ad Kit' && a.data && a.data.primary_text ? `onclick="openAdAsset(${i})" style="cursor:pointer;" title="Open this ad kit"` : a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
+      <div class="recent-thumb" ${a.tool==='Master' && a.data && a.data.job ? `onclick="openMasterAsset(${i})" style="cursor:pointer;" title="Open this master"` : a.tool==='Ad Kit' && a.data && a.data.primary_text ? `onclick="openAdAsset(${i})" style="cursor:pointer;" title="Open this ad kit"` : a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
         <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
         <div class="recent-name">${a.name || a.tool}</div>
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
+        ${a.tool==='Master' && a.data && a.data.job ? `<a onclick="openMasterAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Master →</a>` : ''}
         ${a.tool==='Ad Kit' && a.data && a.data.primary_text ? `<a onclick="openAdAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Ad Kit →</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
         ${a.tool==='Forecast' && a.data && a.data.scenarios ? `<a onclick="openForecastAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Forecast →</a>` : ''}
@@ -1674,7 +1775,7 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'AI Mastering'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -2540,6 +2641,257 @@ function printChecklist() {
     '<footer>studiosound.ai — Create. Release. Elevate.</footer></body></html>');
   w.document.close(); w.focus();
   setTimeout(() => w.print(), 400);
+}
+
+// ====== AI MASTERING (song uploads straight to storage; our mastering server does the audio) ======
+const MX_SB_URL = 'https://ewkuvwokbyioqxnrzqbu.supabase.co';
+const MX_SB_KEY = 'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84';
+const MX_STYLE_NAMES = { balanced: 'Balanced', warm: 'Warm', punchy: 'Punchy', open: 'Open', vocal: 'Vocal Forward', reference: 'Matched to your reference' };
+const MX_LOUD_NAMES = { streaming: 'Streaming (-14 LUFS)', standard: 'Standard (-10 LUFS)', loud: 'Loud (-8 LUFS)' };
+let mxFile = null, mxRef = null, mxInputPath = null, mxRefPath = null, mxJob = null, mxPoll = null;
+let mxAC = null, mxBufA = null, mxBufB = null, mxSrcA = null, mxSrcB = null, mxGainA = null, mxGainB = null, mxStartAt = 0, mxPlaying = false, mxSide = 'b', mxRaf = null, mxMeta = null;
+
+function mxSetStyle(v) {
+  document.getElementById('mx-style').value = v;
+  document.querySelectorAll('#mx-styles .mx-opt').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  document.getElementById('mx-ref-wrap').style.display = v === 'reference' ? 'block' : 'none';
+  document.getElementById('mx-loud-wrap').style.display = v === 'reference' ? 'none' : 'block';
+}
+function mxSetLoud(v) {
+  document.getElementById('mx-loudness').value = v;
+  document.querySelectorAll('#mx-loud .mx-opt').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+}
+function mxExt(f) { const m = (f.name || '').toLowerCase().match(/\.(wav|aif|aiff|flac|mp3|m4a)$/); return m ? m[1] : 'wav'; }
+function mxPick(files) {
+  const f = files && files[0]; if (!f) return;
+  if (f.size > 200 * 1048576) { mxErr('That file is over 200 MB. Export a 16 or 24-bit WAV under 12 minutes.'); return; }
+  mxFile = f; mxInputPath = null;
+  document.getElementById('mx-file-label').textContent = '✓ ' + f.name + ' (' + (f.size / 1048576).toFixed(1) + ' MB)';
+  document.getElementById('mx-file-note').innerHTML = /\.(mp3|m4a)$/i.test(f.name)
+    ? '<span style="color:#ffcf6b;">MP3 works, but a WAV of your mix will master cleaner.</span>'
+    : 'Leave some headroom: your mix should peak around -3 to -6 dB with no limiter on the master bus.';
+}
+function mxPickRef(files) {
+  const f = files && files[0]; if (!f) return;
+  if (f.size > 200 * 1048576) { mxErr('That reference is over 200 MB.'); return; }
+  mxRef = f; mxRefPath = null;
+  document.getElementById('mx-ref-label').textContent = '✓ ' + f.name;
+}
+function mxErr(t) { const e = document.getElementById('mx-error'); e.innerHTML = t; e.style.display = t ? 'block' : 'none'; }
+function mxStep(n, state) { const el = document.getElementById('mx-s' + n); if (el) { el.classList.remove('on', 'done'); if (state) el.classList.add(state); } }
+
+// upload with progress (straight to the private "mastering" bucket, into the artist's own folder)
+async function mxUpload(file, name) {
+  const { data } = await sbAuth.auth.getSession();
+  if (!data.session) throw new Error('Please sign in again.');
+  const uid = data.session.user.id;
+  const id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+  const path = uid + '/' + id + '/' + name + '.' + mxExt(file);
+  await new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open('POST', MX_SB_URL + '/storage/v1/object/mastering/' + path);
+    x.setRequestHeader('Authorization', 'Bearer ' + data.session.access_token);
+    x.setRequestHeader('apikey', MX_SB_KEY);
+    x.setRequestHeader('x-upsert', 'false');
+    x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    x.upload.onprogress = e => { if (e.lengthComputable && name === 'input') { const p = Math.round(e.loaded / e.total * 100); document.getElementById('mx-up-bar').style.width = p + '%'; document.getElementById('mx-up-pct').textContent = p + '%'; } };
+    x.onload = () => (x.status >= 200 && x.status < 300) ? resolve() : reject(new Error(x.status === 413 ? 'That file is too big to upload.' : 'Upload failed (' + x.status + '). Try again.'));
+    x.onerror = () => reject(new Error('Upload failed. Check your connection and try again.'));
+    x.send(file);
+  });
+  return path;
+}
+
+async function mxStart() {
+  mxErr('');
+  const style = document.getElementById('mx-style').value;
+  if (!mxFile && !mxInputPath) { mxErr('Upload your mix first.'); return; }
+  if (style === 'reference' && !mxRef && !mxRefPath) { mxErr('Upload the reference song you want to match.'); return; }
+  mxStop();
+  const btn = document.getElementById('mx-btn'); btn.disabled = true;
+  document.getElementById('mx-placeholder').style.display = 'none';
+  document.getElementById('mx-result').style.display = 'none';
+  document.getElementById('mx-progress').style.display = 'block';
+  if (window.innerWidth <= 768) document.getElementById('mx-progress').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  [1, 2, 3].forEach(n => mxStep(n, null));
+  try {
+    mxStep(1, 'on');
+    if (!mxInputPath) mxInputPath = await mxUpload(mxFile, 'input');
+    document.getElementById('mx-up-bar').style.width = '100%'; document.getElementById('mx-up-pct').textContent = '';
+    if (style === 'reference' && !mxRefPath) mxRefPath = await mxUpload(mxRef, 'reference');
+    mxStep(1, 'done'); mxStep(2, 'on');
+    const res = await fetch('/api/master', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({
+      action: 'start', input_path: mxInputPath, reference_path: style === 'reference' ? mxRefPath : null,
+      style: style === 'reference' ? 'balanced' : style, loudness: document.getElementById('mx-loudness').value,
+      file_name: mxFile ? mxFile.name : 'song' }) });
+    const data = await res.json();
+    if (data.error === 'limit_reached') { showLimit('mx-error', 'mastering previews'); throw null; }
+    if (!data.job) throw new Error(data.error || 'Couldn’t start mastering.');
+    mxJob = data.job;
+    mxMeta = { style, loudness: document.getElementById('mx-loudness').value, name: mxFile ? mxFile.name : 'song' };
+    await mxWait(mxJob);
+  } catch (e) {
+    if (e) mxErr(e.message || 'Something went wrong. Try again.');
+    document.getElementById('mx-progress').style.display = 'none';
+    if (!document.getElementById('mx-result').innerHTML) document.getElementById('mx-placeholder').style.display = 'flex';
+  }
+  btn.disabled = false;
+}
+
+function mxWait(job) {
+  return new Promise((resolve, reject) => {
+    const t0 = Date.now();
+    clearInterval(mxPoll);
+    mxPoll = setInterval(async () => {
+      try {
+        const r = await fetch('/api/master?job=' + encodeURIComponent(job), { headers: await authHeaders() });
+        const d = await r.json();
+        if (d.status === 'done') { clearInterval(mxPoll); mxStep(2, 'done'); mxStep(3, 'done'); await mxShow(job, d); resolve(); }
+        else if (d.status === 'failed' || d.error) { clearInterval(mxPoll); reject(new Error(d.error || 'Mastering failed. Try again.')); }
+        else if (Date.now() - t0 > 6 * 60 * 1000) { clearInterval(mxPoll); reject(new Error('This is taking longer than usual. Check My Assets in a few minutes, or try again.')); }
+      } catch (e) { /* keep polling */ }
+    }, 3000);
+  });
+}
+
+async function mxDecode(arrayBuf) {
+  mxAC = mxAC || new (window.AudioContext || window.webkitAudioContext)();
+  return await mxAC.decodeAudioData(arrayBuf);
+}
+
+async function mxShow(job, d) {
+  const m = d.metrics || {}, before = m.before || {}, after = m.after || {};
+  const style = mxMeta ? mxMeta.style : (d.style || 'balanced');
+  // build the A/B: original segment from the file on this device, mastered preview from the server
+  mxBufA = null; mxBufB = null;
+  try {
+    const pb = await (await fetch(d.preview_url)).arrayBuffer();
+    mxBufB = await mxDecode(pb);
+    if (mxFile) {
+      const full = await mxDecode(await mxFile.arrayBuffer());
+      const sr = full.sampleRate, start = Math.floor((m.preview_start || 0) * sr), len = Math.min(mxBufB.duration * sr, full.length - start);
+      mxBufA = mxAC.createBuffer(full.numberOfChannels, Math.max(1, Math.floor(len)), sr);
+      for (let c = 0; c < full.numberOfChannels; c++) mxBufA.copyToChannel(full.getChannelData(c).subarray(start, start + Math.floor(len)), c);
+    }
+  } catch (e) { console.warn('preview decode', e); }
+  const diff = (after.lufs != null && before.lufs != null) ? (after.lufs - before.lufs) : 0;
+  let h = '<div class="mx-ab">' +
+    '<div class="mx-ab-row"><button type="button" class="mx-play" id="mx-play" onclick="mxToggle()" aria-label="Play">▶</button>' +
+    (mxBufA ? '<div class="mx-toggle"><button type="button" id="mx-ab-a" onclick="mxSwitch(\'a\')">Original</button><button type="button" id="mx-ab-b" class="active" onclick="mxSwitch(\'b\')">Mastered</button></div>' : '<span style="color:var(--muted);font-size:12px;">Mastered preview</span>') +
+    '</div>' +
+    (mxBufA ? '<label style="display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px;margin-top:10px;cursor:pointer;"><input type="checkbox" id="mx-match" onchange="mxApplyGains()" style="accent-color:#00FFD1;"/> Match volume for a fair comparison (louder always sounds "better")</label>' : '') +
+    '<div class="mx-time"><span id="mx-time"></span></div>' +
+    '<div class="mx-note">The loudest 30 seconds of your song' + (m.preview_start ? ', from ' + Math.floor(m.preview_start / 60) + ':' + String(Math.round(m.preview_start % 60)).padStart(2, '0') : '') + '.</div></div>';
+  h += '<div class="mx-stats">' +
+    '<div class="mx-stat"><small>LOUDNESS</small><b>' + (before.lufs != null ? before.lufs : '?') + ' → ' + (after.lufs != null ? after.lufs : '?') + ' LUFS</b></div>' +
+    '<div class="mx-stat"><small>PEAK</small><b>' + (after.true_peak != null ? after.true_peak : '?') + ' dBTP</b></div>' +
+    '<div class="mx-stat"><small>SOUND</small><b>' + (MX_STYLE_NAMES[style] || 'Balanced') + '</b></div></div>';
+  h += '<div class="mx-note" style="color:var(--neon);">✓ Streaming-ready: peaks stay under -1 dBTP so stores won’t distort it.</div>';
+  h += '<button type="button" class="gen-btn" id="mx-dl" onclick="mxDownload()" style="margin-top:12px;"><i class="ti ti-download"></i> Download full master (WAV 24-bit)</button>';
+  h += '<div class="mx-note" id="mx-dl-note">' + (d.downloaded ? 'Already downloaded. Downloading again is free.' : 'Uses 1 of your monthly masters. Re-downloads of this master are free for 14 days.') + '</div>';
+  h += '<div class="result-actions" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+    '<button type="button" class="result-btn" onclick="mxRetry()"><i class="ti ti-refresh"></i> Try another sound</button>' +
+    '<button type="button" class="result-btn" onclick="switchTool(\'lyric\', null)"><i class="ti ti-video"></i> Make a lyric video</button></div>';
+  h += '<div class="plan-item" style="margin-top:12px;border:1px solid var(--neon);background:#00FFD10a;"><div class="plan-date" style="color:var(--neon);">READY TO RELEASE?</div><div class="plan-detail" style="margin-bottom:8px;">Put your master out with Stop One: free to join, you keep 85%, playlist pitching and a real team behind you.</div><a href="distribution.html" target="_blank" rel="noopener" class="result-btn primary" style="text-decoration:none;justify-content:center;padding:10px;">Distribute with Stop One →</a></div>';
+  const r = document.getElementById('mx-result');
+  r.innerHTML = h; r.style.display = 'block';
+  r.dataset.diff = String(diff);
+  document.getElementById('mx-progress').style.display = 'none';
+  if (!d._reopen) {
+    const nm = (mxMeta ? mxMeta.name : 'Song').replace(/\.[^.]+$/, '') + ' — ' + (MX_STYLE_NAMES[style] || 'Master');
+    addRecent(null, nm, 'Master', null);
+    saveAsset('Master', nm, null, { job: job, metrics: m, style: style, loudness: mxMeta ? mxMeta.loudness : d.loudness });
+  }
+}
+
+function mxApplyGains() {
+  if (!mxGainA || !mxGainB || !mxAC) return;
+  const diff = parseFloat(document.getElementById('mx-result').dataset.diff || '0');
+  const match = (document.getElementById('mx-match') || {}).checked;
+  const bLevel = match ? Math.pow(10, -diff / 20) : 1;
+  const t = mxAC.currentTime;
+  mxGainA.gain.setTargetAtTime(mxSide === 'a' ? 1 : 0, t, 0.02);
+  mxGainB.gain.setTargetAtTime(mxSide === 'b' ? bLevel : 0, t, 0.02);
+}
+function mxSwitch(side) {
+  mxSide = side;
+  ['a', 'b'].forEach(s => { const b = document.getElementById('mx-ab-' + s); if (b) b.classList.toggle('active', s === side); });
+  mxApplyGains();
+}
+function mxStop() {
+  [mxSrcA, mxSrcB].forEach(s => { if (s) { try { s.stop(); } catch (e) {} } });
+  mxSrcA = mxSrcB = null; mxPlaying = false; cancelAnimationFrame(mxRaf);
+  const p = document.getElementById('mx-play'); if (p) p.textContent = '▶';
+}
+function mxToggle() {
+  if (mxPlaying) { mxStop(); return; }
+  if (!mxBufB) return;
+  if (mxAC.state === 'suspended') mxAC.resume();
+  mxGainA = mxAC.createGain(); mxGainB = mxAC.createGain();
+  mxGainA.connect(mxAC.destination); mxGainB.connect(mxAC.destination);
+  const t = mxAC.currentTime + 0.05;
+  if (mxBufA) { mxSrcA = mxAC.createBufferSource(); mxSrcA.buffer = mxBufA; mxSrcA.connect(mxGainA); mxSrcA.start(t); }
+  mxSrcB = mxAC.createBufferSource(); mxSrcB.buffer = mxBufB; mxSrcB.connect(mxGainB); mxSrcB.start(t);
+  mxGainA.gain.value = 0; mxGainB.gain.value = 0; mxApplyGains();
+  mxStartAt = t; mxPlaying = true;
+  document.getElementById('mx-play').textContent = '❚❚';
+  mxSrcB.onended = () => mxStop();
+  const tick = () => {
+    const el = document.getElementById('mx-time');
+    if (el) el.style.width = Math.min(100, (mxAC.currentTime - mxStartAt) / mxBufB.duration * 100) + '%';
+    if (mxPlaying) mxRaf = requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+async function mxDownload() {
+  if (!mxJob) return;
+  const btn = document.getElementById('mx-dl'); btn.disabled = true;
+  const note = document.getElementById('mx-dl-note');
+  try {
+    const res = await fetch('/api/master', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'download', job: mxJob }) });
+    const d = await res.json();
+    if (d.error === 'limit_reached') {
+      note.innerHTML = (d.plan === 'free' ? 'Full master downloads are part of Pro (2 a month) and Premium (10 a month). ' : 'You’ve used your masters for this month. They reset on the 1st. ') +
+        '<a href="pricing.html" style="color:var(--neon);font-weight:700;">See plans →</a>';
+    } else if (d.url) {
+      const a = document.createElement('a'); a.href = d.url; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+      note.textContent = 'Downloading your master. Downloading this one again is free for 14 days.';
+    } else note.textContent = d.error || 'Couldn’t create the download. Try again.';
+  } catch (e) { note.textContent = 'Couldn’t reach the server. Try again.'; }
+  btn.disabled = false;
+}
+
+function mxRetry() {
+  mxStop();
+  document.getElementById('mx-result').style.display = 'none';
+  document.getElementById('mx-placeholder').style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Only show AI Mastering to accounts it's switched on for (founders first, then everyone)
+async function mxInit() {
+  try {
+    const d = await (await fetch('/api/master', { headers: await authHeaders() })).json();
+    if (d && d.enabled) document.querySelectorAll('.mx-gate').forEach(el => { el.style.display = ''; });
+  } catch (e) {}
+}
+mxInit();
+
+async function openMasterAsset(i) {
+  const a = assetsCache[i];
+  if (!a || !a.data || !a.data.job) return;
+  switchTool('master', null);
+  mxFile = null; mxJob = a.data.job; mxMeta = { style: a.data.style, loudness: a.data.loudness, name: a.name };
+  document.getElementById('mx-placeholder').style.display = 'none';
+  try {
+    const r = await fetch('/api/master?job=' + encodeURIComponent(mxJob), { headers: await authHeaders() });
+    const d = await r.json();
+    if (d.status === 'done' && d.preview_url) { d._reopen = true; await mxShow(mxJob, d); }
+    else { mxErr(d.error || 'This master isn’t available anymore.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
+  } catch (e) { mxErr('Couldn’t load that master.'); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ====== AD GENERATOR (Meta first; TikTok and Google plug into the same kit) ======
@@ -4537,6 +4889,11 @@ function loadRecent(index) {
     setToolActive(document.querySelector('.tool-card:nth-child(1)'));
     fcRenderFull(item.data.stats, item.data.scenarios, item.data.report || {});
     window.scrollTo({top: 0, behavior: 'smooth'});
+    return;
+  }
+  if(item.type === 'Master' && mxJob) {
+    switchTool('master', null);
+    document.getElementById('mx-result').scrollIntoView({behavior:'smooth', block:'start'});
     return;
   }
   if(item.type === 'Lyric Video' && item.data && item.data.videoUrl) {
