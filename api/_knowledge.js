@@ -6,7 +6,7 @@
 
 export const KNOWLEDGE = {
   platform: `STUDIOSOUND.AI
-StudioSound.ai is an all-in-one studio for independent artists: forecast earnings, plan the release, make the cover, cut the lyric video, make merch mockups and ads. Brand line: "Create. Release. Drop like a major." Built by the team behind Stop One Distribution.
+StudioSound.ai is an all-in-one studio for independent artists: forecast earnings, plan the release, make the cover, cut the lyric video, make merch mockups and ads, and master the song (AI Mastering, rolling out). Brand line: "Create. Release. Drop like a major." Built by the team behind Stop One Distribution.
 Everything an artist makes saves to My Assets (left sidebar) to reopen, replay or re-download.
 Artists own everything they make: covers, plans, lyrics, videos and ads are theirs to release, print and promote.`,
 
@@ -15,6 +15,7 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - Pro, $9.99/month, or $6.99/month billed yearly ($83.88/year): 3 full forecasts a month (five-year paths, analyst read, PDF and image export), 100 cover generations on the highest-quality cover engine, unlimited release plans, 200 Lyric Writer sessions, 30 auto-lyric syncs, 50 merch mockups, 30 Meta ad kits.
 - Premium, $24.99/month, or $16.99/month billed yearly ($203.88/year): 10 full forecasts a month, 300 cover generations, unlimited release plans, 500 Lyric Writer sessions, 100 auto-lyric syncs, 100 merch mockups, 100 Meta ad kits, priority support.
 - Upgrade at studiosound.ai/pricing. Cancel, switch plans or change monthly/yearly from Settings (billing portal); access stays until the end of the paid period.
+- AI Mastering (rolling out, see its section): free previews on every plan (Free 10, Pro 60, Premium 200 a month); full WAV master downloads: Pro 2 a month, Premium 10 a month, not on Free.
 - Hit a limit: that tool pauses until the 1st, or upgrade to keep going. Other tools keep working.`,
 
   forecast: `EARNINGS FORECAST
@@ -93,6 +94,16 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - Apply at studiosound.ai/distribution.
 - The assistant doesn't have payout dates, advance criteria details, or anything about an existing Stop One account: for those, point them to the distribution page or support. Never quote advance amounts.`,
 
+  mastering: `AI MASTERING
+- Rolling out to accounts in stages. If the artist doesn't see "AI Mastering" in the sidebar yet, it's coming soon; don't promise a date.
+- Upload the final mix (WAV, AIFF or FLAC is best; MP3 works; up to 12 minutes, 200 MB). Leave headroom: the mix should peak around -3 to -6 dB with no limiter on the master bus.
+- Pick a sound: Balanced (works for almost anything), Warm (fuller lows, softer highs; R&B, soul, ballads), Punchy (tight kick and bass, more bite; hip-hop, trap, drill), Open (brighter and wider; pop, Latin, afrobeats), Vocal Forward (lyric-led songs), or Match a song (upload a released song they love and the master matches its loudness, tone and width).
+- Pick loudness: Streaming -14 LUFS (most dynamic), Standard -10 LUFS (today's norm, safe pick), Loud -8 LUFS (competitive). Spotify and Apple turn songs to a similar volume, so louder isn't automatically better. Every master peaks under -1 dBTP so stores don't distort it.
+- Mastering takes about 30–90 seconds. The artist hears the loudest 30 seconds before and after; "Match volume" levels the two so the comparison is fair.
+- Previews are free. Downloading the full 24-bit WAV uses 1 master from the monthly allowance (Pro 2, Premium 10); downloading that same master again is free. Files are kept 14 days, then deleted; re-master to get it back. Every master is in My Assets.
+- Not happy with it: try another sound or loudness; it doesn't re-upload. For a big release that needs a human engineer, Stop One artists get discounted sessions at a platinum studio.
+- AI mastering finishes a good mix; it can't fix a bad one. If the vocal is buried or the low end is muddy, fix the mix first.`,
+
   support: `SUPPORT AND COMMUNITY
 - Bugs, billing, account or login problems: email support@studiosound.ai.
 - Community: Discord at discord.gg/SN6uRybqK.
@@ -112,14 +123,14 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 
 export const TOOL_NAMES = {
   forecast: 'Earnings Forecast', art: 'Cover Art Generator', plan: 'Release Planner', merch: 'Merch Mockups',
-  writer: 'AI Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', resize: 'Cover Resizer',
+  writer: 'AI Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', master: 'AI Mastering', resize: 'Cover Resizer',
   audio: 'MP3 to WAV', trim: 'Audio Trimmer', split: 'Split Sheet', meta: 'Metadata Formatter',
   check: 'Release Checklist', assets: 'My Assets', settings: 'Settings',
 };
 
 const TOOL_SECTION = {
   forecast: 'forecast', art: 'cover', plan: 'plan', merch: 'merch', writer: 'lyrics', lyric: 'lyricvideo',
-  ads: 'ads', resize: 'freetools', audio: 'freetools', trim: 'freetools', split: 'freetools', meta: 'freetools', check: 'freetools',
+  ads: 'ads', master: 'mastering', resize: 'freetools', audio: 'freetools', trim: 'freetools', split: 'freetools', meta: 'freetools', check: 'freetools',
 };
 
 // Everything is small enough to send in full today; the open tool's section goes first.
