@@ -4,7 +4,9 @@ import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
 // POST { action: 'start', input_path, reference_path?, style, loudness, strength?, file_name }  -> { job }
 // GET  (no job)                                                                    -> { enabled }
 // GET  ?job=<id>                                                                    -> { status, metrics, preview_url, downloaded, error }
-// POST { action: 'download', job }                                                 -> { url }   (uses 1 master the first time)
+// POST { action: 'download', job, format? }   format: wav24 (default) | wav16 | mp3  -> { url }
+//      The first download of a master uses 1 master; after that every format is free, any time.
+// Masters the artist downloaded are kept for good; anything else is deleted after 30 days (mastering server).
 // The song itself is uploaded by the browser straight to Supabase Storage (bucket "mastering"),
 // because WAV files are far bigger than Vercel allows in a request. The mastering server does the audio work.
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, MASTERING_URL, MASTERING_SECRET
@@ -65,7 +67,8 @@ export default async function handler(req, res) {
     if (!job) return res.status(404).json({ error: 'Not found' });
     const out = { status: job.status, metrics: job.metrics || null, downloaded: job.downloaded, error: job.error || null, style: job.style, loudness: job.loudness, strength: job.strength };
     if (job.status === 'done' && job.preview_path && !job.purged) out.preview_url = await sign(job.preview_path, 3600);
-    if (job.purged) out.error = 'This master has expired. Files are kept for 14 days; master the song again.';
+    if (job.purged) out.error = 'This master expired. Masters you don’t download are kept for 30 days; master the song again.';
+    out.formats = (job.metrics && job.metrics.formats) ? ['wav24', 'wav16', 'mp3'] : ['wav24'];
     return res.status(200).json(out);
   }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -133,7 +136,9 @@ export default async function handler(req, res) {
   if (body.action === 'download') {
     const job = await getJob(body.job, user.id);
     if (!job || job.status !== 'done' || !job.master_path) return res.status(404).json({ error: 'That master isn\'t ready.' });
-    if (job.purged) return res.status(410).json({ error: 'This master has expired. Files are kept for 14 days; master the song again.' });
+    if (job.purged) return res.status(410).json({ error: 'This master expired. Masters you don’t download are kept for 30 days; master the song again.' });
+    const FMT = { wav24: { file: 'master.wav', suffix: '-mastered.wav' }, wav16: { file: 'master-16.wav', suffix: '-mastered-16bit.wav' }, mp3: { file: 'master.mp3', suffix: '-mastered.mp3' } };
+    const fmt = FMT[body.format] ? body.format : 'wav24';
     if (!job.downloaded) {
       const gate = await checkAndCount(req, 'mastering');
       if (!gate.ok) return res.status(gate.status).json({ error: gate.error, plan: gate.plan || null });
@@ -143,8 +148,9 @@ export default async function handler(req, res) {
       logGeneration(gate.userId, 'mastering', { job: job.id, style: job.style, loudness: job.loudness }, job.metrics || {});
     }
     const base = String(job.file_name || 'song').replace(/\.[^.]+$/, '').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'song';
-    const link = await sign(job.master_path, 3600, `${base}-mastered.wav`);
-    if (!link) return res.status(500).json({ error: 'Couldn\'t create the download. Try again.' });
+    const dir = job.master_path.slice(0, job.master_path.lastIndexOf('/'));
+    const link = await sign(fmt === 'wav24' ? job.master_path : `${dir}/${FMT[fmt].file}`, 3600, base + FMT[fmt].suffix);
+    if (!link) return res.status(fmt === 'wav24' ? 500 : 404).json({ error: fmt === 'wav24' ? 'Couldn\'t create the download. Try again.' : 'This format isn’t available for masters made before it was added. Master the song again to get it.' });
     return res.status(200).json({ url: link });
   }
 
