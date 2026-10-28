@@ -276,6 +276,16 @@ body{overflow:auto;height:auto;}
 .mx-strength-labels span.on{color:var(--neon);font-weight:800;}
 .mx-time{cursor:pointer;height:8px;position:relative;}
 .mx-clock{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums;}
+.tm-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 12px;border:0.5px solid var(--border);border-radius:10px;background:#0f0f1a;}
+.tm-row + .tm-row{margin-top:8px;}
+.tm-email{color:#fff;font-size:13px;font-weight:700;word-break:break-all;}
+.tm-meta{color:var(--muted);font-size:11px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.tm-pill{font-size:10px;font-weight:800;border-radius:99px;padding:2px 8px;}
+.tm-pill.ok{background:#00FFD122;color:var(--neon);} .tm-pill.wait{background:#FFC83D22;color:#FFC83D;}
+.tm-remove{background:none;border:0.5px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.tm-remove:hover{border-color:#ff5c7a;color:#ff5c7a;}
+.tm-add{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;}
+@media(max-width:768px){ .tm-add{grid-template-columns:1fr;} }
 .mx-key{display:inline-block;border:1px solid #2a2a3e;border-radius:5px;padding:0 5px;font-size:10px;color:var(--text);}
 .mx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .mx-stat{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px;}
@@ -327,6 +337,7 @@ body{overflow:auto;height:auto;}
     <div class="sidebar-label">ACCOUNT</div>
     <button class="sidebar-item" onclick="switchTool('assets',this)"><i class="ti ti-folder"></i> My Assets</button>
     <button class="sidebar-item" onclick="switchTool('settings',this)"><i class="ti ti-settings"></i> Settings</button>
+    <button class="sidebar-item tm-gate" style="display:none;" onclick="switchTool('team',this)"><i class="ti ti-users"></i> Team</button>
     <button class="sidebar-item" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade Plan</button>
   </div>
   </div>
@@ -1427,6 +1438,24 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
+    <!-- TEAM (owner only) -->
+    <div id="tool-team" class="hidden">
+      <div class="gen-panel" style="max-width:720px;margin-bottom:16px;">
+        <div class="gen-title">👥 Team</div>
+        <div class="gen-sub">Add engineers, staff or artists you want to comp. They get Premium and early access to new tools (like AI Mastering before launch). It works even if they haven't signed up yet: they're upgraded the moment they create an account with that email.</div>
+        <div class="tm-add">
+          <input class="form-input" id="tm-email" type="email" placeholder="Their email, e.g. engineer@gmail.com" autocomplete="off" onkeydown="if(event.key==='Enter')tmAdd()"/>
+          <input class="form-input" id="tm-note" placeholder="Note (optional), e.g. Engineer" maxlength="80" onkeydown="if(event.key==='Enter')tmAdd()"/>
+          <button class="gen-btn" id="tm-add-btn" style="margin:0;white-space:nowrap;" onclick="tmAdd()"><i class="ti ti-user-plus"></i> Add to team</button>
+        </div>
+        <div class="error-msg" id="tm-error"></div>
+        <div class="mx-note" id="tm-msg" style="color:var(--neon);"></div>
+        <div class="section-label" style="margin:18px 0 10px;">ON THE TEAM <span id="tm-count" style="color:var(--muted);"></span></div>
+        <div id="tm-list"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
+        <div class="mx-note" style="margin-top:12px;">Removing someone puts them back on the plan they had before (Free, or their paid plan if they subscribe).</div>
+      </div>
+    </div>
+
     <!-- RECENT GENERATIONS -->
     <div class="section-label">RECENT GENERATIONS</div>
     <div class="recent-grid" id="recent-grid">
@@ -1809,10 +1838,11 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'AI Mastering'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'AI Mastering', team:'Team'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
+  if(tool === 'team') tmLoad();
   if(tool === 'split' && !document.querySelector('#sp-rows .form-row')) { addSplitRow(); addSplitRow(); }
   if(tool === 'forecast' && !document.querySelector('#fc-rows .fc-row')) {
     let restored = false;
@@ -2968,6 +2998,68 @@ function mxRetry() {
   document.getElementById('mx-placeholder').style.display = 'flex';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ====== TEAM (owner only): add people by email; they get Premium + early access ======
+function tmEsc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function tmSay(err, msg) {
+  const e = document.getElementById('tm-error'); e.textContent = err || ''; e.style.display = err ? 'block' : 'none';
+  document.getElementById('tm-msg').textContent = msg || '';
+}
+function tmRender(members) {
+  const list = document.getElementById('tm-list');
+  document.getElementById('tm-count').textContent = members.length ? '(' + members.length + ')' : '';
+  if (!members.length) { list.innerHTML = '<p style="color:var(--muted);font-size:12px;">No one yet. Add someone above.</p>'; return; }
+  list.innerHTML = members.map(m => {
+    const status = m.signed_up
+      ? '<span class="tm-pill ok">Signed up · ' + tmEsc((m.plan || 'free').charAt(0).toUpperCase() + (m.plan || 'free').slice(1)) + '</span>'
+      : '<span class="tm-pill wait">Waiting to sign up</span>';
+    const added = m.added_at ? new Date(m.added_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+    return '<div class="tm-row"><div><div class="tm-email">' + tmEsc(m.email) + '</div><div class="tm-meta">' + status +
+      (m.note ? '<span>' + tmEsc(m.note) + '</span>' : '') + (added ? '<span>Added ' + added + '</span>' : '') + '</div></div>' +
+      '<button type="button" class="tm-remove" data-email="' + tmEsc(m.email) + '" onclick="tmRemove(this.dataset.email, this)">Remove</button></div>';
+  }).join('');
+}
+async function tmLoad() {
+  try {
+    const d = await (await fetch('/api/team', { headers: await authHeaders() })).json();
+    if (!d.owner) { document.getElementById('tm-list').innerHTML = '<p style="color:var(--muted);font-size:12px;">Only the account owner can manage the team.</p>'; return; }
+    if (d.error) { tmSay(d.error); return; }
+    tmRender(d.members || []);
+  } catch (e) { tmSay('Couldn’t load the team. Try again.'); }
+}
+async function tmAdd() {
+  const email = document.getElementById('tm-email').value.trim(), note = document.getElementById('tm-note').value.trim();
+  tmSay('', '');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { tmSay('Enter a valid email address.'); return; }
+  const btn = document.getElementById('tm-add-btn'); btn.disabled = true;
+  try {
+    const d = await (await fetch('/api/team', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'add', email, note }) })).json();
+    if (!d.ok) tmSay(d.error || 'Couldn’t add them. Try again.');
+    else {
+      document.getElementById('tm-email').value = ''; document.getElementById('tm-note').value = '';
+      tmSay('', d.signed_up ? '✓ ' + d.email + ' is on the team and now on Premium. They may need to refresh.' : '✓ ' + d.email + ' is on the team. They\'ll be on Premium as soon as they sign up with this email.');
+      tmLoad();
+    }
+  } catch (e) { tmSay('Couldn’t reach the server. Try again.'); }
+  btn.disabled = false;
+}
+async function tmRemove(email, btn) {
+  if (btn.dataset.confirm !== '1') { btn.dataset.confirm = '1'; btn.textContent = 'Tap again to remove'; setTimeout(() => { btn.dataset.confirm = ''; btn.textContent = 'Remove'; }, 4000); return; }
+  btn.disabled = true; tmSay('', '');
+  try {
+    const d = await (await fetch('/api/team', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'remove', email }) })).json();
+    if (!d.ok) { tmSay(d.error || 'Couldn’t remove them.'); btn.disabled = false; return; }
+    tmSay('', email + ' was removed and is back on ' + (d.plan || 'free').charAt(0).toUpperCase() + (d.plan || 'free').slice(1) + '.');
+    tmLoad();
+  } catch (e) { tmSay('Couldn’t reach the server. Try again.'); btn.disabled = false; }
+}
+async function tmInit() {
+  try {
+    const d = await (await fetch('/api/team', { headers: await authHeaders() })).json();
+    if (d && d.owner) document.querySelectorAll('.tm-gate').forEach(el => { el.style.display = ''; });
+  } catch (e) {}
+}
+tmInit();
 
 // Only show AI Mastering to accounts it's switched on for (founders first, then everyone)
 async function mxInit() {
