@@ -276,6 +276,9 @@ body{overflow:auto;height:auto;}
 .mx-strength-labels span.on{color:var(--neon);font-weight:800;}
 .mx-time{cursor:pointer;height:8px;position:relative;}
 .mx-clock{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums;}
+.mx-formats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.mx-formats .result-btn{justify-content:center;padding:10px;}
+@media(max-width:768px){ .mx-formats{grid-template-columns:1fr;} }
 .mx-sl{margin-top:14px;border:1px solid #00FFD155;background:linear-gradient(135deg,#00FFD112,#0f0f1a 60%);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
 .mx-sl:hover{border-color:#00FFD1aa;}
 .mx-sl.on{border-color:var(--neon);box-shadow:0 0 0 1px #00FFD155 inset;}
@@ -2933,8 +2936,12 @@ async function mxShow(job, d) {
       '<div class="plan-detail">It came in at ' + before.lufs + ' LUFS, so it looks mastered already or has a limiter on the master bus. That leaves little for mastering to improve, which is why the two versions sound close. ' +
       'For the best result, bounce the mix again with the limiter and any mastering plugins on the master bus turned off, then upload that.</div></div>';
   }
-  h += '<button type="button" class="gen-btn" id="mx-dl" onclick="mxDownload()" style="margin-top:12px;"><i class="ti ti-download"></i> Download full master (WAV 24-bit)</button>';
-  h += '<div class="mx-note" id="mx-dl-note">' + (d.downloaded ? 'Already downloaded. Downloading again is free.' : 'Uses 1 of your monthly masters. Re-downloads of this master are free for 14 days.') + '</div>';
+  const allFormats = !!(m.formats || (d.formats && d.formats.length > 1));
+  h += '<button type="button" class="gen-btn mx-dlb" id="mx-dl" onclick="mxDownload(\'wav24\')" style="margin-top:12px;"><i class="ti ti-download"></i> Download WAV 24-bit · for distribution</button>';
+  if (allFormats) h += '<div class="mx-formats"><button type="button" class="result-btn mx-dlb" onclick="mxDownload(\'wav16\')"><i class="ti ti-disc"></i> WAV 16-bit · 44.1k</button>' +
+    '<button type="button" class="result-btn mx-dlb" onclick="mxDownload(\'mp3\')"><i class="ti ti-share"></i> MP3 320 · for sharing</button></div>' +
+    '<div class="mx-note" style="margin-top:6px;">16-bit is for distributors or CD plants that ask for it. MP3 is for sharing, SoundCloud and DJs; upload the WAV to your distributor.</div>';
+  h += '<div class="mx-note" id="mx-dl-note">' + (d.downloaded ? 'Saved in My Assets. Download it again anytime, in any format.' : 'Uses 1 of your monthly masters. After that, this master is yours: download it again anytime, in any format.') + '</div>';
   h += '<div class="result-actions" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
     '<button type="button" class="result-btn" onclick="mxRetry()"><i class="ti ti-refresh"></i> Try another sound</button>' +
     '<button type="button" class="result-btn" onclick="switchTool(\'lyric\', null)"><i class="ti ti-video"></i> Make a lyric video</button></div>';
@@ -3033,12 +3040,13 @@ function mxSeek(e) {
   if (mxPlaying) { mxStop(); mxPlayFrom(pos); } else { mxPos = pos; mxDrawPos(); }
 }
 
-async function mxDownload() {
+async function mxDownload(format) {
   if (!mxJob) return;
-  const btn = document.getElementById('mx-dl'); btn.disabled = true;
+  format = format || 'wav24';
+  const btns = document.querySelectorAll('.mx-dlb'); btns.forEach(b => b.disabled = true);
   const note = document.getElementById('mx-dl-note');
   try {
-    const res = await fetch('/api/master', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'download', job: mxJob }) });
+    const res = await fetch('/api/master', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'download', job: mxJob, format }) });
     const d = await res.json();
     if (d.error === 'limit_reached') {
       note.innerHTML = (d.plan === 'free' ? 'You’ve used your free master for this month. Pro includes 5 a month and Premium is unlimited. ' : (d.plan === 'pro' ? 'You’ve used your 5 masters for this month. They reset on the 1st, or go unlimited with Premium. ' : 'You’ve reached this month’s master limit. It resets on the 1st. ')) +
@@ -3046,10 +3054,10 @@ async function mxDownload() {
     } else if (d.url) {
       const a = document.createElement('a'); a.href = d.url; a.rel = 'noopener';
       document.body.appendChild(a); a.click(); a.remove();
-      note.textContent = 'Downloading your master. Downloading this one again is free for 14 days.';
+      note.textContent = 'Downloading your ' + ({ wav24: 'WAV 24-bit', wav16: 'WAV 16-bit', mp3: 'MP3' })[format] + '. Saved in My Assets: download it again anytime, in any format.';
     } else note.textContent = d.error || 'Couldn’t create the download. Try again.';
   } catch (e) { note.textContent = 'Couldn’t reach the server. Try again.'; }
-  btn.disabled = false;
+  btns.forEach(b => b.disabled = false);
 }
 
 function mxRetry() {
@@ -3155,7 +3163,7 @@ async function mxOpenJob(data, name) {
     const r = await fetch('/api/master?job=' + encodeURIComponent(mxJob), { headers: await authHeaders() });
     const d = await r.json();
     if (d.status === 'done' && d.preview_url) { d._reopen = true; await mxShow(mxJob, d); }
-    else { res.innerHTML = ''; res.style.display = 'none'; mxErr(d.error || 'This master isn’t available anymore. Files are kept for 14 days.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
+    else { res.innerHTML = ''; res.style.display = 'none'; mxErr(d.error || 'This master isn’t available anymore. Masters you don’t download are kept for 30 days.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
   } catch (e) { res.innerHTML = ''; res.style.display = 'none'; mxErr('Couldn’t load that master.'); document.getElementById('mx-placeholder').style.display = 'flex'; }
 }
 
