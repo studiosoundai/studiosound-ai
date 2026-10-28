@@ -760,6 +760,7 @@ body{overflow:auto;height:auto;}
             <button class="result-btn" onclick="generateMerch()"><i class="ti ti-refresh"></i> Try Another</button>
             <button class="result-btn primary" onclick="downloadMerch()"><i class="ti ti-download"></i> Download</button>
           </div>
+          <div class="mx-note ss-tag-note" style="display:none;"></div>
         </div>
       </div>
       <div class="examples-section">
@@ -1395,6 +1396,7 @@ body{overflow:auto;height:auto;}
           </div>
           <button class="gen-btn" id="lv-export" onclick="lvExport()"><i class="ti ti-download"></i> Export Video</button>
           <div id="lv-export-status" style="color:var(--muted);font-size:11px;margin-top:8px;"></div>
+          <div class="mx-note ss-tag-note" style="display:none;"></div>
         </div>
         <div class="gen-panel">
           <div class="gen-title">Preview — 9:16 Vertical</div>
@@ -1494,6 +1496,7 @@ const sbAuth = supabase.createClient(
 
 let currentUser = null;
 let currentPlan = 'free';
+setTimeout(() => { try { ssTagNotes(); } catch (e) {} }, 0);
 
 sbAuth.auth.getSession().then(async ({ data }) => {
   if (!data.session) {
@@ -1510,7 +1513,7 @@ sbAuth.auth.getSession().then(async ({ data }) => {
   try {
     const { data: prof } = await sbAuth.from('profiles').select('plan').single();
     if (prof && prof.plan) {
-      currentPlan = prof.plan;
+      currentPlan = prof.plan; try { ssTagNotes(); } catch (e) {}
       document.querySelector('.user-plan').textContent = prof.plan.charAt(0).toUpperCase() + prof.plan.slice(1) + ' Plan';
       if (prof.plan !== 'free') {
         const tb = document.getElementById('topbar-upgrade');
@@ -1533,7 +1536,7 @@ sbAuth.auth.getSession().then(async ({ data }) => {
       try {
         const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
         if (prof && prof.plan && prof.plan !== 'free') {
-          currentPlan = prof.plan;
+          currentPlan = prof.plan; try { ssTagNotes(); } catch (e) {}
           clearInterval(poll);
         }
       } catch(e) {}
@@ -2382,13 +2385,45 @@ async function generateMerch() {
   document.getElementById('merch-btn').disabled = false;
 }
 
-function downloadMerch() {
+// ====== FREE-PLAN TAG: small "Made with StudioSound.ai" on lyric videos, mockups and ads (Pro and Premium are clean) ======
+function ssTagOn() { return currentPlan === 'free'; }
+const SS_TAG_NOTE = 'Free plan exports include a small “Made with StudioSound.ai” tag. <a href="pricing.html" style="color:var(--neon);font-weight:700;">Remove it with Pro →</a>';
+function ssDrawTag(ctx, W, H, where) {
+  if (!ssTagOn()) return;
+  const size = Math.max(12, Math.round(Math.min(W, H) * 0.03));
+  const pad = Math.round(size * 0.9);
+  ctx.save();
+  ctx.font = '700 ' + size + 'px Arial, Helvetica, sans-serif';
+  ctx.textBaseline = where === 'top' ? 'top' : 'alphabetic';
+  ctx.textAlign = 'right';
+  const y = where === 'top' ? pad : H - pad;
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = Math.round(size * 0.4);
+  ctx.globalAlpha = 0.62; ctx.fillStyle = '#ffffff';
+  ctx.fillText('Made with StudioSound.ai', W - pad, y);
+  ctx.restore();
+}
+function ssTagNotes() {
+  document.querySelectorAll('.ss-tag-note').forEach(el => { el.innerHTML = ssTagOn() ? SS_TAG_NOTE : ''; el.style.display = ssTagOn() ? 'block' : 'none'; });
+}
+
+async function downloadMerch() {
   const img = document.getElementById('merch-result-img');
   if(!img.src) { alert('Generate a mockup first'); return; }
+  let href = img.src;
+  if (ssTagOn()) {
+    try {
+      const im = new Image(); im.crossOrigin = 'anonymous';
+      await new Promise((ok, bad) => { im.onload = ok; im.onerror = bad; im.src = img.src; });
+      const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+      const ctx = c.getContext('2d'); ctx.drawImage(im, 0, 0);
+      ssDrawTag(ctx, c.width, c.height, 'top');
+      href = c.toDataURL('image/png');
+    } catch (e) { href = img.src; }
+  }
   const a = document.createElement('a');
-  a.href = img.src;
+  a.href = href;
   a.download = 'studiosound-merch-mockup.png';
-  a.click();
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 // ====== COVER RESIZER (free, runs in browser) ======
@@ -3316,6 +3351,11 @@ function adCtaText(ctx, W, x, y, align, p) {
 
 // draw one creative. p = 0..1 animation progress (video), or null for a still
 function adDraw(canvas, fmt, p) {
+  const r = adDrawBase(canvas, fmt, p);
+  if (adCoverImg) ssDrawTag(canvas.getContext('2d'), canvas.width, canvas.height, 'top');
+  return r;
+}
+function adDrawBase(canvas, fmt, p) {
   const F = AD_FORMATS[fmt], W = F.w, H = F.h;
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
@@ -3575,7 +3615,8 @@ function renderAdKit(kit) {
     '<button type="button" class="result-btn" onclick="adDownload(\'' + f + '\')"><i class="ti ti-download"></i> JPG</button></div>').join('') + '</div>';
   h += '<div style="margin-top:12px;"><canvas id="ad-cv-video" style="display:none;width:160px;border-radius:8px;border:0.5px solid var(--border);margin-bottom:8px;"></canvas>' +
     '<button type="button" class="result-btn primary" id="ad-video-btn" onclick="adRecordVideo()" style="width:100%;"><i class="ti ti-movie"></i> Make the 15-second Reels video</button>' +
-    '<div class="ad-video-status" id="ad-video-status"></div></div>';
+    '<div class="ad-video-status" id="ad-video-status"></div>' +
+    (ssTagOn() ? '<div class="mx-note">' + SS_TAG_NOTE + '</div>' : '') + '</div>';
   if (!adCoverImg) h += '<div class="ad-video-status" style="color:#ffcf6b;">Upload your cover on the left to see your ad images.</div>';
   h += '</div>';
 
@@ -4401,7 +4442,7 @@ async function runForecast() {
   if (currentPlan === 'free') {
     try {
       const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
-      if (prof && prof.plan) currentPlan = prof.plan;
+      if (prof && prof.plan) currentPlan = prof.plan; try { ssTagNotes(); } catch (e) {}
     } catch(e) {}
   }
 
@@ -4731,6 +4772,12 @@ function lvWrap(ctx, text, maxW) {
 }
 
 function lvDrawFrame(t, lineIdx) {
+  const r = lvDrawFrameBase(t, lineIdx);
+  const c = document.getElementById('lv-canvas');
+  ssDrawTag(c.getContext('2d'), c.width, c.height, 'top');
+  return r;
+}
+function lvDrawFrameBase(t, lineIdx) {
   const c = document.getElementById('lv-canvas');
   const ctx = c.getContext('2d');
   const W = c.width, H = c.height;
