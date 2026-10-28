@@ -1,4 +1,4 @@
-import { checkAndCount, logGeneration } from './_usage.js';
+import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
 
 // AI Mastering
 // POST { action: 'start', input_path, reference_path?, style, loudness, strength?, file_name }  -> { job }
@@ -8,7 +8,7 @@ import { checkAndCount, logGeneration } from './_usage.js';
 // The song itself is uploaded by the browser straight to Supabase Storage (bucket "mastering"),
 // because WAV files are far bigger than Vercel allows in a request. The mastering server does the audio work.
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, MASTERING_URL, MASTERING_SECRET
-// Rollout: only founder accounts (FOUNDER_EMAILS) see AI Mastering until MASTERING_PUBLIC=true in Vercel.
+// Rollout: only founders (FOUNDER_EMAILS) and Team members see AI Mastering until MASTERING_PUBLIC=true in Vercel.
 
 const STYLES = ['balanced', 'warm', 'punchy', 'open', 'vocal'];
 const LOUDNESS = ['streaming', 'standard', 'loud'];
@@ -46,17 +46,16 @@ async function sign(path, seconds, download) {
   if (!j || !j.signedURL) return null;
   return `${url}/storage/v1${j.signedURL}` + (download ? `&download=${encodeURIComponent(download)}` : '');
 }
-function masteringEnabledFor(user) {
+async function masteringEnabledFor(user) {
   if (!user || !process.env.MASTERING_URL || !process.env.MASTERING_SECRET) return false;
   if (String(process.env.MASTERING_PUBLIC || '').toLowerCase() === 'true') return true;
-  const founders = (process.env.FOUNDER_EMAILS || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
-  return founders.includes(String(user.email || '').toLowerCase());
+  return await hasEarlyAccess(user.email);     // founders and Team members
 }
 const safePath = (p, uid) => typeof p === 'string' && p.startsWith(uid + '/') && !p.includes('..') && p.length < 300;
 
 export default async function handler(req, res) {
   const user = await userFromToken(req);
-  if (req.method === 'GET' && !(req.query && req.query.job)) return res.status(200).json({ enabled: masteringEnabledFor(user) });
+  if (req.method === 'GET' && !(req.query && req.query.job)) return res.status(200).json({ enabled: await masteringEnabledFor(user) });
   if (!user) return res.status(401).json({ error: 'Please sign in to use AI Mastering.' });
   const { url } = env();
 
@@ -74,7 +73,7 @@ export default async function handler(req, res) {
 
   // ---------- start a master (makes a free preview) ----------
   if (body.action === 'start') {
-    if (!masteringEnabledFor(user)) return res.status(403).json({ error: 'AI Mastering is coming soon.' });
+    if (!(await masteringEnabledFor(user))) return res.status(403).json({ error: 'AI Mastering is coming soon.' });
     if (!safePath(body.input_path, user.id)) return res.status(400).json({ error: 'Upload your song first.' });
     if (body.reference_path && !safePath(body.reference_path, user.id)) return res.status(400).json({ error: 'Upload the reference song again.' });
 

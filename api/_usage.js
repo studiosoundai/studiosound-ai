@@ -12,6 +12,31 @@ const LIMITS = {
   premium: { cover_art: 600, release_plan: 1000, merch: 100, lyrics: 500, transcribe: 100, forecast: 10, chat: 1200, ads: 100, master_preview: 300, mastering: 100 },
 };
 
+// ---------- who's who ----------
+// FOUNDER_EMAILS: accounts that skip limits and see every tool before launch.
+// OWNER_EMAILS:   accounts that can manage the Team page (if not set, the first FOUNDER_EMAILS address).
+// Team members (managed on the Team page, stored in the "team" table): Premium + early access to new tools.
+const emails = (v) => String(v || '').toLowerCase().split(',').map(x => x.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+export function isFounder(email) { return !!email && emails(process.env.FOUNDER_EMAILS).includes(String(email).toLowerCase()); }
+export function isOwner(email) {
+  if (!email) return false;
+  const owners = emails(process.env.OWNER_EMAILS);
+  const list = owners.length ? owners : emails(process.env.FOUNDER_EMAILS).slice(0, 1);
+  return list.includes(String(email).toLowerCase());
+}
+export async function isTeam(email) {
+  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!email || !url || !key) return false;
+  try {
+    const r = await fetch(`${url}/rest/v1/team?email=eq.${encodeURIComponent(String(email).toLowerCase())}&select=email`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } });
+    const rows = r.ok ? await r.json() : [];
+    return Array.isArray(rows) && rows.length > 0;
+  } catch (e) { return false; }
+}
+// Founders and team members see tools that aren't public yet
+export async function hasEarlyAccess(email) { return isFounder(email) || await isTeam(email); }
+
 export async function checkAndCount(req, tool) {
   const url = process.env.SUPABASE_URL;
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -36,9 +61,7 @@ export async function checkAndCount(req, tool) {
 
   // Founder accounts (comma-separated emails in FOUNDER_EMAILS env var) skip
   // limits entirely — testing your own platform shouldn't burn your quota.
-  const founders = (process.env.FOUNDER_EMAILS || '')
-    .toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
-  if (founders.includes((user.email || '').toLowerCase())) {
+  if (isFounder(user.email)) {
     return { ok: true, userId: user.id, plan: 'premium', founder: true };
   }
 

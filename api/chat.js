@@ -1,4 +1,4 @@
-import { checkAndCount, logGeneration } from './_usage.js';
+import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
 import { buildKnowledge, TOOL_NAMES } from './_knowledge.js';
 
 // POST /api/chat  { messages: [{role, content}], tool }  -> { reply }
@@ -46,23 +46,22 @@ async function userFromToken(req) {
   } catch (e) { return null; }
 }
 
-function chatEnabledFor(user) {
+async function chatEnabledFor(user) {
   if (!user) return false;
   if (String(process.env.CHAT_PUBLIC || '').toLowerCase() === 'true') return true;
-  const founders = (process.env.FOUNDER_EMAILS || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
-  return founders.includes(String(user.email || '').toLowerCase());
+  return await hasEarlyAccess(user.email);     // founders and Team members
 }
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     const user = await userFromToken(req);
-    return res.status(200).json({ enabled: chatEnabledFor(user) });
+    return res.status(200).json({ enabled: await chatEnabledFor(user) });
   }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const user = await userFromToken(req);
   if (!user) return res.status(401).json({ error: 'Please sign in to use the assistant.' });
-  if (!chatEnabledFor(user)) return res.status(403).json({ error: 'not_enabled' });
+  if (!(await chatEnabledFor(user))) return res.status(403).json({ error: 'not_enabled' });
 
   const { messages, tool } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ error: 'No message' });
