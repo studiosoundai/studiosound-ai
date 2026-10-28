@@ -276,6 +276,16 @@ body{overflow:auto;height:auto;}
 .mx-strength-labels span.on{color:var(--neon);font-weight:800;}
 .mx-time{cursor:pointer;height:8px;position:relative;}
 .mx-clock{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums;}
+.mx-sl{margin-top:14px;border:1px solid #00FFD155;background:linear-gradient(135deg,#00FFD112,#0f0f1a 60%);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
+.mx-sl:hover{border-color:#00FFD1aa;}
+.mx-sl.on{border-color:var(--neon);box-shadow:0 0 0 1px #00FFD155 inset;}
+.mx-sl-head{display:flex;align-items:center;gap:12px;}
+.mx-sl-head b{display:block;color:#fff;font-size:14px;}
+.mx-sl-head small{display:block;color:var(--muted);font-size:11px;margin-top:3px;line-height:1.45;}
+.mx-sl-switch{margin-left:auto;flex-shrink:0;width:40px;height:22px;border-radius:99px;background:#2a2a3e;position:relative;transition:background .15s;}
+.mx-sl-switch::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
+.mx-sl.on .mx-sl-switch{background:var(--neon);} .mx-sl.on .mx-sl-switch::after{left:21px;background:#05050a;}
+.mx-styles .mx-opt:last-child:nth-child(odd){grid-column:1/-1;}
 .tm-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 12px;border:0.5px solid var(--border);border-radius:10px;background:#0f0f1a;}
 .tm-row + .tm-row{margin-top:8px;}
 .tm-email{color:#fff;font-size:13px;font-weight:700;word-break:break-all;}
@@ -974,7 +984,17 @@ body{overflow:auto;height:auto;}
           <input type="file" id="mx-file" accept=".wav,.aif,.aiff,.flac,.mp3,.m4a,audio/*" style="display:none;" onchange="mxPick(this.files)"/>
           <div class="mx-note" id="mx-file-note">Leave some headroom: your mix should peak around -3 to -6 dB with no limiter on the master bus.</div>
 
-          <div class="ad-step">2 · THE SOUND</div>
+          <div class="mx-sl" id="mx-sl" onclick="mxToggleRef()" role="button" aria-pressed="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();mxToggleRef();}">
+            <div class="mx-sl-head"><span style="font-size:22px;">🎯</span><div><b>Sound like a song</b><small>Upload a song you love and we'll make yours sound like it: same loudness, tone and width.</small></div><span class="mx-sl-switch" aria-hidden="true"></span></div>
+            <div id="mx-ref-wrap" style="display:none;margin-top:12px;" onclick="event.stopPropagation()">
+              <div class="ad-drop" onclick="document.getElementById('mx-ref').click()"><b id="mx-ref-label">Upload the song you want to sound like</b><small>A finished, released song, ideally in the same genre</small></div>
+              <input type="file" id="mx-ref" accept=".wav,.aif,.aiff,.flac,.mp3,.m4a,audio/*" style="display:none;" onchange="mxPickRef(this.files)"/>
+              <div class="mx-note"><a href="#" onclick="mxToggleRef();return false;" style="color:var(--muted);">Or pick a sound yourself instead</a></div>
+            </div>
+          </div>
+
+          <div id="mx-sound-wrap">
+          <div class="ad-step">2 · OR PICK A SOUND</div>
           <input type="hidden" id="mx-style" value="balanced"/>
           <div class="mx-styles" id="mx-styles">
             <button type="button" class="mx-opt active" data-v="balanced" onclick="mxSetStyle('balanced')"><b>Balanced</b><small>Clean and even. Works for almost anything.</small></button>
@@ -982,11 +1002,7 @@ body{overflow:auto;height:auto;}
             <button type="button" class="mx-opt" data-v="punchy" onclick="mxSetStyle('punchy')"><b>Punchy</b><small>Tight kick and bass, more bite. Hip-hop, trap, drill.</small></button>
             <button type="button" class="mx-opt" data-v="open" onclick="mxSetStyle('open')"><b>Open</b><small>Brighter and wider. Pop, Latin, afrobeats.</small></button>
             <button type="button" class="mx-opt" data-v="vocal" onclick="mxSetStyle('vocal')"><b>Vocal Forward</b><small>Brings the vocal up front. Lyric-led songs.</small></button>
-            <button type="button" class="mx-opt" data-v="reference" onclick="mxSetStyle('reference')"><b>Match a song</b><small>Upload a song you love; we match its sound.</small></button>
           </div>
-          <div id="mx-ref-wrap" style="display:none;margin-top:8px;">
-            <div class="ad-drop" onclick="document.getElementById('mx-ref').click()"><b id="mx-ref-label">Upload the reference song</b><small>A finished, released song in the same style</small></div>
-            <input type="file" id="mx-ref" accept=".wav,.aif,.aiff,.flac,.mp3,.m4a,audio/*" style="display:none;" onchange="mxPickRef(this.files)"/>
           </div>
 
           <div id="mx-loud-wrap">
@@ -1841,6 +1857,7 @@ function switchTool(tool, sidebarBtn) {
   closeSidebar();
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.toggle('active', c.dataset.tool === tool));
   const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'AI Mastering', team:'Team'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
@@ -2745,7 +2762,7 @@ function printChecklist() {
 // ====== AI MASTERING (song uploads straight to storage; our mastering server does the audio) ======
 const MX_SB_URL = 'https://ewkuvwokbyioqxnrzqbu.supabase.co';
 const MX_SB_KEY = 'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84';
-const MX_STYLE_NAMES = { balanced: 'Balanced', warm: 'Warm', punchy: 'Punchy', open: 'Open', vocal: 'Vocal Forward', reference: 'Matched to your reference' };
+const MX_STYLE_NAMES = { balanced: 'Balanced', warm: 'Warm', punchy: 'Punchy', open: 'Open', vocal: 'Vocal Forward', reference: 'Sounds like your song' };
 const MX_LOUD_NAMES = { streaming: 'Streaming (-14 LUFS)', standard: 'Standard (-10 LUFS)', loud: 'Loud (-8 LUFS)' };
 const MX_STRENGTHS = [0.5, 0.75, 1.0, 1.3, 1.6];
 const MX_STRENGTH_NAMES = ['Light', 'Gentle', 'Normal', 'Strong', 'Max'];
@@ -2759,11 +2776,19 @@ let mxPos = 0, mxDur = 0;
 let mxFile = null, mxRef = null, mxInputPath = null, mxRefPath = null, mxJob = null, mxPoll = null;
 let mxAC = null, mxBufA = null, mxBufB = null, mxSrcA = null, mxSrcB = null, mxGainA = null, mxGainB = null, mxStartAt = 0, mxPlaying = false, mxSide = 'b', mxRaf = null, mxMeta = null;
 
+let mxLastStyle = 'balanced';
 function mxSetStyle(v) {
+  if (v !== 'reference') mxLastStyle = v;
   document.getElementById('mx-style').value = v;
   document.querySelectorAll('#mx-styles .mx-opt').forEach(b => b.classList.toggle('active', b.dataset.v === v));
-  document.getElementById('mx-ref-wrap').style.display = v === 'reference' ? 'block' : 'none';
-  document.getElementById('mx-loud-wrap').style.display = v === 'reference' ? 'none' : 'block';
+  const ref = v === 'reference', sl = document.getElementById('mx-sl');
+  sl.classList.toggle('on', ref); sl.setAttribute('aria-pressed', ref ? 'true' : 'false');
+  document.getElementById('mx-ref-wrap').style.display = ref ? 'block' : 'none';
+  document.getElementById('mx-sound-wrap').style.display = ref ? 'none' : 'block';
+  document.getElementById('mx-loud-wrap').style.display = ref ? 'none' : 'block';
+}
+function mxToggleRef() {
+  mxSetStyle(document.getElementById('mx-style').value === 'reference' ? mxLastStyle : 'reference');
 }
 function mxSetLoud(v) {
   document.getElementById('mx-loudness').value = v;
@@ -2814,7 +2839,7 @@ async function mxStart() {
   mxErr('');
   const style = document.getElementById('mx-style').value;
   if (!mxFile && !mxInputPath) { mxErr('Upload your mix first.'); return; }
-  if (style === 'reference' && !mxRef && !mxRefPath) { mxErr('Upload the reference song you want to match.'); return; }
+  if (style === 'reference' && !mxRef && !mxRefPath) { mxErr('Upload the song you want yours to sound like.'); return; }
   mxStop();
   const btn = document.getElementById('mx-btn'); btn.disabled = true;
   document.getElementById('mx-placeholder').style.display = 'none';
