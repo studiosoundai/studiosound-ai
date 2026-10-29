@@ -239,7 +239,7 @@ body{overflow:auto;height:auto;}
 .ad-profile{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 @media(max-width:768px){ .ad-formats{grid-template-columns:1fr 1fr;} .ad-grid2{grid-template-columns:1fr;} .ad-profile{grid-template-columns:1fr;} }
 
-/* ===== AI MASTERING ===== */
+/* ===== MASTERING ===== */
 .mx-styles{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .mx-opt{text-align:left;background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;font-family:'Sora',sans-serif;color:#fff;}
 .mx-opt:hover{border-color:#3a3a52;}
@@ -323,12 +323,12 @@ body{overflow:auto;height:auto;}
   <div class="sidebar-section">
     <div class="sidebar-label">TOOLS</div>
     <button class="sidebar-item" onclick="switchTool('forecast',this)"><i class="ti ti-chart-line"></i> Earnings Forecast <span class="badge">NEW</span></button>
-    <button class="sidebar-item mx-gate" style="display:none;" onclick="switchTool('master',this)"><i class="ti ti-adjustments-horizontal"></i> AI Mastering <span class="badge">NEW</span></button>
+    <button class="sidebar-item mx-gate" style="display:none;" onclick="switchTool('master',this)"><i class="ti ti-adjustments-horizontal"></i> Mastering <span class="badge">NEW</span></button>
     <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
     <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('plan',this)"><i class="ti ti-rocket"></i> Release Planner <span class="badge">LIVE</span></button>
     <button class="sidebar-item" onclick="switchTool('merch',this)"><i class="ti ti-shirt"></i> Merch Mockups <span class="badge">LIVE</span></button>
-    <button class="sidebar-item" onclick="switchTool('writer',this)"><i class="ti ti-pencil"></i> AI Lyric Writer <span class="badge">LIVE</span></button>
+    <button class="sidebar-item" onclick="switchTool('writer',this)"><i class="ti ti-pencil"></i> Lyric Writer <span class="badge">LIVE</span></button>
     <button class="sidebar-item"><i class="ti ti-music"></i> Song Generator <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-photo"></i> YT Thumbnail <span class="soon">SOON</span></button>
   </div>
@@ -387,7 +387,7 @@ body{overflow:auto;height:auto;}
         <div class="welcome-sub">Pick a tool and start creating. We'll guide you every step of the way.</div>
         <div class="welcome-pills">
           <div class="wpill"><i class="ti ti-chart-line"></i> Earnings Forecast</div>
-          <div class="wpill mx-gate" style="display:none;"><i class="ti ti-adjustments-horizontal"></i> AI Mastering</div>
+          <div class="wpill mx-gate" style="display:none;"><i class="ti ti-adjustments-horizontal"></i> Mastering</div>
           <div class="wpill"><i class="ti ti-video"></i> Lyric Videos</div>
           <div class="wpill"><i class="ti ti-disc"></i> Cover Art</div>
           <div class="wpill"><i class="ti ti-rocket"></i> Release Planner</div>
@@ -415,8 +415,8 @@ body{overflow:auto;height:auto;}
       </div>
       <div data-tool="master" class="tool-card mx-gate" style="display:none;" onclick="switchTool('master',null);setToolActive(this)">
         <div class="tool-badge live">NEW</div>
-        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20320%20120%27%3E%3Crect%20width%3D%27320%27%20height%3D%27120%27%20fill%3D%27%23071413%27%2F%3E%3Crect%20x%3D%2714.0%27%20y%3D%2756.0%27%20width%3D%274%27%20height%3D%278.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2721.4%27%20y%3D%2742.2%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2728.8%27%20y%3D%2742.1%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2736.2%27%20y%3D%2743.7%27%20width%3D%274%27%20height%3D%2732.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2743.6%27%20y%3D%2739.8%27%20width%3D%274%27%20height%3D%2740.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2751.0%27%20y%3D%2745.5%27%20width%3D%274%27%20height%3D%2729.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2758.4%27%20y%3D%2749.8%27%20width%3D%274%27%20height%3D%2720.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2765.8%27%20y%3D%2741.8%27%20width%3D%274%27%20height%3D%2736.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2773.2%27%20y%3D%2744.1%27%20width%3D%274%27%20height%3D%2731.8%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2780.6%27%20y%3D%2741.5%27%20width%3D%274%27%20height%3D%2737.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2788.0%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2795.4%27%20y%3D%2751.3%27%20width%3D%274%27%20height%3D%2717.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27102.8%27%20y%3D%2745.7%27%20width%3D%274%27%20height%3D%2728.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27110.2%27%20y%3D%2737.8%27%20width%3D%274%27%20height%3D%2744.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27117.6%27%20y%3D%2738.5%27%20width%3D%274%27%20height%3D%2743.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27125.0%27%20y%3D%2731.0%27%20width%3D%274%27%20height%3D%2758.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27132.4%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.5%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27139.8%27%20y%3D%2752.4%27%20width%3D%274%27%20height%3D%2715.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27147.2%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27154.6%27%20y%3D%2740.2%27%20width%3D%274%27%20height%3D%2739.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27162.0%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27169.4%27%20y%3D%2728.9%27%20width%3D%274%27%20height%3D%2762.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27176.8%27%20y%3D%2742.3%27%20width%3D%274%27%20height%3D%2735.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27184.2%27%20y%3D%2746.0%27%20width%3D%274%27%20height%3D%2727.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27191.6%27%20y%3D%2740.7%27%20width%3D%274%27%20height%3D%2738.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27199.0%27%20y%3D%2740.1%27%20width%3D%274%27%20height%3D%2739.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27206.4%27%20y%3D%2730.5%27%20width%3D%274%27%20height%3D%2759.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27213.8%27%20y%3D%2730.9%27%20width%3D%274%27%20height%3D%2758.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27221.2%27%20y%3D%2753.1%27%20width%3D%274%27%20height%3D%2713.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27228.6%27%20y%3D%2747.8%27%20width%3D%274%27%20height%3D%2724.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27236.0%27%20y%3D%2747.3%27%20width%3D%274%27%20height%3D%2725.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27243.4%27%20y%3D%2742.7%27%20width%3D%274%27%20height%3D%2734.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27250.8%27%20y%3D%2735.7%27%20width%3D%274%27%20height%3D%2748.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27258.2%27%20y%3D%2742.9%27%20width%3D%274%27%20height%3D%2734.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27265.6%27%20y%3D%2753.8%27%20width%3D%274%27%20height%3D%2712.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27273.0%27%20y%3D%2748.4%27%20width%3D%274%27%20height%3D%2723.1%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27280.4%27%20y%3D%2747.2%27%20width%3D%274%27%20height%3D%2725.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27287.8%27%20y%3D%2738.7%27%20width%3D%274%27%20height%3D%2742.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27295.2%27%20y%3D%2736.0%27%20width%3D%274%27%20height%3D%2748.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27302.6%27%20y%3D%2748.8%27%20width%3D%274%27%20height%3D%2722.3%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3C%2Fsvg%3E" alt="AI Mastering"/></div>
-        <div class="tool-name">AI Mastering</div>
+        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20320%20120%27%3E%3Crect%20width%3D%27320%27%20height%3D%27120%27%20fill%3D%27%23071413%27%2F%3E%3Crect%20x%3D%2714.0%27%20y%3D%2756.0%27%20width%3D%274%27%20height%3D%278.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2721.4%27%20y%3D%2742.2%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2728.8%27%20y%3D%2742.1%27%20width%3D%274%27%20height%3D%2735.7%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2736.2%27%20y%3D%2743.7%27%20width%3D%274%27%20height%3D%2732.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2743.6%27%20y%3D%2739.8%27%20width%3D%274%27%20height%3D%2740.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2751.0%27%20y%3D%2745.5%27%20width%3D%274%27%20height%3D%2729.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2758.4%27%20y%3D%2749.8%27%20width%3D%274%27%20height%3D%2720.4%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2765.8%27%20y%3D%2741.8%27%20width%3D%274%27%20height%3D%2736.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2773.2%27%20y%3D%2744.1%27%20width%3D%274%27%20height%3D%2731.8%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2780.6%27%20y%3D%2741.5%27%20width%3D%274%27%20height%3D%2737.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2788.0%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%2795.4%27%20y%3D%2751.3%27%20width%3D%274%27%20height%3D%2717.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27102.8%27%20y%3D%2745.7%27%20width%3D%274%27%20height%3D%2728.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27110.2%27%20y%3D%2737.8%27%20width%3D%274%27%20height%3D%2744.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27117.6%27%20y%3D%2738.5%27%20width%3D%274%27%20height%3D%2743.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27125.0%27%20y%3D%2731.0%27%20width%3D%274%27%20height%3D%2758.0%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27132.4%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.5%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27139.8%27%20y%3D%2752.4%27%20width%3D%274%27%20height%3D%2715.3%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27147.2%27%20y%3D%2739.2%27%20width%3D%274%27%20height%3D%2741.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27154.6%27%20y%3D%2740.2%27%20width%3D%274%27%20height%3D%2739.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27162.0%27%20y%3D%2735.2%27%20width%3D%274%27%20height%3D%2749.6%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27169.4%27%20y%3D%2728.9%27%20width%3D%274%27%20height%3D%2762.1%27%20rx%3D%272%27%20fill%3D%27%2300FFD1%27%2F%3E%3Crect%20x%3D%27176.8%27%20y%3D%2742.3%27%20width%3D%274%27%20height%3D%2735.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27184.2%27%20y%3D%2746.0%27%20width%3D%274%27%20height%3D%2727.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27191.6%27%20y%3D%2740.7%27%20width%3D%274%27%20height%3D%2738.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27199.0%27%20y%3D%2740.1%27%20width%3D%274%27%20height%3D%2739.9%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27206.4%27%20y%3D%2730.5%27%20width%3D%274%27%20height%3D%2759.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27213.8%27%20y%3D%2730.9%27%20width%3D%274%27%20height%3D%2758.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27221.2%27%20y%3D%2753.1%27%20width%3D%274%27%20height%3D%2713.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27228.6%27%20y%3D%2747.8%27%20width%3D%274%27%20height%3D%2724.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27236.0%27%20y%3D%2747.3%27%20width%3D%274%27%20height%3D%2725.5%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27243.4%27%20y%3D%2742.7%27%20width%3D%274%27%20height%3D%2734.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27250.8%27%20y%3D%2735.7%27%20width%3D%274%27%20height%3D%2748.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27258.2%27%20y%3D%2742.9%27%20width%3D%274%27%20height%3D%2734.2%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27265.6%27%20y%3D%2753.8%27%20width%3D%274%27%20height%3D%2712.4%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27273.0%27%20y%3D%2748.4%27%20width%3D%274%27%20height%3D%2723.1%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27280.4%27%20y%3D%2747.2%27%20width%3D%274%27%20height%3D%2725.7%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27287.8%27%20y%3D%2738.7%27%20width%3D%274%27%20height%3D%2742.6%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27295.2%27%20y%3D%2736.0%27%20width%3D%274%27%20height%3D%2748.0%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3Crect%20x%3D%27302.6%27%20y%3D%2748.8%27%20width%3D%274%27%20height%3D%2722.3%27%20rx%3D%272%27%20fill%3D%27%232a3b3a%27%2F%3E%3C%2Fsvg%3E" alt="Mastering"/></div>
+        <div class="tool-name">Mastering</div>
         <div class="tool-desc">Streaming-ready masters with a free preview</div>
       </div>
       <div data-tool="lyric" class="tool-card" onclick="switchTool('lyric',null);setToolActive(this)">
@@ -445,8 +445,8 @@ body{overflow:auto;height:auto;}
       </div>
       <div data-tool="writer" class="tool-card" onclick="switchTool('writer',null);setToolActive(this)">
         <div class="tool-badge live">LIVE</div>
-        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20120%27%3E%3Crect%20width%3D%27120%27%20height%3D%27120%27%20fill%3D%27%230f0f1a%27%2F%3E%3Ctext%20x%3D%2712%27%20y%3D%2744%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%23d8d8ea%27%3ELate%20nights%2C%3C%2Ftext%3E%3Ctext%20x%3D%2712%27%20y%3D%2766%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%2300FFD1%27%3Emi%20gente%3C%2Ftext%3E%3Ctext%20x%3D%2712%27%20y%3D%2788%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%23d8d8ea%27%3Estill%20here%3C%2Ftext%3E%3C%2Fsvg%3E" alt="AI Lyric Writer"/></div>
-        <div class="tool-name">AI Lyric Writer</div>
+        <div class="tool-icon"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20120%27%3E%3Crect%20width%3D%27120%27%20height%3D%27120%27%20fill%3D%27%230f0f1a%27%2F%3E%3Ctext%20x%3D%2712%27%20y%3D%2744%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%23d8d8ea%27%3ELate%20nights%2C%3C%2Ftext%3E%3Ctext%20x%3D%2712%27%20y%3D%2766%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%2300FFD1%27%3Emi%20gente%3C%2Ftext%3E%3Ctext%20x%3D%2712%27%20y%3D%2788%27%20font-family%3D%27Arial%27%20font-weight%3D%27700%27%20font-size%3D%2715%27%20fill%3D%27%23d8d8ea%27%3Estill%20here%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Lyric Writer"/></div>
+        <div class="tool-name">Lyric Writer</div>
         <div class="tool-desc">Finish the verse or hook you're stuck on</div>
       </div>
       <div data-tool="ads" class="tool-card" onclick="switchTool('ads',null);setToolActive(this)">
@@ -975,11 +975,11 @@ body{overflow:auto;height:auto;}
     </div>
 
 
-    <!-- AI MASTERING -->
+    <!-- MASTERING -->
     <div id="tool-master" class="hidden">
       <div class="generator" style="align-items:start;">
         <div class="gen-panel">
-          <div class="gen-title">🎚️ AI Mastering</div>
+          <div class="gen-title">🎚️ Mastering</div>
           <div class="gen-sub">Upload your final mix and get a loud, clean, streaming-ready master. Hear a free before/after preview first; download the full WAV when it sounds right.</div>
 
           <div class="ad-step">1 · YOUR MIX</div>
@@ -1209,11 +1209,11 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
-    <!-- AI LYRIC WRITER -->
+    <!-- LYRIC WRITER -->
     <div id="tool-writer" class="hidden">
       <div class="generator">
         <div class="gen-panel">
-          <div class="gen-title">✍️ AI Lyric Writer</div>
+          <div class="gen-title">✍️ Lyric Writer</div>
           <div class="gen-sub">Tell us what the song is about — get lyrics that actually sound like your genre. Then send them straight to the Lyric Video maker.</div>
           <div class="form-group">
             <label class="form-label">What's the song about? <span style="color:var(--neon);">*</span></label>
@@ -1303,7 +1303,7 @@ body{overflow:auto;height:auto;}
           </div>
           <div class="form-group">
             <label class="form-label">3. Your Lyrics <span style="color:var(--neon);">*</span> <span style="color:#5a5a72;font-weight:600;">— fills itself, you just review</span></label>
-            <textarea class="form-textarea" id="lv-lyrics" style="min-height:120px;" placeholder="These fill in automatically:&#10;✨ Auto-Lyrics pulls them from your song, or&#10;✍️ the AI Lyric Writer sends them here.&#10;(You can also paste your own — one line per line.)"></textarea>
+            <textarea class="form-textarea" id="lv-lyrics" style="min-height:120px;" placeholder="These fill in automatically:&#10;✨ Auto-Lyrics pulls them from your song, or&#10;✍️ the Lyric Writer sends them here.&#10;(You can also paste your own — one line per line.)"></textarea>
             <div style="color:var(--muted);font-size:11px;margin-top:6px;">No lyrics yet? <a onclick="switchTool('writer',null)" style="color:var(--neon);font-weight:700;cursor:pointer;">Let the AI write them →</a></div>
           </div>
           <div class="form-row">
@@ -1463,7 +1463,7 @@ body{overflow:auto;height:auto;}
     <div id="tool-team" class="hidden">
       <div class="gen-panel" style="max-width:720px;margin-bottom:16px;">
         <div class="gen-title">👥 Team</div>
-        <div class="gen-sub">Add engineers, staff or artists you want to comp. They get Premium and early access to new tools (like AI Mastering before launch). It works even if they haven't signed up yet: they're upgraded the moment they create an account with that email.</div>
+        <div class="gen-sub">Add engineers, staff or artists you want to comp. They get Premium and early access to new tools (like Mastering before launch). It works even if they haven't signed up yet: they're upgraded the moment they create an account with that email.</div>
         <div class="tm-add">
           <input class="form-input" id="tm-email" type="email" placeholder="Their email, e.g. engineer@gmail.com" autocomplete="off" onkeydown="if(event.key==='Enter')tmAdd()"/>
           <input class="form-input" id="tm-note" placeholder="Note (optional), e.g. Engineer" maxlength="80" onkeydown="if(event.key==='Enter')tmAdd()"/>
@@ -1861,7 +1861,7 @@ function switchTool(tool, sidebarBtn) {
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
   document.querySelectorAll('.tool-card').forEach(c => c.classList.toggle('active', c.dataset.tool === tool));
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'AI Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'AI Mastering', team:'Team'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'Mastering', team:'Team'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -2762,7 +2762,7 @@ function printChecklist() {
   setTimeout(() => w.print(), 400);
 }
 
-// ====== AI MASTERING (song uploads straight to storage; our mastering server does the audio) ======
+// ====== MASTERING (song uploads straight to storage; our mastering server does the audio) ======
 const MX_SB_URL = 'https://ewkuvwokbyioqxnrzqbu.supabase.co';
 const MX_SB_KEY = 'sb_publishable_nwQuhWEaNLUUVYrMk9hufQ_8EnJ8e84';
 const MX_STYLE_NAMES = { balanced: 'Balanced', warm: 'Warm', punchy: 'Punchy', open: 'Open', vocal: 'Vocal Forward', reference: 'Sounds like your song' };
@@ -3129,7 +3129,7 @@ async function tmInit() {
 }
 tmInit();
 
-// Only show AI Mastering to accounts it's switched on for (founders first, then everyone)
+// Only show Mastering to accounts it's switched on for (founders first, then everyone)
 async function mxInit() {
   try {
     const d = await (await fetch('/api/master', { headers: await authHeaders() })).json();
@@ -4547,7 +4547,7 @@ async function runForecast() {
   document.getElementById('fc-btn').disabled = false;
 }
 
-// ====== AI LYRIC WRITER ======
+// ====== LYRIC WRITER ======
 async function generateLyrics() {
   const topic = document.getElementById('lw-topic').value.trim();
   if(!topic) { alert('Tell us what the song is about'); return; }
@@ -4627,6 +4627,7 @@ async function lvLoadAudio(input) {
   const buf = await input.files[0].arrayBuffer();
   const ac = new (window.AudioContext || window.webkitAudioContext)();
   lvBuffer = await ac.decodeAudioData(buf);
+  try { ac.close(); } catch (e) {}
   lvTimes = [];
   document.getElementById('lv-sync-status').textContent = 'Song loaded: ' + lvBuffer.duration.toFixed(1) + 's. Sync when ready.';
 }
@@ -5014,8 +5015,11 @@ async function lvRun(record) {
   lvStopAll();
   lvSnap = null;
   lvMotionPhase = 0; lvPrevT = 0;
-  await lvLoadFont();
+  // create the audio clock while we still have the click (some browsers start it paused otherwise)
   lvAC = new (window.AudioContext || window.webkitAudioContext)();
+  try { if (lvAC.state === 'suspended') await lvAC.resume(); } catch (e) {}
+  await lvLoadFont();
+  try { if (lvAC.state === 'suspended') await lvAC.resume(); } catch (e) {}
   lvSrc = lvAC.createBufferSource(); lvSrc.buffer = lvBuffer;
   lvSrc.connect(lvAC.destination);
   const lvStartSec = Math.max(0, parseFloat(document.getElementById('lv-start').value) || 0);
@@ -5100,8 +5104,31 @@ async function lvRun(record) {
   }
   lvStartT = lvAC.currentTime;
   lvSrc.start(0, lvStartSec, lvPlayDur);
+  // one way to finish, whichever comes first: the song ends, the clock passes the end, or a wall-clock safety stop
+  const runId = (window._lvRunId = (window._lvRunId || 0) + 1);
+  let finished = false;
+  const finish = () => {
+    if (finished || runId !== window._lvRunId) return;
+    finished = true;
+    if (lvAnim) { cancelAnimationFrame(lvAnim); lvAnim = null; }
+    clearTimeout(window._lvSafety);
+    if (lvRecorder && lvRecorder.state === 'recording') { try { lvRecorder.stop(); } catch (e) {} }
+    if (lvSrc) { try { lvSrc.onended = null; lvSrc.stop(); } catch (e) {} lvSrc = null; }
+  };
+  clearTimeout(window._lvSafety);
+  window._lvSafety = setTimeout(() => {
+    if (record && lvAC && (lvAC.currentTime - lvStartT) < lvPlayDur * 0.5) {
+      const st = document.getElementById('lv-export-status');
+      if (st) st.textContent = 'The song didn’t play while recording (the browser paused the audio). Keep this tab open and in front, then tap Export again.';
+      window._lvExpDone = true;
+      if (lvRecorder) { lvRecorder.ondataavailable = null; lvRecorder.onstop = null; }
+    }
+    finish();
+  }, (lvPlayDur + 4) * 1000);
   const tick = () => {
-    const t = lvStartSec + (lvAC.currentTime - lvStartT);
+    const el = lvAC.currentTime - lvStartT;
+    if (el >= lvPlayDur + 0.25) { finish(); return; }
+    const t = lvStartSec + el;
     lvDrawFrame(t, lvCurrentLine(t));
     if(record && !lvSnap && (lvAC.currentTime - lvStartT) > 1.5) {
       try { lvSnap = document.getElementById('lv-canvas').toDataURL('image/jpeg', 0.85); } catch(e) {}
@@ -5109,11 +5136,7 @@ async function lvRun(record) {
     lvAnim = requestAnimationFrame(tick);
   };
   tick();
-  lvSrc.onended = () => {
-    if(lvAnim) cancelAnimationFrame(lvAnim);
-    if(lvRecorder && lvRecorder.state === 'recording') lvRecorder.stop();
-    lvSrc = null;
-  };
+  lvSrc.onended = finish;
 }
 
 function lvPreview() {
@@ -5137,6 +5160,9 @@ function lvExport() {
 }
 
 function lvStopAll() {
+  clearTimeout(window._lvSafety);
+  window._lvRunId = (window._lvRunId || 0) + 1;      // any older run's timers become no-ops
+  if (lvAC) { const old = lvAC; setTimeout(() => { try { old.close(); } catch (e) {} }, 0); }
   if(lvAnim) { cancelAnimationFrame(lvAnim); lvAnim = null; }
   if(lvRecorder && lvRecorder.state === 'recording') { try { lvRecorder.stop(); } catch(e){} }
   lvRecorder = null;
