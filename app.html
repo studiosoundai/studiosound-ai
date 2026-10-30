@@ -346,6 +346,10 @@ body{overflow:auto;height:auto;}
     <button class="sidebar-item"><i class="ti ti-scissors"></i> Video Clipping <span class="soon">SOON</span></button>
     <button class="sidebar-item"><i class="ti ti-calendar"></i> Auto Posting <span class="soon">SOON</span></button>
   </div>
+  <div class="sidebar-section sa-gate" style="display:none;">
+    <div class="sidebar-label">HELP</div>
+    <button class="sidebar-item" onclick="saOpen()"><i class="ti ti-message-circle"></i> Ask the Studio <span class="badge">BETA</span></button>
+  </div>
   <div class="sidebar-section">
     <div class="sidebar-label">ACCOUNT</div>
     <button class="sidebar-item" onclick="switchTool('assets',this)"><i class="ti ti-folder"></i> My Assets</button>
@@ -395,6 +399,13 @@ body{overflow:auto;height:auto;}
           <div class="wpill"><i class="ti ti-pencil"></i> Lyric Writer</div>
           <div class="wpill"><i class="ti ti-speakerphone"></i> Ad Generator</div>
           <div class="wpill"><i class="ti ti-wand"></i> + 4 Free Utilities</div>
+
+        </div>
+        <div class="sa-hero sa-gate" style="display:none;">
+          <i class="ti ti-message-circle"></i>
+          <input id="sa-hero-q" type="text" maxlength="500" placeholder="Ask the Studio anything, like “Which mastering sound fits my sound?”" onkeydown="if(event.key==='Enter'){event.preventDefault();saAsk();}"/>
+          <button type="button" class="sa-hero-song ar-btn" style="display:none;" onclick="saOpen();saPickSong()" title="Get feedback on a song">🎵</button>
+          <button type="button" onclick="saAsk()">Ask</button>
         </div>
       </div>
       <div class="welcome-right">
@@ -5243,6 +5254,19 @@ function loadRecent(index) {
 #sa-btn{position:fixed;right:20px;bottom:20px;z-index:9000;display:none;align-items:center;gap:8px;background:var(--neon);color:#05050a;border:none;border-radius:999px;padding:12px 18px;font-family:'Sora',sans-serif;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 10px 40px rgba(0,255,209,0.25);}
 #sa-btn i{font-size:18px;}
 #sa-btn.show{display:inline-flex;}
+#sa-btn.pulse::before{content:'';position:absolute;inset:-6px;border-radius:999px;border:2px solid var(--neon);animation:saPulse 1.8s ease-out infinite;pointer-events:none;}
+@keyframes saPulse{0%{opacity:.8;transform:scale(.92);}100%{opacity:0;transform:scale(1.18);}}
+.sa-hero{display:flex;align-items:center;gap:10px;margin-top:16px;background:#05050a;border:1px solid #00FFD166;border-radius:12px;padding:6px 6px 6px 14px;max-width:640px;}
+.sa-hero:focus-within{border-color:var(--neon);box-shadow:0 0 0 3px #00FFD122;}
+.sa-hero i{color:var(--neon);font-size:18px;}
+.sa-hero input{flex:1;min-width:0;background:none;border:none;outline:none;color:#fff;font-family:'Sora',sans-serif;font-size:13px;padding:8px 0;}
+.sa-hero input::placeholder{color:#7a7a92;}
+.sa-hero button{background:var(--neon);color:#05050a;border:none;border-radius:9px;padding:10px 18px;font-family:'Sora',sans-serif;font-weight:800;font-size:13px;cursor:pointer;flex-shrink:0;}
+#sa-intro{position:fixed;right:20px;bottom:78px;z-index:9000;max-width:260px;background:#14141f;border:1px solid var(--neon);color:#e8e8f5;border-radius:14px;padding:12px 34px 12px 14px;font-family:'Sora',sans-serif;font-size:12.5px;line-height:1.5;box-shadow:0 14px 40px rgba(0,0,0,.6);display:none;cursor:pointer;}
+#sa-intro b{color:var(--neon);}
+#sa-intro::after{content:'';position:absolute;right:34px;bottom:-7px;width:12px;height:12px;background:#14141f;border-right:1px solid var(--neon);border-bottom:1px solid var(--neon);transform:rotate(45deg);}
+#sa-intro .x{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;}
+#sa-intro.show{display:block;}
 #sa-panel{position:fixed;right:20px;bottom:20px;z-index:9001;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 40px);background:#0b0b14;border:0.5px solid #2a2a3e;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,0.7);display:none;flex-direction:column;overflow:hidden;font-family:'Sora',sans-serif;}
 #sa-panel.open{display:flex;}
 .sa-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:0.5px solid #1f1f2e;}
@@ -5267,14 +5291,40 @@ function loadRecent(index) {
 .sa-input textarea:focus{border-color:var(--neon);}
 .sa-input button{background:var(--neon);color:#05050a;border:none;border-radius:10px;width:42px;height:40px;cursor:pointer;font-size:18px;flex-shrink:0;}
 .sa-input button:disabled{opacity:0.4;cursor:default;}
+.sa-input .sa-song{background:#0f0f1a;color:var(--neon);border:0.5px solid #2a2a3e;font-size:18px;display:none;}
+.sa-input .sa-song.on{display:block;}
+.sa-m.ar{max-width:100%;align-self:stretch;background:#0f0f1a;border:1px solid #00FFD155;white-space:normal;padding:14px;}
+.sa-ar-h{color:var(--neon);font-size:10px;font-weight:800;letter-spacing:.08em;margin-bottom:4px;}
+.sa-ar-t{color:#fff;font-weight:800;font-size:14px;line-height:1.4;margin-bottom:8px;}
+.sa-ar-badge{display:inline-block;font-size:10px;font-weight:800;border-radius:99px;padding:3px 9px;margin-bottom:8px;}
+.sa-ar-badge.ready{background:#00FFD122;color:var(--neon);} .sa-ar-badge.almost{background:#FFC83D22;color:#FFC83D;} .sa-ar-badge.needs_work{background:#ff6b6b22;color:#ff8f8f;}
+.sa-ar-sec{margin-top:10px;} .sa-ar-sec b{display:block;color:#fff;font-size:11px;letter-spacing:.04em;margin-bottom:3px;}
+.sa-ar-sec ul{margin:0;padding-left:16px;} .sa-ar-sec li{margin:2px 0;}
+.sa-ar-stats{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;}
+.sa-ar-stats span{background:#05050a;border:0.5px solid #2a2a3e;border-radius:8px;padding:4px 8px;font-size:11px;color:#cfcfe0;}
+.sa-ar-next{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.sa-ar-next button{background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:8px 11px;font-family:inherit;font-weight:800;font-size:11px;cursor:pointer;}
+.sa-ar-next button.alt{background:#05050a;color:#fff;border:0.5px solid #2a2a3e;}
+.sa-arform{align-self:stretch;background:#0f0f1a;border:1px solid #2a2a3e;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:7px;}
+.sa-arform b{color:#fff;font-size:13px;} .sa-arform small{color:var(--muted);font-size:11px;line-height:1.45;}
+.sa-arform input{background:#05050a;border:0.5px solid #2a2a3e;border-radius:8px;padding:9px 10px;color:#fff;font-family:inherit;font-size:12px;outline:none;}
+.sa-arform input:focus{border-color:var(--neon);}
+.sa-arform .row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.sa-arform .go{background:var(--neon);color:#05050a;border:none;border-radius:9px;padding:10px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;}
+.sa-arform .cancel{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;}
+.sa-arprog{align-self:stretch;background:#0f0f1a;border:0.5px solid #2a2a3e;border-radius:12px;padding:12px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;}
+.sa-arprog .st.on{color:#fff;} .sa-arprog .st.done{color:var(--neon);}
+.sa-hero .sa-hero-song{background:none;border:0.5px solid #2a2a3e;color:var(--neon);border-radius:9px;padding:9px 11px;font-size:16px;cursor:pointer;flex-shrink:0;}
 .sa-foot{color:#5a5a72;font-size:9.5px;text-align:center;padding:0 12px 10px;}
 @media(max-width:600px){
   #sa-btn{right:14px;bottom:14px;padding:12px 14px;}
-  #sa-btn span{display:none;}
+  #sa-btn span{display:inline;}
+  #sa-intro{right:14px;bottom:70px;}
   #sa-panel{right:0;bottom:0;width:100vw;max-width:100vw;height:100%;max-height:100%;border-radius:0;}
 }
 </style>
-<button id="sa-btn" type="button" onclick="saOpen()" aria-label="Ask the Studio Assistant"><i class="ti ti-message-circle"></i><span>Ask the Studio</span></button>
+<button id="sa-btn" type="button" onclick="saOpen()" aria-label="Ask the Studio Assistant" style="position:fixed;"><i class="ti ti-message-circle"></i><span>Ask the Studio</span></button>
+
 <div id="sa-panel" role="dialog" aria-label="Studio Assistant">
   <div class="sa-head">
     <div><b>Studio Assistant</b> <span class="sa-tag">BETA</span><small>Ask about any tool, or get feedback on your release</small></div>
@@ -5283,6 +5333,8 @@ function loadRecent(index) {
   </div>
   <div class="sa-msgs" id="sa-msgs" aria-live="polite"></div>
   <div class="sa-input">
+    <button type="button" class="sa-song ar-btn" onclick="saPickSong()" aria-label="Get feedback on a song" title="Get feedback on a song">🎵</button>
+    <input type="file" id="sa-song-file" accept=".wav,.aif,.aiff,.flac,.mp3,.m4a,audio/*" style="display:none;" onchange="saSongChosen(this.files)"/>
     <textarea id="sa-text" rows="1" placeholder="Ask anything about your release..." onkeydown="saKey(event)" oninput="saGrow(this)"></textarea>
     <button id="sa-send" type="button" onclick="saSend()" aria-label="Send"><i class="ti ti-send"></i></button>
   </div>
@@ -5319,23 +5371,85 @@ function loadRecent(index) {
     check: ['What matters most this week?', 'How do I pitch to Spotify?', 'What should I post on release day?']
   };
 
+  // ---------- A&R Check state ----------
+  let arOn = false, arFile = null, arStep = 0;
+  const AR_STEPS = ['Uploading your song', 'Measuring the mix, tempo and key', 'Reading your lyrics', 'Listening to the chorus', 'Researching your lane and writing feedback'];
+  const AR_NEXT = { master: ['Master it', "saGo('master')"], plan: ['Plan the release', "saGo('plan')"], ads: ['Make the ad', "saGo('ads')"], lyric: ['Make a lyric video', "saGo('lyric')"], distribute: ['Distribute with Stop One', "window.open('distribution.html','_blank')"] };
+  const list = a => Array.isArray(a) ? a.filter(Boolean) : [];
+  function arCard(r, m) {
+    let h = '<div class="sa-ar-h">A&amp;R CHECK' + (r._title ? ' · ' + esc(r._title).toUpperCase() : '') + '</div>';
+    h += '<div class="sa-ar-t">' + esc(r.headline || 'Here’s my take on your song.') + '</div>';
+    if (r.readiness) h += '<span class="sa-ar-badge ' + esc(r.readiness) + '">' + ({ ready: 'Release ready', almost: 'Almost ready', needs_work: 'Needs work before release' }[r.readiness] || 'Release readiness') + '</span>' + (r.readiness_reason ? '<div>' + esc(r.readiness_reason) + '</div>' : '');
+    if (m) {
+      const st = [m.duration_text, m.tempo && m.tempo.reliable ? Math.round(m.tempo.bpm) + ' BPM' : '', m.key && m.key.reliable ? m.key.key : '', m.loudness ? m.loudness.lufs + ' LUFS' : ''].filter(Boolean);
+      if (st.length) h += '<div class="sa-ar-stats">' + st.map(x => '<span>' + esc(x) + '</span>').join('') + '</div>';
+    }
+    if (list(r.working).length) h += '<div class="sa-ar-sec"><b>WHAT’S WORKING</b><ul>' + list(r.working).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
+    if (list(r.fix_first).length) h += '<div class="sa-ar-sec"><b>FIX FIRST</b><ul>' + list(r.fix_first).map(x => '<li><span style="color:#fff;">' + esc(x.title || '') + '.</span> ' + esc(x.why || '') + (x.how ? ' <span style="color:var(--neon);">Try: ' + esc(x.how) + '</span>' : '') + '</li>').join('') + '</ul></div>';
+    const hk = r.hook || {};
+    if (hk.chorus_at || (hk.tiktok_clip && hk.tiktok_clip.start)) h += '<div class="sa-ar-sec"><b>THE HOOK</b>' + (hk.chorus_at ? 'Chorus hits at ' + esc(hk.chorus_at) + (hk.first_vocal_at ? ', first vocal at ' + esc(hk.first_vocal_at) : '') + '. ' : '') + (hk.tiktok_clip && hk.tiktok_clip.start ? 'Best 15 seconds for TikTok and Reels: <span style="color:var(--neon);">' + esc(hk.tiktok_clip.start) + '–' + esc(hk.tiktok_clip.end || '') + '</span>' + (hk.tiktok_clip.why ? ' (' + esc(hk.tiktok_clip.why) + ')' : '') + '. ' : '') + (hk.intro_advice ? esc(hk.intro_advice) : '') + '</div>';
+    const ly = r.lyrics || {};
+    if (list(ly.themes).length || ly.note) h += '<div class="sa-ar-sec"><b>LYRICS</b>' + (list(ly.themes).length ? 'Themes: ' + esc(list(ly.themes).join(', ')) + '. ' : '') + (list(ly.standout_lines).length ? 'Standout: <i>“' + list(ly.standout_lines).map(esc).join('” · “') + '”</i>. ' : '') + (ly.explicit ? 'Explicit: mark it explicit when you upload. ' : '') + (ly.note ? esc(ly.note) : '') + '</div>';
+    const so = r.sound || {}, au = r.audience || {};
+    if (so.genre || list(so.sounds_like).length) h += '<div class="sa-ar-sec"><b>YOUR LANE</b>' + esc([so.genre, so.mood].filter(Boolean).join(', ')) + (list(so.sounds_like).length ? '. In the lane of ' + esc(list(so.sounds_like).join(', ')) : '') + '.</div>';
+    if (au.who || list(au.platforms).length) h += '<div class="sa-ar-sec"><b>WHO IT’S FOR</b>' + (au.who ? esc(au.who) + ' ' : '') + (list(au.cities).length ? '<br>Cities: ' + esc(list(au.cities).join(', ')) : '') + (list(au.platforms).length ? '<ul>' + list(au.platforms).map(p => '<li><span style="color:#fff;">' + esc(p.name || '') + '</span>: ' + esc(p.why || '') + '</li>').join('') + '</ul>' : '') + (list(au.playlists).length ? 'Playlists to target: ' + esc(list(au.playlists).join(', ')) : '') + '</div>';
+    if (list(r.promo).length) h += '<div class="sa-ar-sec"><b>HOW TO PUSH IT</b><ul>' + list(r.promo).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
+    const nx = list(r.next).filter(k => AR_NEXT[k]);
+    h += '<div class="sa-ar-next">' + nx.map((k, i) => '<button type="button"' + (i ? ' class="alt"' : '') + ' onclick="' + AR_NEXT[k][1] + '">' + AR_NEXT[k][0] + ' →</button>').join('') + '</div>';
+    h += '<div style="margin-top:10px;color:var(--muted);font-size:11px;">Ask me anything about it: “What should I post first?”, “Is the hook strong enough?”</div>';
+    return h;
+  }
+  function arSummary(r, m) {
+    const L = [];
+    L.push('Song: ' + (r._title || 'untitled') + (m ? ` (${m.duration_text}, ${m.tempo && m.tempo.reliable ? Math.round(m.tempo.bpm) + ' BPM, ' : ''}${m.key && m.key.reliable ? m.key.key + ', ' : ''}${m.loudness ? m.loudness.lufs + ' LUFS' : ''})` : ''));
+    if (r.headline) L.push('Overall: ' + r.headline);
+    if (r.readiness) L.push('Readiness: ' + r.readiness + (r.readiness_reason ? ' - ' + r.readiness_reason : ''));
+    if (list(r.working).length) L.push('Working: ' + list(r.working).join('; '));
+    if (list(r.fix_first).length) L.push('Fix first: ' + list(r.fix_first).map(x => x.title + ' (' + (x.how || '') + ')').join('; '));
+    if (r.hook) L.push('Hook: chorus ' + (r.hook.chorus_at || '?') + ', TikTok clip ' + ((r.hook.tiktok_clip && r.hook.tiktok_clip.start) || '?') + '-' + ((r.hook.tiktok_clip && r.hook.tiktok_clip.end) || '?'));
+    if (r.lyrics) L.push('Lyrics: ' + list(r.lyrics.themes).join(', ') + (list(r.lyrics.standout_lines).length ? '; standout: ' + list(r.lyrics.standout_lines).join(' / ') : ''));
+    if (r.sound) L.push('Lane: ' + [r.sound.genre, r.sound.mood].filter(Boolean).join(', ') + (list(r.sound.sounds_like).length ? '; like ' + list(r.sound.sounds_like).join(', ') : ''));
+    if (r.audience) L.push('Audience: ' + (r.audience.who || '') + (list(r.audience.cities).length ? '; cities ' + list(r.audience.cities).join(', ') : '') + (list(r.audience.platforms).length ? '; platforms ' + list(r.audience.platforms).map(p => p.name).join(', ') : ''));
+    if (list(r.promo).length) L.push('Promo plan: ' + list(r.promo).join('; '));
+    return L.join('\n');
+  }
+  function arExtras() {
+    let h = '';
+    if (arFile && !arStep) {
+      h += '<div class="sa-arform"><b>🎧 ' + esc(arFile.name) + '</b><small>I’ll measure the mix, read the lyrics, listen to the chorus and research your lane. Takes about a minute. Details below are optional but make the feedback sharper.</small>' +
+        '<input id="sa-ar-title" placeholder="Song title" maxlength="120"/><div class="row"><input id="sa-ar-genre" placeholder="Genre (e.g. trap, R&B)" maxlength="60"/><input id="sa-ar-city" placeholder="Your city" maxlength="80"/></div>' +
+        '<button type="button" class="go" onclick="saRunAR()">Start my A&amp;R check</button><button type="button" class="cancel" onclick="saCancelAR()">Cancel</button></div>';
+    }
+    if (arStep) h += '<div class="sa-arprog">' + AR_STEPS.map((t, i) => '<div class="st ' + (i + 1 < arStep ? 'done' : (i + 1 === arStep ? 'on' : '')) + '">' + (i + 1 < arStep ? '✓ ' : (i + 1 === arStep ? '● ' : '○ ')) + t + (i + 1 === arStep && i === 0 ? ' <span id="sa-ar-pct"></span>' : '') + '</div>').join('') + '</div>';
+    return h;
+  }
+
   function render() {
     const box = document.getElementById('sa-msgs');
     let h = '';
     if (!msgs.length) {
-      h += '<div class="sa-m bot">Hey! I’m your Studio Assistant. Ask me how any tool works, paste lyrics or a release idea for honest feedback, or ask what to do next with your music.</div>';
+      h += '<div class="sa-m bot">Hey! I’m your Studio Assistant. Ask me how any tool works, paste lyrics or a release idea for honest feedback, or ask what to do next with your music.' + (arOn ? ' You can also drop a song for an A&amp;R check: tap 🎵.' : '') + '</div>';
       const list = SUGGEST[window.__ssTool] || SUGGEST._;
-      h += '<div class="sa-chips">' + list.map(q => '<button type="button" class="sa-chip" data-q="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>';
+      h += '<div class="sa-chips">' + (arOn ? '<button type="button" class="sa-chip" style="border-color:var(--neon);color:var(--neon);" onclick="saPickSong()">🎧 Get feedback on my song</button>' : '') + list.map(q => '<button type="button" class="sa-chip" data-q="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>';
     }
-    msgs.forEach(m => { h += '<div class="sa-m ' + (m.role === 'user' ? 'me' : (m.err ? 'err' : 'bot')) + '">' + linkify(m.content) + '</div>'; });
-    if (busy) h += '<div class="sa-typing">Studio Assistant is typing…</div>';
+    msgs.forEach(m => {
+      if (m.ar) h += '<div class="sa-m ar">' + arCard(m.ar, m.metrics) + '</div>';
+      else h += '<div class="sa-m ' + (m.role === 'user' ? 'me' : (m.err ? 'err' : 'bot')) + '">' + linkify(m.content) + '</div>';
+    });
+    h += arExtras();
+    if (busy && !arStep) h += '<div class="sa-typing">Studio Assistant is typing…</div>';
     box.innerHTML = h;
-    box.querySelectorAll('.sa-chip').forEach(b => b.onclick = () => { document.getElementById('sa-text').value = b.dataset.q; saSend(); });
+    box.querySelectorAll('.sa-chip[data-q]').forEach(b => b.onclick = () => { document.getElementById('sa-text').value = b.dataset.q; saSend(); });
     box.scrollTop = box.scrollHeight;
     document.getElementById('sa-send').disabled = busy;
   }
 
   window.saOpen = () => { document.getElementById('sa-panel').classList.add('open'); document.getElementById('sa-btn').classList.remove('show'); render(); setTimeout(() => document.getElementById('sa-text').focus(), 50); };
+  window.saAsk = () => {
+    const box = document.getElementById('sa-hero-q'), q = (box.value || '').trim();
+    saOpen();
+    if (q) { document.getElementById('sa-text').value = q; box.value = ''; saSend(); }
+  };
   window.saClose = () => { document.getElementById('sa-panel').classList.remove('open'); document.getElementById('sa-btn').classList.add('show'); };
   window.saReset = () => { msgs = []; save(); render(); };
   window.saGrow = el => { el.style.height = 'auto'; el.style.height = Math.min(120, el.scrollHeight) + 'px'; };
@@ -5350,7 +5464,8 @@ function loadRecent(index) {
     try {
       const res = await fetch('/api/chat', {
         method: 'POST', headers: await authHeaders(),
-        body: JSON.stringify({ tool: window.__ssTool || null, messages: msgs.filter(m => !m.err).slice(-12).map(m => ({ role: m.role, content: m.content })) })
+        body: JSON.stringify({ tool: window.__ssTool || null, song: (msgs.slice().reverse().find(m => m.ar) || {}).summary || null,
+          messages: msgs.filter(m => !m.err).slice(-12).map(m => ({ role: m.role, content: m.ar ? 'I gave the artist this A&R check:\n' + m.summary : m.content })) })
       });
       const data = await res.json().catch(() => ({}));
       if (data.error === 'limit_reached') msgs.push({ role: 'assistant', err: true, content: 'You’ve used all your assistant messages for this month. They reset on the 1st, or upgrade at studiosound.ai/pricing.' });
@@ -5362,12 +5477,85 @@ function loadRecent(index) {
     busy = false; save(); render();
   };
 
+  // ---------- A&R Check flow ----------
+  window.saGo = (tool) => { saClose(); switchTool(tool, null); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  window.saPickSong = () => { if (!arOn || busy) return; document.getElementById('sa-song-file').click(); };
+  window.saSongChosen = (files) => {
+    const f = files && files[0]; document.getElementById('sa-song-file').value = '';
+    if (!f) return;
+    if (f.size > 200 * 1048576) { msgs.push({ role: 'assistant', err: true, content: 'That file is over 200 MB. Send a WAV or MP3 under 12 minutes.' }); save(); render(); return; }
+    arFile = f; arStep = 0; render();
+    setTimeout(() => { const t = document.getElementById('sa-ar-title'); if (t) { t.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').slice(0, 120); t.focus(); } }, 50);
+  };
+  window.saCancelAR = () => { arFile = null; arStep = 0; render(); };
+  async function arUpload(file) {
+    const { data } = await sbAuth.auth.getSession();
+    if (!data.session) throw new Error('Please sign in again.');
+    const id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+    const ext = ((file.name || '').toLowerCase().match(/\.(wav|aif|aiff|flac|mp3|m4a)$/) || [0, 'mp3'])[1];
+    const path = data.session.user.id + '/ar-' + id + '/song.' + ext;
+    await new Promise((resolve, reject) => {
+      const x = new XMLHttpRequest();
+      x.open('POST', MX_SB_URL + '/storage/v1/object/mastering/' + path);
+      x.setRequestHeader('Authorization', 'Bearer ' + data.session.access_token);
+      x.setRequestHeader('apikey', MX_SB_KEY);
+      x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+      x.upload.onprogress = e => { const el = document.getElementById('sa-ar-pct'); if (el && e.lengthComputable) el.textContent = Math.round(e.loaded / e.total * 100) + '%'; };
+      x.onload = () => (x.status >= 200 && x.status < 300) ? resolve() : reject(new Error(x.status === 413 ? 'That file is too big to upload.' : 'Upload failed (' + x.status + '). Try again.'));
+      x.onerror = () => reject(new Error('Upload failed. Check your connection and try again.'));
+      x.send(file);
+    });
+    return path;
+  }
+  async function arCall(payload) {
+    const res = await fetch('/api/ar-check', { method: 'POST', headers: await authHeaders(), body: JSON.stringify(payload) });
+    const d = await res.json().catch(() => ({}));
+    if (d.error === 'limit_reached') { const e = new Error(d.plan === 'free' ? 'You’ve used your free A&R check for this month. Pro includes 10 a month and Premium 30.' : 'You’ve used your A&R checks for this month. They reset on the 1st.'); e.limit = true; throw e; }
+    if (!res.ok || d.error) throw new Error(d.error || 'Something went wrong. Try again.');
+    return d;
+  }
+  window.saRunAR = async () => {
+    if (!arFile || busy) return;
+    const v = id => ((document.getElementById(id) || {}).value || '').trim();
+    const meta = { title: v('sa-ar-title'), genre: v('sa-ar-genre'), city: v('sa-ar-city') };
+    const file = arFile;
+    msgs.push({ role: 'user', content: '🎧 A&R check: ' + (meta.title || file.name) + (meta.genre ? ' (' + meta.genre + ')' : '') });
+    busy = true; arStep = 1; save(); render();
+    try {
+      const path = await arUpload(file);
+      arStep = 2; render();
+      const a = await arCall({ action: 'analyze', path, ...meta });
+      arStep = 3; render();
+      const ly = await arCall({ action: 'lyrics', token: a.token }).catch(() => ({}));
+      arStep = 4; render();
+      const li = await arCall({ action: 'listen', token: a.token }).catch(() => ({}));
+      arStep = 5; render();
+      const rv = await arCall({ action: 'review', token: a.token, metrics: a.metrics, lyrics: { text: ly.text || '', first_vocal: ly.first_vocal }, vibe: li.vibe || null, artist: (currentUser && currentUser.user_metadata && currentUser.user_metadata.first_name) || '', ...meta });
+      const r = rv.review || {}; r._title = meta.title || file.name;
+      const m = a.metrics ? { duration_text: a.metrics.duration_text, tempo: a.metrics.tempo, key: a.metrics.key, loudness: a.metrics.loudness ? { lufs: a.metrics.loudness.lufs } : null } : null;
+      msgs.push({ role: 'assistant', ar: r, metrics: m, summary: arSummary(r, m), content: r.headline || 'A&R check' });
+    } catch (e) {
+      msgs.push({ role: 'assistant', err: true, content: (e && e.message) || 'Something went wrong. Try again.' });
+    }
+    arFile = null; arStep = 0; busy = false; save(); render();
+    const cards = document.querySelectorAll('#sa-msgs .sa-m.ar'), box = document.getElementById('sa-msgs');
+    if (cards.length && msgs[msgs.length - 1].ar) box.scrollTop = cards[cards.length - 1].offsetTop - box.offsetTop - 8;   // start reading at the top of the review
+  };
+
   // Only show the assistant to accounts it's switched on for (founders first, then everyone)
   window.saInit = async () => {
     try {
       const res = await fetch('/api/chat', { headers: await authHeaders() });
       const data = await res.json();
-      if (data && data.enabled) document.getElementById('sa-btn').classList.add('show');
+      if (data && data.enabled) {
+        document.getElementById('sa-btn').classList.add('show');
+        document.querySelectorAll('.sa-gate').forEach(el => { el.style.display = ''; });
+        if (window.innerWidth < 600) { const q = document.getElementById('sa-hero-q'); if (q) q.placeholder = 'Ask the Studio anything…'; }
+        try {
+          const ar = await (await fetch('/api/ar-check', { headers: await authHeaders() })).json();
+          if (ar && ar.enabled) { arOn = true; document.querySelectorAll('.ar-btn').forEach(el => { el.classList.add('on'); el.style.display = ''; }); }
+        } catch (e) {}
+      }
     } catch (e) {}
   };
   saInit();
