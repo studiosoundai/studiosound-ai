@@ -63,7 +63,7 @@ export default async function handler(req, res) {
   if (!user) return res.status(401).json({ error: 'Please sign in to use the assistant.' });
   if (!(await chatEnabledFor(user))) return res.status(403).json({ error: 'not_enabled' });
 
-  const { messages, tool } = req.body || {};
+  const { messages, tool, song } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ error: 'No message' });
 
   const history = messages.slice(-12).map(m => ({
@@ -79,7 +79,8 @@ export default async function handler(req, res) {
 
   const toolName = TOOL_NAMES[tool];
   const context = `CONTEXT: The artist is on the ${gate.plan || 'free'} plan.` +
-    (toolName ? ` They currently have the ${toolName} open, so questions like "what should I pick here?" are about that tool.` : ' They are on the Studio dashboard.');
+    (toolName ? ` They currently have the ${toolName} open, so questions like "what should I pick here?" are about that tool.` : ' They are on the Studio dashboard.') +
+    (song ? `\n\nSONG UNDER DISCUSSION (results of the A&R Check you just gave them; refer to it for follow-up questions, stay encouraging but honest, and point to the right tool: Mastering, Release Planner, Ad Generator, Lyric Videos, or Stop One for distribution):\n${String(song).slice(0, 6000)}` : '');
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

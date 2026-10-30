@@ -6,16 +6,19 @@
 
 export const KNOWLEDGE = {
   platform: `STUDIOSOUND.AI
-StudioSound.ai is an all-in-one studio for independent artists: forecast earnings, plan the release, make the cover, cut the lyric video, make merch mockups and ads, and master the song (AI Mastering, rolling out). Brand line: "Create. Release. Drop like a major." Built by the team behind Stop One Distribution.
+StudioSound.ai is an all-in-one studio for independent artists: forecast earnings, plan the release, make the cover, cut the lyric video, make merch mockups and ads, and master the song (Mastering, rolling out).
+Tool names never include "AI": say Mastering, Lyric Writer, Cover Art, Lyric Videos and so on. Brand line: "Create. Release. Drop like a major." Built by the team behind Stop One Distribution.
 Everything an artist makes saves to My Assets (left sidebar) to reopen, replay or re-download.
 Artists own everything they make: covers, plans, lyrics, videos and ads are theirs to release, print and promote.`,
 
   pricing: `PLANS AND LIMITS (limits reset on the 1st of every month; unused ones don't roll over)
-- Free, $0, no card: Earnings Forecast preview, 3 cover generations (2 versions each), 1 release plan a month, 3 Lyric Writer sessions, lyric videos with 2 auto-lyric syncs, 2 merch mockups, 2 Meta ad kits, all free tools.
-- Pro, $9.99/month, or $6.99/month billed yearly ($83.88/year): 3 full forecasts a month (five-year paths, analyst read, PDF and image export), 100 cover generations on the highest-quality cover engine, unlimited release plans, 200 Lyric Writer sessions, 30 auto-lyric syncs, 50 merch mockups, 30 Meta ad kits.
-- Premium, $24.99/month, or $16.99/month billed yearly ($203.88/year): 10 full forecasts a month, 300 cover generations, unlimited release plans, 500 Lyric Writer sessions, 100 auto-lyric syncs, 100 merch mockups, 100 Meta ad kits, priority support.
+- Free, $0, no card: Earnings Forecast preview, 3 cover generations (2 versions each), 1 release plan a month, 3 Lyric Writer sessions, 2 lyric videos with auto-synced lyrics (unlimited if they tap-sync themselves), 2 merch mockups, 2 Meta ad kits, all free tools.
+- Pro, $9.99/month, or $6.99/month billed yearly ($83.88/year): 3 full forecasts a month (five-year paths, analyst read, PDF and image export), 100 cover generations on the highest-quality cover engine, unlimited release plans, 200 Lyric Writer sessions, 30 lyric videos with auto-synced lyrics, 50 merch mockups, 30 Meta ad kits.
+- Premium, $24.99/month, or $16.99/month billed yearly ($203.88/year): 10 full forecasts a month, 300 cover generations, unlimited release plans, 500 Lyric Writer sessions, 100 lyric videos with auto-synced lyrics, 100 merch mockups, 100 Meta ad kits, priority support.
 - Upgrade at studiosound.ai/pricing. Cancel, switch plans or change monthly/yearly from Settings (billing portal); access stays until the end of the paid period.
-- AI Mastering (rolling out, see its section): free previews on every plan (Free 10, Pro 60, Premium 200 a month); full WAV master downloads: Pro 2 a month, Premium 10 a month, not on Free.
+- Mastering (rolling out, see its section): full 24-bit WAV masters: Free 1 a month, Pro 5 a month, Premium unlimited (fair use). Whole-song previews: Free 10, Pro 100 a month, Premium unlimited.
+- Launch promotion until Dec 31, 2026: Pro is $9.99/month (regular $14.99) and Premium $24.99/month (regular $29.99). Say the launch price ends Dec 31; don't promise what happens to existing subscribers after that.
+- Watermark: on the Free plan, lyric videos, merch mockup downloads and ad images/videos carry a small "Made with StudioSound.ai" tag in the corner. Pro and Premium exports have no watermark. Cover art never has one.
 - Hit a limit: that tool pauses until the 1st, or upgrade to keep going. Other tools keep working.`,
 
   forecast: `EARNINGS FORECAST
@@ -41,12 +44,12 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - It researches the artist and their lane on the live web, then builds a personalized 30-day rollout: strategy summary, artist snapshot, budget breakdown, tactics working right now in their genre, and a dated timeline from 4 weeks out to 1 week after.
 - Export as PDF. Plans save to My Assets and reopen there.`,
 
-  lyrics: `AI LYRIC WRITER
+  lyrics: `LYRIC WRITER
 - Writes from a description in English, Spanish or Spanglish: full song, verse + hook, or hook only; explicit or clean.
 - One click sends the lyrics into the Lyric Video Creator.`,
 
   lyricvideo: `LYRIC VIDEO CREATOR (BETA)
-- Drop the song and lyrics. Auto-Lyrics pulls the lyrics timed to the vocal (counts as an auto-lyric sync), or tap along to sync by hand.
+- Drop the song and lyrics. Auto-Lyrics pulls the lyrics timed to the vocal (counts as 1 of the plan's auto-synced lyric videos), or tap along to sync by hand.
 - Vertical 9:16 for TikTok, Reels and Shorts. Font styles, colors, background motion with a speed control, cover as background. Full song or 15s/30s hook clips.
 - Rendering happens in real time on the device, so a 3-minute song takes about 3 minutes; keep the screen open.
 - Saves as MP4 in Chrome, Safari and Edge (Firefox can only record WebM). On phones, "Save to Photos / Share" then "Save Video" puts it in the camera roll. "Download again" is there after export.
@@ -94,15 +97,26 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - Apply at studiosound.ai/distribution.
 - The assistant doesn't have payout dates, advance criteria details, or anything about an existing Stop One account: for those, point them to the distribution page or support. Never quote advance amounts.`,
 
-  mastering: `AI MASTERING
-- Rolling out to accounts in stages. If the artist doesn't see "AI Mastering" in the sidebar yet, it's coming soon; don't promise a date.
+  mastering: `MASTERING
+- Rolling out to accounts in stages. If the artist doesn't see "Mastering" in the sidebar yet, it's coming soon; don't promise a date.
 - Upload the final mix (WAV, AIFF or FLAC is best; MP3 works; up to 12 minutes, 200 MB). Leave headroom: the mix should peak around -3 to -6 dB with no limiter on the master bus.
-- Pick a sound: Balanced (works for almost anything), Warm (fuller lows, softer highs; R&B, soul, ballads), Punchy (tight kick and bass, more bite; hip-hop, trap, drill), Open (brighter and wider; pop, Latin, afrobeats), Vocal Forward (lyric-led songs), or Match a song (upload a released song they love and the master matches its loudness, tone and width).
+- Pick a sound: Balanced (works for almost anything), Warm (fuller lows, softer highs; R&B, soul, ballads), Punchy (tight kick and bass, more bite; hip-hop, trap, drill), Open (brighter and wider; pop, Latin, afrobeats), Vocal Forward (lyric-led songs).
+- "Sound like a song" (the switch right under the upload): upload a released song they love and the master matches its loudness, tone and width. Loudness and strength are taken from that song, so those options hide.
 - Pick loudness: Streaming -14 LUFS (most dynamic), Standard -10 LUFS (today's norm, safe pick), Loud -8 LUFS (competitive). Spotify and Apple turn songs to a similar volume, so louder isn't automatically better. Every master peaks under -1 dBTP so stores don't distort it.
-- Mastering takes about 30–90 seconds. The artist hears the loudest 30 seconds before and after; "Match volume" levels the two so the comparison is fair.
-- Previews are free. Downloading the full 24-bit WAV uses 1 master from the monthly allowance (Pro 2, Premium 10); downloading that same master again is free. Files are kept 14 days, then deleted; re-master to get it back. Every master is in My Assets.
+- Strength: Light, Gentle, Normal, Strong or Max. Light stays close to the mix; Max adds the most punch, tone and density. Loudness is chosen separately.
+- Mastering takes about 30–90 seconds. The artist hears the whole song before and after, starting at the loudest part, and can click the bar to jump anywhere; "Match volume" levels the two so the comparison is fair. Keys: A original, B mastered, Space play/pause.
+- If the uploaded file is already loud (above about -12 LUFS) it's probably mastered already or has a limiter on the master bus, so the change will be small. Tell them to bounce the mix again with the master-bus limiter off.
+- Previews are free. Downloading a master uses 1 from the monthly allowance (Free 1, Pro 5, Premium unlimited). That one master comes in three formats: WAV 24-bit (for distribution), WAV 16-bit/44.1 (for distributors or CD plants that ask for it) and MP3 320 (for sharing, SoundCloud, DJs). After the first download every format is free, any time: downloaded masters are saved for good in My Assets. Masters that are only previewed, never downloaded, are deleted after 30 days. The artist's original mix and reference song are deleted after 30 days either way.
 - Not happy with it: try another sound or loudness; it doesn't re-upload. For a big release that needs a human engineer, Stop One artists get discounted sessions at a platinum studio.
-- AI mastering finishes a good mix; it can't fix a bad one. If the vocal is buried or the low end is muddy, fix the mix first.`,
+- Mastering finishes a good mix; it can't fix a bad one. If the vocal is buried or the low end is muddy, fix the mix first.`,
+
+  archeck: `A&R CHECK (inside the Studio Assistant)
+- The artist taps "Get feedback on my song" (or the music note button) in the assistant and drops a song (WAV, MP3, AIFF, FLAC, M4A; up to 12 minutes). Optional: song title, genre, city.
+- What happens: we measure the actual audio (loudness, peaks, tone balance, stereo, tempo, key, where the chorus hits, how long the intro takes), transcribe the lyrics, an AI listens to the chorus, and we research who listens to that lane and where. Takes about a minute.
+- The review: an overall take, release readiness (ready / almost / needs work), what's working, what to fix first and how, the best 15-second clip for TikTok and Reels, lyric themes and standout lines, who the audience is, cities, platforms and playlists, and 5 promotion steps. Then the artist can keep asking questions about the song.
+- It's honest and encouraging. It never gives a score or predicts streams or hits; nobody can.
+- Limits: Free 1 a month, Pro 10, Premium 30.
+- Privacy: the song is deleted right after it's analyzed; the small clips used for the review are deleted when the review is written.`,
 
   support: `SUPPORT AND COMMUNITY
 - Bugs, billing, account or login problems: email support@studiosound.ai.
@@ -123,7 +137,7 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 
 export const TOOL_NAMES = {
   forecast: 'Earnings Forecast', art: 'Cover Art Generator', plan: 'Release Planner', merch: 'Merch Mockups',
-  writer: 'AI Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', master: 'AI Mastering', resize: 'Cover Resizer',
+  writer: 'Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', master: 'Mastering', resize: 'Cover Resizer',
   audio: 'MP3 to WAV', trim: 'Audio Trimmer', split: 'Split Sheet', meta: 'Metadata Formatter',
   check: 'Release Checklist', assets: 'My Assets', settings: 'Settings',
 };
