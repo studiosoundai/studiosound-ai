@@ -1,13 +1,16 @@
 import crypto from 'node:crypto';
 import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
+import { LANES, lanesText } from './_lanes.js';
 
 // A&R Check: drop a song in the Studio Assistant and get honest, encouraging feedback.
 // The browser uploads the song to the private "mastering" bucket, then calls these steps in order
 // (each one is short, so none of them hits Vercel's time limit):
 //   POST { action: 'analyze', path, title?, artist?, genre?, city? } -> { metrics, token }   (uses 1 A&R check)
 //   POST { action: 'lyrics',  token }                                 -> { text, first_vocal, language }
-//   POST { action: 'listen',  token }                                 -> { vibe }           (AI listens to the chorus)
-//   POST { action: 'review',  token, metrics, lyrics, vibe, title, artist, genre, city } -> { review }
+//   POST { action: 'listen',  token, genre?, refs? }                  -> { vibe }           (AI listens to the chorus)
+//   POST { action: 'review',  token, metrics, lyrics, vibe, title, artist, genre, refs, city } -> { review }
+// The artist's own genre and "sounds like" artists are the strongest signal; the lane map in _lanes.js
+// (owned by the engineers) keeps the feedback in the right lane instead of defaulting to the biggest names.
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY, MASTERING_URL, MASTERING_SECRET,
 //      (optional) AR_LISTEN_MODEL (default gpt-audio-1.5), AR_PUBLIC=true to open it to everyone
 
@@ -133,9 +136,12 @@ export default async function handler(req, res) {
       const out = await openai({
         model: LISTEN_MODEL, modalities: ['text'], temperature: 0.4,
         messages: [
-          { role: 'system', content: 'You are an experienced A&R and music producer. You describe what you hear in a song clip precisely, like you would to a label meeting. Answer with JSON only.' },
+          { role: 'system', content: 'You are an experienced A&R and producer with a precise ear for subgenres. You never lump a song into the biggest mainstream names when it belongs to a more specific lane. Answer with JSON only.' },
           { role: 'user', content: [
-            { type: 'text', text: 'Listen to this 30-second section (usually the chorus) of an independent artist\'s song. Return JSON: {"genre":"","subgenre":"","mood":"","energy":"low|medium|high","vocals":"describe the vocal style and delivery, or none","production":"key sounds and production choices you hear","sounds_like":["3-5 well-known artists this sits near"],"standout":"the strongest moment or element","concern":"one thing a producer would flag, or empty","confidence":"low|medium|high"}' },
+            { type: 'text', text: `Listen to this 30-second section (usually the chorus) of an independent artist's song.${clip(body.genre, 60) ? ' The artist describes it as: "' + clip(body.genre, 60) + '".' : ''}${clip(body.refs, 120) ? ' The artist says it sounds like: ' + clip(body.refs, 120) + '.' : ''}
+Pick the closest lane from this LANE MAP (use the artist's description as a strong hint, then what you hear):
+${lanesText()}
+Return JSON: {"lane":"exact lane name from the map, or Other","lane_why":"what you hear that puts it there (production, vocals, tempo, mood)","alt_lane":"second closest lane","genre":"","mood":"","energy":"low|medium|high","vocals":"vocal style and delivery, or none","production":"key sounds you hear","sounds_like":["3-5 artists from the chosen lane, or the artist's own references"],"standout":"the strongest moment","concern":"one thing a producer would flag, or empty","confidence":"low|medium|high"}` },
             { type: 'input_audio', input_audio: { data: audio.toString('base64'), format: 'mp3' } },
           ] },
         ],
@@ -151,12 +157,14 @@ export default async function handler(req, res) {
   // ---------- 4. research the lane + write the review ----------
   if (body.action === 'review') {
     const m = body.metrics || {}, vibe = body.vibe || null, lyr = body.lyrics || {};
-    const title = clip(body.title, 120) || 'Untitled', artist = clip(body.artist, 80), genre = clip(body.genre, 60) || (vibe && vibe.genre) || '', city = clip(body.city, 80);
+    const title = clip(body.title, 120) || 'Untitled', artist = clip(body.artist, 80), givenGenre = clip(body.genre, 60), refs = clip(body.refs, 120), city = clip(body.city, 80);
+    const genre = givenGenre || (vibe && vibe.genre) || '';
+    const lane = vibe && vibe.lane && vibe.lane !== 'Other' ? LANES.find(l => l.name.toLowerCase() === String(vibe.lane).toLowerCase()) : null;
     let research = '';
     try {
       research = await openai({
         model: 'gpt-4o-mini-search-preview', web_search_options: { search_context_size: 'medium' },
-        messages: [{ role: 'user', content: `Music marketing research for an independent ${genre || 'artist'} song${vibe && vibe.sounds_like ? ' in the lane of ' + vibe.sounds_like.slice(0, 4).join(', ') : ''}${city ? ', artist based in ' + city : ''}${artist ? ' (artist: ' + artist + ')' : ''}. Search the live web and give concise bullet notes on: who listens to this lane now (age, platforms), the cities and countries where it is strongest, the Spotify/Apple/YouTube playlists and curators that feature it, the TikTok/Reels trends and content formats working for it right now, and 2-3 independent artists in this lane growing fast. Be specific and current.` }],
+        messages: [{ role: 'user', content: `Music marketing research for an independent ${givenGenre || (lane ? lane.name : genre) || 'artist'} song${refs ? ' that sounds like ' + refs : (lane ? ' in the ' + lane.name + ' lane (' + lane.artists.join(', ') + ')' : '')}${city ? ', artist based in ' + city : ''}${artist ? ' (artist: ' + artist + ')' : ''}. Focus on that exact lane and its scene, not mainstream hip-hop in general. Search the live web and give concise bullet notes on: who listens to this lane now (age, platforms), the cities and countries where it is strongest, the Spotify/Apple/YouTube playlists and curators that feature it, the TikTok/Reels trends and content formats working for it right now, and 2-3 independent artists in this lane growing fast. Be specific and current.` }],
       });
     } catch (e) { console.error('ar research', e.message); }
 
@@ -169,7 +177,10 @@ export default async function handler(req, res) {
       first_vocal_at: lyr.first_vocal != null ? mmss(lyr.first_vocal) : 'unknown',
       measured_mix_notes: (m.notes || []).map(n => `${n.level.toUpperCase()}: ${n.title}. ${n.detail}`),
     };
-    const prompt = `Song: "${title}"${artist ? ' by ' + artist : ''}. Genre the artist gave: ${genre || 'not given'}. City: ${city || 'not given'}.
+    const prompt = `Song: "${title}"${artist ? ' by ' + artist : ''}. Genre the artist gave: ${givenGenre || 'not given'}. Artists the artist says it sounds like: ${refs || 'not given'}. City: ${city || 'not given'}.
+
+LANE MAP (from our studio team; pick the lane from here):
+${lanesText()}
 
 MEASURED (from our analysis of the actual audio; trust these):
 ${JSON.stringify(facts, null, 1)}
@@ -190,11 +201,13 @@ Write the A&R Check. Return JSON only:
  "fix_first": [{"title":"", "why":"", "how":"a concrete fix"}],
  "hook": {"chorus_at":"m:ss", "first_vocal_at":"m:ss or empty", "tiktok_clip":{"start":"m:ss","end":"m:ss","why":""}, "intro_advice":""},
  "lyrics": {"themes":[""], "standout_lines":["up to 2 short lines quoted from the lyrics"], "language":"", "explicit":true/false, "note":""},
- "sound": {"genre":"", "mood":"", "sounds_like":["3-5 artists, only if the AI heard it or the research supports it"]},
+ "sound": {"lane":"exact lane name from the LANE MAP", "genre":"", "mood":"", "why":"what puts it in this lane", "sounds_like":["3-5 artists from that lane or the artist's own references"]},
+ "lane_question": "if you are not sure between two lanes, one short question to confirm with the artist (e.g. \"Is this closer to rage or plugg?\"), otherwise empty",
  "audience": {"who":"", "cities":["up to 5"], "platforms":[{"name":"","why":""}], "playlists":["up to 5 playlist or curator types/names"]},
  "promo": ["5 specific promotion steps for this song, ordered"],
  "next": ["pick from: master, plan, ads, lyric, distribute"]
 }
+Lane rules: the artist's own genre and "sounds like" artists are the strongest signal. Choose the most specific lane that fits them and what the AI heard. "sounds_like" must come from the chosen lane's artists or the artist's own references. Never default to mainstream Atlanta trap names (Future, Gunna, Lil Baby, Young Thug) unless the lane really is Atlanta trap; "underground" means the underground lanes, not the mainstream. Audience, cities, playlists and promo must fit that lane's scene. If the AI's lane and the artist's description disagree, follow the artist and ask in lane_question.
 Rules: encouraging but honest, like a good A&R who wants the artist to win. Be specific to THIS song; quote real details. 0-3 items in fix_first, most important first; use the measured mix notes; if the song is not mastered yet, say so kindly and suggest mastering. Never give a numeric score or predict streams or a hit. If lyrics are empty, say so in lyrics.note and keep other lyric fields empty. Keep each string short. Only suggest "distribute" if the song is ready or almost ready.`;
     try {
       const out = await openai({
