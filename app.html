@@ -5398,6 +5398,9 @@ function loadRecent(index) {
     if (list(ly.themes).length || ly.note) h += '<div class="sa-ar-sec"><b>LYRICS</b>' + (list(ly.themes).length ? 'Themes: ' + esc(list(ly.themes).join(', ')) + '. ' : '') + (list(ly.standout_lines).length ? 'Standout: <i>“' + list(ly.standout_lines).map(esc).join('” · “') + '”</i>. ' : '') + (ly.explicit ? 'Explicit: mark it explicit when you upload. ' : '') + (ly.note ? esc(ly.note) : '') + '</div>';
     const so = r.sound || {}, au = r.audience || {};
     if (so.lane || so.genre || list(so.sounds_like).length) h += '<div class="sa-ar-sec"><b>YOUR LANE</b>' + (so.lane ? '<span style="color:var(--neon);font-weight:800;">' + esc(so.lane) + '</span>. ' : '') + esc([so.lane ? '' : so.genre, so.mood].filter(Boolean).join(', ')) + (list(so.sounds_like).length ? (so.mood ? '. ' : '') + 'Sits next to ' + esc(list(so.sounds_like).join(', ')) + '.' : '') + (so.why ? ' <span style="color:var(--muted);">' + esc(so.why) + '</span>' : '') + '</div>';
+    if (r._scene && (r._scene.found.length || r._scene.not_found.length)) h += '<div style="margin-top:6px;color:var(--muted);font-size:11px;">' +
+      (r._scene.found.length ? '📊 Based on ' + esc(r._scene.source) + ' listening data for ' + esc(r._scene.found.join(', ')) + '.' : '') +
+      (r._scene.not_found.length ? ' Couldn’t find ' + esc(r._scene.not_found.join(', ')) + ' on ' + esc(r._scene.source) + '; check the spelling next time.' : '') + '</div>';
     if (r.lane_question) h += '<div class="sa-ar-sec" style="color:#FFC83D;">Quick check: ' + esc(r.lane_question) + ' <span style="color:var(--muted);">Reply below and I’ll adjust the advice.</span></div>';
     if (au.who || list(au.platforms).length) h += '<div class="sa-ar-sec"><b>WHO IT’S FOR</b>' + (au.who ? esc(au.who) + ' ' : '') + (list(au.cities).length ? '<br>Cities: ' + esc(list(au.cities).join(', ')) : '') + (list(au.platforms).length ? '<ul>' + list(au.platforms).map(p => '<li><span style="color:#fff;">' + esc(p.name || '') + '</span>: ' + esc(p.why || '') + '</li>').join('') + '</ul>' : '') + (list(au.playlists).length ? 'Playlists to target: ' + esc(list(au.playlists).join(', ')) : '') + '</div>';
     if (list(r.promo).length) h += '<div class="sa-ar-sec"><b>HOW TO PUSH IT</b><ul>' + list(r.promo).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
@@ -5422,6 +5425,7 @@ function loadRecent(index) {
     if (r.lyrics) L.push('Lyrics: ' + list(r.lyrics.themes).join(', ') + (list(r.lyrics.standout_lines).length ? '; standout: ' + list(r.lyrics.standout_lines).join(' / ') : ''));
     if (r.sound) L.push('Lane: ' + [r.sound.lane, r.sound.genre, r.sound.mood].filter(Boolean).join(', ') + (list(r.sound.sounds_like).length ? '; sits next to ' + list(r.sound.sounds_like).join(', ') : ''));
     if (r._refs) L.push('Artist says it sounds like: ' + r._refs);
+    if (r._scene && r._scene.found.length) L.push('Lane is based on ' + r._scene.source + ' listening data for ' + r._scene.found.join(', '));
     if (r.lane_question) L.push('I asked the artist: ' + r.lane_question);
     if (r.audience) L.push('Audience: ' + (r.audience.who || '') + (list(r.audience.cities).length ? '; cities ' + list(r.audience.cities).join(', ') : '') + (list(r.audience.platforms).length ? '; platforms ' + list(r.audience.platforms).map(p => p.name).join(', ') : ''));
     if (list(r.promo).length) L.push('Promo plan: ' + list(r.promo).join('; '));
@@ -5546,8 +5550,9 @@ function loadRecent(index) {
       arStep = 4; render();
       const li = await arCall({ action: 'listen', token: a.token, genre: meta.genre, refs: meta.refs }).catch(() => ({}));
       arStep = 5; render();
-      const rv = await arCall({ action: 'review', token: a.token, metrics: a.metrics, lyrics: { text: ly.text || '', first_vocal: ly.first_vocal }, vibe: li.vibe || null, artist: (currentUser && currentUser.user_metadata && currentUser.user_metadata.first_name) || '', ...meta });
+      const rv = await arCall({ action: 'review', token: a.token, metrics: a.metrics, lyrics: { text: ly.text || '', first_vocal: ly.first_vocal }, vibe: li.vibe || null, scene: li.scene || null, artist: (currentUser && currentUser.user_metadata && currentUser.user_metadata.first_name) || '', ...meta });
       const r = rv.review || {}; r._title = meta.title || file.name; r._refs = meta.refs || '';
+      if (li.scene) r._scene = { source: li.scene.source, found: (li.scene.found || []).map(x => x.name), not_found: li.scene.not_found || [] };
       const m = a.metrics ? { duration_text: a.metrics.duration_text, tempo: a.metrics.tempo, key: a.metrics.key, loudness: a.metrics.loudness ? { lufs: a.metrics.loudness.lufs } : null } : null;
       msgs.push({ role: 'assistant', ar: r, metrics: m, summary: arSummary(r, m), content: r.headline || 'A&R check' });
     } catch (e) {
