@@ -18,6 +18,26 @@ export const config = { maxDuration: 60 };
 
 const BUCKET = 'mastering';
 const LISTEN_MODEL = process.env.AR_LISTEN_MODEL || 'gpt-audio-1.5';
+const REVIEW_MODEL = process.env.AR_REVIEW_MODEL || 'gpt-4o';      // the writing model; gpt-4o writes stronger, more specific feedback
+const NEXT_TOOLS = {
+  master: 'Mastering (loud, clean, streaming-ready master)', checklist: 'Release Checklist (everything to do from 4 weeks out to release week)',
+  plan: 'Release Planner (day-by-day rollout plan)', art: 'Cover Art', lyric: 'Lyric Videos (vertical clips for TikTok/Reels)',
+  ads: 'Ad Generator (Meta ads)', distribute: 'Distribute with Stop One (free, keep 85%)',
+};
+// only the lanes that matter for this song, so the writer stays focused
+function relevantLanes(vibe, genre, refs) {
+  const want = new Set();
+  const pick = n => { const l = LANES.find(x => x.name.toLowerCase() === String(n || '').toLowerCase()); if (l) want.add(l); };
+  if (vibe) { pick(vibe.lane); pick(vibe.alt_lane); }
+  const hay = (String(genre) + ' ' + String(refs)).toLowerCase();
+  const words = new Set(hay.split(/[^a-z0-9$!.]+/).filter(w => w.length >= 4));
+  LANES.forEach(l => {
+    const named = l.artists.some(a => a.toLowerCase().split(/\s+/).some(w => w.length >= 4 && words.has(w)));
+    if (named || hay.includes(l.name.toLowerCase().split(' /')[0])) want.add(l);
+  });
+  const list = [...want].slice(0, 5);
+  return list.length ? list : LANES;
+}
 const env = () => ({ url: process.env.SUPABASE_URL, key: process.env.SUPABASE_SERVICE_ROLE_KEY });
 const svc = (extra) => { const { key } = env(); return Object.assign({ apikey: key, Authorization: `Bearer ${key}` }, extra || {}); };
 
@@ -179,8 +199,8 @@ Return JSON: {"lane":"exact lane name from the map, or Other","lane_why":"what y
     };
     const prompt = `Song: "${title}"${artist ? ' by ' + artist : ''}. Genre the artist gave: ${givenGenre || 'not given'}. Artists the artist says it sounds like: ${refs || 'not given'}. City: ${city || 'not given'}.
 
-LANE MAP (from our studio team; pick the lane from here):
-${lanesText()}
+LANES TO CHOOSE FROM (from our studio team's lane map):
+${relevantLanes(vibe, givenGenre, refs).map(l => `- ${l.name}: ${l.sound}. Artists: ${l.artists.join(', ')}`).join('\n')}
 
 MEASURED (from our analysis of the actual audio; trust these):
 ${JSON.stringify(facts, null, 1)}
@@ -201,19 +221,21 @@ Write the A&R Check. Return JSON only:
  "fix_first": [{"title":"", "why":"", "how":"a concrete fix"}],
  "hook": {"chorus_at":"m:ss", "first_vocal_at":"m:ss or empty", "tiktok_clip":{"start":"m:ss","end":"m:ss","why":""}, "intro_advice":""},
  "lyrics": {"themes":[""], "standout_lines":["up to 2 short lines quoted from the lyrics"], "language":"", "explicit":true/false, "note":""},
- "sound": {"lane":"exact lane name from the LANE MAP", "genre":"", "mood":"", "why":"what puts it in this lane", "sounds_like":["3-5 artists from that lane or the artist's own references"]},
+ "sound": {"lane":"exact lane name from the lanes above", "genre":"", "mood":"", "why":"what puts it in this lane", "sounds_like":["3-5 artists from that lane or the artist's own references"]},
  "lane_question": "if you are not sure between two lanes, one short question to confirm with the artist (e.g. \"Is this closer to rage or plugg?\"), otherwise empty",
  "audience": {"who":"", "cities":["up to 5"], "platforms":[{"name":"","why":""}], "playlists":["up to 5 playlist or curator types/names"]},
  "promo": ["5 specific promotion steps for this song, ordered"],
- "next": ["pick from: master, plan, ads, lyric, distribute"]
+ "next_moves": [{"tool":"one of: master, checklist, plan, art, lyric, ads, distribute", "why":"one short line on why this is the right next step for THIS song"}]
 }
-Lane rules: the artist's own genre and "sounds like" artists are the strongest signal. Choose the most specific lane that fits them and what the AI heard. "sounds_like" must come from the chosen lane's artists or the artist's own references. Never default to mainstream Atlanta trap names (Future, Gunna, Lil Baby, Young Thug) unless the lane really is Atlanta trap; "underground" means the underground lanes, not the mainstream. Audience, cities, playlists and promo must fit that lane's scene. If the AI's lane and the artist's description disagree, follow the artist and ask in lane_question.
-Rules: encouraging but honest, like a good A&R who wants the artist to win. Be specific to THIS song; quote real details. 0-3 items in fix_first, most important first; use the measured mix notes; if the song is not mastered yet, say so kindly and suggest mastering. Never give a numeric score or predict streams or a hit. If lyrics are empty, say so in lyrics.note and keep other lyric fields empty. Keep each string short. Only suggest "distribute" if the song is ready or almost ready.`;
+TOOLS for next_moves (pick the 3 that matter most for this song, in order): ${Object.entries(NEXT_TOOLS).map(([k, v]) => k + ' = ' + v).join('; ')}. If it is not mastered, master comes first. If it is almost or fully ready, include checklist so nothing gets missed before release. Only include distribute if it is ready or almost ready.
+VOICE: talk to the artist like a respected A&R in the room right after hearing the record. Direct, confident, vivid. Lead with what makes this song special. Use its real details: quote the lyrics, name the moment (m:ss), describe the sound. Short, punchy sentences. Encouraging because it's earned, honest because you want them to win. No filler, nothing generic that could apply to any song.
+LANE: the artist's own genre and "sounds like" artists are the strongest signal; pick the most specific lane above that fits them and what the AI heard. "sounds_like" comes from that lane or the artist's references. Don't fall back to the biggest mainstream names unless that really is the lane. Audience, cities, playlists and promo fit that lane's scene. If unsure between two lanes, ask in lane_question.
+RULES: 0-3 items in fix_first, most important first, using the measured mix notes (if it isn't mastered yet, say so and point to mastering). Never give a score or predict streams or a hit. If lyrics are empty, say so in lyrics.note and leave the other lyric fields empty.`;
     try {
       const out = await openai({
-        model: 'gpt-4o-mini', temperature: 0.6, response_format: { type: 'json_object' },
+        model: REVIEW_MODEL, temperature: 0.75, response_format: { type: 'json_object' },
         messages: [
-          { role: 'system', content: 'You are the A&R voice of StudioSound, a studio for independent artists: experienced, specific, encouraging and honest. You never invent facts about the artist. JSON only.' },
+          { role: 'system', content: 'You are the A&R voice of StudioSound: a seasoned A&R with a great ear who has broken independent artists. You talk straight, get specific, and make artists feel heard. You never invent facts about the artist. JSON only.' },
           { role: 'user', content: prompt },
         ],
       });
