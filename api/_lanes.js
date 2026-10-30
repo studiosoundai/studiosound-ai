@@ -16,6 +16,8 @@ export const LANES = [
   { name: 'Melodic / emo rap', sound: 'sung-rapped hooks, guitar or piano loops, emotional and vulnerable themes', artists: ['Juice WRLD', 'Lil Peep', 'Trippie Redd', 'Rod Wave'] },
   { name: 'Chicago drill', sound: 'dark, sliding 808s, menacing piano or bell melodies, aggressive street delivery', artists: ['Chief Keef', 'King Von', 'Lil Durk'] },
   { name: 'NY / Brooklyn drill', sound: 'UK-style sliding 808 drill beats, gritty New York delivery, chant-like ad-libs', artists: ['Pop Smoke', 'Sheff G', 'Kay Flock'] },
+  // Artists left empty on purpose: the studio team should fill in the names they'd use for this lane.
+  { name: 'Atlanta drill', sound: 'drill drums and sliding 808s with Atlanta flows, slang and bounce; a younger ATL scene that blends drill with Atlanta trap energy, different from Brooklyn or UK drill', artists: [] },
   { name: 'UK drill', sound: 'skippy, sliding 808 drill patterns, British accents, fast flows', artists: ['Central Cee', 'Headie One', 'Digga D'] },
   { name: 'Detroit rap', sound: 'off-beat, choppy flows over sparse, bouncy beats, deadpan humor, punchlines', artists: ['Babyface Ray', 'Veeze', 'BabyTron', 'Sada Baby'] },
   { name: 'Memphis / Southern street rap', sound: 'hard-hitting Southern beats, dark Memphis-style samples and cowbells, aggressive punchy hooks', artists: ['Key Glock', 'Moneybagg Yo', 'GloRilla'] },
@@ -44,5 +46,5 @@ export const LANES = [
 ];
 
 export function lanesText() {
-  return LANES.map(l => `- ${l.name}: ${l.sound}. Artists: ${l.artists.join(', ')}`).join('\n');
+  return LANES.map(l => `- ${l.name}: ${l.sound}.${l.artists.length ? ' Artists: ' + l.artists.join(', ') : ''}`).join('\n');
 }

@@ -1,14 +1,15 @@
 import crypto from 'node:crypto';
 import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
 import { LANES, lanesText } from './_lanes.js';
+import { sceneFor, sceneText } from './_scene.js';
 
 // A&R Check: drop a song in the Studio Assistant and get honest, encouraging feedback.
 // The browser uploads the song to the private "mastering" bucket, then calls these steps in order
 // (each one is short, so none of them hits Vercel's time limit):
 //   POST { action: 'analyze', path, title?, artist?, genre?, city? } -> { metrics, token }   (uses 1 A&R check)
 //   POST { action: 'lyrics',  token }                                 -> { text, first_vocal, language }
-//   POST { action: 'listen',  token, genre?, refs? }                  -> { vibe }           (AI listens to the chorus)
-//   POST { action: 'review',  token, metrics, lyrics, vibe, title, artist, genre, refs, city } -> { review }
+//   POST { action: 'listen',  token, genre?, refs? }                  -> { vibe, scene }    (scene data for the named artists, then the AI listens)
+//   POST { action: 'review',  token, metrics, lyrics, vibe, scene, title, artist, genre, refs, city } -> { review }
 // The artist's own genre and "sounds like" artists are the strongest signal; the lane map in _lanes.js
 // (owned by the engineers) keeps the feedback in the right lane instead of defaulting to the biggest names.
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY, MASTERING_URL, MASTERING_SECRET,
@@ -25,17 +26,17 @@ const NEXT_TOOLS = {
   ads: 'Ad Generator (Meta ads)', distribute: 'Distribute with Stop One (free, keep 85%)',
 };
 // only the lanes that matter for this song, so the writer stays focused
-function relevantLanes(vibe, genre, refs) {
+function relevantLanes(vibe, genre, refs, scene) {
   const want = new Set();
   const pick = n => { const l = LANES.find(x => x.name.toLowerCase() === String(n || '').toLowerCase()); if (l) want.add(l); };
   if (vibe) { pick(vibe.lane); pick(vibe.alt_lane); }
-  const hay = (String(genre) + ' ' + String(refs)).toLowerCase();
+  const hay = (String(genre) + ' ' + String(refs) + ' ' + (scene ? scene.neighbors.map(x => x.name).join(' ') + ' ' + scene.playlists.map(x => x.title).join(' ') : '')).toLowerCase();
   const words = new Set(hay.split(/[^a-z0-9$!.]+/).filter(w => w.length >= 4));
   LANES.forEach(l => {
     const named = l.artists.some(a => a.toLowerCase().split(/\s+/).some(w => w.length >= 4 && words.has(w)));
     if (named || hay.includes(l.name.toLowerCase().split(' /')[0])) want.add(l);
   });
-  const list = [...want].slice(0, 5);
+  const list = [...want].slice(0, 6);
   return list.length ? list : LANES;
 }
 const env = () => ({ url: process.env.SUPABASE_URL, key: process.env.SUPABASE_SERVICE_ROLE_KEY });
@@ -151,6 +152,9 @@ export default async function handler(req, res) {
 
   // ---------- 3. the AI listens to the chorus ----------
   if (body.action === 'listen') {
+    let scene = null;
+    try { scene = clip(body.refs, 120) ? await sceneFor(clip(body.refs, 120)) : null; } catch (e) { console.error('ar scene', e.message); }
+    const sceneBlock = sceneText(scene);
     try {
       const audio = await fetchFile(`${base}/clip.mp3`);
       const out = await openai({
@@ -159,7 +163,7 @@ export default async function handler(req, res) {
           { role: 'system', content: 'You are an experienced A&R and producer with a precise ear for subgenres. You never lump a song into the biggest mainstream names when it belongs to a more specific lane. Answer with JSON only.' },
           { role: 'user', content: [
             { type: 'text', text: `Listen to this 30-second section (usually the chorus) of an independent artist's song.${clip(body.genre, 60) ? ' The artist describes it as: "' + clip(body.genre, 60) + '".' : ''}${clip(body.refs, 120) ? ' The artist says it sounds like: ' + clip(body.refs, 120) + '.' : ''}
-Pick the closest lane from this LANE MAP (use the artist's description as a strong hint, then what you hear):
+${sceneBlock ? sceneBlock + '\nThis listening data shows the real scene these artists live in (region, lane, playlists). Use it over your own guess about region or scene.\n' : ''}Pick the closest lane from this LANE MAP (use the artist's description and the listening data as strong hints, then what you hear):
 ${lanesText()}
 Return JSON: {"lane":"exact lane name from the map, or Other","lane_why":"what you hear that puts it there (production, vocals, tempo, mood)","alt_lane":"second closest lane","genre":"","mood":"","energy":"low|medium|high","vocals":"vocal style and delivery, or none","production":"key sounds you hear","sounds_like":["3-5 artists from the chosen lane, or the artist's own references"],"standout":"the strongest moment","concern":"one thing a producer would flag, or empty","confidence":"low|medium|high"}` },
             { type: 'input_audio', input_audio: { data: audio.toString('base64'), format: 'mp3' } },
@@ -167,10 +171,10 @@ Return JSON: {"lane":"exact lane name from the map, or Other","lane_why":"what y
         ],
       });
       const m = out.match(/\{[\s\S]*\}/);
-      return res.status(200).json({ vibe: m ? JSON.parse(m[0]) : null });
+      return res.status(200).json({ vibe: m ? JSON.parse(m[0]) : null, scene });
     } catch (e) {
       console.error('ar listen', e.message);
-      return res.status(200).json({ vibe: null });           // the review still works from the measurements and lyrics
+      return res.status(200).json({ vibe: null, scene });    // the review still works from the measurements, lyrics and scene data
     }
   }
 
@@ -180,11 +184,22 @@ Return JSON: {"lane":"exact lane name from the map, or Other","lane_why":"what y
     const title = clip(body.title, 120) || 'Untitled', artist = clip(body.artist, 80), givenGenre = clip(body.genre, 60), refs = clip(body.refs, 120), city = clip(body.city, 80);
     const genre = givenGenre || (vibe && vibe.genre) || '';
     const lane = vibe && vibe.lane && vibe.lane !== 'Other' ? LANES.find(l => l.name.toLowerCase() === String(vibe.lane).toLowerCase()) : null;
+    let scene = body.scene && typeof body.scene === 'object' && Array.isArray(body.scene.found) ? {
+      source: clip(body.scene.source, 20) || 'Deezer',
+      asked: (body.scene.asked || []).slice(0, 3).map(x => clip(x, 60)),
+      found: body.scene.found.slice(0, 3).map(a => ({ name: clip(a.name, 60), fans: Number(a.fans) || 0, link: clip(a.link, 200) })),
+      not_found: (body.scene.not_found || []).slice(0, 3).map(x => clip(x, 60)),
+      neighbors: (body.scene.neighbors || []).slice(0, 15).map(x => ({ name: clip(x.name, 60), shared: Number(x.shared) || 1, fans: Number(x.fans) || 0 })),
+      playlists: (body.scene.playlists || []).slice(0, 15).map(x => ({ title: clip(x.title, 80), shared: Number(x.shared) || 1 })),
+      tags: (body.scene.tags || []).slice(0, 10).map(x => clip(x, 30)),
+    } : null;
+    if (!scene && refs) { try { scene = await sceneFor(refs); } catch (e) {} }
+    const sceneBlock = sceneText(scene);
     let research = '';
     try {
       research = await openai({
         model: 'gpt-4o-mini-search-preview', web_search_options: { search_context_size: 'medium' },
-        messages: [{ role: 'user', content: `Music marketing research for an independent ${givenGenre || (lane ? lane.name : genre) || 'artist'} song${refs ? ' that sounds like ' + refs : (lane ? ' in the ' + lane.name + ' lane (' + lane.artists.join(', ') + ')' : '')}${city ? ', artist based in ' + city : ''}${artist ? ' (artist: ' + artist + ')' : ''}. Focus on that exact lane and its scene, not mainstream hip-hop in general. Search the live web and give concise bullet notes on: who listens to this lane now (age, platforms), the cities and countries where it is strongest, the Spotify/Apple/YouTube playlists and curators that feature it, the TikTok/Reels trends and content formats working for it right now, and 2-3 independent artists in this lane growing fast. Be specific and current.` }],
+        messages: [{ role: 'user', content: `Music marketing research for an independent ${givenGenre || (lane ? lane.name : genre) || 'artist'} song${refs ? ' that sounds like ' + refs : (lane ? ' in the ' + lane.name + ' lane (' + lane.artists.join(', ') + ')' : '')}${scene && scene.neighbors.length ? ' (same scene as ' + scene.neighbors.slice(0, 6).map(x => x.name).join(', ') + ')' : ''}${city ? ', artist based in ' + city : ''}${artist ? ' (artist: ' + artist + ')' : ''}. Focus on that exact lane and its scene, not mainstream hip-hop in general. Search the live web and give concise bullet notes on: who listens to this lane now (age, platforms), the cities and countries where it is strongest, the Spotify/Apple/YouTube playlists and curators that feature it, the TikTok/Reels trends and content formats working for it right now, and 2-3 independent artists in this lane growing fast. Be specific and current.` }],
       });
     } catch (e) { console.error('ar research', e.message); }
 
@@ -200,7 +215,8 @@ Return JSON: {"lane":"exact lane name from the map, or Other","lane_why":"what y
     const prompt = `Song: "${title}"${artist ? ' by ' + artist : ''}. Genre the artist gave: ${givenGenre || 'not given'}. Artists the artist says it sounds like: ${refs || 'not given'}. City: ${city || 'not given'}.
 
 LANES TO CHOOSE FROM (from our studio team's lane map):
-${relevantLanes(vibe, givenGenre, refs).map(l => `- ${l.name}: ${l.sound}. Artists: ${l.artists.join(', ')}`).join('\n')}
+${relevantLanes(vibe, givenGenre, refs, scene).map(l => `- ${l.name}: ${l.sound}.${l.artists.length ? ' Artists: ' + l.artists.join(', ') : ''}`).join('\n')}
+${sceneBlock ? '\n' + sceneBlock + '\n' : ''}
 
 MEASURED (from our analysis of the actual audio; trust these):
 ${JSON.stringify(facts, null, 1)}
@@ -221,7 +237,7 @@ Write the A&R Check. Return JSON only:
  "fix_first": [{"title":"", "why":"", "how":"a concrete fix"}],
  "hook": {"chorus_at":"m:ss", "first_vocal_at":"m:ss or empty", "tiktok_clip":{"start":"m:ss","end":"m:ss","why":""}, "intro_advice":""},
  "lyrics": {"themes":[""], "standout_lines":["up to 2 short lines quoted from the lyrics"], "language":"", "explicit":true/false, "note":""},
- "sound": {"lane":"exact lane name from the lanes above", "genre":"", "mood":"", "why":"what puts it in this lane", "sounds_like":["3-5 artists from that lane or the artist's own references"]},
+ "sound": {"lane":"the most specific lane name (from the lanes above, or from the listening data)", "genre":"", "mood":"", "why":"what puts it in this lane", "sounds_like":["3-5 artists from that lane or the artist's own references"]},
  "lane_question": "if you are not sure between two lanes, one short question to confirm with the artist (e.g. \"Is this closer to rage or plugg?\"), otherwise empty",
  "audience": {"who":"", "cities":["up to 5"], "platforms":[{"name":"","why":""}], "playlists":["up to 5 playlist or curator types/names"]},
  "promo": ["5 specific promotion steps for this song, ordered"],
@@ -229,7 +245,7 @@ Write the A&R Check. Return JSON only:
 }
 TOOLS for next_moves (pick the 3 that matter most for this song, in order): ${Object.entries(NEXT_TOOLS).map(([k, v]) => k + ' = ' + v).join('; ')}. If it is not mastered, master comes first. If it is almost or fully ready, include checklist so nothing gets missed before release. Only include distribute if it is ready or almost ready.
 VOICE: talk to the artist like a respected A&R in the room right after hearing the record. Direct, confident, vivid. Lead with what makes this song special. Use its real details: quote the lyrics, name the moment (m:ss), describe the sound. Short, punchy sentences. Encouraging because it's earned, honest because you want them to win. No filler, nothing generic that could apply to any song.
-LANE: the artist's own genre and "sounds like" artists are the strongest signal; pick the most specific lane above that fits them and what the AI heard. "sounds_like" comes from that lane or the artist's references. Don't fall back to the biggest mainstream names unless that really is the lane. Audience, cities, playlists and promo fit that lane's scene. If unsure between two lanes, ask in lane_question.
+LANE: the artist's own genre and "sounds like" artists are the strongest signal${sceneBlock ? ', backed by the REAL LISTENING DATA. That data decides the scene and region: "sounds_like" should mostly be related artists from the data (prefer ones shared by several of their references), the lane must fit the playlist titles, and audience.playlists should name real playlists from the data. If the data points to a lane not in the list above, name that lane in your own words' : ''}; pick the most specific lane that fits. "sounds_like" comes from the data, that lane, or the artist's references. Don't fall back to the biggest mainstream names unless that really is the lane. Audience, cities, playlists and promo fit that lane's scene. If unsure between two lanes, ask in lane_question.
 RULES: 0-3 items in fix_first, most important first, using the measured mix notes (if it isn't mastered yet, say so and point to mastering). Never give a score or predict streams or a hit. If lyrics are empty, say so in lyrics.note and leave the other lyric fields empty.`;
     try {
       const out = await openai({

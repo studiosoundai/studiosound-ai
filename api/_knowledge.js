@@ -112,6 +112,7 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 
   archeck: `A&R CHECK (inside the Studio Assistant)
 - The artist taps "Get feedback on my song" (or the music note button) in the assistant and drops a song (WAV, MP3, AIFF, FLAC, M4A; up to 12 minutes). Optional: song title, genre, city.
+- If the artist names who they sound like, we pull real listening data on those artists (related artists, the playlists they're on and the genre tags listeners give them, from Deezer and Last.fm) so the lane, comparable artists and playlists match their actual scene. Naming 2-3 artists makes the feedback much more accurate.
 - What happens: we measure the actual audio (loudness, peaks, tone balance, stereo, tempo, key, where the chorus hits, how long the intro takes), transcribe the lyrics, an AI listens to the chorus, and we research who listens to that lane and where. Takes about a minute.
 - The review: an overall take, release readiness (ready / almost / needs work), what's working, what to fix first and how, the best 15-second clip for TikTok and Reels, lyric themes and standout lines, who the audience is, cities, platforms and playlists, and 5 promotion steps. Then the artist can keep asking questions about the song.
 - It's honest and encouraging. It never gives a score or predicts streams or hits; nobody can.
