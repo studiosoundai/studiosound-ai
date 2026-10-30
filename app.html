@@ -338,6 +338,8 @@ body{overflow:auto;height:auto;}
     <button class="sidebar-item" onclick="switchTool('audio',this)"><i class="ti ti-file-music"></i> MP3 → WAV <span class="badge">FREE</span></button>
     <button class="sidebar-item" onclick="switchTool('trim',this)"><i class="ti ti-cut"></i> Audio Trimmer <span class="badge">FREE</span></button>
     <button class="sidebar-item" onclick="switchTool('split',this)"><i class="ti ti-users"></i> Split Sheet <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('meta',this)"><i class="ti ti-tags"></i> Metadata Formatter <span class="badge">FREE</span></button>
+    <button class="sidebar-item" onclick="switchTool('check',this)"><i class="ti ti-checklist"></i> Release Checklist <span class="badge">FREE</span></button>
     <button class="sidebar-item"><i class="ti ti-badge-cc"></i> Lyric Captions <span class="soon">SOON</span></button>
   </div>
   <div class="sidebar-section">
@@ -398,7 +400,7 @@ body{overflow:auto;height:auto;}
           <div class="wpill"><i class="ti ti-shirt"></i> Merch Mockups</div>
           <div class="wpill"><i class="ti ti-pencil"></i> Lyric Writer</div>
           <div class="wpill"><i class="ti ti-speakerphone"></i> Ad Generator</div>
-          <div class="wpill"><i class="ti ti-wand"></i> + 4 Free Utilities</div>
+          <div class="wpill"><i class="ti ti-wand"></i> + 6 Free Utilities</div>
 
         </div>
         <div class="sa-hero sa-gate" style="display:none;">
@@ -5302,6 +5304,10 @@ function loadRecent(index) {
 .sa-ar-sec ul{margin:0;padding-left:16px;} .sa-ar-sec li{margin:2px 0;}
 .sa-ar-stats{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;}
 .sa-ar-stats span{background:#05050a;border:0.5px solid #2a2a3e;border-radius:8px;padding:4px 8px;font-size:11px;color:#cfcfe0;}
+.sa-ar-move{display:flex;gap:10px;align-items:flex-start;margin-top:8px;}
+.sa-ar-move .n{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--neon);color:#05050a;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.sa-ar-move button{margin-top:6px;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:7px 11px;font-family:inherit;font-weight:800;font-size:11px;cursor:pointer;}
+.sa-ar-move button.alt{background:#05050a;color:#fff;border:0.5px solid #2a2a3e;}
 .sa-ar-next{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
 .sa-ar-next button{background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:8px 11px;font-family:inherit;font-weight:800;font-size:11px;cursor:pointer;}
 .sa-ar-next button.alt{background:#05050a;color:#fff;border:0.5px solid #2a2a3e;}
@@ -5374,7 +5380,7 @@ function loadRecent(index) {
   // ---------- A&R Check state ----------
   let arOn = false, arFile = null, arStep = 0;
   const AR_STEPS = ['Uploading your song', 'Measuring the mix, tempo and key', 'Reading your lyrics', 'Listening to the chorus', 'Researching your lane and writing feedback'];
-  const AR_NEXT = { master: ['Master it', "saGo('master')"], plan: ['Plan the release', "saGo('plan')"], ads: ['Make the ad', "saGo('ads')"], lyric: ['Make a lyric video', "saGo('lyric')"], distribute: ['Distribute with Stop One', "window.open('distribution.html','_blank')"] };
+  const AR_NEXT = { master: ['Master it', "saGo('master')"], checklist: ['Open the Release Checklist', "saGo('check')"], plan: ['Plan the release', "saGo('plan')"], art: ['Make the cover', "saGo('art')"], ads: ['Make the ad', "saGo('ads')"], lyric: ['Make a lyric video', "saGo('lyric')"], distribute: ['Distribute with Stop One', "window.open('distribution.html','_blank')"] };
   const list = a => Array.isArray(a) ? a.filter(Boolean) : [];
   function arCard(r, m) {
     let h = '<div class="sa-ar-h">A&amp;R CHECK' + (r._title ? ' · ' + esc(r._title).toUpperCase() : '') + '</div>';
@@ -5395,8 +5401,13 @@ function loadRecent(index) {
     if (r.lane_question) h += '<div class="sa-ar-sec" style="color:#FFC83D;">Quick check: ' + esc(r.lane_question) + ' <span style="color:var(--muted);">Reply below and I’ll adjust the advice.</span></div>';
     if (au.who || list(au.platforms).length) h += '<div class="sa-ar-sec"><b>WHO IT’S FOR</b>' + (au.who ? esc(au.who) + ' ' : '') + (list(au.cities).length ? '<br>Cities: ' + esc(list(au.cities).join(', ')) : '') + (list(au.platforms).length ? '<ul>' + list(au.platforms).map(p => '<li><span style="color:#fff;">' + esc(p.name || '') + '</span>: ' + esc(p.why || '') + '</li>').join('') + '</ul>' : '') + (list(au.playlists).length ? 'Playlists to target: ' + esc(list(au.playlists).join(', ')) : '') + '</div>';
     if (list(r.promo).length) h += '<div class="sa-ar-sec"><b>HOW TO PUSH IT</b><ul>' + list(r.promo).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
-    const nx = list(r.next).filter(k => AR_NEXT[k]);
-    h += '<div class="sa-ar-next">' + nx.map((k, i) => '<button type="button"' + (i ? ' class="alt"' : '') + ' onclick="' + AR_NEXT[k][1] + '">' + AR_NEXT[k][0] + ' →</button>').join('') + '</div>';
+    const moves = list(r.next_moves).filter(x => x && AR_NEXT[x.tool]).slice(0, 3);
+    if (moves.length) {
+      h += '<div class="sa-ar-sec"><b>YOUR NEXT 3 MOVES</b>' + moves.map((x, i) => '<div class="sa-ar-move"><span class="n">' + (i + 1) + '</span><div><div>' + esc(x.why || '') + '</div><button type="button"' + (i ? ' class="alt"' : '') + ' onclick="' + AR_NEXT[x.tool][1] + '">' + AR_NEXT[x.tool][0] + ' →</button></div></div>').join('') + '</div>';
+    } else {
+      const nx = list(r.next).filter(k => AR_NEXT[k]);
+      h += '<div class="sa-ar-next">' + nx.map((k, i) => '<button type="button"' + (i ? ' class="alt"' : '') + ' onclick="' + AR_NEXT[k][1] + '">' + AR_NEXT[k][0] + ' →</button>').join('') + '</div>';
+    }
     h += '<div style="margin-top:10px;color:var(--muted);font-size:11px;">Ask me anything about it: “What should I post first?”, “Is the hook strong enough?”</div>';
     return h;
   }
@@ -5414,6 +5425,7 @@ function loadRecent(index) {
     if (r.lane_question) L.push('I asked the artist: ' + r.lane_question);
     if (r.audience) L.push('Audience: ' + (r.audience.who || '') + (list(r.audience.cities).length ? '; cities ' + list(r.audience.cities).join(', ') : '') + (list(r.audience.platforms).length ? '; platforms ' + list(r.audience.platforms).map(p => p.name).join(', ') : ''));
     if (list(r.promo).length) L.push('Promo plan: ' + list(r.promo).join('; '));
+    if (list(r.next_moves).length) L.push('Next moves I suggested: ' + list(r.next_moves).map(x => x.tool + ' (' + (x.why || '') + ')').join('; '));
     return L.join('\n');
   }
   function arExtras() {
