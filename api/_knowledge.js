@@ -12,9 +12,9 @@ Everything an artist makes saves to My Assets (left sidebar) to reopen, replay o
 Artists own everything they make: covers, plans, lyrics, videos and ads are theirs to release, print and promote.`,
 
   pricing: `PLANS AND LIMITS (limits reset on the 1st of every month; unused ones don't roll over)
-- Free, $0, no card: Earnings Forecast preview, 3 cover generations (2 versions each), 1 release plan a month, 3 Lyric Writer sessions, 2 lyric videos with auto-synced lyrics (unlimited if they tap-sync themselves), 2 merch mockups, 2 Meta ad kits, all free tools.
-- Pro, $9.99/month, or $6.99/month billed yearly ($83.88/year): 3 full forecasts a month (five-year paths, analyst read, PDF and image export), 100 cover generations on the highest-quality cover engine, unlimited release plans, 200 Lyric Writer sessions, 30 lyric videos with auto-synced lyrics, 50 merch mockups, 30 Meta ad kits.
-- Premium, $24.99/month, or $16.99/month billed yearly ($203.88/year): 10 full forecasts a month, 300 cover generations, unlimited release plans, 500 Lyric Writer sessions, 100 lyric videos with auto-synced lyrics, 100 merch mockups, 100 Meta ad kits, priority support.
+- Free, $0, no card: Earnings Forecast preview, 3 cover generations (2 versions each), 1 release plan a month, 3 Lyric Writer sessions, 2 lyric videos with auto-synced lyrics (unlimited if they tap-sync themselves), 2 merch mockups, 2 ad kits (Instagram & Facebook, TikTok or YouTube; one per song, the other platforms for that song free), all free tools.
+- Pro, $9.99/month, or $6.99/month billed yearly ($83.88/year): 3 full forecasts a month (five-year paths, analyst read, PDF and image export), 100 cover generations on the highest-quality cover engine, unlimited release plans, 200 Lyric Writer sessions, 30 lyric videos with auto-synced lyrics, 50 merch mockups, 30 ad kits (Instagram & Facebook, TikTok or YouTube; one per song, the other platforms for that song free).
+- Premium, $24.99/month, or $16.99/month billed yearly ($203.88/year): 10 full forecasts a month, 300 cover generations, unlimited release plans, 500 Lyric Writer sessions, 100 lyric videos with auto-synced lyrics, 100 merch mockups, 100 ad kits (Instagram & Facebook, TikTok or YouTube; one per song, the other platforms for that song free), priority support.
 - Upgrade at studiosound.ai/pricing. Cancel, switch plans or change monthly/yearly from Settings (billing portal); access stays until the end of the paid period.
 - Mastering (rolling out, see its section): full 24-bit WAV masters: Free 1 a month, Pro 5 a month, Premium unlimited (fair use). Whole-song previews: Free 10, Pro 100 a month, Premium unlimited.
 - Launch promotion until Dec 31, 2026: Pro is $9.99/month (regular $14.99) and Premium $24.99/month (regular $29.99). Say the launch price ends Dec 31; don't promise what happens to existing subscribers after that.
@@ -59,16 +59,20 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - Upload art and see it on real AI-generated product mockups: tees, hoodies, hats, phone cases, posters, tote bags, sweatpants, jackets (8 products, 8 colors).
 - Shows a cost breakdown: print-on-demand vs bulk, plus a suggested retail range.`,
 
-  ads: `AD GENERATOR (META: INSTAGRAM AND FACEBOOK)
-- Builds a ready-to-run Meta ad kit. The artist runs it in their own Meta Ads Manager with their own card; StudioSound never touches their ad account.
+  ads: `AD GENERATOR (INSTAGRAM & FACEBOOK, TIKTOK, YOUTUBE)
+- Builds a ready-to-run ad kit for Instagram & Facebook (Meta Ads Manager), TikTok (TikTok Ads Manager) or YouTube (Google Ads). Pick the platform with the tabs at the top. The artist runs it in their own ad account with their own card; StudioSound never touches their ad account.
+- Credits: one song uses one ad kit a month. After the first kit for a song, the first kit on each other platform for that same song that month is free ("Run it on more platforms" buttons at the bottom of a kit). Remaking a kit on the same platform uses a kit.
+- TikTok: ads are vertical videos, so the song is needed. The kit has a 9:16 video cover, the 15-second TikTok video, 3 ad texts (max 100 characters, no emojis), a caption for the artist's own post, and Spark Ad steps (boost your own TikTok post: on the post tap ... > Ad settings > Ad authorization > generate a code, then paste it in Ads Manager). Spark Ads usually work best for music. TikTok's minimum is $20 a day per ad group, so budgets are $60 (3 days), $100 (5), $140 (7) and $280 (14); for tiny budgets use TikTok Promote in the app. Followers goal grows the TikTok and needs no link.
+- YouTube: runs through Google Ads. The video must be uploaded to the artist's YouTube channel first (unlisted is fine). The kit has a 16:9 image (also a thumbnail), a 9:16 Shorts image, a 15-second 16:9 video and a Shorts version, headlines (40), long headlines (90), descriptions (90), topics, YouTube channels and keywords to target, and Google Ads setup steps. Reach is shown in views (roughly 2-6 cents a view). New Google Ads accounts may need identity verification, which can take a few days; YouTube Studio's Promote button is the simple option for small budgets. The Followers goal becomes Subscribers.
 - Steps: about you (artist name, Instagram/TikTok handle, genre, where you're from, similar artists optional), the song (title, out now or coming soon, release date, copy language, hook line, what it's about), goal (Streams, Pre-saves, Followers, Video views), budget, link, cover, song, and a video or photo of the artist (recommended).
 - It researches the artist online with the handle to find where they're from, where fans are and which bigger artists their fans also listen to; that becomes the targeting. If nothing is found, it targets by genre and says so.
 - Budget options: "Recommend one for me", $25 test (5 days), $50 starter (7 days), $100 push (7 days), $250 release campaign (14 days), or custom. Ballpark US reach: $25 ≈ 1,400–3,300 people, $50 ≈ 2,800–6,700, $100 ≈ 5,600–13,000, $250 ≈ 14,000–33,000. These are estimates, not promises; Latin America is usually cheaper, big US cities pricier.
 - The kit: what we found about you, ad images for Feed 4:5, Reels/Stories 9:16 and Square 1:1, a 15-second Reels video (needs the song uploaded; with artist footage the artist fills the frame), 3 primary texts, 3 headlines, 2 descriptions, objective, button, locations, age, interests, placements, budget plan by phase, step-by-step Ads Manager setup, what to check after 48 hours, and where to send people.
 - Copy language: English, Spanish or Spanglish. Font, text color and accent color are changeable; "Match my cover" picks the accent from the cover.
 - Test-then-scale: run all 3 ads for about 3 days, then put the rest of the budget behind the winner. Don't change anything for the first 48 hours.
-- Send ads to a release page or smart link with a Meta pixel rather than straight to Spotify, so clicks can be tracked and retargeted.
-- TikTok ad kits are next, then Google/YouTube. An ad manager that launches ads for you is in development.`,
+- The link: streams → a smart link (Stop One artists get one from Stop One; otherwise Feature.fm, Linkfire, ToneDen or Hypeddit; a Spotify song link works in a pinch). Pre-saves → a pre-save link. Followers → the profile link (none needed on TikTok). It goes in the Website URL / Destination URL / Final URL box when setting up the ad, not on the image. The kit's "Your ad link" box shows it with a Copy button.
+- Send ads to a release page or smart link with a tracking pixel rather than straight to Spotify, so clicks can be tracked and retargeted.
+- An ad manager that launches ads for you is in development.`,
 
   freetools: `FREE TOOLS (work without an account at studiosound.ai/tools, and inside the Studio)
 - Cover Resizer (studiosound.ai/cover-resizer): any image to a 3000×3000 JPEG (or 1080×1080 for Instagram); non-square images are center-cropped; warns if the image is too small.
@@ -122,7 +126,7 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
   support: `SUPPORT AND COMMUNITY
 - Bugs, billing, account or login problems: email support@studiosound.ai.
 - Community: Discord at discord.gg/SN6uRybqK.
-- In development (not part of any plan yet, no dates promised): song generator, AI video clips, TikTok and Google ad kits, an ad manager that launches ads for you.`,
+- In development (not part of any plan yet, no dates promised): song generator, AI video clips, an ad manager that launches ads for you.`,
 
   playbook: `INDEPENDENT RELEASE PLAYBOOK (give this kind of advice, adapted to the artist)
 - Upload to the distributor at least 4 weeks before release; pitch in Spotify for Artists as soon as the song appears (at least 7 days ahead, earlier is better).

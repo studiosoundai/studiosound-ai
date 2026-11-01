@@ -37,7 +37,9 @@ export async function isTeam(email) {
 // Founders and team members see tools that aren't public yet
 export async function hasEarlyAccess(email) { return isFounder(email) || await isTeam(email); }
 
-export async function checkAndCount(req, tool) {
+// opts.freeIf(userId): return true to let this request through without using a credit
+// (e.g. a TikTok or YouTube kit for a song that already has an ad kit this month).
+export async function checkAndCount(req, tool, opts = {}) {
   const url = process.env.SUPABASE_URL;
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -59,11 +61,16 @@ export async function checkAndCount(req, tool) {
   }
   const user = await userRes.json();
 
+  let free = false;
+  if (typeof opts.freeIf === 'function') { try { free = !!(await opts.freeIf(user.id)); } catch (e) { free = false; } }
+
   // Founder accounts (comma-separated emails in FOUNDER_EMAILS env var) skip
   // limits entirely — testing your own platform shouldn't burn your quota.
   if (isFounder(user.email)) {
     return { ok: true, userId: user.id, plan: 'premium', founder: true };
   }
+
+  if (free) return { ok: true, userId: user.id, free: true };
 
   // 2. What plan are they on?
   const profRes = await fetch(
