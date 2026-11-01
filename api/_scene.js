@@ -21,13 +21,13 @@ async function get(path, ms = 6000) {
   } catch (e) { return null; } finally { clearTimeout(t); }
 }
 
-async function lastfm(method, artist) {
+async function lastfm(method, artist, param = 'artist') {
   const key = process.env.LASTFM_API_KEY;
   if (!key) return null;
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 6000);
   try {
-    const u = `https://ws.audioscrobbler.com/2.0/?method=${method}&artist=${encodeURIComponent(artist)}&api_key=${encodeURIComponent(key)}&format=json&autocorrect=1&limit=30`;
+    const u = `https://ws.audioscrobbler.com/2.0/?method=${method}&${param}=${encodeURIComponent(artist)}&api_key=${encodeURIComponent(key)}&format=json&autocorrect=1&limit=30`;
     const r = await fetch(u, { signal: ctrl.signal, headers: { 'User-Agent': 'StudioSound/1.0 (studiosound.ai)' } });
     if (!r.ok) return null;
     const d = await r.json();
@@ -135,4 +135,23 @@ export function sceneText(scene) {
     (p ? `\nPlaylists that include them (their titles show the scene and lane): ${p}.` : '') +
     (scene.tags && scene.tags.length ? `\nGenre tags listeners give them (Last.fm, most used first): ${scene.tags.join(', ')}.` : '') +
     (scene.not_found.length ? `\nNot found on ${scene.source}: ${scene.not_found.join(', ')}.` : '');
+}
+
+
+// No "sounds like" artists, but a genre: ask Last.fm who listeners actually tag with that genre
+export async function genreSceneFor(genre) {
+  const g = String(genre || '').trim().toLowerCase().slice(0, 40);
+  if (!g || !process.env.LASTFM_API_KEY) return null;
+  const [top, sim] = await Promise.all([lastfm('tag.gettopartists', g, 'tag'), lastfm('tag.getsimilar', g, 'tag')]);
+  const artists = ((top && top.topartists && top.topartists.artist) || []).map(a => a && a.name).filter(Boolean).slice(0, 15);
+  const related = ((sim && sim.similartags && sim.similartags.tag) || []).map(t => t && t.name).filter(Boolean).slice(0, 8);
+  if (!artists.length && !related.length) return null;
+  return { source: 'Last.fm', genre: g, artists, related };
+}
+
+export function genreSceneText(gs) {
+  if (!gs) return '';
+  return `REAL LISTENING DATA (${gs.source}) for the genre the artist gave ("${gs.genre}"):` +
+    (gs.artists.length ? `\nTop artists listeners tag "${gs.genre}": ${gs.artists.join(', ')}.` : '') +
+    (gs.related.length ? `\nRelated genre tags: ${gs.related.join(', ')}.` : '');
 }

@@ -35,7 +35,19 @@ export const LANES = [
   { name: 'Reggaeton', sound: 'dembow rhythm, perreo energy, Spanish vocals, club and party focus', artists: ['Bad Bunny', 'Feid', 'Karol G', 'J Balvin'] },
   { name: 'Latin trap', sound: 'trap drums and 808s with Spanish rap or sung vocals, street themes', artists: ['Anuel AA', 'Eladio Carrión', 'Myke Towers'] },
   { name: 'Corridos tumbados / regional Mexican', sound: 'acoustic guitars, tololoche or brass, Mexican regional storytelling, often with trap influences', artists: ['Peso Pluma', 'Natanael Cano', 'Fuerza Regida'] },
+  // ---------- Caribbean ----------
+  { name: 'Dancehall', sound: 'Jamaican dancehall riddims, patois vocals, bouncy digital drums, deejay and sing-jay delivery, party and street themes', artists: ['Vybz Kartel', 'Popcaan', 'Shenseea', 'Skillibeng', 'Masicka'] },
+  { name: 'Reggae', sound: 'one-drop or steppers grooves, offbeat guitar skank, warm bass, conscious or roots themes', artists: ['Chronixx', 'Koffee', 'Protoje'] },
+  { name: 'Soca', sound: 'fast carnival rhythms, big horns and chants, Trinidad and Caribbean party energy', artists: ['Machel Montano', 'Kes', 'Bunji Garlin'] },
+  { name: 'Afroswing / afro-dancehall', sound: 'UK or Afro-Caribbean blend of afrobeats, dancehall and rap, melodic and bouncy', artists: ['J Hus', 'Burna Boy', 'NSG'] },
+  // ---------- more Latin ----------
+  { name: 'Bachata', sound: 'Dominican guitar picking, romantic vocals, bachata rhythm, often modern urban production', artists: ['Romeo Santos', 'Aventura', 'Prince Royce'] },
+  { name: 'Salsa / tropical', sound: 'live percussion, piano montunos, horns, dance-floor Latin', artists: ['Marc Anthony', 'Victor Manuelle'] },
+  { name: 'Brazilian funk', sound: 'Rio and São Paulo funk beats, tamborzão drums, Portuguese vocals, dance and party focus', artists: ['Anitta', 'Ludmilla', 'MC Ryan SP'] },
   // ---------- other ----------
+  { name: 'K-pop', sound: 'highly produced pop with genre switches, group vocals and rap parts, Korean and English lyrics', artists: ['BTS', 'BLACKPINK', 'Stray Kids'] },
+  { name: 'Indie / alternative rock', sound: 'guitar bands, indie production, alternative songwriting', artists: ['Arctic Monkeys', 'The 1975', 'Tame Impala'] },
+  { name: 'House / dance', sound: 'four-on-the-floor house grooves, club-focused, vocal or instrumental dance tracks', artists: ['Peggy Gou', 'Fisher', 'Disclosure'] },
   { name: 'Afrobeats', sound: 'West African grooves, log drums or percussion, melodic and dance-friendly', artists: ['Burna Boy', 'Wizkid', 'Rema'] },
   { name: 'Amapiano', sound: 'South African log-drum bass, piano chords, slow-building house groove', artists: ['Tyla', 'Uncle Waffles', 'Kabza De Small'] },
   { name: 'Pop', sound: 'big polished hooks, verse-chorus structure, broad appeal', artists: ['Dua Lipa', 'Olivia Rodrigo', 'Sabrina Carpenter'] },
