@@ -190,7 +190,15 @@ body{overflow:auto;height:auto;}
 
 /* ===== AD GENERATOR ===== */
 .ad-platforms{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.ad-plat{display:inline-flex;align-items:center;gap:6px;border:0.5px solid var(--border);background:#0f0f1a;color:var(--muted);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;cursor:default;}
+.ad-plat{display:inline-flex;align-items:center;gap:6px;border:0.5px solid var(--border);background:#0f0f1a;color:#c8c8dc;border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;transition:border-color 0.15s,color 0.15s;}
+.ad-plat:hover{border-color:#3a3a52;color:#fff;}
+.ad-plat i{font-size:15px;}
+.ad-plat-note{color:var(--muted);font-size:11px;line-height:1.5;margin:-6px 0 4px;}
+.ad-plat-note b{color:#fff;}
+.ad-formats.n1{grid-template-columns:minmax(0,220px);}
+.ad-formats.wide{grid-template-columns:2fr 1fr;}
+.ad-free{background:#00FFD10d;border:0.5px solid #00FFD155;color:#cffff5;border-radius:8px;padding:8px 12px;font-size:11.5px;margin-bottom:10px;}
+.ad-other{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
 .ad-plat.active{border-color:var(--neon);color:var(--neon);background:#00FFD112;}
 .ad-plat small{font-size:9px;font-weight:800;letter-spacing:0.05em;color:#5a5a72;}
 .ad-made{display:inline-flex;align-items:center;gap:6px;border:0.5px solid #00FFD155;background:#00FFD10d;color:var(--neon);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;}
@@ -474,7 +482,7 @@ body{overflow:auto;height:auto;}
         <div class="tool-badge live">NEW</div>
         <div class="tool-icon"><img src="https://raw.githubusercontent.com/studiosoundai/studiosound-ai/main/ad-generator.png.png" alt="Ad Generator"/></div>
         <div class="tool-name">Ad Generator</div>
-        <div class="tool-desc">Meta ads for your song, ready to run</div>
+        <div class="tool-desc">Instagram, TikTok and YouTube ads, ready to run</div>
       </div>
     </div>
 
@@ -1074,10 +1082,13 @@ body{overflow:auto;height:auto;}
       <div class="generator" style="align-items:start;">
         <div class="gen-panel">
           <div class="gen-title">📣 Ad Generator</div>
-          <div class="gen-sub">Fill this in once and get a ready-to-run ad kit for your song. You run it from your own Meta account, so you stay in control of every dollar.</div>
-          <div class="ad-platforms">
-            <span class="ad-made"><i class="ti ti-brand-instagram"></i><i class="ti ti-brand-facebook"></i> Built for Instagram &amp; Facebook ads</span>
+          <div class="gen-sub">Fill this in once and get a ready-to-run ad kit for your song. You run it from your own ad account, so you stay in control of every dollar.</div>
+          <div class="ad-platforms" id="ad-platforms">
+            <button type="button" class="ad-plat active" data-p="meta" onclick="adSetPlatform('meta')"><i class="ti ti-brand-instagram"></i> Instagram &amp; Facebook</button>
+            <button type="button" class="ad-plat" data-p="tiktok" onclick="adSetPlatform('tiktok')"><i class="ti ti-brand-tiktok"></i> TikTok</button>
+            <button type="button" class="ad-plat" data-p="google" onclick="adSetPlatform('google')"><i class="ti ti-brand-youtube"></i> YouTube</button>
           </div>
+          <div class="ad-plat-note" id="ad-plat-note" style="display:none;"></div>
           <div class="ad-step">1 · ABOUT YOU</div>
           <div class="form-row">
             <div class="form-group"><label class="form-label">Artist name <span style="color:var(--neon);">*</span></label><input class="form-input" id="ad-artist" placeholder="As it appears on Spotify"/></div>
@@ -1111,7 +1122,7 @@ body{overflow:auto;height:auto;}
           <div class="ad-options" id="ad-goal-opts">
             <button type="button" class="ad-opt active" data-v="streams" onclick="adSetGoal('streams')"><b>Streams</b><small>Send people to the song on Spotify, Apple Music and more</small></button>
             <button type="button" class="ad-opt" data-v="presave" onclick="adSetGoal('presave')"><b>Pre-saves</b><small>Build up saves before release day</small></button>
-            <button type="button" class="ad-opt" data-v="followers" onclick="adSetGoal('followers')"><b>Followers</b><small>Grow your Instagram</small></button>
+            <button type="button" class="ad-opt" data-v="followers" onclick="adSetGoal('followers')"><b id="ad-goal-fol-b">Followers</b><small id="ad-goal-fol">Grow your Instagram</small></button>
             <button type="button" class="ad-opt" data-v="views" onclick="adSetGoal('views')"><b>Video views</b><small>Get your song in front of the most people</small></button>
           </div>
 
@@ -1120,7 +1131,7 @@ body{overflow:auto;height:auto;}
           <div class="ad-options ad-budgets" id="ad-budget-opts"></div>
           <div class="form-row" id="ad-custom-row" style="display:none;margin-top:8px;">
             <div class="form-group"><label class="form-label">Total budget ($)</label><input class="form-input" id="ad-budget" type="number" min="5" step="5" placeholder="e.g. 150" oninput="adRenderBudgets()"/></div>
-            <div class="form-group"><label class="form-label">For how many days</label><input class="form-input" id="ad-days" type="number" min="1" max="90" value="7"/></div>
+            <div class="form-group"><label class="form-label">For how many days</label><input class="form-input" id="ad-days" type="number" min="1" max="90" value="7" oninput="adRenderBudgets()"/></div>
           </div>
           <div class="ad-hint" style="margin-top:8px;"><i class="ti ti-info-circle"></i> Reach numbers are ballparks for US audiences, not promises. Ads usually reach more people for the money in Latin America and fewer in big US cities.</div>
 
@@ -1134,7 +1145,7 @@ body{overflow:auto;height:auto;}
               <input type="file" id="ad-cover" accept="image/*" style="display:none;" onchange="adLoadCover(this.files)"/>
               <a id="ad-use-latest" onclick="adUseLatestCover()" style="display:none;color:var(--neon);font-size:11px;font-weight:700;cursor:pointer;margin-top:6px;">Use the cover I just made →</a>
             </div>
-            <div class="form-group"><label class="form-label">Song (for the video ad)</label>
+            <div class="form-group"><label class="form-label">Song (for the video ad) <span id="ad-song-req" style="color:var(--neon);"></span></label>
               <div class="ad-drop" onclick="document.getElementById('ad-audio').click()"><b id="ad-audio-label">Upload your song</b><small>MP3, WAV or M4A</small></div>
               <input type="file" id="ad-audio" accept="audio/*,.mp3,.m4a,.wav,.aac" style="display:none;" onchange="adLoadAudio(this.files)"/>
               <div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><span style="color:var(--muted);font-size:11px;">Hook starts at</span><input class="form-input" id="ad-start" type="number" min="0" step="0.5" value="0" style="width:80px;padding:6px 8px;"/><span style="color:var(--muted);font-size:11px;">sec</span></div>
@@ -1147,8 +1158,8 @@ body{overflow:auto;height:auto;}
             <div class="ad-hint" style="margin-top:6px;"><i class="ti ti-bulb"></i> Ads that show the artist usually beat cover-only ads. Your clip fills the frame and your cover sits at the bottom.</div>
           </div>
 
-          <button class="gen-btn" id="ad-btn" onclick="generateAds()"><i class="ti ti-speakerphone"></i> Build my Meta ad kit</button>
-          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">You run the ads in your own Meta Ads Manager, with your own card. StudioSound never touches your ad account. Results depend on your song, budget and targeting.</div>
+          <button class="gen-btn" id="ad-btn" onclick="generateAds()"><i class="ti ti-speakerphone"></i> <span id="ad-btn-label">Build my Instagram &amp; Facebook ad kit</span></button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;"><span id="ad-foot">You run the ads in your own Meta Ads Manager, with your own card.</span> StudioSound never touches your ad account. Results depend on your song, budget and targeting. One song uses one ad kit a month: the kits for the other platforms for that song are free.</div>
         </div>
 
         <div class="gen-panel">
@@ -1156,12 +1167,12 @@ body{overflow:auto;height:auto;}
           <div class="gen-sub">Creatives, copy, targeting and budget, ready for Ads Manager</div>
           <div class="ad-empty" id="ad-placeholder">
             <div class="ad-empty-title">WHAT YOU'LL GET</div>
-            <div class="ad-empty-item"><i class="ti ti-photo"></i><div><b>3 ad images</b><small>Feed, Reels &amp; Stories, and square, made from your cover</small></div></div>
-            <div class="ad-empty-item"><i class="ti ti-movie"></i><div><b>A 15-second Reels video</b><small>Your song's hook with your clip or cover. Add your song to get it</small></div></div>
-            <div class="ad-empty-item"><i class="ti ti-writing"></i><div><b>Ad copy to test</b><small>3 captions, headlines and descriptions, ready to paste</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-photo"></i><div><b id="ad-e-img-b">3 ad images</b><small id="ad-e-img">Feed, Reels &amp; Stories, and square, made from your cover</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-movie"></i><div><b id="ad-e-vid-b">A 15-second Reels video</b><small id="ad-e-vid">Your song's hook with your clip or cover. Add your song to get it</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-writing"></i><div><b>Ad copy to test</b><small id="ad-e-copy">3 captions, headlines and descriptions, ready to paste</small></div></div>
             <div class="ad-empty-item"><i class="ti ti-target-arrow"></i><div><b>Who to target</b><small>Where your fans are and which artists they listen to</small></div></div>
             <div class="ad-empty-item"><i class="ti ti-coin"></i><div><b>Budget plan</b><small>How much to spend, for how long, and when to switch to the winner</small></div></div>
-            <div class="ad-empty-item"><i class="ti ti-list-check"></i><div><b>Step-by-step setup</b><small>Exactly what to click in Meta Ads Manager</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-list-check"></i><div><b>Step-by-step setup</b><small id="ad-e-setup">Exactly what to click in Meta Ads Manager</small></div></div>
           </div>
           <div class="loading" id="ad-loading"><div class="loading-spinner"></div><div class="loading-text" id="ad-loading-text">Researching you and your fans...</div></div>
           <div class="error-msg" id="ad-error"></div>
@@ -3199,8 +3210,85 @@ async function mxOpenJob(data, name) {
 const AD_FORMATS = {
   feed:   { w: 1080, h: 1350, label: 'Feed · 4:5' },
   story:  { w: 1080, h: 1920, label: 'Reels & Stories · 9:16' },
-  square: { w: 1080, h: 1080, label: 'Square · 1:1' }
+  square: { w: 1080, h: 1080, label: 'Square · 1:1' },
+  wide:   { w: 1920, h: 1080, label: 'YouTube · 16:9' }
 };
+// Everything that changes between Instagram/Facebook, TikTok and YouTube
+const AD_PLAT = {
+  meta: {
+    name: 'Instagram & Facebook', short: 'Meta', btn: 'Build my Instagram & Facebook ad kit',
+    note: '', manager: 'Meta Ads Manager', managerUrl: 'https://adsmanager.facebook.com/',
+    foot: 'You run the ads in your own Meta Ads Manager, with your own card.',
+    formats: ['feed', 'story', 'square'], labels: { story: 'Reels & Stories · 9:16' },
+    videos: [['story', 'Make the 15-second Reels video', 'reels-15s']],
+    copy: [['PRIMARY TEXT · test all 3', 'primary_text', 300], ['HEADLINES', 'headlines', 40], ['DESCRIPTIONS', 'descriptions', 30]],
+    linkBox: 'Website URL box in Ads Manager', interests: 'INTERESTS',
+    tiers: [[25, 5, '$25 test', 'see which ad wins'], [50, 7, '$50 starter', 'a small push for one song'], [100, 7, '$100 push', 'most common for a single'], [250, 14, '$250 release campaign', 'a proper rollout']],
+    cpm: [5, 12], reachWord: 'people',
+    followers: ['Followers', 'Grow your Instagram'],
+    empty: { imgB: '3 ad images', img: 'Feed, Reels & Stories, and square, made from your cover', vidB: 'A 15-second Reels video', vid: "Your song's hook with your clip or cover. Add your song to get it", copy: '3 captions, headlines and descriptions, ready to paste' },
+    songReq: ''
+  },
+  tiktok: {
+    name: 'TikTok', short: 'TikTok', btn: 'Build my TikTok ad kit',
+    note: '<b>TikTok ads are videos</b>, so add your song below. Best results: post the video on your own TikTok and boost it as a Spark Ad (the kit shows you how). TikTok needs at least <b>$20 a day</b>.',
+    manager: 'TikTok Ads Manager', managerUrl: 'https://ads.tiktok.com/',
+    foot: 'You run the ads in your own TikTok Ads Manager, with your own card.',
+    formats: ['story'], labels: { story: 'TikTok · 9:16 (video cover)' },
+    videos: [['story', 'Make the 15-second TikTok video', 'tiktok-15s']],
+    copy: [['AD TEXT · test all 3', 'primary_text', 100]],
+    linkBox: 'Destination URL box in TikTok Ads Manager', interests: 'INTERESTS & BEHAVIORS',
+    tiers: [[60, 3, '$60 test', '$20 a day, see which ad wins'], [100, 5, '$100 starter', 'a small push for one song'], [140, 7, '$140 push', 'a full week at the minimum'], [280, 14, '$280 release campaign', 'a proper rollout']],
+    cpm: [4, 10], reachWord: 'people', minDaily: 20,
+    followers: ['Followers', 'Grow your TikTok'],
+    empty: { imgB: 'A TikTok video cover', img: 'Vertical 9:16, made from your cover or your clip', vidB: 'A 15-second TikTok video', vid: "Your song's hook with your clip or cover. Add your song to get it", copy: '3 ad texts plus a caption for your Spark Ad post' },
+    songReq: 'needed for TikTok'
+  },
+  google: {
+    name: 'YouTube', short: 'YouTube', btn: 'Build my YouTube ad kit',
+    note: '<b>YouTube ads run through Google Ads.</b> You upload the video to your YouTube channel first (unlisted is fine). Views are cheap, so small budgets go far.',
+    manager: 'Google Ads', managerUrl: 'https://ads.google.com/',
+    foot: 'You run the ads in your own Google Ads account, with your own card.',
+    formats: ['wide', 'story'], labels: { wide: 'YouTube & thumbnail · 16:9', story: 'Shorts · 9:16' },
+    videos: [['wide', 'Make the 15-second YouTube video (16:9)', 'youtube-15s'], ['story', 'Make the Shorts version (9:16)', 'shorts-15s']],
+    copy: [['HEADLINES', 'headlines', 40], ['LONG HEADLINES', 'primary_text', 90], ['DESCRIPTIONS', 'descriptions', 90]],
+    linkBox: 'Final URL box in Google Ads', interests: 'TOPICS & AUDIENCES',
+    tiers: [[25, 5, '$25 test', 'see which ad wins'], [50, 7, '$50 starter', 'a small push for one song'], [100, 7, '$100 push', 'most common for a single'], [250, 14, '$250 release campaign', 'a proper rollout']],
+    cpv: [0.02, 0.06], reachWord: 'views',
+    followers: ['Subscribers', 'Grow your YouTube channel'],
+    empty: { imgB: 'A YouTube thumbnail + Shorts cover', img: 'Wide 16:9 and vertical 9:16, made from your cover', vidB: 'YouTube and Shorts videos', vid: "15 seconds of your song's hook, wide and vertical. Add your song to get them", copy: 'Headlines, long headlines and descriptions, ready to paste' },
+    songReq: 'needed for YouTube'
+  }
+};
+let adPlatform = 'meta';
+function adP() { return AD_PLAT[adPlatform] || AD_PLAT.meta; }
+function adSetPlatform(pl) {
+  if (!AD_PLAT[pl]) pl = 'meta';
+  const changed = pl !== adPlatform;
+  adPlatform = pl;
+  const P = adP();
+  document.querySelectorAll('#ad-platforms .ad-plat').forEach(b => b.classList.toggle('active', b.dataset.p === pl));
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  const note = document.getElementById('ad-plat-note');
+  if (note) { note.innerHTML = P.note; note.style.display = P.note ? 'block' : 'none'; }
+  set('ad-btn-label', adEsc(P.btn)); set('ad-foot', adEsc(P.foot));
+  set('ad-goal-fol-b', P.followers[0]); set('ad-goal-fol', P.followers[1]);
+  set('ad-song-req', P.songReq ? '(' + P.songReq + ')' : '');
+  set('ad-e-img-b', adEsc(P.empty.imgB)); set('ad-e-img', adEsc(P.empty.img)); set('ad-e-vid-b', adEsc(P.empty.vidB)); set('ad-e-vid', adEsc(P.empty.vid));
+  set('ad-e-copy', adEsc(P.empty.copy)); set('ad-e-setup', 'Exactly what to click in ' + adEsc(P.manager));
+  if (changed) {
+    // a kit on screen belongs to the platform it was made for
+    adKit = null;
+    const r = document.getElementById('ad-result'); if (r) { r.style.display = 'none'; r.innerHTML = ''; }
+    const ph = document.getElementById('ad-placeholder'); if (ph) ph.style.display = 'flex';
+    const er = document.getElementById('ad-error'); if (er) er.style.display = 'none';
+    window._adVideoUrl = null;
+    const mode = document.getElementById('ad-budget-mode');
+    if (mode && /^\d+$/.test(mode.value)) mode.value = 'recommend';
+  }
+  adRenderBudgets();
+  adRefresh();
+}
 let adCoverImg = null, adAudioBuf = null, adKit = null, adText = '', adRecording = false;
 
 function adEsc(t) { return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -3218,41 +3306,54 @@ function adSetGoal(v) {
 
 // Which link to use, by goal. It goes in the "Website URL" box in Ads Manager, not on the image.
 const AD_LINK_TIPS = {
-  streams: ['Your smart link', 'One link that opens the song on Spotify, Apple Music and every other store. Get a free one from Feature.fm, Linkfire, ToneDen or Hypeddit (or your distributor if it offers one). No smart link yet? Your Spotify song link works too.'],
-  presave: ['Your pre-save link', 'The page where fans pre-save the song before release day. Get a free one from Feature.fm, Hypeddit, Show.co or ToneDen (or your distributor if it offers one). After release, switch the ad to your smart link.'],
+  streams: ['Your smart link', 'One link that opens the song on Spotify, Apple Music and every other store. Distributing with Stop One? Use the smart link Stop One gives you for this release. Otherwise get a free one from Feature.fm, Linkfire, ToneDen or Hypeddit. No smart link yet? Your Spotify song link works too.'],
+  presave: ['Your pre-save link', 'The page where fans pre-save the song before release day. Distributing with Stop One? Use your Stop One link for this release. Otherwise get a free one from Feature.fm, Hypeddit, Show.co or ToneDen. After release, switch the ad to your smart link.'],
   followers: ['Your Instagram profile', 'Paste your profile link, like instagram.com/yourname. In Ads Manager, pick Instagram profile as the destination.'],
-  views: ['Optional: your smart link', 'View ads play inside Instagram and Facebook, so a link is optional. Add your smart link so people who like the song can go stream it.']
+  views: ['Optional: your smart link', 'View ads play inside Instagram and Facebook, so a link is optional. Add your smart link (Stop One artists: your Stop One smart link) so people who like the song can go stream it.']
 };
+const AD_LINK_TIPS_BY = {
+  tiktok: {
+    followers: ['No link needed', 'Follower ads send people to your TikTok profile. Pick Community interaction in TikTok Ads Manager. You can leave this empty.'],
+    views: ['Optional: your smart link', 'View ads play inside TikTok, so a link is optional. Add your smart link (Stop One artists: your Stop One smart link) so people who like the song can go stream it.']
+  },
+  google: {
+    followers: ['Your YouTube channel', 'Paste your channel link, like youtube.com/@yourname. Subscriber ads keep people on YouTube.'],
+    views: ['Optional: your smart link', 'View ads play on YouTube, so a link is optional. Add your smart link (Stop One artists: your Stop One smart link) so people who like the song can go stream it.']
+  }
+};
+function adLinkTip(g) { return ((AD_LINK_TIPS_BY[adPlatform] || {})[g]) || AD_LINK_TIPS[g] || AD_LINK_TIPS.streams; }
 function adLinkHint() {
   const box = document.getElementById('ad-link-hint');
   if (!box) return;
   const g = document.getElementById('ad-goal').value;
-  const t = AD_LINK_TIPS[g] || AD_LINK_TIPS.streams;
+  const t = adLinkTip(g);
   const inp = document.getElementById('ad-link');
-  inp.placeholder = g === 'followers' ? 'instagram.com/yourname' : g === 'presave' ? 'Your pre-save link' : 'Your smart link or Spotify song link';
-  box.innerHTML = '<i class="ti ti-link"></i><span><b style="color:#fff;">' + t[0] + '.</b> ' + t[1] + ' <span style="color:#8a8aa2;">You paste it in the Website URL box when you set up the ad, so it doesn\'t go on the image.</span></span>';
+  inp.placeholder = g === 'followers' ? (adPlatform === 'tiktok' ? 'Leave empty' : adPlatform === 'google' ? 'youtube.com/@yourname' : 'instagram.com/yourname') : g === 'presave' ? 'Your pre-save link' : 'Your smart link or Spotify song link';
+  box.innerHTML = '<i class="ti ti-link"></i><span><b style="color:#fff;">' + t[0] + '.</b> ' + t[1] + ' <span style="color:#8a8aa2;">You paste it in the ' + adP().linkBox + ' when you set up the ad, so it doesn\'t go on the image.</span></span>';
 }
 
 // Ballpark reach: US music ads typically run ~$5-$12 per 1,000 impressions, ~1.5 views per person
-const AD_TIERS = [
-  { v: 'recommend', label: 'Recommend one for me', sub: 'We pick a budget from your goal and audience' },
-  { v: '25', amt: 25, days: 5, label: '$25 test', sub: '5 days · see which ad wins' },
-  { v: '50', amt: 50, days: 7, label: '$50 starter', sub: '7 days · a small push for one song' },
-  { v: '100', amt: 100, days: 7, label: '$100 push', sub: '7 days · most common for a single' },
-  { v: '250', amt: 250, days: 14, label: '$250 release campaign', sub: '14 days · a proper rollout' },
-  { v: 'custom', label: 'Custom amount', sub: 'Set your own budget and days' }
-];
+function adTiers() {
+  return [{ v: 'recommend', label: 'Recommend one for me', sub: 'We pick a budget from your goal and audience' }]
+    .concat(adP().tiers.map(t => ({ v: String(t[0]), amt: t[0], days: t[1], label: t[2], sub: t[1] + ' days · ' + t[3] })))
+    .concat([{ v: 'custom', label: 'Custom amount', sub: 'Set your own budget and days' }]);
+}
 function adNice(n) { const p = Math.pow(10, Math.max(0, String(Math.round(n)).length - 2)); return (Math.round(n / p) * p).toLocaleString('en-US'); }
 function adReach(amount) {
   if (!(amount > 0)) return '';
-  return 'roughly ' + adNice(amount / 12 * 1000 / 1.5) + '\u2013' + adNice(amount / 5 * 1000 / 1.5) + ' people';
+  const P = adP();
+  if (P.cpv) return 'roughly ' + adNice(amount / P.cpv[1]) + '\u2013' + adNice(amount / P.cpv[0]) + ' views';
+  return 'roughly ' + adNice(amount / P.cpm[1] * 1000 / 1.5) + '\u2013' + adNice(amount / P.cpm[0] * 1000 / 1.5) + ' people';
 }
 function adRenderBudgets() {
   const mode = document.getElementById('ad-budget-mode').value;
   const box = document.getElementById('ad-budget-opts');
   const custom = parseFloat((document.getElementById('ad-budget') || {}).value) || 0;
-  box.innerHTML = AD_TIERS.map(t => {
-    const reach = t.amt ? adReach(t.amt) : (t.v === 'custom' && custom ? adReach(custom) : '');
+  const days = parseFloat((document.getElementById('ad-days') || {}).value) || 7;
+  const minD = adP().minDaily;
+  box.innerHTML = adTiers().map(t => {
+    let reach = t.amt ? adReach(t.amt) : (t.v === 'custom' && custom ? adReach(custom) : '');
+    if (t.v === 'custom' && custom && minD && custom / days < minD) reach = '</span><span style="color:#FFC83D;">under TikTok\'s $' + minD + '/day minimum: ' + (Math.floor(custom / minD) >= 1 ? 'that covers ' + Math.floor(custom / minD) + ' day' + (Math.floor(custom / minD) > 1 ? 's' : '') : 'try TikTok Promote in the app instead');
     return '<button type="button" class="ad-opt' + (t.v === 'recommend' || t.v === 'custom' ? ' wide' : '') + (mode === t.v ? ' active' : '') + '" onclick="adSetBudget(\'' + t.v + '\')"><b>' + t.label + '</b><small>' + t.sub + (reach ? ' · <span class="reach">' + reach + '</span>' : '') + '</small></button>';
   }).join('');
   document.getElementById('ad-custom-row').style.display = mode === 'custom' ? 'grid' : 'none';
@@ -3266,7 +3367,8 @@ function adBudgetPayload() {
   const mode = document.getElementById('ad-budget-mode').value;
   if (mode === 'recommend') return { budgetMode: 'recommend' };
   if (mode === 'custom') return { budgetMode: 'set', budget: document.getElementById('ad-budget').value, days: document.getElementById('ad-days').value };
-  const t = AD_TIERS.find(x => x.v === mode);
+  const t = adTiers().find(x => x.v === mode);
+  if (!t || !t.amt) return { budgetMode: 'recommend' };
   return { budgetMode: 'set', budget: t.amt, days: t.days };
 }
 
@@ -3439,6 +3541,7 @@ function adDrawBase(canvas, fmt, p) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, W, H);
   if (!adCoverImg) return;
+  if (W > H) return adDrawWide(ctx, W, H, p);
   const artist = document.getElementById('ad-artist').value.trim();
   const title = document.getElementById('ad-title').value.trim();
   const isStory = fmt === 'story';
@@ -3495,6 +3598,63 @@ function adDrawBase(canvas, fmt, p) {
   adCtaText(ctx, W, W / 2, metaY + W * 0.15, 'center', p);
 }
 
+// 16:9 for YouTube: cover (or the artist's clip) on the left, words on the right
+function adDrawWide(ctx, W, H, p) {
+  const artist = document.getElementById('ad-artist').value.trim();
+  const title = document.getElementById('ad-title').value.trim();
+  const anim = p != null;
+  const U = H;   // size everything off the height
+  const bgSrc = adFootage ? (anim && adFootage.kind === 'video' ? adFootage.el : adFootage.still) : null;
+  const tIn = anim ? Math.min(1, p / 0.08) : 1;
+  const side = Math.min(adCoverImg.width, adCoverImg.height);
+  const sx = (adCoverImg.width - side) / 2, sy = (adCoverImg.height - side) / 2;
+  let colX, colW, coverDrawn = false;
+  if (bgSrc && adFillBg(ctx, bgSrc, W, H, anim && adFootage.kind === 'image' ? 1 + 0.08 * p : 1)) {
+    // darken the right side so the words read over footage
+    const g = ctx.createLinearGradient(W * 0.35, 0, W, 0);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.7)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    colX = W * 0.56; colW = W * 0.38;
+  } else {
+    adBlurBg(ctx, adCoverImg, W, H);
+    const cs = U * 0.66 * (anim ? 1 + 0.05 * p : 1), base = U * 0.66;
+    const cx = W * 0.07 - (cs - base) / 2, cy = (H - base) / 2 - (cs - base) / 2;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 18;
+    ctx.drawImage(adCoverImg, sx, sy, side, side, cx, cy, cs, cs);
+    ctx.restore(); coverDrawn = true;
+    colX = W * 0.07 + base + W * 0.05; colW = W - colX - W * 0.06;
+  }
+  // measure the text block, then center it vertically
+  const fs = Math.round(U * 0.085);
+  ctx.font = adFontSpec(fs);
+  const lines = adWrap(ctx, (adText || title).toUpperCase(), colW);
+  const lh = fs * 1.12;
+  const thumb = coverDrawn ? 0 : Math.round(U * 0.2);
+  const blockH = lines.length * lh + U * 0.05 + (thumb ? Math.max(thumb, U * 0.13) : U * 0.13) + U * 0.1;
+  let y = Math.max(U * 0.08, (H - blockH) / 2);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.globalAlpha = tIn; ctx.fillStyle = adStyle.text;
+  ctx.shadowColor = 'rgba(0,0,0,0.75)'; ctx.shadowBlur = 20;
+  lines.forEach((ln, i) => ctx.fillText(ln, colX, y + i * lh + (1 - tIn) * 24));
+  ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  y += lines.length * lh + U * 0.05;
+  let tx = colX;
+  if (thumb) {
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8;
+    ctx.drawImage(adCoverImg, sx, sy, side, side, colX, y, thumb, thumb);
+    ctx.restore(); tx = colX + thumb + U * 0.04;
+  }
+  ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 14;
+  ctx.font = '800 ' + Math.round(U * 0.06) + 'px Sora, Arial, sans-serif';
+  ctx.fillStyle = adStyle.text;
+  ctx.fillText(artist, tx, y);
+  ctx.font = '500 ' + Math.round(U * 0.047) + 'px Sora, Arial, sans-serif';
+  ctx.globalAlpha = 0.85;
+  ctx.fillText(title ? '\u201c' + title + '\u201d' : '', tx, y + U * 0.078);
+  ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+  adCtaText(ctx, U, tx, y + Math.max(thumb, U * 0.13) + U * 0.03, 'left', p);
+}
+
 // artist footage: a video (preferred) or a photo
 function adLoadFootage(files) {
   const f = files && files[0];
@@ -3535,8 +3695,7 @@ function adRefresh() {
   if (latest) latest.style.display = (selectedArtUrl && !adCoverImg) ? 'inline-block' : 'none';
   if (!adKit) return;
   Object.keys(AD_FORMATS).forEach(f => { const c = document.getElementById('ad-cv-' + f); if (c) adDraw(c, f, null); });
-  const vb = document.getElementById('ad-video-btn');
-  if (vb) vb.disabled = !adAudioBuf || !adCoverImg || adRecording;
+  document.querySelectorAll('.ad-video-btn').forEach(vb => { vb.disabled = !adAudioBuf || !adCoverImg || adRecording; });
   const vs = document.getElementById('ad-video-status');
   if (vs && !adRecording && !window._adVideoUrl) vs.textContent = adAudioBuf ? 'Records 15 seconds of your song from the hook start, in real time.' : 'Upload your song on the left to make the video ad.';
 }
@@ -3573,7 +3732,9 @@ function adFileBase() {
   return 'studiosound-ad-' + (t || 'ad');
 }
 
-async function adRecordVideo() {
+async function adRecordVideo(fmt, suffix) {
+  fmt = AD_FORMATS[fmt] ? fmt : 'story';
+  suffix = suffix || 'reels-15s';
   if (!adAudioBuf || !adCoverImg || adRecording) return;
   const mime = lvPickMime();
   if (!window.MediaRecorder) { document.getElementById('ad-video-status').textContent = 'This browser can’t record video. Try Chrome or Safari.'; return; }
@@ -3581,6 +3742,7 @@ async function adRecordVideo() {
   const status = document.getElementById('ad-video-status');
   const c = document.getElementById('ad-cv-video');
   c.style.display = 'block';
+  c.style.width = fmt === 'wide' ? '320px' : '160px';
   const DUR = 15;
   const start = Math.max(0, Math.min(adAudioBuf.duration - 1, parseFloat(document.getElementById('ad-start').value) || 0));
   const playDur = Math.min(DUR, adAudioBuf.duration - start);
@@ -3588,7 +3750,7 @@ async function adRecordVideo() {
   const src = ac.createBufferSource(); src.buffer = adAudioBuf;
   const gain = ac.createGain(); src.connect(gain);
   const dest = ac.createMediaStreamDestination(); gain.connect(dest); gain.connect(ac.destination);
-  adDraw(c, 'story', 0);
+  adDraw(c, fmt, 0);
   const stream = c.captureStream(30);
   dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
   const rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 4000000 } : undefined);
@@ -3599,7 +3761,7 @@ async function adRecordVideo() {
     const isMp4 = /mp4/i.test(type);
     const blob = new Blob(chunks, { type: isMp4 ? 'video/mp4' : 'video/webm' });
     window._adVideoUrl = URL.createObjectURL(blob);
-    window._adVideoName = adFileBase() + '-reels-15s.' + (isMp4 ? 'mp4' : 'webm');
+    window._adVideoName = adFileBase() + '-' + suffix + '.' + (isMp4 ? 'mp4' : 'webm');
     window._adVideoFile = null;
     try { window._adVideoFile = new File([blob], window._adVideoName, { type: blob.type }); } catch (e) {}
     adRecording = false;
@@ -3609,7 +3771,7 @@ async function adRecordVideo() {
     status.innerHTML = '✓ Your 15-second ' + (isMp4 ? 'MP4' : 'WebM') + ' is ready (' + (blob.size / 1048576).toFixed(1) + ' MB). ' +
       '<a onclick="adSaveVideo()" style="color:var(--neon);font-weight:700;cursor:pointer;">Download video</a>' +
       (canShare ? ' · <a onclick="adShareVideo()" style="color:var(--neon);font-weight:700;cursor:pointer;">Save to Photos / Share</a>' : '') +
-      (isMp4 ? '' : '<br>This browser records WebM. Meta accepts it, but for an MP4 use Chrome or Safari.');
+      (isMp4 ? '' : '<br>This browser records WebM. For an MP4, which every ad platform takes, use Chrome or Safari.');
     adSaveVideo();
     adRefresh();
   };
@@ -3627,7 +3789,7 @@ async function adRecordVideo() {
   const tick = () => {
     const el = ac.currentTime - t0;
     const p = Math.min(1, el / playDur);
-    adDraw(c, 'story', p);
+    adDraw(c, fmt, p);
     status.textContent = '🎬 Filming your video ad in real time: ' + Math.max(0, Math.ceil(playDur - el)) + 's left. Keep this screen open.';
     if (el < playDur && adRecording) requestAnimationFrame(tick);
   };
@@ -3654,10 +3816,13 @@ function adCopyBlock(label, items, max) {
 }
 
 function renderAdKit(kit) {
+  if (kit.platform && AD_PLAT[kit.platform] && kit.platform !== adPlatform) { adSetPlatform(kit.platform); }
+  const P = adP();
   adKit = kit;
   adText = (kit.on_image_text && kit.on_image_text[0]) || '';
   const a = kit.audience || {}, b = kit.budget_plan || {};
   let h = '';
+  if (kit.free_extra) h += '<div class="ad-free">✓ Free: you already made an ad kit for this song this month, so this ' + adEsc(P.name) + ' kit didn\u2019t use one.</div>';
   if (kit.angle) h += '<div class="plan-item" style="border-left:3px solid var(--neon);"><div class="plan-date">THE ANGLE</div><div class="plan-detail" style="color:#e8e8f5;">' + adEsc(kit.angle) + '</div></div>';
 
   // what we found
@@ -3689,34 +3854,35 @@ function renderAdKit(kit) {
     '<button type="button" class="ad-chip" onclick="adMatchCover()">Match my cover</button>' +
     '</div>';
   h += '<input class="form-input" id="ad-text-edit" value="' + adEsc(adText) + '" oninput="adText=this.value;adRefresh()" placeholder="Text on the ad" style="margin-bottom:10px;"/>';
-  h += '<div class="ad-formats">' + Object.keys(AD_FORMATS).map(f =>
-    '<div class="ad-format"><canvas id="ad-cv-' + f + '"></canvas><div class="lbl">' + AD_FORMATS[f].label + '</div>' +
+  h += '<div class="ad-formats' + (P.formats.length === 1 ? ' n1' : P.formats.indexOf('wide') >= 0 ? ' wide' : '') + '">' + P.formats.map(f =>
+    '<div class="ad-format"><canvas id="ad-cv-' + f + '"></canvas><div class="lbl">' + adEsc((P.labels && P.labels[f]) || AD_FORMATS[f].label) + '</div>' +
     '<button type="button" class="result-btn" onclick="adDownload(\'' + f + '\')"><i class="ti ti-download"></i> JPG</button></div>').join('') + '</div>';
   h += '<div style="margin-top:12px;"><canvas id="ad-cv-video" style="display:none;width:160px;border-radius:8px;border:0.5px solid var(--border);margin-bottom:8px;"></canvas>' +
-    '<button type="button" class="result-btn primary" id="ad-video-btn" onclick="adRecordVideo()" style="width:100%;"><i class="ti ti-movie"></i> Make the 15-second Reels video</button>' +
+    P.videos.map((v, i) => '<button type="button" class="result-btn' + (i ? '' : ' primary') + ' ad-video-btn"' + (i ? '' : ' id="ad-video-btn"') + ' onclick="adRecordVideo(\'' + v[0] + '\', \'' + v[2] + '\')" style="width:100%;' + (i ? 'margin-top:6px;' : '') + '"><i class="ti ti-movie"></i> ' + adEsc(v[1]) + '</button>').join('') +
     '<div class="ad-video-status" id="ad-video-status"></div>' +
     (ssTagOn() ? '<div class="mx-note">' + SS_TAG_NOTE + '</div>' : '') + '</div>';
   if (!adCoverImg) h += '<div class="ad-video-status" style="color:#ffcf6b;">Upload your cover on the left to see your ad images.</div>';
   h += '</div>';
 
   // copy
-  h += adCopyBlock('PRIMARY TEXT · test all 3', kit.primary_text || [], 300);
-  h += adCopyBlock('HEADLINES', kit.headlines || [], 40);
-  h += adCopyBlock('DESCRIPTIONS', kit.descriptions || [], 30);
+  P.copy.forEach(c => { if ((kit[c[1]] || []).length) h += adCopyBlock(c[0], kit[c[1]], c[2]); });
+  if (kit.spark_caption) h += adCopyBlock('CAPTION FOR YOUR TIKTOK POST (SPARK AD)', [kit.spark_caption], 150);
 
   // setup
   const adLink = String((kit._inputs && kit._inputs.link) || (document.getElementById('ad-link') || {}).value || '').trim();
   const lg = (kit._inputs && kit._inputs.goal) || (document.getElementById('ad-goal') || {}).value || 'streams';
-  const lt = AD_LINK_TIPS[lg] || AD_LINK_TIPS.streams;
-  h += '<div class="ad-sec"><div class="ad-sec-title">YOUR AD LINK</div>' + (adLink
-    ? '<div class="ad-copy"><p>' + adEsc(adLink) + '<span class="meta" style="display:block;">Paste this in the Website URL box in Ads Manager. Use the same link on all 3 ads.</span></p><button onclick="adCopyText(this, ' + adEsc(JSON.stringify(adLink)) + ')">Copy</button></div>'
-    : '<div class="plan-item" style="border-left:3px solid #FFC83D;"><div class="plan-date" style="color:#FFC83D;">ADD YOUR LINK BEFORE YOU LAUNCH</div><div class="plan-detail"><b>' + adEsc(lt[0]) + '.</b> ' + adEsc(lt[1]) + ' Paste it in the Website URL box in Ads Manager.</div></div>') + '</div>';
+  const lt = adLinkTip(lg);
+  const noLinkOk = adPlatform === 'tiktok' && lg === 'followers';
+  if (adLink || !noLinkOk) h += '<div class="ad-sec"><div class="ad-sec-title">YOUR AD LINK</div>' + (adLink
+    ? '<div class="ad-copy"><p>' + adEsc(adLink) + '<span class="meta" style="display:block;">Paste this in the ' + adEsc(P.linkBox) + '. Use the same link on every ad.</span></p><button type="button" onclick="adCopyText(this, ' + adEsc(JSON.stringify(adLink)) + ')">Copy</button></div>'
+    : '<div class="plan-item" style="border-left:3px solid #FFC83D;"><div class="plan-date" style="color:#FFC83D;">' + (lg === 'views' ? 'OPTIONAL: ADD YOUR LINK' : 'ADD YOUR LINK BEFORE YOU LAUNCH') + '</div><div class="plan-detail"><b>' + adEsc(lt[0]) + '.</b> ' + adEsc(lt[1]) + ' Paste it in the ' + adEsc(P.linkBox) + '.</div></div>') + '</div>';
   h += '<div class="ad-sec"><div class="ad-sec-title">CAMPAIGN SETUP</div><div class="ad-grid2">' +
     '<div class="ad-kv"><b>OBJECTIVE</b><span>' + adEsc(kit.objective) + '</span></div>' +
     '<div class="ad-kv"><b>BUTTON</b><span>' + adEsc(kit.cta_label || kit.cta) + '</span></div>' +
     '<div class="ad-kv"><b>LOCATIONS</b><div class="ad-tags">' + (a.locations || []).map(x => '<span>' + adEsc(x) + '</span>').join('') + '</div></div>' +
     '<div class="ad-kv"><b>AGE</b><span>' + adEsc((a.age_min || 18) + ' to ' + (a.age_max || 34)) + '</span></div>' +
-    '<div class="ad-kv" style="grid-column:1/-1;"><b>INTERESTS</b><div class="ad-tags">' + (a.interests || []).map(x => '<span>' + adEsc(x) + '</span>').join('') + '</div>' + (a.note ? '<span style="display:block;margin-top:6px;color:var(--muted);font-size:11px;">' + adEsc(a.note) + '</span>' : '') + '</div>' +
+    '<div class="ad-kv" style="grid-column:1/-1;"><b>' + P.interests + '</b><div class="ad-tags">' + (a.interests || []).map(x => '<span>' + adEsc(x) + '</span>').join('') + '</div>' + (a.note ? '<span style="display:block;margin-top:6px;color:var(--muted);font-size:11px;">' + adEsc(a.note) + '</span>' : '') + '</div>' +
+    (a.extras || []).map(x => '<div class="ad-kv" style="grid-column:1/-1;"><b>' + adEsc(x.label) + '</b><div class="ad-tags">' + (x.items || []).map(t => '<span>' + adEsc(t) + '</span>').join('') + '</div></div>').join('') +
     '<div class="ad-kv" style="grid-column:1/-1;"><b>PLACEMENTS</b><span>' + adEsc(kit.placements) + '</span></div>' +
     '</div></div>';
 
@@ -3730,18 +3896,31 @@ function renderAdKit(kit) {
     (b.phases || []).map(ph => '<div class="plan-item" style="margin-top:6px;"><div class="plan-date">' + adEsc(ph.days) + ' · ' + adEsc(ph.spend) + '</div><div class="plan-detail">' + adEsc(ph.action) + '</div></div>').join('') + '</div>';
 
   // steps
-  h += '<div class="ad-sec"><div class="ad-sec-title">SET IT UP IN META ADS MANAGER</div><ol class="ad-steps">' + (kit.setup_steps || []).map(s => '<li>' + adEsc(String(s).replace(/^\d+[\.\)]\s*/, '')) + '</li>').join('') + '</ol>' +
-    '<a href="https://adsmanager.facebook.com/" target="_blank" rel="noopener" class="result-btn" style="margin-top:8px;text-decoration:none;"><i class="ti ti-external-link"></i> Open Meta Ads Manager</a></div>';
+  const stepList = arr => '<ol class="ad-steps">' + (arr || []).map(s => '<li>' + adEsc(String(s).replace(/^\d+[\.\)]\s*/, '')) + '</li>').join('') + '</ol>';
+  if ((kit.spark_steps || []).length) h += '<div class="ad-sec"><div class="ad-sec-title">BEST FOR MUSIC: BOOST YOUR OWN POST (SPARK AD)</div>' + stepList(kit.spark_steps) + '</div>';
+  h += '<div class="ad-sec"><div class="ad-sec-title">SET IT UP IN ' + adEsc(P.manager.toUpperCase()) + '</div>' + stepList(kit.setup_steps) +
+    '<a href="' + P.managerUrl + '" target="_blank" rel="noopener" class="result-btn" style="margin-top:8px;text-decoration:none;"><i class="ti ti-external-link"></i> Open ' + adEsc(P.manager) + '</a></div>';
 
   // watch
   h += '<div class="ad-sec"><div class="ad-sec-title">AFTER 48 HOURS, CHECK</div>' + (kit.what_to_watch || []).map(w => '<div class="plan-item" style="margin-top:6px;"><div class="plan-detail">' + adEsc(w) + '</div></div>').join('') +
     (kit.landing_tip ? '<div class="plan-item" style="margin-top:6px;border-left:3px solid #FFC83D;"><div class="plan-date" style="color:#FFC83D;">WHERE TO SEND PEOPLE</div><div class="plan-detail">' + adEsc(kit.landing_tip) + '</div></div>' : '') + '</div>';
 
+  const others = Object.keys(AD_PLAT).filter(k => k !== adPlatform);
+  h += '<div class="plan-item" style="border:1px solid var(--neon);background:#00FFD10a;margin-top:16px;"><div class="plan-date" style="color:var(--neon);">RUN IT ON MORE PLATFORMS</div><div class="plan-detail" style="margin-bottom:8px;">Make the kit for ' + others.map(k => AD_PLAT[k].name).join(' and ') + ' for this same song. The first kit on each platform for a song is free once you\u2019ve made one this month.</div>' +
+    '<div class="ad-other">' + others.map(k => '<button type="button" class="result-btn" onclick="adMakeFor(\'' + k + '\')">Make the ' + adEsc(AD_PLAT[k].name) + ' kit \u2192</button>').join('') + '</div></div>';
   h += '<div style="color:#5a5a72;font-size:10px;margin-top:12px;line-height:1.6;">Ad performance isn’t guaranteed. Start small, keep what works, cut what doesn’t.</div>';
   const r = document.getElementById('ad-result');
   r.innerHTML = h; r.style.display = 'block';
   document.getElementById('ad-placeholder').style.display = 'none';
   adRefresh();
+}
+
+// same song, next platform: switch and build right away (the form keeps the song details)
+function adMakeFor(pl) {
+  adSetPlatform(pl);
+  const tool = document.getElementById('tool-ads');
+  if (tool) tool.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  generateAds();
 }
 
 async function generateAds() {
@@ -3754,9 +3933,13 @@ async function generateAds() {
   if (!handle) { err.textContent = 'Add your Instagram or TikTok handle so we research the right artist.'; err.style.display = 'block'; return; }
   if (document.getElementById('ad-budget-mode').value === 'custom' && !(parseFloat(document.getElementById('ad-budget').value) > 0)) { err.textContent = 'Enter your custom budget, or pick one of the options.'; err.style.display = 'block'; return; }
   if (!adCoverImg) { err.textContent = 'Add your cover art so we can build your ad images.'; err.style.display = 'block'; return; }
+  if (document.getElementById('ad-budget-mode').value === 'custom' && adP().minDaily) {
+    const b = parseFloat(document.getElementById('ad-budget').value) || 0;
+    if (b < adP().minDaily) { err.textContent = 'TikTok needs at least $' + adP().minDaily + ' a day. Raise the budget, or boost a post with TikTok Promote in the app.'; err.style.display = 'block'; return; }
+  }
   const v = id => document.getElementById(id).value.trim();
   const payload = {
-    platform: 'meta', title, artist, handle,
+    platform: adPlatform, title, artist, handle,
     goal: v('ad-goal'), status: v('ad-status'), releaseDate: v('ad-date'),
     genre: v('ad-genre'), city: v('ad-city'), similar: v('ad-similar'),
     hookLine: v('ad-hook'), vibe: v('ad-vibe'), link: v('ad-link'), lang: v('ad-lang'),
@@ -3782,7 +3965,7 @@ async function generateAds() {
       throw new Error(data.error || 'No kit returned');
     } else {
       renderAdKit(data);
-      const name = title + ' — Meta ads';
+      const name = title + ' \u2014 ' + adP().short + ' ads';
       let thumb = null;
       try { const t = document.createElement('canvas'); adDraw(t, 'feed', null); const s = document.createElement('canvas'); s.width = 540; s.height = 675; s.getContext('2d').drawImage(t, 0, 0, 540, 675); thumb = s.toDataURL('image/png'); } catch (e) {}
       addRecent(null, name, 'Ad Kit', thumb);
@@ -3804,11 +3987,12 @@ function openAdAsset(i) {
   if (!a || !a.data) return;
   switchTool('ads', null);
   const inp = a.data._inputs || {};
+  adSetPlatform(a.data.platform || inp.platform || 'meta');
   const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
   set('ad-title', inp.title); set('ad-artist', inp.artist); set('ad-handle', inp.handle); set('ad-status', inp.status); set('ad-lang', inp.lang || 'en');
   if (inp.goal) adSetGoal(inp.goal);
   if (inp.budgetMode === 'recommend' || !inp.budget) adSetBudget('recommend');
-  else { const t = AD_TIERS.find(x => x.amt === parseFloat(inp.budget) && x.days === parseInt(inp.days, 10)); if (t) adSetBudget(t.v); else { adSetBudget('custom'); } }
+  else { const t = adTiers().find(x => x.amt === parseFloat(inp.budget) && x.days === parseInt(inp.days, 10)); if (t) adSetBudget(t.v); else { adSetBudget('custom'); } }
   set('ad-date', inp.releaseDate); set('ad-genre', inp.genre); set('ad-city', inp.city); set('ad-similar', inp.similar);
   set('ad-hook', inp.hookLine); set('ad-vibe', inp.vibe); set('ad-budget', inp.budget); set('ad-days', inp.days); set('ad-link', inp.link);
   renderAdKit(a.data);
@@ -5408,7 +5592,7 @@ function loadRecent(index) {
     lyric: ['How do I save the video to my phone?', 'Auto-lyrics got a line wrong', 'Best clip length for TikTok?'],
     writer: ['Help me finish my hook', 'Make this verse hit harder', 'Write a Spanglish chorus idea'],
     merch: ['What should I sell first?', 'Print-on-demand or bulk?', 'What price should I charge?'],
-    ads: ['Which budget should I pick?', 'Which goal is right for me?', 'How do I set this up in Meta?'],
+    ads: ['Which platform should I start with?', 'Which budget should I pick?', 'How do I make a Spark Ad?'],
     resize: ['What size does Spotify want?', 'Why was my cover rejected?', 'What should I do next?'],
     audio: ['Does DistroKid accept MP3?', '16-bit or 24-bit?', 'What should I do next?'],
     trim: ['Best TikTok sound length?', 'Where should my clip start?', 'What should I do next?'],
