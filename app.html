@@ -193,6 +193,14 @@ body{overflow:auto;height:auto;}
 .ad-plat{display:inline-flex;align-items:center;gap:6px;border:0.5px solid var(--border);background:#0f0f1a;color:var(--muted);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;cursor:default;}
 .ad-plat.active{border-color:var(--neon);color:var(--neon);background:#00FFD112;}
 .ad-plat small{font-size:9px;font-weight:800;letter-spacing:0.05em;color:#5a5a72;}
+.ad-made{display:inline-flex;align-items:center;gap:6px;border:0.5px solid #00FFD155;background:#00FFD10d;color:var(--neon);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;}
+.ad-made i{font-size:15px;}
+.ad-empty{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;gap:12px;padding:18px;margin-bottom:12px;}
+.ad-empty-title{color:var(--neon);font-size:10px;font-weight:800;letter-spacing:0.1em;}
+.ad-empty-item{display:flex;gap:12px;align-items:flex-start;}
+.ad-empty-item i{flex-shrink:0;width:34px;height:34px;border-radius:9px;background:#00FFD112;color:var(--neon);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ad-empty-item b{display:block;color:#fff;font-size:13px;}
+.ad-empty-item small{display:block;color:var(--muted);font-size:11px;line-height:1.45;margin-top:2px;}
 .ad-drop{border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#0f0f1a;}
 .ad-drop:hover{border-color:var(--neon);}
 .ad-drop b{display:block;color:#fff;font-size:12px;}
@@ -1066,11 +1074,9 @@ body{overflow:auto;height:auto;}
       <div class="generator" style="align-items:start;">
         <div class="gen-panel">
           <div class="gen-title">📣 Ad Generator</div>
-          <div class="gen-sub">Get a ready-to-run ad kit for your song: ad images and a 15-second video, copy to test, who to target, how to split your budget, and step-by-step setup.</div>
+          <div class="gen-sub">Fill this in once and get a ready-to-run ad kit for your song. You run it from your own Meta account, so you stay in control of every dollar.</div>
           <div class="ad-platforms">
-            <span class="ad-plat active"><i class="ti ti-brand-meta"></i> Meta · Instagram & Facebook</span>
-            <span class="ad-plat"><i class="ti ti-brand-tiktok"></i> TikTok <small>NEXT</small></span>
-            <span class="ad-plat"><i class="ti ti-brand-google"></i> Google & YouTube <small>AFTER</small></span>
+            <span class="ad-made"><i class="ti ti-brand-instagram"></i><i class="ti ti-brand-facebook"></i> Built for Instagram &amp; Facebook ads</span>
           </div>
           <div class="ad-step">1 · ABOUT YOU</div>
           <div class="form-row">
@@ -1119,7 +1125,8 @@ body{overflow:auto;height:auto;}
           <div class="ad-hint" style="margin-top:8px;"><i class="ti ti-info-circle"></i> Reach numbers are ballparks for US audiences, not promises. Ads usually reach more people for the money in Latin America and fewer in big US cities.</div>
 
           <div class="ad-step">5 · LINK & CREATIVE</div>
-          <div class="form-group"><label class="form-label">Where the ad sends people</label><input class="form-input" id="ad-link" placeholder="Your smart link, pre-save link or release page"/></div>
+          <div class="form-group"><label class="form-label">Where the ad sends people <span style="color:#5a5a72;">(the link people tap)</span></label><input class="form-input" id="ad-link" placeholder="Paste your link" oninput="adLinkHint()"/>
+            <div class="ad-hint" id="ad-link-hint" style="margin-top:6px;"></div></div>
 
           <div class="form-row">
             <div class="form-group"><label class="form-label">Cover art <span style="color:var(--neon);">*</span></label>
@@ -1147,7 +1154,15 @@ body{overflow:auto;height:auto;}
         <div class="gen-panel">
           <div class="gen-title">Your Ad Kit</div>
           <div class="gen-sub">Creatives, copy, targeting and budget, ready for Ads Manager</div>
-          <div class="result-placeholder" id="ad-placeholder"><i class="ti ti-speakerphone"></i><p>Fill in your song details, add your cover, and build your kit. Add your song too and you'll get a 15-second video ad.</p></div>
+          <div class="ad-empty" id="ad-placeholder">
+            <div class="ad-empty-title">WHAT YOU'LL GET</div>
+            <div class="ad-empty-item"><i class="ti ti-photo"></i><div><b>3 ad images</b><small>Feed, Reels &amp; Stories, and square, made from your cover</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-movie"></i><div><b>A 15-second Reels video</b><small>Your song's hook with your clip or cover. Add your song to get it</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-writing"></i><div><b>Ad copy to test</b><small>3 captions, headlines and descriptions, ready to paste</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-target-arrow"></i><div><b>Who to target</b><small>Where your fans are and which artists they listen to</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-coin"></i><div><b>Budget plan</b><small>How much to spend, for how long, and when to switch to the winner</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-list-check"></i><div><b>Step-by-step setup</b><small>Exactly what to click in Meta Ads Manager</small></div></div>
+          </div>
           <div class="loading" id="ad-loading"><div class="loading-spinner"></div><div class="loading-text" id="ad-loading-text">Researching you and your fans...</div></div>
           <div class="error-msg" id="ad-error"></div>
           <div id="ad-result" style="display:none;"></div>
@@ -3201,6 +3216,23 @@ function adSetGoal(v) {
   adGoalChanged();
 }
 
+// Which link to use, by goal. It goes in the "Website URL" box in Ads Manager, not on the image.
+const AD_LINK_TIPS = {
+  streams: ['Your smart link', 'One link that opens the song on Spotify, Apple Music and every other store. Get a free one from Feature.fm, Linkfire, ToneDen or Hypeddit (or your distributor if it offers one). No smart link yet? Your Spotify song link works too.'],
+  presave: ['Your pre-save link', 'The page where fans pre-save the song before release day. Get a free one from Feature.fm, Hypeddit, Show.co or ToneDen (or your distributor if it offers one). After release, switch the ad to your smart link.'],
+  followers: ['Your Instagram profile', 'Paste your profile link, like instagram.com/yourname. In Ads Manager, pick Instagram profile as the destination.'],
+  views: ['Optional: your smart link', 'View ads play inside Instagram and Facebook, so a link is optional. Add your smart link so people who like the song can go stream it.']
+};
+function adLinkHint() {
+  const box = document.getElementById('ad-link-hint');
+  if (!box) return;
+  const g = document.getElementById('ad-goal').value;
+  const t = AD_LINK_TIPS[g] || AD_LINK_TIPS.streams;
+  const inp = document.getElementById('ad-link');
+  inp.placeholder = g === 'followers' ? 'instagram.com/yourname' : g === 'presave' ? 'Your pre-save link' : 'Your smart link or Spotify song link';
+  box.innerHTML = '<i class="ti ti-link"></i><span><b style="color:#fff;">' + t[0] + '.</b> ' + t[1] + ' <span style="color:#8a8aa2;">You paste it in the Website URL box when you set up the ad, so it doesn\'t go on the image.</span></span>';
+}
+
 // Ballpark reach: US music ads typically run ~$5-$12 per 1,000 impressions, ~1.5 views per person
 const AD_TIERS = [
   { v: 'recommend', label: 'Recommend one for me', sub: 'We pick a budget from your goal and audience' },
@@ -3498,6 +3530,7 @@ function adClearFootage() {
 }
 
 function adRefresh() {
+  adLinkHint();
   const latest = document.getElementById('ad-use-latest');
   if (latest) latest.style.display = (selectedArtUrl && !adCoverImg) ? 'inline-block' : 'none';
   if (!adKit) return;
@@ -3672,6 +3705,12 @@ function renderAdKit(kit) {
   h += adCopyBlock('DESCRIPTIONS', kit.descriptions || [], 30);
 
   // setup
+  const adLink = String((kit._inputs && kit._inputs.link) || (document.getElementById('ad-link') || {}).value || '').trim();
+  const lg = (kit._inputs && kit._inputs.goal) || (document.getElementById('ad-goal') || {}).value || 'streams';
+  const lt = AD_LINK_TIPS[lg] || AD_LINK_TIPS.streams;
+  h += '<div class="ad-sec"><div class="ad-sec-title">YOUR AD LINK</div>' + (adLink
+    ? '<div class="ad-copy"><p>' + adEsc(adLink) + '<span class="meta" style="display:block;">Paste this in the Website URL box in Ads Manager. Use the same link on all 3 ads.</span></p><button onclick="adCopyText(this, ' + adEsc(JSON.stringify(adLink)) + ')">Copy</button></div>'
+    : '<div class="plan-item" style="border-left:3px solid #FFC83D;"><div class="plan-date" style="color:#FFC83D;">ADD YOUR LINK BEFORE YOU LAUNCH</div><div class="plan-detail"><b>' + adEsc(lt[0]) + '.</b> ' + adEsc(lt[1]) + ' Paste it in the Website URL box in Ads Manager.</div></div>') + '</div>';
   h += '<div class="ad-sec"><div class="ad-sec-title">CAMPAIGN SETUP</div><div class="ad-grid2">' +
     '<div class="ad-kv"><b>OBJECTIVE</b><span>' + adEsc(kit.objective) + '</span></div>' +
     '<div class="ad-kv"><b>BUTTON</b><span>' + adEsc(kit.cta_label || kit.cta) + '</span></div>' +
