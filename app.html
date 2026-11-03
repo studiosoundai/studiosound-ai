@@ -314,6 +314,18 @@ body{overflow:auto;height:auto;}
 .tm-remove{background:none;border:0.5px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
 .tm-remove:hover{border-color:#ff5c7a;color:#ff5c7a;}
 .tm-add{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;}
+/* Managers */
+.mg-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#00FFD10d;border:0.5px solid #00FFD155;border-radius:10px;padding:10px 14px;margin:0 0 14px;color:#e8e8f5;font-size:12px;line-height:1.5;}
+.mg-bar b{color:#fff;}
+.mg-bar button,.mg-btn{background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.mg-btn.ghost,.mg-bar button.ghost{background:none;color:#fff;border:0.5px solid var(--border);}
+.mg-bar .sp{flex:1;min-width:180px;}
+.mg-invite{border-color:#FFC83D66;background:#FFC83D0d;}
+.mg-switch{margin:0 0 10px;}
+.mg-switch select{width:100%;background:#0f0f1a;border:0.5px solid #00FFD155;color:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;font-family:inherit;}
+.mg-add{display:grid;grid-template-columns:1fr auto;gap:8px;}
+.mg-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+@media(max-width:768px){ .mg-add{grid-template-columns:1fr;} }
 @media(max-width:768px){ .tm-add{grid-template-columns:1fr;} }
 .mx-key{display:inline-block;border:1px solid #2a2a3e;border-radius:5px;padding:0 5px;font-size:10px;color:var(--text);}
 .mx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
@@ -372,11 +384,15 @@ body{overflow:auto;height:auto;}
     <div class="sidebar-label">ACCOUNT</div>
     <button class="sidebar-item" onclick="switchTool('assets',this)"><i class="ti ti-folder"></i> My Assets</button>
     <button class="sidebar-item" onclick="switchTool('settings',this)"><i class="ti ti-settings"></i> Settings</button>
-    <button class="sidebar-item tm-gate" style="display:none;" onclick="switchTool('team',this)"><i class="ti ti-users"></i> Team</button>
-    <button class="sidebar-item" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade Plan</button>
+    <button class="sidebar-item tm-gate" style="display:none;" onclick="switchTool('team',this)"><i class="ti ti-tool"></i> Staff</button>
+    <button class="sidebar-item mg-own-only" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade Plan</button>
   </div>
   </div>
   <div class="sidebar-bottom">
+    <div class="mg-switch" id="mg-switch" style="display:none;">
+      <div class="sidebar-label" style="padding:0 0 6px;">WORKING IN</div>
+      <select id="mg-select" onchange="mgSwitch(this.value)" aria-label="Choose which account to work in"></select>
+    </div>
     <div class="user-card">
       <div class="user-av">🎤</div>
       <div>
@@ -396,9 +412,10 @@ body{overflow:auto;height:auto;}
       <div class="topbar-title" id="topbar-title">Cover Art Generator</div>
     </div>
     <div class="topbar-right">
-      <button class="topbar-btn" id="topbar-upgrade" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
+      <button class="topbar-btn mg-own-only" id="topbar-upgrade" onclick="window.location.href='pricing.html'"><i class="ti ti-crown"></i> Upgrade to Pro</button>
     </div>
   </div>
+  <div id="mg-bars"></div>
 
   <div class="content">
 
@@ -1492,25 +1509,36 @@ body{overflow:auto;height:auto;}
         </div>
         <div class="result-actions" style="margin-top:4px;">
           <button class="result-btn" onclick="sendPasswordChange()"><i class="ti ti-lock"></i> Change Password</button>
-          <button class="result-btn primary" onclick="managePlan()"><i class="ti ti-crown"></i> Manage Plan</button>
+          <button class="result-btn primary mg-own-only" onclick="managePlan()"><i class="ti ti-crown"></i> Manage Plan</button>
         </div>
         <div style="color:var(--muted);font-size:11px;margin-top:10px;" id="settings-msg"></div>
       </div>
+      <div class="gen-panel" style="max-width:720px;margin-bottom:16px;" id="mg-panel">
+        <div class="gen-title">👥 Managers</div>
+        <div class="gen-sub">Let your manager work in your account with their own login. They can use every tool and see your saved work, on your plan and your monthly limits. They can't see billing or change your plan, and you can remove them anytime.</div>
+        <div id="mg-mine"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
+        <div class="error-msg" id="mg-error"></div>
+        <div class="mx-note" id="mg-msg" style="color:var(--neon);"></div>
+        <div id="mg-accounts-wrap" style="display:none;">
+          <div class="section-label" style="margin:22px 0 10px;">ARTISTS YOU MANAGE</div>
+          <div id="mg-accounts"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- TEAM (owner only) -->
+    <!-- STAFF (owner only; internal name "team") -->
     <div id="tool-team" class="hidden">
       <div class="gen-panel" style="max-width:720px;margin-bottom:16px;">
-        <div class="gen-title">👥 Team</div>
+        <div class="gen-title">🛠️ Staff</div>
         <div class="gen-sub">Add engineers, staff or artists you want to comp. They get Premium and early access to new tools (like Mastering before launch). It works even if they haven't signed up yet: they're upgraded the moment they create an account with that email.</div>
         <div class="tm-add">
           <input class="form-input" id="tm-email" type="email" placeholder="Their email, e.g. engineer@gmail.com" autocomplete="off" onkeydown="if(event.key==='Enter')tmAdd()"/>
           <input class="form-input" id="tm-note" placeholder="Note (optional), e.g. Engineer" maxlength="80" onkeydown="if(event.key==='Enter')tmAdd()"/>
-          <button class="gen-btn" id="tm-add-btn" style="margin:0;white-space:nowrap;" onclick="tmAdd()"><i class="ti ti-user-plus"></i> Add to team</button>
+          <button class="gen-btn" id="tm-add-btn" style="margin:0;white-space:nowrap;" onclick="tmAdd()"><i class="ti ti-user-plus"></i> Add to staff</button>
         </div>
         <div class="error-msg" id="tm-error"></div>
         <div class="mx-note" id="tm-msg" style="color:var(--neon);"></div>
-        <div class="section-label" style="margin:18px 0 10px;">ON THE TEAM <span id="tm-count" style="color:var(--muted);"></span></div>
+        <div class="section-label" style="margin:18px 0 10px;">ON STAFF <span id="tm-count" style="color:var(--muted);"></span></div>
         <div id="tm-list"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
         <div class="mx-note" style="margin-top:12px;">Removing someone puts them back on the plan they had before (Free, or their paid plan if they subscribe).</div>
       </div>
@@ -1567,8 +1595,11 @@ sbAuth.auth.getSession().then(async ({ data }) => {
   document.getElementById('user-name').textContent = first + (meta.last_name ? ' ' + meta.last_name.charAt(0) + '.' : '');
   document.getElementById('welcome-title').innerHTML = 'Welcome back, <span>' + first + '</span> 👋';
 
+  // managers: which account are we working in? (must be known before anything loads or saves)
+  await mgInit();
+
   // show real plan in sidebar
-  try {
+  if (!mgActing) try {
     const { data: prof } = await sbAuth.from('profiles').select('plan').single();
     if (prof && prof.plan) {
       currentPlan = prof.plan; try { ssTagNotes(); } catch (e) {}
@@ -1587,7 +1618,7 @@ sbAuth.auth.getSession().then(async ({ data }) => {
   applyDeepLink();
 
   // Came back from checkout? Poll for the plan flip (webhook can lag a few seconds)
-  if (new URLSearchParams(location.search).get('upgraded') === '1') {
+  if (!mgActing && new URLSearchParams(location.search).get('upgraded') === '1') {
     let tries = 0;
     const poll = setInterval(async () => {
       tries++;
@@ -1632,19 +1663,21 @@ function toolThumb(tool) {
 async function saveAsset(tool, name, dataUrl, extraData) {
   try {
     if (!currentUser) return;
+    // a manager's work saves to the artist's account, marked with who made it
+    if (mgActing && (extraData == null || (typeof extraData === 'object' && !Array.isArray(extraData)))) extraData = Object.assign({}, extraData || {}, { _by: mgMyName() });
     let publicUrl = null;
     if (dataUrl) {
       const blob = await (await fetch(dataUrl)).blob();
-      const path = currentUser.id + '/' + Date.now() + '.png';
+      const path = acctId() + '/' + Date.now() + '.png';
       const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'image/png' });
       if (!upErr) {
         publicUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
       } else { console.error('upload error', upErr); }
     }
-    const { error: insErr } = await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl, data: extraData || null });
+    const { error: insErr } = await sbAuth.from('assets').insert({ user_id: acctId(), tool: tool, name: name, url: publicUrl, data: extraData || null });
     if (insErr) {
       console.error('asset insert failed, retrying without data column:', insErr);
-      const { error: retryErr } = await sbAuth.from('assets').insert({ user_id: currentUser.id, tool: tool, name: name, url: publicUrl });
+      const { error: retryErr } = await sbAuth.from('assets').insert({ user_id: acctId(), tool: tool, name: name, url: publicUrl });
       if (retryErr) console.error('asset insert retry also failed:', retryErr);
     }
   } catch(e) { console.error('saveAsset', e); }
@@ -1652,7 +1685,7 @@ async function saveAsset(tool, name, dataUrl, extraData) {
 
 async function loadAssets() {
   try {
-    const { data, error } = await sbAuth.from('assets').select('*').order('created_at', { ascending: false }).limit(60);
+    const { data, error } = await sbAuth.from('assets').select('*').eq('user_id', acctId()).order('created_at', { ascending: false }).limit(60);
     if (error) { console.error('loadAssets:', error); return { error: true, items: [] }; }
     return { error: false, items: data || [] };
   } catch(e) { console.error('loadAssets:', e); return { error: true, items: [] }; }
@@ -1738,7 +1771,7 @@ async function showAssetsPanel() {
       </div>
       <div class="recent-info">
         <div class="recent-name">${a.name || a.tool}</div>
-        <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}</div>
+        <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}${a.data && a.data._by ? ' · by ' + tmEsc(a.data._by) : ''}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
         ${a.tool==='Master' && a.data && a.data.job ? `<a onclick="openMasterAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Master →</a>` : ''}
         ${a.tool==='Ad Kit' && a.data && a.data.primary_text ? `<a onclick="openAdAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Ad Kit →</a>` : ''}
@@ -1791,7 +1824,8 @@ function openPlanAsset(i) {
 
 function fillSettings() {
   if (currentUser) document.getElementById('settings-email').value = currentUser.email || '';
-  document.getElementById('settings-plan').value = currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1) + ' Plan';
+  document.getElementById('settings-plan').value = currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1) + ' Plan' + (mgActing ? ' (' + mgActing.name + '\u2019s plan)' : '');
+  mgLoad();
 }
 
 async function sendPasswordChange() {
@@ -1822,6 +1856,7 @@ async function openBillingPortal() {
 }
 
 function managePlan() {
+  if (mgActing) { document.getElementById('settings-msg').textContent = 'Only ' + mgActing.name + ' can change their plan. Switch to your own account to manage yours.'; return; }
   if (currentPlan === 'free') window.location.href = 'pricing.html';
   else openBillingPortal();
 }
@@ -1860,10 +1895,12 @@ function downloadPlanPDF() {
 // Attach the user's session token so the API knows who's asking
 async function authHeaders() {
   const { data } = await sbAuth.auth.getSession();
-  return {
+  const h = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + (data.session ? data.session.access_token : '')
   };
+  if (mgActing) h['X-Act-As'] = mgActing.owner_id;   // a manager working in an artist's account
+  return h;
 }
 
 function limitMessage(toolLabel) {
@@ -1872,6 +1909,7 @@ function limitMessage(toolLabel) {
 
 function showLimit(errId, toolLabel) {
   const err = document.getElementById(errId);
+  if (mgActing) { err.textContent = mgActing.name + '\u2019s account has used all its ' + toolLabel + ' for this month. Ask them to upgrade their plan, or switch to your own account.'; err.style.display = 'block'; return; }
   err.innerHTML = limitMessage(toolLabel) + '<a href="pricing.html" style="color:var(--neon);font-weight:700;">View plans</a>';
   err.style.display = 'block';
 }
@@ -1900,7 +1938,7 @@ function switchTool(tool, sidebarBtn) {
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
   document.querySelectorAll('.tool-card').forEach(c => c.classList.toggle('active', c.dataset.tool === tool));
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'Mastering', team:'Team'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'Mastering', team:'Staff'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -2859,7 +2897,7 @@ function mxStep(n, state) { const el = document.getElementById('mx-s' + n); if (
 async function mxUpload(file, name) {
   const { data } = await sbAuth.auth.getSession();
   if (!data.session) throw new Error('Please sign in again.');
-  const uid = data.session.user.id;
+  const uid = mgActing ? mgActing.owner_id : data.session.user.id;   // the artist's folder when a manager uploads
   const id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
   const path = uid + '/' + id + '/' + name + '.' + mxExt(file);
   await new Promise((resolve, reject) => {
@@ -3106,7 +3144,171 @@ function mxRetry() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ====== TEAM (owner only): add people by email; they get Premium + early access ======
+// ====== MANAGERS: an artist lets their manager work in their account ======
+let mgActing = null;      // { owner_id, name, email, plan } while a manager works in an artist's account
+let mgState = null;       // last answer from /api/managers
+function acctId() { return mgActing ? mgActing.owner_id : (currentUser && currentUser.id); }
+function mgMyName() {
+  const m = (currentUser && currentUser.user_metadata) || {};
+  return ((m.first_name || '') + (m.last_name ? ' ' + m.last_name.charAt(0) + '.' : '')).trim() || (currentUser && currentUser.email) || 'Manager';
+}
+function mgName(a) { return a.owner_name || (a.owner_email ? a.owner_email.split('@')[0] : 'Artist'); }
+function mgCap(p) { p = p || 'free'; return p.charAt(0).toUpperCase() + p.slice(1); }
+function mgStore(v) { try { if (v) localStorage.setItem('ssActAs', v); else localStorage.removeItem('ssActAs'); } catch (e) {} }
+function mgStored() { try { return localStorage.getItem('ssActAs') || ''; } catch (e) { return ''; } }
+async function mgFetch(body) {
+  const { data } = await sbAuth.auth.getSession();
+  const h = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (data.session ? data.session.access_token : '') };   // always as yourself
+  const r = await fetch('/api/managers', body ? { method: 'POST', headers: h, body: JSON.stringify(body) } : { headers: h });
+  const d = await r.json().catch(() => ({ error: 'Couldn\u2019t reach the server. Try again.' }));
+  if (d && d.me) mgState = d;
+  return d;
+}
+async function mgInit() {
+  let d = null;
+  try { d = await mgFetch(); } catch (e) { d = null; }
+  if (!d || !d.accounts) { mgStore(''); return; }           // managers not set up yet: nothing changes
+  const want = mgStored();
+  const acct = want && d.accounts.find(a => a.owner_id === want && a.usable);
+  if (acct) mgActing = { owner_id: acct.owner_id, name: mgName(acct), email: acct.owner_email, plan: acct.owner_plan };
+  else if (want) mgStore('');
+  mgApply();
+}
+function mgApply() {
+  const d = mgState || { accounts: [] };
+  const active = d.accounts.filter(a => a.status === 'active');
+  const invites = d.accounts.filter(a => a.status === 'invited');
+  // the switcher, only for people who manage someone
+  const sw = document.getElementById('mg-switch'), sel = document.getElementById('mg-select');
+  if (active.length) {
+    sel.innerHTML = '<option value="">My account</option>' + active.map(a => '<option value="' + tmEsc(a.owner_id) + '"' + (a.usable ? '' : ' disabled') + (mgActing && mgActing.owner_id === a.owner_id ? ' selected' : '') + '>' + tmEsc(mgName(a)) + (a.usable ? '' : ' (plan doesn\u2019t include managers)') + '</option>').join('');
+    sw.style.display = '';
+  } else sw.style.display = 'none';
+  // bars under the top bar
+  let h = '';
+  if (mgActing) {
+    h += '<div class="mg-bar"><span class="sp">👤 You\u2019re working in <b>' + tmEsc(mgActing.name) + '\u2019s</b> account. Everything you make saves to their account and uses their ' + tmEsc(mgCap(mgActing.plan)) + ' plan.</span><button type="button" class="ghost" onclick="mgSwitch(\'\')">Switch to my account</button></div>';
+  }
+  invites.forEach(a => {
+    h += '<div class="mg-bar mg-invite"><span class="sp">✉️ <b>' + tmEsc(mgName(a)) + '</b>' + (a.owner_name && a.owner_email ? ' (' + tmEsc(a.owner_email) + ')' : '') + ' invited you to manage their StudioSound account.</span>' +
+      '<button type="button" data-id="' + tmEsc(a.id) + '" onclick="mgAccept(this.dataset.id, this)">Accept</button><button type="button" class="ghost" data-id="' + tmEsc(a.id) + '" onclick="mgDecline(this.dataset.id, this)">Decline</button></div>';
+  });
+  document.getElementById('mg-bars').innerHTML = h;
+  // while working as an artist: their plan, no billing
+  document.querySelectorAll('.mg-own-only').forEach(el => { el.style.display = mgActing ? 'none' : ''; });
+  if (mgActing) {
+    currentPlan = mgActing.plan || 'free';
+    try { ssTagNotes(); } catch (e) {}
+    document.querySelector('.user-plan').textContent = 'In ' + mgActing.name + '\u2019s account';
+    const ut = document.querySelector('.usage-text'); if (ut) ut.textContent = mgCap(currentPlan) + ' plan (' + mgActing.name + '\u2019s)' + (currentPlan !== 'free' ? ' \u2014 limits raised' : '');
+    document.getElementById('welcome-title').innerHTML = 'Working in <span>' + tmEsc(mgActing.name) + '</span>\u2019s account 👋';
+  }
+}
+function mgSwitch(v) {
+  mgStore(v || '');
+  window.location.href = 'app.html';   // a clean reload so everything loads from the right account
+}
+function mgSay(err, msg) {
+  const e = document.getElementById('mg-error'); e.textContent = err || ''; e.style.display = err ? 'block' : 'none';
+  document.getElementById('mg-msg').textContent = msg || '';
+}
+function mgRenderMine() {
+  const box = document.getElementById('mg-mine');
+  if (!box) return;
+  if (mgActing) { box.innerHTML = '<p style="color:var(--muted);font-size:12px;">You\u2019re in ' + tmEsc(mgActing.name) + '\u2019s account. Only they can add or remove their managers. <a style="color:var(--neon);font-weight:700;cursor:pointer;" onclick="mgSwitch(\'\')">Switch to my account</a> to manage yours.</p>'; return; }
+  const me = (mgState && mgState.me) || { limit: 0, managers: [], plan: 'free' };
+  const list = me.managers || [];
+  let h = '';
+  if (list.length) {
+    h += list.map(m => {
+      const pill = m.status === 'active' ? '<span class="tm-pill ok">Active</span>' : '<span class="tm-pill wait">' + (m.signed_up ? 'Invite sent' : 'Invite sent · not signed up yet') + '</span>';
+      return '<div class="tm-row"><div><div class="tm-email">' + tmEsc(m.name || m.email) + '</div><div class="tm-meta">' + pill + (m.name ? '<span>' + tmEsc(m.email) + '</span>' : '') + '</div></div>' +
+        '<button type="button" class="tm-remove" data-id="' + tmEsc(m.id) + '" onclick="mgRemove(this.dataset.id, this)">Remove</button></div>';
+    }).join('');
+  }
+  if (me.limit < 1) {
+    h += '<div class="plan-item" style="border-left:3px solid var(--neon);margin-top:' + (list.length ? '10px' : '0') + ';"><div class="plan-detail" style="color:#e8e8f5;">Managers come with <b>Pro</b> (1 manager) and <b>Premium</b> (up to 3).</div>' +
+      '<button type="button" class="mg-btn" style="margin-top:8px;" onclick="window.location.href=\'pricing.html\'">See plans</button></div>';
+  } else if (list.length < me.limit) {
+    h += '<div class="section-label" style="margin:' + (list.length ? '16px' : '0') + ' 0 8px;">ADD A MANAGER <span style="color:var(--muted);">(' + list.length + ' of ' + me.limit + ' on ' + tmEsc(mgCap(me.plan)) + ')</span></div>' +
+      '<div class="mg-add"><input class="form-input" id="mg-email" type="email" placeholder="Your manager\u2019s email" autocomplete="off" onkeydown="if(event.key===\'Enter\')mgInvite()"/>' +
+      '<button class="gen-btn" id="mg-add-btn" style="margin:0;white-space:nowrap;" onclick="mgInvite()"><i class="ti ti-user-plus"></i> Invite</button></div>' +
+      '<div class="mx-note" style="margin-top:8px;">They sign in (or sign up) with that email and tap Accept. Send them this link: <a style="color:var(--neon);font-weight:700;cursor:pointer;" onclick="mgCopyLink(this)">Copy sign-up link</a></div>';
+  } else {
+    h += '<div class="mx-note" style="margin-top:10px;">' + (me.plan === 'pro' ? 'Pro includes 1 manager. Upgrade to Premium for up to 3.' : 'You have the most managers your plan allows (' + me.limit + ').') + '</div>';
+  }
+  box.innerHTML = h;
+}
+function mgRenderAccounts() {
+  const d = mgState || { accounts: [] };
+  const rows = d.accounts.filter(a => a.status === 'active');
+  document.getElementById('mg-accounts-wrap').style.display = rows.length ? '' : 'none';
+  document.getElementById('mg-accounts').innerHTML = rows.map(a => {
+    const here = mgActing && mgActing.owner_id === a.owner_id;
+    return '<div class="tm-row"><div><div class="tm-email">' + tmEsc(mgName(a)) + '</div><div class="tm-meta">' +
+      (a.usable ? '<span class="tm-pill ok">' + tmEsc(mgCap(a.owner_plan)) + '</span>' : '<span class="tm-pill wait">Their plan doesn\u2019t include managers</span>') +
+      (a.owner_email ? '<span>' + tmEsc(a.owner_email) + '</span>' : '') + '</div></div><div class="mg-row-actions">' +
+      (a.usable ? (here ? '<span class="tm-pill ok" style="align-self:center;">Working here now</span>' : '<button type="button" class="mg-btn" data-id="' + tmEsc(a.owner_id) + '" onclick="mgSwitch(this.dataset.id)">Work in this account</button>') : '') +
+      '<button type="button" class="tm-remove" data-id="' + tmEsc(a.id) + '" onclick="mgLeave(this.dataset.id, this)">Leave</button></div></div>';
+  }).join('');
+}
+async function mgLoad() {
+  try { await mgFetch(); } catch (e) {}
+  if (!mgState) { document.getElementById('mg-mine').innerHTML = '<p style="color:var(--muted);font-size:12px;">Managers are coming soon.</p>'; return; }
+  mgRenderMine(); mgRenderAccounts();
+}
+async function mgInvite() {
+  const inp = document.getElementById('mg-email'); const email = (inp && inp.value || '').trim();
+  mgSay('', '');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { mgSay('Enter a valid email address.'); return; }
+  const btn = document.getElementById('mg-add-btn'); if (btn) btn.disabled = true;
+  try {
+    const d = await mgFetch({ action: 'invite', email });
+    if (d.error || d.message) mgSay(d.message || d.error);
+    else mgSay('', '✓ Invite sent to ' + email.toLowerCase() + '. They\u2019ll see it when they sign in with that email.');
+  } catch (e) { mgSay('Couldn\u2019t reach the server. Try again.'); }
+  mgRenderMine();
+}
+async function mgRemove(id, btn) {
+  if (btn.dataset.confirm !== '1') { btn.dataset.confirm = '1'; btn.textContent = 'Tap again to remove'; setTimeout(() => { btn.dataset.confirm = ''; btn.textContent = 'Remove'; }, 4000); return; }
+  btn.disabled = true; mgSay('', '');
+  try { const d = await mgFetch({ action: 'remove', id }); if (d.error) mgSay(d.error); else mgSay('', 'Removed. They can\u2019t get into your account anymore.'); } catch (e) { mgSay('Couldn\u2019t reach the server. Try again.'); }
+  mgRenderMine();
+}
+async function mgLeave(id, btn) {
+  if (btn.dataset.confirm !== '1') { btn.dataset.confirm = '1'; btn.textContent = 'Tap again to leave'; setTimeout(() => { btn.dataset.confirm = ''; btn.textContent = 'Leave'; }, 4000); return; }
+  btn.disabled = true;
+  const a = ((mgState && mgState.accounts) || []).find(x => x.id === id);
+  try { await mgFetch({ action: 'remove', id }); } catch (e) {}
+  if (a && mgActing && mgActing.owner_id === a.owner_id) { mgSwitch(''); return; }
+  mgApply(); mgRenderAccounts();
+}
+async function mgAccept(id, btn) {
+  btn.disabled = true;
+  try {
+    const d = await mgFetch({ action: 'accept', id });
+    if (d.error) { alert(d.error); btn.disabled = false; return; }
+    const a = (d.accounts || []).find(x => x.id === id);
+    mgApply();
+    if (a) {
+      const bars = document.getElementById('mg-bars');
+      bars.insertAdjacentHTML('afterbegin', '<div class="mg-bar"><span class="sp">✓ You now manage <b>' + tmEsc(mgName(a)) + '</b>. Switch accounts anytime from the menu (bottom left).</span>' +
+        (a.usable ? '<button type="button" data-id="' + tmEsc(a.owner_id) + '" onclick="mgSwitch(this.dataset.id)">Work in their account</button>' : '') + '</div>');
+    }
+  } catch (e) { btn.disabled = false; }
+}
+async function mgDecline(id, btn) {
+  btn.disabled = true;
+  try { await mgFetch({ action: 'remove', id }); } catch (e) {}
+  mgApply();
+}
+function mgCopyLink(el) {
+  const link = window.location.origin + '/signup.html';
+  const done = () => { const o = el.textContent; el.textContent = 'Copied: ' + link; setTimeout(() => el.textContent = o, 2500); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, done); else done();
+}
+
+// ====== STAFF (owner only; internally "team"): add people by email; they get Premium + early access ======
 function tmEsc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 function tmSay(err, msg) {
   const e = document.getElementById('tm-error'); e.textContent = err || ''; e.style.display = err ? 'block' : 'none';
@@ -3144,7 +3346,7 @@ async function tmAdd() {
     if (!d.ok) tmSay(d.error || 'Couldn’t add them. Try again.');
     else {
       document.getElementById('tm-email').value = ''; document.getElementById('tm-note').value = '';
-      tmSay('', d.signed_up ? '✓ ' + d.email + ' is on the team and now on Premium. They may need to refresh.' : '✓ ' + d.email + ' is on the team. They\'ll be on Premium as soon as they sign up with this email.');
+      tmSay('', d.signed_up ? '✓ ' + d.email + ' is on staff and now on Premium. They may need to refresh.' : '✓ ' + d.email + ' is on staff. They\'ll be on Premium as soon as they sign up with this email.');
       tmLoad();
     }
   } catch (e) { tmSay('Couldn’t reach the server. Try again.'); }
@@ -3861,7 +4063,7 @@ function renderAdKit(kit) {
     P.videos.map((v, i) => '<button type="button" class="result-btn' + (i ? '' : ' primary') + ' ad-video-btn"' + (i ? '' : ' id="ad-video-btn"') + ' onclick="adRecordVideo(\'' + v[0] + '\', \'' + v[2] + '\')" style="width:100%;' + (i ? 'margin-top:6px;' : '') + '"><i class="ti ti-movie"></i> ' + adEsc(v[1]) + '</button>').join('') +
     '<div class="ad-video-status" id="ad-video-status"></div>' +
     (ssTagOn() ? '<div class="mx-note">' + SS_TAG_NOTE + '</div>' : '') + '</div>';
-  if (!adCoverImg) h += '<div class="ad-video-status" style="color:#ffcf6b;">Upload your cover on the left to see your ad images.</div>';
+  if (!adCoverImg) h += '<div class="ad-video-status" style="color:#ffcf6b;">' + (kit._inputs && !kit._cover ? 'This kit was saved before covers were kept with it. Upload the cover on the left and the ad images come right back.' : 'Upload your cover on the left to see your ad images.') + '</div>';
   h += '</div>';
 
   // copy
@@ -3968,8 +4170,11 @@ async function generateAds() {
       const name = title + ' \u2014 ' + adP().short + ' ads';
       let thumb = null;
       try { const t = document.createElement('canvas'); adDraw(t, 'feed', null); const s = document.createElement('canvas'); s.width = 540; s.height = 675; s.getContext('2d').drawImage(t, 0, 0, 540, 675); thumb = s.toDataURL('image/png'); } catch (e) {}
-      addRecent(null, name, 'Ad Kit', thumb);
-      saveAsset('Ad Kit', name, thumb, Object.assign({}, data, { _inputs: payload }));
+      let coverUrl = null;
+      try { coverUrl = await adSaveCover(); } catch (e) {}
+      const saved = Object.assign({}, data, { _inputs: payload, _cover: coverUrl });
+      addRecent(null, name, 'Ad Kit', thumb, saved);
+      saveAsset('Ad Kit', name, thumb, saved);
     }
     clearInterval(mt);
   } catch (e) {
@@ -3985,7 +4190,14 @@ async function generateAds() {
 function openAdAsset(i) {
   const a = assetsCache[i];
   if (!a || !a.data) return;
+  openAdKit(a.data);
+}
+// reopen a saved kit: fill the form, bring back the cover (so the ad images redraw), show the kit
+function openAdKit(kit) {
+  if (!kit || !kit.primary_text) return;
+  const a = { data: kit };
   switchTool('ads', null);
+  setToolActive(document.querySelector('.tool-card[data-tool=ads]'));
   const inp = a.data._inputs || {};
   adSetPlatform(a.data.platform || inp.platform || 'meta');
   const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
@@ -3995,8 +4207,33 @@ function openAdAsset(i) {
   else { const t = adTiers().find(x => x.amt === parseFloat(inp.budget) && x.days === parseInt(inp.days, 10)); if (t) adSetBudget(t.v); else { adSetBudget('custom'); } }
   set('ad-date', inp.releaseDate); set('ad-genre', inp.genre); set('ad-city', inp.city); set('ad-similar', inp.similar);
   set('ad-hook', inp.hookLine); set('ad-vibe', inp.vibe); set('ad-budget', inp.budget); set('ad-days', inp.days); set('ad-link', inp.link);
+  if (a.data._cover) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => { adCoverImg = img; img._savedUrl = a.data._cover; adAutoAccent = adPickAccent(img); document.getElementById('ad-cover-label').textContent = '\u2713 Cover from this kit'; renderAdKit(a.data); };
+    img.src = a.data._cover;
+  }
   renderAdKit(a.data);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => { const r = document.getElementById('ad-result'); if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
+
+// keep a copy of the cover with the kit, so reopening it later redraws the ad images
+async function adSaveCover() {
+  if (!adCoverImg || !currentUser) return null;
+  if (adCoverImg._savedUrl) return adCoverImg._savedUrl;
+  const side = Math.min(1200, Math.max(adCoverImg.naturalWidth || adCoverImg.width, adCoverImg.naturalHeight || adCoverImg.height));
+  const c = document.createElement('canvas');
+  const sc = side / Math.max(adCoverImg.naturalWidth || adCoverImg.width, adCoverImg.naturalHeight || adCoverImg.height);
+  c.width = Math.round((adCoverImg.naturalWidth || adCoverImg.width) * sc); c.height = Math.round((adCoverImg.naturalHeight || adCoverImg.height) * sc);
+  c.getContext('2d').drawImage(adCoverImg, 0, 0, c.width, c.height);
+  const blob = await new Promise(res => { try { c.toBlob(res, 'image/jpeg', 0.9); } catch (e) { res(null); } });
+  if (!blob) return null;
+  const path = acctId() + '/adcover-' + Date.now() + '.jpg';
+  const { error } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: 'image/jpeg' });
+  if (error) return null;
+  const url = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
+  adCoverImg._savedUrl = url;
+  return url;
 }
 
 // ====== NEXT-STEP FLOW (keeps artists moving tool to tool) ======
@@ -4708,7 +4945,7 @@ async function runForecast() {
   }
 
   // Plan can change mid-session (they just upgraded!) — re-check before deciding teaser vs full
-  if (currentPlan === 'free') {
+  if (currentPlan === 'free' && !mgActing) {
     try {
       const { data: prof } = await sbAuth.from('profiles').select('plan').eq('id', currentUser.id).single();
       if (prof && prof.plan) currentPlan = prof.plan; try { ssTagNotes(); } catch (e) {}
@@ -4885,7 +5122,7 @@ async function lvAutoLyrics() {
   }
   try {
     status.textContent = 'Uploading your song for analysis...';
-    const path = currentUser.id + '/transcribe-' + Date.now() + '-' + lvAudioFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const path = acctId() + '/transcribe-' + Date.now() + '-' + lvAudioFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const { error: upErr } = await sbAuth.storage.from('assets').upload(path, lvAudioFile, { contentType: lvAudioFile.type || 'audio/mpeg' });
     if(upErr) throw upErr;
     const audioUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
@@ -5298,7 +5535,7 @@ async function lvRun(record) {
       try {
         if (blob.size < 45 * 1048576 && currentUser) {
           cloudTried = true;
-          const path = currentUser.id + '/lyricvideo-' + Date.now() + '.' + ext;
+          const path = acctId() + '/lyricvideo-' + Date.now() + '.' + ext;
           const { error: upErr } = await sbAuth.storage.from('assets').upload(path, blob, { contentType: blob.type });
           if (!upErr) videoUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
           else console.error('video upload', upErr);
@@ -5446,6 +5683,7 @@ function loadRecent(index) {
     playVideo(item.data.videoUrl, item.name);
     return;
   }
+  if(item.type === 'Ad Kit' && item.data && item.data.primary_text) { openAdKit(item.data); return; }
   if(item.type === 'Release Plan' && item.data) {
     switchTool('plan', null);
     setToolActive(document.querySelector('.tool-card[data-tool=plan]'));
@@ -5741,7 +5979,7 @@ function loadRecent(index) {
     if (!data.session) throw new Error('Please sign in again.');
     const id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
     const ext = ((file.name || '').toLowerCase().match(/\.(wav|aif|aiff|flac|mp3|m4a)$/) || [0, 'mp3'])[1];
-    const path = data.session.user.id + '/ar-' + id + '/song.' + ext;
+    const path = (mgActing ? mgActing.owner_id : data.session.user.id) + '/ar-' + id + '/song.' + ext;
     await new Promise((resolve, reject) => {
       const x = new XMLHttpRequest();
       x.open('POST', MX_SB_URL + '/storage/v1/object/mastering/' + path);
