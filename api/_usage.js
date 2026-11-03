@@ -37,54 +37,95 @@ export async function isTeam(email) {
 // Founders and team members see tools that aren't public yet
 export async function hasEarlyAccess(email) { return isFounder(email) || await isTeam(email); }
 
-// opts.freeIf(userId): return true to let this request through without using a credit
+// ---------- managers ----------
+// An artist can let managers work inside their account (Free 0, Pro 1, Premium 3).
+// The Studio sends "X-Act-As: <artist user id>" while a manager is working as that artist.
+// Everything then runs on the ARTIST's account: their plan, their monthly limits, their saved work.
+export const MANAGER_LIMITS = { free: 0, pro: 1, premium: 3 };
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const svcHeaders = () => { const k = process.env.SUPABASE_SERVICE_ROLE_KEY; return { apikey: k, Authorization: `Bearer ${k}` }; };
+
+export async function planOf(userId) {
+  try {
+    const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=plan`, { headers: svcHeaders() });
+    const rows = await r.json();
+    return (Array.isArray(rows) && rows[0] && rows[0].plan) || 'free';
+  } catch (e) { return 'free'; }
+}
+// plan an artist's managers count against (founders always get the top plan)
+export async function managerPlanOf(userId, email) {
+  if (isFounder(email)) return 'premium';
+  return await planOf(userId);
+}
+
+// Who signed in, and which account are they working in?
+// -> { ok:true, user, accountId, accountEmail, actingAs }  or  { ok:false, status, error }
+export async function resolveAccount(req) {
+  const url = process.env.SUPABASE_URL, service = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !service) return { ok: false, status: 500, error: 'Server configuration error' };
+  const token = (req.headers.authorization || '').replace('Bearer ', '');
+  if (!token) return { ok: false, status: 401, error: 'Please sign in to use this tool.' };
+  let user = null;
+  try {
+    const r = await fetch(`${url}/auth/v1/user`, { headers: { apikey: service, Authorization: `Bearer ${token}` } });
+    if (r.ok) user = await r.json();
+  } catch (e) { user = null; }
+  if (!user || !user.id) return { ok: false, status: 401, error: 'Session expired — please sign in again.' };
+
+  const actAs = String((req.headers && (req.headers['x-act-as'] || req.headers['X-Act-As'])) || '').trim();
+  if (!actAs || actAs === user.id) return { ok: true, user, accountId: user.id, accountEmail: user.email, actingAs: false };
+  if (!UUID.test(actAs)) return { ok: false, status: 400, error: 'Pick an account again.' };
+
+  let row = null;
+  try {
+    const r = await fetch(`${url}/rest/v1/managers?owner_id=eq.${actAs}&manager_id=eq.${user.id}&status=eq.active&select=owner_email`, { headers: svcHeaders() });
+    const rows = r.ok ? await r.json() : [];
+    row = Array.isArray(rows) && rows[0] ? rows[0] : null;
+  } catch (e) { row = null; }
+  if (!row) return { ok: false, status: 403, error: 'not_manager', message: 'You\u2019re no longer a manager on that account. Switch back to your own account.' };
+  const plan = await managerPlanOf(actAs, row.owner_email);
+  if (!(MANAGER_LIMITS[plan] > 0)) return { ok: false, status: 403, error: 'manager_plan', message: 'This artist\u2019s plan doesn\u2019t include managers right now. Ask them to upgrade to Pro or Premium.' };
+  return { ok: true, user, accountId: actAs, accountEmail: row.owner_email || null, actingAs: true, accountPlan: plan };
+}
+
+// For routes that need "the account" as a user-like object (Mastering, A&R Check):
+// { id: account id, email: account email, actor_email } ; { denied, status, error } ; or null if not signed in
+export async function accountUser(req) {
+  const a = await resolveAccount(req);
+  if (!a.ok) return a.status === 401 || a.status === 500 ? null : { denied: true, status: a.status, error: a.message || a.error };
+  return { id: a.accountId, email: a.accountEmail, actor_email: a.user.email, acting_as: a.actingAs };
+}
+
+// opts.freeIf(accountId): return true to let this request through without using a credit
 // (e.g. a TikTok or YouTube kit for a song that already has an ad kit this month).
 export async function checkAndCount(req, tool, opts = {}) {
   const url = process.env.SUPABASE_URL;
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!url || !service) {
-    return { ok: false, status: 500, error: 'Server configuration error' };
-  }
-
-  // 1. Who is asking? (token comes from the logged-in browser session)
-  const token = (req.headers.authorization || '').replace('Bearer ', '');
-  if (!token) {
-    return { ok: false, status: 401, error: 'Please sign in to use this tool.' };
-  }
-
-  const userRes = await fetch(`${url}/auth/v1/user`, {
-    headers: { apikey: service, Authorization: `Bearer ${token}` }
-  });
-  if (!userRes.ok) {
-    return { ok: false, status: 401, error: 'Session expired — please sign in again.' };
-  }
-  const user = await userRes.json();
+  // 1. Who is asking, and which account are they working in? (a manager works in the artist's account)
+  const acct = await resolveAccount(req);
+  if (!acct.ok) return { ok: false, status: acct.status, error: acct.message || acct.error };
+  const uid = acct.accountId;
+  const who = { userId: uid, actorId: acct.user.id, actorEmail: acct.user.email, actingAs: acct.actingAs };
 
   let free = false;
-  if (typeof opts.freeIf === 'function') { try { free = !!(await opts.freeIf(user.id)); } catch (e) { free = false; } }
+  if (typeof opts.freeIf === 'function') { try { free = !!(await opts.freeIf(uid)); } catch (e) { free = false; } }
 
   // Founder accounts (comma-separated emails in FOUNDER_EMAILS env var) skip
   // limits entirely — testing your own platform shouldn't burn your quota.
-  if (isFounder(user.email)) {
-    return { ok: true, userId: user.id, plan: 'premium', founder: true };
+  if (isFounder(acct.accountEmail)) {
+    return { ok: true, ...who, plan: 'premium', founder: true };
   }
 
-  if (free) return { ok: true, userId: user.id, free: true };
-
-  // 2. What plan are they on?
-  const profRes = await fetch(
-    `${url}/rest/v1/profiles?id=eq.${user.id}&select=plan`,
-    { headers: { apikey: service, Authorization: `Bearer ${service}` } }
-  );
-  const prof = await profRes.json();
-  const plan = (Array.isArray(prof) && prof[0] && prof[0].plan) || 'free';
+  // 2. What plan is the account on?
+  const plan = acct.accountPlan || await planOf(uid);
+  if (free) return { ok: true, ...who, plan, free: true };
   const limit = (LIMITS[plan] || LIMITS.free)[tool] ?? 0;
 
   // 3. How much have they used this month?
   const month = new Date().toISOString().slice(0, 7); // e.g. "2026-07"
   const useRes = await fetch(
-    `${url}/rest/v1/usage?user_id=eq.${user.id}&month=eq.${month}&tool=eq.${tool}&select=count`,
+    `${url}/rest/v1/usage?user_id=eq.${uid}&month=eq.${month}&tool=eq.${tool}&select=count`,
     { headers: { apikey: service, Authorization: `Bearer ${service}` } }
   );
   const rows = await useRes.json();
@@ -92,7 +133,7 @@ export async function checkAndCount(req, tool, opts = {}) {
 
   // 4. At the limit? Stop BEFORE spending money on the AI call.
   if (count >= limit) {
-    return { ok: false, status: 402, error: 'limit_reached', plan, limit };
+    return { ok: false, status: 402, error: 'limit_reached', plan, limit, actingAs: acct.actingAs };
   }
 
   // 5. Count this generation (atomic increment via Postgres function)
@@ -103,10 +144,10 @@ export async function checkAndCount(req, tool, opts = {}) {
       Authorization: `Bearer ${service}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ p_user: user.id, p_month: month, p_tool: tool })
+    body: JSON.stringify({ p_user: uid, p_month: month, p_tool: tool })
   });
 
-  return { ok: true, userId: user.id, plan };
+  return { ok: true, ...who, plan };
 }
 
 // Log every generation (inputs + outputs) — builds the StudioSound dataset
