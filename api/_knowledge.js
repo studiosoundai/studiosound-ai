@@ -19,7 +19,10 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - Mastering (rolling out, see its section): full 24-bit WAV masters: Free 1 a month, Pro 5 a month, Premium unlimited (fair use). Whole-song previews: Free 10, Pro 100 a month, Premium unlimited.
 - Launch promotion until Dec 31, 2026: Pro is $9.99/month (regular $14.99) and Premium $24.99/month (regular $29.99). Say the launch price ends Dec 31; don't promise what happens to existing subscribers after that.
 - Watermark: on the Free plan, lyric videos, merch mockup downloads and ad images/videos carry a small "Made with StudioSound.ai" tag in the corner. Pro and Premium exports have no watermark. Cover art never has one.
-- Hit a limit: that tool pauses until the 1st, or upgrade to keep going. Other tools keep working.`,
+- Hit a limit: that tool pauses until the 1st, or upgrade to keep going. Other tools keep working.
+- Managers: an artist can let their manager work in their account with the manager's own login. Free: none. Pro: 1 manager. Premium: up to 3. Set up in Settings > Managers: type the manager's email and tap Invite. The manager signs in (or signs up) with that email and taps Accept on the invite at the top of the Studio.
+- A manager switches accounts with "Working in" at the bottom of the left menu. While working in the artist's account, everything they make saves to the artist's My Assets (marked "by" the manager) and uses the artist's plan and monthly limits. Managers can't see billing, change the plan or add other managers. The artist removes a manager in Settings > Managers anytime; a manager can leave from the same page. One manager can manage many artists.
+- If an artist's plan drops to Free, their managers can't work in the account until they upgrade again.`,
 
   forecast: `EARNINGS FORECAST
 - Upload the royalty report you download from your distributor (DistroKid, TuneCore, Stop One, CD Baby, or any CSV/TSV/Excel with dates and amounts), or type monthly totals by hand, oldest month first.

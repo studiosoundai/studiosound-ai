@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
+import { checkAndCount, logGeneration, hasEarlyAccess, accountUser } from './_usage.js';
 import { LANES, lanesText } from './_lanes.js';
 import { sceneFor, sceneText, genreSceneFor, genreSceneText } from './_scene.js';
 
@@ -43,19 +43,15 @@ function relevantLanes(vibe, genre, refs, scene) {
 const env = () => ({ url: process.env.SUPABASE_URL, key: process.env.SUPABASE_SERVICE_ROLE_KEY });
 const svc = (extra) => { const { key } = env(); return Object.assign({ apikey: key, Authorization: `Bearer ${key}` }, extra || {}); };
 
+// The account this request works in. A manager working as an artist gets the ARTIST's account here
+// (their folder, their jobs); actor_email is the person actually signed in.
 async function userFromToken(req) {
-  const { url, key } = env();
-  const token = (req.headers.authorization || '').replace('Bearer ', '');
-  if (!url || !key || !token) return null;
-  try {
-    const r = await fetch(`${url}/auth/v1/user`, { headers: { apikey: key, Authorization: `Bearer ${token}` } });
-    return r.ok ? await r.json() : null;
-  } catch (e) { return null; }
+  return await accountUser(req);
 }
 async function enabledFor(user) {
   if (!user || !process.env.MASTERING_URL || !process.env.MASTERING_SECRET || !process.env.OPENAI_API_KEY) return false;
   if (String(process.env.AR_PUBLIC || process.env.CHAT_PUBLIC || '').toLowerCase() === 'true') return true;
-  return await hasEarlyAccess(user.email);
+  return (await hasEarlyAccess(user.email)) || (!!user.actor_email && await hasEarlyAccess(user.actor_email));
 }
 
 // A short-lived pass that ties the later steps to the song this user analyzed
@@ -92,6 +88,10 @@ const mmss = (t) => { t = Math.max(0, Math.round(Number(t) || 0)); return Math.f
 
 export default async function handler(req, res) {
   const user = await userFromToken(req);
+  if (user && user.denied) {
+    if (req.method === 'GET') return res.status(200).json({ enabled: false });
+    return res.status(user.status || 403).json({ error: user.error });
+  }
   if (req.method === 'GET') return res.status(200).json({ enabled: await enabledFor(user) });
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!user) return res.status(401).json({ error: 'Please sign in first.' });
