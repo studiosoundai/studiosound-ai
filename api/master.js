@@ -1,4 +1,4 @@
-import { checkAndCount, logGeneration, hasEarlyAccess } from './_usage.js';
+import { checkAndCount, logGeneration, hasEarlyAccess, accountUser } from './_usage.js';
 
 // AI Mastering
 // POST { action: 'start', input_path, reference_path?, style, loudness, strength?, file_name }  -> { job }
@@ -23,14 +23,10 @@ function svc(extra) {
   const { key } = env();
   return Object.assign({ apikey: key, Authorization: `Bearer ${key}` }, extra || {});
 }
+// The account this request works in. A manager working as an artist gets the ARTIST's account here
+// (their folder, their jobs); actor_email is the person actually signed in.
 async function userFromToken(req) {
-  const { url, key } = env();
-  const token = (req.headers.authorization || '').replace('Bearer ', '');
-  if (!url || !key || !token) return null;
-  try {
-    const r = await fetch(`${url}/auth/v1/user`, { headers: { apikey: key, Authorization: `Bearer ${token}` } });
-    return r.ok ? await r.json() : null;
-  } catch (e) { return null; }
+  return await accountUser(req);
 }
 async function getJob(id, userId) {
   const { url } = env();
@@ -51,12 +47,16 @@ async function sign(path, seconds, download) {
 async function masteringEnabledFor(user) {
   if (!user || !process.env.MASTERING_URL || !process.env.MASTERING_SECRET) return false;
   if (String(process.env.MASTERING_PUBLIC || '').toLowerCase() === 'true') return true;
-  return await hasEarlyAccess(user.email);     // founders and Team members
+  return (await hasEarlyAccess(user.email)) || (!!user.actor_email && await hasEarlyAccess(user.actor_email));     // founders and Team members
 }
 const safePath = (p, uid) => typeof p === 'string' && p.startsWith(uid + '/') && !p.includes('..') && p.length < 300;
 
 export default async function handler(req, res) {
-  const user = await userFromToken(req);
+  let user = await userFromToken(req);
+  if (user && user.denied) {
+    if (req.method === 'GET' && !(req.query && req.query.job)) return res.status(200).json({ enabled: false });
+    return res.status(user.status || 403).json({ error: user.error });
+  }
   if (req.method === 'GET' && !(req.query && req.query.job)) return res.status(200).json({ enabled: await masteringEnabledFor(user) });
   if (!user) return res.status(401).json({ error: 'Please sign in to use AI Mastering.' });
   const { url } = env();
