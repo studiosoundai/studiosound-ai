@@ -33,14 +33,15 @@ async function ai(messages, maxTokens) {
 }
 
 const EXTRACT = `You read music analytics screenshots and exports (Spotify for Artists, Apple Music for Artists, YouTube Studio, TikTok, the Distribution Dashboard and other distributor dashboards that show streams by platform, Shazams and views where the song is used as a sound).
-Copy ONLY numbers you can actually see. Never guess or fill in a number that isn't shown. Keep the period each number covers (for example "last 7 days", "last 28 days", "1 month").
+Copy ONLY numbers you can actually see. In a table of many tracks, read only the row for this song (match the title; ignore other songs with similar names).
+Mark the scope of every number: a song page or that song's row is "song"; an artist profile page is "artist"; a dashboard covering a whole account or catalog (many tracks or artists) is "account". Cities and countries need the same care: a song page's Location tab is the song; a dashboard overview's cities are the whole account. Never guess or fill in a number that isn't shown. Keep the period each number covers (for example "last 7 days", "last 28 days", "1 month").
 If a number has a change next to it (like ↑13.0% or -1.6%), put it in change_pct as a number (13.0 or -1.6).
 Return JSON:
 {
   "sources": ["which dashboards these came from, e.g. Spotify for Artists, Distribution Dashboard"],
   "period": "the main period the numbers cover",
   "scope": "song | artist | catalog (whether these numbers are for one song, the whole artist, or many artists/tracks)",
-  "stats": [ { "platform": "Spotify | Apple Music | TikTok | YouTube | Instagram | Facebook | Shazam | Amazon Music | Pandora | Deezer | SoundCloud | All", "metric": "streams | listeners | monthly active listeners | saves | playlist adds | followers | streams per listener | views | shazams | ...", "value": 0, "period": "", "change_pct": null } ],
+  "stats": [ { "platform": "Spotify | Apple Music | TikTok | YouTube | Instagram | Facebook | Shazam | Amazon Music | Pandora | Deezer | SoundCloud | All", "metric": "streams | listeners | monthly active listeners | saves | playlist adds | followers | streams per listener | views | shazams | ...", "value": 0, "period": "", "change_pct": null, "scope": "song | artist | account (account = a whole label/manager account or catalog)" } ],
   "song": { "release_date": "the song's release date if shown, as YYYY-MM-DD", "all_time_streams": null, "has_canvas": "no if a Spotify 'Add Canvas' button is visible, yes if a Canvas is shown, otherwise unknown" },
   "trend": "if a chart is shown, describe its shape in plain words with rough numbers, e.g. 'about 1,800 a week at launch, faded to about 50-100 a week since summer'",
   "audience_mix": { "active_pct": null, "previously_active_pct": null, "programmed_pct": null, "total_audience": null },
@@ -61,6 +62,8 @@ RULES
 - If the numbers cover many artists or a whole catalog, not one song, say so in the headline and talk about the catalog.
 - Spotify for Artists does not show skip rate, so never mention skip rate.
 - When two dashboards show the same platform (for example Spotify for Artists and a distributor's estimate of Spotify), trust the platform's own dashboard, never add them together, and don't point out small differences. Distributor numbers are estimates and lag a day or two.
+- Only numbers with scope "song" describe this song. Artist-wide or account-wide numbers (a whole catalog's cities, total streams across all tracks) can only be mentioned as background ("across your whole catalog"), never as this song's numbers.
+- If the same song's numbers are shown for two periods (for example 1 month and 3 months), compare the monthly pace to tell if it's growing or fading.
 - Group suburbs and neighborhoods into their city when it's obvious (Lithia Springs and Atlanta = the Atlanta area; Brooklyn, the Bronx and New York = New York) and say the combined number.
 - Look at today's date and the release date. Every song's streams fade after release week; that is normal. For a song out more than about 6 months, judge it against that, say it plainly, and aim the moves at keeping it alive cheaply and at the NEXT release, using the cities where this song found fans. Don't tell them to spend ad money on an old, fading song unless it's growing again. If today is the release anniversary, mention it.
 - If the song has no Spotify Canvas (an "Add Canvas" button is showing), one move should be adding one: a short looping video, which a lyric video clip can be.
