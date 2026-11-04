@@ -2,5 +2,8 @@
   "cleanUrls": true,
   "functions": {
     "api/*.js": { "maxDuration": 60 }
-  }
+  },
+  "crons": [
+    { "path": "/api/cron-release-watch", "schedule": "17 15 * * *" }
+  ]
 }
