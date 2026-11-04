@@ -322,6 +322,16 @@ body{overflow:auto;height:auto;}
 .mg-bar .sp{flex:1;min-width:180px;}
 .mg-invite{border-color:#FFC83D66;background:#FFC83D0d;}
 .mg-switch{margin:0 0 10px;}
+/* release plan -> calendar */
+.pc-box{border:1px solid var(--neon);background:#00FFD10a;border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.pc-box .t{color:#fff;font-size:14px;font-weight:800;margin-bottom:4px;}
+.pc-box .s{color:#c8c8dc;font-size:12px;line-height:1.5;margin-bottom:10px;}
+.pc-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.pc-btns button{display:inline-flex;align-items:center;gap:6px;background:var(--neon);color:#05050a;border:none;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;}
+.pc-btns button.alt{background:#0f0f1a;color:#fff;border:0.5px solid var(--border);}
+.pc-btns button i{font-size:15px;}
+.pc-note{color:var(--muted);font-size:11px;line-height:1.5;margin-top:8px;}
+.pc-note b{color:#e8e8f5;}
 .mg-switch select{width:100%;background:#0f0f1a;border:0.5px solid #00FFD155;color:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;font-family:inherit;}
 .mg-add{display:grid;grid-template-columns:1fr auto;gap:8px;}
 .mg-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
@@ -1674,13 +1684,15 @@ async function saveAsset(tool, name, dataUrl, extraData) {
         publicUrl = sbAuth.storage.from('assets').getPublicUrl(path).data.publicUrl;
       } else { console.error('upload error', upErr); }
     }
-    const { error: insErr } = await sbAuth.from('assets').insert({ user_id: acctId(), tool: tool, name: name, url: publicUrl, data: extraData || null });
+    const { data: insRows, error: insErr } = await sbAuth.from('assets').insert({ user_id: acctId(), tool: tool, name: name, url: publicUrl, data: extraData || null }).select('id');
     if (insErr) {
       console.error('asset insert failed, retrying without data column:', insErr);
       const { error: retryErr } = await sbAuth.from('assets').insert({ user_id: acctId(), tool: tool, name: name, url: publicUrl });
       if (retryErr) console.error('asset insert retry also failed:', retryErr);
+      return null;
     }
-  } catch(e) { console.error('saveAsset', e); }
+    return (insRows && insRows[0] && insRows[0].id) || null;
+  } catch(e) { console.error('saveAsset', e); return null; }
 }
 
 async function loadAssets() {
@@ -1744,7 +1756,7 @@ async function initRecent() {
   const result = await loadAssets();
   const items = result.items || [];
   if (!items.length) { showFirstWin(); return; }
-  recentItems = items.slice(0, 5).map(a => ({ icon: null, name: a.name || a.tool, type: a.tool, imageUrl: a.url, data: a.data || null }));
+  recentItems = items.slice(0, 5).map(a => ({ id: a.id, icon: null, name: a.name || a.tool, type: a.tool, imageUrl: a.url, data: a.data || null }));
   renderRecent();
 }
 
@@ -1818,7 +1830,7 @@ function openPlanAsset(i) {
   switchTool('plan', null);
   setToolActive(document.querySelector('.tool-card[data-tool=art]'));
   document.getElementById('plan-name').value = a.name || '';
-  renderPlan(a.data);
+  renderPlan(a.data, a.id);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -2333,8 +2345,11 @@ function downloadArt() {
 }
 
 // ====== RELEASE PLAN ======
-function renderPlan(data) {
+let lastPlanAssetId = null, lastPlanRelease = null;
+function renderPlan(data, assetId) {
   lastPlanData = data;
+  lastPlanAssetId = assetId || null;
+  lastPlanRelease = data.release_date || (data._inputs && data._inputs.releaseDate) || (document.getElementById('plan-date') || {}).value || null;
   document.getElementById('plan-placeholder').style.display = 'none';
   const container = document.getElementById('plan-result');
   let html = '';
@@ -2348,9 +2363,15 @@ function renderPlan(data) {
     html += `<div class="plan-item"><div class="plan-date">WORKING RIGHT NOW IN YOUR LANE</div>` +
       data.trend_tactics.map(t => `<div class="plan-detail" style="margin-bottom:4px;">⚡ ${t}</div>`).join('') + `</div>`;
   }
+  if (lastPlanRelease && pcEvents(data, lastPlanRelease).length) {
+    html += `<div class="pc-box" id="pc-box"><div class="t">📅 Put this plan on your calendar</div>
+      <div class="s">Every step lands on its day with a 9 AM reminder, plus a link that opens the right StudioSound tool.</div>
+      <div class="pc-btns"><button type="button" onclick="pcApple()"><i class="ti ti-brand-apple"></i> iPhone, Mac or Outlook</button><button type="button" class="alt" onclick="pcGoogle()"><i class="ti ti-brand-google"></i> Google Calendar</button></div>
+      <div class="pc-note" id="pc-note"></div></div>`;
+  }
   html += data.timeline.map(item => `
     <div class="plan-item">
-      <div class="plan-date">${item.date}</div>
+      <div class="plan-date">${item.iso ? pcNiceDate(item.iso) + ' · ' : ''}${item.date}</div>
       <div class="plan-task">${item.task}</div>
       <div class="plan-detail">${item.detail}</div>
     </div>
@@ -2399,9 +2420,10 @@ async function generatePlan() {
     }
 
     if(data.timeline && data.timeline.length > 0) {
-      renderPlan(data);
-      addRecent(null, name, 'Release Plan', null, data);
-      saveAsset('Release Plan', name, null, Object.assign({}, data, {_inputs: {artistName, artistHandle, budget, genre, city, releaseDate: date, details}}));
+      const saved = Object.assign({}, data, {_inputs: {artistName, artistHandle, budget, genre, city, releaseDate: date, details}});
+      renderPlan(saved);
+      addRecent(null, name, 'Release Plan', null, saved);
+      saveAsset('Release Plan', name, null, saved).then(id => { if (id && lastPlanData === saved) lastPlanAssetId = id; const r = recentItems.find(x => x.data === saved); if (r) r.id = id; });
     } else {
       throw new Error('No plan returned');
     }
@@ -3142,6 +3164,153 @@ function mxRetry() {
   document.getElementById('mx-result').style.display = 'none';
   document.getElementById('mx-placeholder').style.display = 'flex';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ====== RELEASE PLAN -> CALENDAR ======
+// ---- shared by the Studio (browser) and api/plan-calendar.js: release plan steps -> dated calendar events ----
+function pcAddDays(iso, n) { return new Date(new Date(iso + 'T12:00:00Z').getTime() + n * 86400000).toISOString().slice(0, 10); }
+// a step's date: the exact date we stored, or a best guess from the words ("2 weeks out", "Release day", "Nov 14")
+function pcGuessIso(it, rel) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(it.iso || ''))) return it.iso;
+  const d = parseInt(it.days_from_release, 10);
+  if (rel && Number.isFinite(d)) return pcAddDays(rel, d);
+  const s = String(it.date || '').toLowerCase();
+  const iso = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return iso[0];
+  if (!rel) return null;
+  if (/release day|day of release|drop day|launch day|release date|out today|^day 0|d-?day/.test(s)) return rel;
+  let m;
+  if ((m = s.match(/(\d+)\s*(weeks?|wks?)\s*(out|before|prior|pre|to go|until)/))) return pcAddDays(rel, -7 * m[1]);
+  if ((m = s.match(/(\d+)\s*days?\s*(out|before|prior|pre|to go|until)/))) return pcAddDays(rel, -m[1]);
+  if ((m = s.match(/(\d+)\s*(weeks?|wks?)\s*(after|post|later)/))) return pcAddDays(rel, 7 * m[1]);
+  if ((m = s.match(/(\d+)\s*days?\s*(after|post|later)/))) return pcAddDays(rel, +m[1]);
+  if (/(a|one)\s*week\s*(after|post|later)|week after/.test(s)) return pcAddDays(rel, 7);
+  if (/(a|one)\s*week\s*(out|before|prior)|week before/.test(s)) return pcAddDays(rel, -7);
+  if (/day after/.test(s)) return pcAddDays(rel, 1);
+  if (/day before/.test(s)) return pcAddDays(rel, -1);
+  if ((m = s.match(/(?:day|d)\s*([+-]\s*\d+)/))) return pcAddDays(rel, parseInt(m[1].replace(/\s/g, ''), 10));
+  const MON = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  if ((m = s.match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b/)) || (m = s.match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/))) {
+    const mon = MON.indexOf(isNaN(m[1]) ? m[1] : m[2]), day = parseInt(isNaN(m[1]) ? m[2] : m[1], 10);
+    let y = parseInt(rel.slice(0, 4), 10);
+    const mk = (yy) => yy + '-' + String(mon + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    let g = mk(y);
+    const diff = (new Date(g) - new Date(rel)) / 86400000;
+    if (diff > 180) g = mk(y - 1); else if (diff < -180) g = mk(y + 1);
+    if (day >= 1 && day <= 31) return g;
+  }
+  if ((m = s.match(/\b(\d{1,2})\/(\d{1,2})\b/))) {
+    let y = parseInt(rel.slice(0, 4), 10);
+    const g = y + '-' + String(m[1]).padStart(2, '0') + '-' + String(m[2]).padStart(2, '0');
+    if (!isNaN(new Date(g))) return g;
+  }
+  return null;
+}
+function pcEvents(data, rel) {
+  rel = /^\d{4}-\d{2}-\d{2}$/.test(String(rel || '')) ? rel : null;
+  const items = Array.isArray(data && data.timeline) ? data.timeline : [];
+  const out = [];
+  let last = rel ? pcAddDays(rel, -29) : null;
+  items.forEach(it => {
+    let iso = pcGuessIso(it, rel);
+    if (!iso && last) iso = pcAddDays(last, 1);       // no date we can read: the day after the step before it
+    if (!iso) return;
+    last = iso;
+    out.push({ iso, title: String(it.task || 'Release step').trim(), detail: String(it.detail || '').trim(), tool: String(it.tool || '').trim() || pcToolFor(it) });
+  });
+  if (rel && !out.some(e => e.iso === rel)) out.push({ iso: rel, title: 'Release day', detail: 'Your song is out today. Share it everywhere and keep posting.', tool: 'ads' });
+  return out.sort((a, b) => a.iso.localeCompare(b.iso));
+}
+// older plans don't say which tool fits a step: match it by its words
+function pcToolFor(it) {
+  const s = (String(it.task || '') + ' ' + String(it.detail || '')).toLowerCase();
+  if (/cover|artwork|album art/.test(s)) return 'art';
+  if (/lyric video|visualizer|canvas/.test(s)) return 'lyric';
+  if (/\bads?\b|boost|promote|campaign|meta ads|tiktok ads|spark/.test(s)) return 'ads';
+  if (/master/.test(s)) return 'master';
+  if (/distribut|upload|metadata|isrc|pitch|spotify for artists|checklist/.test(s)) return 'check';
+  if (/merch|t-shirt|hoodie/.test(s)) return 'merch';
+  if (/snippet|teaser|clip|sound/.test(s)) return 'trim';
+  return 'plan';
+}
+function pcEsc(t) { return String(t == null ? '' : t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+// calendar lines may be at most 75 bytes: wrap long ones without splitting a character
+function pcFold(line) {
+  const out = []; let cur = '', bytes = 0;
+  for (const ch of line) {
+    const b = unescape(encodeURIComponent(ch)).length;
+    if (bytes + b > 74) { out.push(cur); cur = ' '; bytes = 1; }
+    cur += ch; bytes += b;
+  }
+  out.push(cur);
+  return out.join('\r\n');
+}
+function pcIcs(name, events, base, uidSeed) {
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//StudioSound//Release Plan//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    pcFold('X-WR-CALNAME:' + pcEsc((name || 'My release') + ' release plan'))];
+  const seed = String(uidSeed || name || 'plan').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+  events.forEach((e, i) => {
+    const link = base + '/app.html#' + (e.tool || 'plan');
+    L.push('BEGIN:VEVENT', 'UID:' + seed + '-' + e.iso + '-' + i + '@studiosound', 'DTSTAMP:' + stamp,
+      'DTSTART;VALUE=DATE:' + e.iso.replace(/-/g, ''), 'DTEND;VALUE=DATE:' + pcAddDays(e.iso, 1).replace(/-/g, ''),
+      pcFold('SUMMARY:' + pcEsc('🎵 ' + e.title)),
+      pcFold('DESCRIPTION:' + pcEsc(e.detail + '\n\nDo it in StudioSound: ' + link)),
+      pcFold('URL:' + link),
+      'BEGIN:VALARM', 'ACTION:DISPLAY', pcFold('DESCRIPTION:' + pcEsc(e.title)), 'TRIGGER:PT9H', 'END:VALARM',
+      'END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.join('\r\n') + '\r\n';
+}
+
+function pcNiceDate(iso) { try { return new Date(iso + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }); } catch (e) { return iso; } }
+function pcName() { return (document.getElementById('plan-name').value || '').trim() || 'My release'; }
+function pcSay(html) { const n = document.getElementById('pc-note'); if (n) n.innerHTML = html; }
+function pcIsIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+// a private link to this plan's calendar (only works for a saved plan)
+async function pcLink() {
+  if (!lastPlanAssetId) return null;
+  try {
+    const r = await fetch('/api/plan-calendar', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ id: lastPlanAssetId }) });
+    const d = await r.json();
+    return d && d.url ? d.url : null;
+  } catch (e) { return null; }
+}
+function pcDownload() {
+  const ev = pcEvents(lastPlanData, lastPlanRelease);
+  const ics = pcIcs(pcName(), ev, window.location.origin, 'plan-' + (lastPlanAssetId || pcName()));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+  a.download = pcName().replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') + '-release-plan.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  return ev.length;
+}
+async function pcApple() {
+  if (!lastPlanData) return;
+  if (pcIsIOS()) {
+    // iPhone: opening the calendar link shows "Add All", with the reminders included
+    const w = window.open('', '_blank');
+    const url = await pcLink();
+    if (url) { if (w) w.location = url; else window.location.href = url; pcSay('Tap <b>Add All</b> on the next screen. Your reminders come at 9 AM on each step\u2019s day.'); return; }
+    if (w) w.close();
+  }
+  const n = pcDownload();
+  pcSay('\u2713 Downloaded ' + n + ' events. Open the file and choose <b>Add All</b> (Mac Calendar or iPhone) or <b>Import</b> (Outlook).');
+}
+async function pcGoogle() {
+  if (!lastPlanData) return;
+  const w = window.open('', '_blank');
+  const url = await pcLink();
+  if (url) {
+    const g = 'https://calendar.google.com/calendar/render?cid=' + encodeURIComponent(url.replace(/^https:/, 'webcal:'));
+    if (w) w.location = g; else window.location.href = g;
+    pcSay('Tap <b>Add</b> in Google Calendar and the whole plan shows up as its own calendar. Google doesn\u2019t send reminders for added calendars, so for phone alerts <a style="color:var(--neon);font-weight:700;cursor:pointer;" onclick="pcDownload();pcSay(\'\u2713 Downloaded. On a computer, open Google Calendar \u2192 Settings \u2192 Import & export \u2192 Import, and pick the file. Each step then reminds you like any event.\')">download the file</a> and import it instead.');
+    return;
+  }
+  if (w) w.close();
+  pcDownload();
+  pcSay('\u2713 Downloaded. On a computer, open Google Calendar \u2192 Settings \u2192 Import & export \u2192 Import, and pick the file. Each step then reminds you like any event.');
 }
 
 // ====== MANAGERS: an artist lets their manager work in their account ======
@@ -5688,7 +5857,7 @@ function loadRecent(index) {
     switchTool('plan', null);
     setToolActive(document.querySelector('.tool-card[data-tool=plan]'));
     document.getElementById('plan-name').value = item.name || '';
-    renderPlan(item.data);
+    renderPlan(item.data, item.id);
     window.scrollTo({top:0, behavior:'smooth'});
     return;
   }
