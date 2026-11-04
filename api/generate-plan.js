@@ -97,7 +97,7 @@ Return ONLY valid JSON (no markdown, no other text) with this exact shape:
   "artist_snapshot": "2-3 sentences on where they stand right now (cite real findings: platforms, audience sizes, comparable artists) and the single biggest lever for this release",
   "budget_breakdown": [ { "item": "what to spend on", "amount": "$X", "why": "one sentence" } ],
   "trend_tactics": [ "5 specific tactics working RIGHT NOW in their genre at their size — pulled from the research where possible, each concrete enough to start today" ],
-  "timeline": [ { "date": "specific date or 'X weeks out'", "task": "short action title", "detail": "specific actionable detail: platform names, exact posting counts, best times for their city timezone, genre-specific angles, similar-artist examples where relevant" } ]
+  "timeline": [ { "date": "specific date or 'X weeks out'", "days_from_release": "whole number of days from release day for this step: negative before release (e.g. -21), 0 on release day, positive after", "tool": "the StudioSound tool that does this step, or empty: art (cover art), lyric (lyric video / visualizer clip), ads (paid ads), master (mastering), check (release checklist / distributor upload / metadata), merch (merch), trim (cutting a snippet or TikTok sound), writer (lyrics), forecast (earnings)", "task": "short action title", "detail": "specific actionable detail: platform names, exact posting counts, best times for their city timezone, genre-specific angles, similar-artist examples where relevant" } ]
 }
 
 Rules: 12-14 timeline items covering 4 weeks pre-release through 1 week post-release. Budget breakdown must sum to their stated budget (or be an empty array if no budget given). Every timeline item must be executable without asking a single follow-up question.`
@@ -115,6 +115,21 @@ Rules: 12-14 timeline items covering 4 weeks pre-release through 1 week post-rel
     let content = data.choices[0].message.content;
     content = content.replace(/```json/g, '').replace(/```/g, '').trim();
     const plan = JSON.parse(content);
+
+    // Real calendar dates for every step (so the plan can go straight onto the artist's calendar)
+    const TOOLS = ['art', 'lyric', 'ads', 'master', 'check', 'merch', 'trim', 'writer', 'forecast'];
+    const rel = /^\d{4}-\d{2}-\d{2}$/.test(String(releaseDate || '')) ? new Date(releaseDate + 'T12:00:00Z') : null;
+    if (Array.isArray(plan.timeline)) {
+      plan.timeline.forEach(item => {
+        const d = parseInt(item.days_from_release, 10);
+        if (rel && Number.isFinite(d) && d >= -90 && d <= 60) {
+          item.days_from_release = d;
+          item.iso = new Date(rel.getTime() + d * 86400000).toISOString().slice(0, 10);
+        } else delete item.days_from_release;
+        item.tool = TOOLS.includes(String(item.tool || '').toLowerCase()) ? String(item.tool).toLowerCase() : '';
+      });
+    }
+    if (rel) plan.release_date = releaseDate;
 
     // Log the full generation — inputs, research, and output — to the dataset
     logGeneration(gate.userId, 'release_plan',

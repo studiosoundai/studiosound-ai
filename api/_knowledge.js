@@ -45,7 +45,8 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
   plan: `RELEASE PLANNER
 - Enter project name, artist name exactly as on Spotify, social handle (so it researches the right artist), release date, genre, career stage, city, budget and details.
 - It researches the artist and their lane on the live web, then builds a personalized 30-day rollout: strategy summary, artist snapshot, budget breakdown, tactics working right now in their genre, and a dated timeline from 4 weeks out to 1 week after.
-- Export as PDF. Plans save to My Assets and reopen there.`,
+- Export as PDF. Plans save to My Assets and reopen there.
+- "Put this plan on your calendar" (top of every plan): "iPhone, Mac or Outlook" adds every step to their calendar on its day with a 9 AM reminder (on iPhone tap Add All; on a computer open the downloaded file). "Google Calendar" adds the plan as its own calendar in one tap, but Google doesn't send reminders for added calendars, so for alerts they download the file and import it on a computer (Google Calendar > Settings > Import & export). Each calendar step links straight to the right StudioSound tool.`,
 
   lyrics: `LYRIC WRITER
 - Writes from a description in English, Spanish or Spanglish: full song, verse + hook, or hook only; explicit or clean.
