@@ -65,7 +65,8 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - The card: growing / holding steady / slowing down / early days, a one-line verdict, the key numbers with their change, what's working, what to keep an eye on, where it's hitting (cities and countries), and 3 next moves with a button into the right tool (ad kit for those cities, lyric video, cut the hook, release plan...).
 - Run it every week on the same song title and the card says what changed since last time. Cards save to My Assets.
 - Spotify for Artists doesn't show skip rate; saves, playlist adds and plays per listener are the "do they like it" signals. "Programmed" listeners found the song through Spotify's own playlists and radio.
-- Limits: Free 1 a month, Pro 8, Premium 30. Coming: Stop One artists get it automatically every week, plus a weekly email.`,
+- Limits: Free 1 a month, Pro 8, Premium 30. Coming: Stop One artists get it automatically every week.
+- Release alerts & weekly numbers (top of the Song Report Card page): paste your Spotify artist link once (Spotify: artist page > ... > Share > Copy link to artist; a song link works too). The day a new song shows up on Spotify they get a "congrats, here's your first week" email; a week later a "how's it doing? get your Report Card" email. Songs already out when they connect never trigger emails. Every week we save free public numbers (Spotify popularity 0-100 and followers, Last.fm listeners, Deezer fans) and show the change; the Report Card uses them too. Emails can be switched off with the toggle or the link at the bottom of any email.`,
 
   merch: `MERCH MOCKUPS
 - Upload art and see it on real AI-generated product mockups: tees, hoodies, hats, phone cases, posters, tote bags, sweatpants, jackets (8 products, 8 colors).

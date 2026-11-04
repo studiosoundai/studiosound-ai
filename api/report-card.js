@@ -111,11 +111,13 @@ export default async function handler(req, res) {
 
     // 2) write the report card
     const prev = body.previous && typeof body.previous === 'object' ? JSON.stringify(body.previous).slice(0, 6000) : '';
+    const pub = body.public_numbers && typeof body.public_numbers === 'object' ? JSON.stringify(body.public_numbers).slice(0, 3000) : '';
     const card = await ai([
       { role: 'system', content: WRITE },
       { role: 'user', content: `Today is ${new Date().toISOString().slice(0, 10)}. Song: "${title || 'this song'}" by ${artist || 'the artist'}.` + (body.notes ? `\nWhat the artist wants: ${clip(body.notes, 300)}` : '') +
         `\n\nNUMBERS READ FROM THEIR DASHBOARDS:\n${JSON.stringify(metrics).slice(0, 12000)}` +
-        (prev ? `\n\nTHEIR LAST REPORT CARD'S NUMBERS (for vs_last):\n${prev}` : '\n\nNo last report card.') },
+        (prev ? `\n\nTHEIR LAST REPORT CARD'S NUMBERS (for vs_last):\n${prev}` : '\n\nNo last report card.') +
+        (pub ? `\n\nPUBLIC NUMBERS WE TRACK EVERY WEEK FOR THIS ARTIST (whole artist, not just this song; Spotify popularity is Spotify's 0-100 score of how hot the artist is right now). Use them as background, e.g. "your Spotify popularity went from 18 to 24 this week":\n${pub}` : '') },
     ], 1800);
 
     // keep it tidy
