@@ -322,6 +322,47 @@ body{overflow:auto;height:auto;}
 .mg-bar .sp{flex:1;min-width:180px;}
 .mg-invite{border-color:#FFC83D66;background:#FFC83D0d;}
 .mg-switch{margin:0 0 10px;}
+/* Song Report Card */
+.rc-drop{border:1px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:#0f0f1a;transition:border-color .15s;}
+.rc-drop:hover,.rc-drop.over{border-color:var(--neon);}
+.rc-drop b{display:block;color:#fff;font-size:13px;}
+.rc-drop small{color:var(--muted);font-size:11px;}
+.rc-files{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.rc-file{position:relative;width:86px;height:64px;border-radius:8px;overflow:hidden;border:0.5px solid var(--border);background:#0f0f1a;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;text-align:center;padding:4px;}
+.rc-file img{width:100%;height:100%;object-fit:cover;}
+.rc-file button{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;border:none;background:#000c;color:#fff;font-size:11px;line-height:18px;cursor:pointer;padding:0;}
+.rc-tips{background:#0f0f1a;border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--muted);font-size:11.5px;line-height:1.6;margin-top:10px;}
+.rc-tips b{color:#e8e8f5;}
+.rc-card{display:flex;flex-direction:column;gap:14px;}
+.rc-head{border-radius:12px;padding:16px 18px;background:linear-gradient(135deg,#0d1a1a,#0a0a14);border:0.5px solid var(--border);}
+.rc-pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:4px 10px;margin-bottom:10px;}
+.rc-pill.growing{background:#00FFD11f;color:var(--neon);} .rc-pill.steady{background:#5b8cff22;color:#8fb0ff;}
+.rc-pill.slowing{background:#FFC83D22;color:#FFC83D;} .rc-pill.early{background:#b26bff22;color:#cfa3ff;}
+.rc-headline{color:#fff;font-size:19px;font-weight:800;line-height:1.3;}
+.rc-summary{color:#c8c8dc;font-size:13px;line-height:1.6;margin-top:8px;}
+.rc-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.rc-num{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
+.rc-num .l{color:var(--muted);font-size:10px;font-weight:700;line-height:1.3;min-height:26px;}
+.rc-num .v{color:#fff;font-size:20px;font-weight:800;margin-top:2px;}
+.rc-num .c{font-size:11px;font-weight:800;margin-left:6px;}
+.rc-num .c.up{color:var(--neon);} .rc-num .c.down{color:#ff8a8a;}
+.rc-sec{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:12px 14px;}
+.rc-sec .t{font-size:10px;font-weight:800;letter-spacing:.08em;margin-bottom:8px;}
+.rc-sec ul{margin:0;padding-left:0;list-style:none;}
+.rc-sec li{color:#e8e8f5;font-size:12.5px;line-height:1.55;padding-left:22px;position:relative;margin-bottom:6px;}
+.rc-sec li:before{position:absolute;left:0;top:0;}
+.rc-ok .t{color:var(--neon);} .rc-ok li:before{content:'✓';color:var(--neon);font-weight:800;}
+.rc-watch .t{color:#FFC83D;} .rc-watch li:before{content:'!';color:#FFC83D;font-weight:900;left:5px;}
+.rc-where{display:flex;flex-wrap:wrap;gap:8px;}
+.rc-where div{background:#00FFD10d;border:0.5px solid #00FFD140;border-radius:10px;padding:7px 10px;}
+.rc-where b{display:block;color:#fff;font-size:12px;} .rc-where span{color:var(--muted);font-size:10.5px;}
+.rc-move{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;padding:10px 0;border-top:0.5px solid var(--border);}
+.rc-move:first-of-type{border-top:none;padding-top:2px;}
+.rc-move .n{width:26px;height:26px;border-radius:50%;background:var(--neon);color:#05050a;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.rc-move p{margin:0 0 7px;color:#e8e8f5;font-size:12.5px;line-height:1.55;}
+.rc-move button{background:none;border:0.5px solid var(--neon);color:var(--neon);border-radius:8px;padding:6px 11px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;}
+.rc-src{color:#5a5a72;font-size:10.5px;line-height:1.5;}
+@media(max-width:768px){ .rc-nums{grid-template-columns:repeat(2,1fr);} .rc-headline{font-size:17px;} }
 /* release plan -> calendar */
 .pc-box{border:1px solid var(--neon);background:#00FFD10a;border-radius:10px;padding:14px 16px;margin-bottom:12px;}
 .pc-box .t{color:#fff;font-size:14px;font-weight:800;margin-bottom:4px;}
@@ -361,6 +402,7 @@ body{overflow:auto;height:auto;}
   <div class="sidebar-section">
     <div class="sidebar-label">TOOLS</div>
     <button class="sidebar-item" onclick="switchTool('forecast',this)"><i class="ti ti-chart-line"></i> Earnings Forecast <span class="badge">NEW</span></button>
+    <button class="sidebar-item rc-gate" style="display:none;" onclick="switchTool('report',this)"><i class="ti ti-report-analytics"></i> Song Report Card <span class="badge">NEW</span></button>
     <button class="sidebar-item mx-gate" style="display:none;" onclick="switchTool('master',this)"><i class="ti ti-adjustments-horizontal"></i> Mastering <span class="badge">NEW</span></button>
     <button class="sidebar-item" onclick="switchTool('lyric',this)"><i class="ti ti-video"></i> Lyric Videos <span class="badge">BETA</span></button>
     <button class="sidebar-item active" onclick="switchTool('art',this)"><i class="ti ti-disc"></i> Cover Art <span class="badge">LIVE</span></button>
@@ -1104,6 +1146,50 @@ body{overflow:auto;height:auto;}
       </div>
     </div>
 
+    <!-- SONG REPORT CARD -->
+    <div id="tool-report" class="hidden">
+      <div class="generator" style="align-items:start;">
+        <div class="gen-panel">
+          <div class="gen-title">📊 Song Report Card</div>
+          <div class="gen-sub">How is your song really doing? Add screenshots of your stats and get it in plain words: what's working, what's slowing down, where it's hitting, and your next move.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Song title <span style="color:var(--neon);">*</span></label><input class="form-input" id="rc-title" placeholder="The song you want a report on"/></div>
+            <div class="form-group"><label class="form-label">Artist name <span style="color:var(--neon);">*</span></label><input class="form-input" id="rc-artist" placeholder="As it appears on Spotify"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Your stats <span style="color:var(--neon);">*</span></label>
+            <div class="rc-drop" id="rc-drop" onclick="document.getElementById('rc-input').click()"><i class="ti ti-photo-up" style="font-size:24px;color:var(--neon);display:block;margin-bottom:4px;"></i><b>Add screenshots of your stats</b><small>Up to 6 screenshots, or the file from Spotify for Artists' download button</small></div>
+            <input type="file" id="rc-input" accept="image/*,.csv,text/csv" multiple style="display:none;" onchange="rcAdd(this.files);this.value=''"/>
+            <div class="rc-files" id="rc-files"></div>
+            <div class="rc-tips"><b>The best 5 screenshots:</b><br>
+              <b>1.</b> Spotify for Artists → Music → your song: the numbers at the top (streams, listeners, saves, playlist adds)<br>
+              <b>2.</b> Same song page → Source of streams (how people found it)<br>
+              <b>3.</b> Spotify for Artists → Audience → Location (top countries and cities)<br>
+              <b>4.</b> Distribution Dashboard → your song (streams on every platform, TikTok views, Shazams)<br>
+              <b>5.</b> Distribution Dashboard → top cities<br>
+              <b>Extra:</b> Audience → Segments, Apple Music for Artists, TikTok analytics.<br>
+              <b>Tip:</b> use the same time period every time (28 days on Spotify, 1m on Stop One) so the weekly comparison is fair.</div>
+          </div>
+          <div class="form-group"><label class="form-label">What are you going for? <span style="color:#5a5a72;">(optional)</span></label><input class="form-input" id="rc-notes" placeholder="e.g. more fans in Atlanta, get on playlists, grow on TikTok"/></div>
+          <button class="gen-btn" id="rc-btn" onclick="rcGenerate()"><i class="ti ti-report-analytics"></i> Make my report card</button>
+          <div style="color:#5a5a72;font-size:10px;margin-top:10px;line-height:1.6;">We only read the numbers on your screenshots. Run it every week on the same song and your card shows what changed.</div>
+        </div>
+        <div class="gen-panel">
+          <div class="gen-title">Your Report Card</div>
+          <div class="gen-sub">Plain words, real numbers, and what to do next</div>
+          <div class="ad-empty" id="rc-placeholder">
+            <div class="ad-empty-title">WHAT YOU'LL GET</div>
+            <div class="ad-empty-item"><i class="ti ti-trending-up"></i><div><b>How it's doing, in one line</b><small>Growing, holding steady or slowing down, and why</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-check"></i><div><b>What's working and what isn't</b><small>Saves, replays, TikTok, Shazams, who's coming back</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-map-pin"></i><div><b>Where it's hitting</b><small>The cities and countries to focus on</small></div></div>
+            <div class="ad-empty-item"><i class="ti ti-arrow-right"></i><div><b>Your next 3 moves</b><small>With a button into the right tool, like an ad kit aimed at those cities</small></div></div>
+          </div>
+          <div class="loading" id="rc-loading"><div class="loading-spinner"></div><div class="loading-text" id="rc-loading-text">Reading your numbers...</div></div>
+          <div class="error-msg" id="rc-error"></div>
+          <div id="rc-result" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- AD GENERATOR -->
     <div id="tool-ads" class="hidden">
       <div class="generator" style="align-items:start;">
@@ -1711,7 +1797,7 @@ function applyDeepLink() {
     '#resize':'resize', '#wav':'audio', '#audio':'audio', '#trim':'trim', '#split':'split',
     '#forecast':'forecast', '#earnings':'forecast',
     '#meta':'meta', '#metadata':'meta', '#check':'check', '#checklist':'check',
-    '#ads':'ads', '#ad':'ads', '#adgenerator':'ads', '#master':'master', '#mastering':'master'
+    '#ads':'ads', '#ad':'ads', '#adgenerator':'ads', '#master':'master', '#mastering':'master', '#report':'report', '#reportcard':'report'
   };
   let tool = map[(location.hash || '').toLowerCase()];
   // New artists who clicked a tool on the homepage signed up first: send them to that tool once.
@@ -1778,7 +1864,7 @@ async function showAssetsPanel() {
   }
   grid.innerHTML = items.map((a, i) => `
     <div class="recent-item">
-      <div class="recent-thumb" ${a.tool==='Master' && a.data && a.data.job ? `onclick="openMasterAsset(${i})" style="cursor:pointer;" title="Open this master"` : a.tool==='Ad Kit' && a.data && a.data.primary_text ? `onclick="openAdAsset(${i})" style="cursor:pointer;" title="Open this ad kit"` : a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
+      <div class="recent-thumb" ${a.tool==='Master' && a.data && a.data.job ? `onclick="openMasterAsset(${i})" style="cursor:pointer;" title="Open this master"` : a.tool==='Ad Kit' && a.data && a.data.primary_text ? `onclick="openAdAsset(${i})" style="cursor:pointer;" title="Open this ad kit"` : a.tool==='Report Card' && a.data && a.data.card ? `onclick="rcOpen(assetsCache[${i}].data)" style="cursor:pointer;" title="Open this report card"` : a.tool==='Release Plan' && a.data ? `onclick="openPlanAsset(${i})" style="cursor:pointer;"` : (a.tool==='Forecast' && a.data && a.data.scenarios ? `onclick="openForecastAsset(${i})" style="cursor:pointer;"` : (a.data && a.data.videoUrl ? `onclick="playVideoAsset(${i})" style="cursor:pointer;" title="Click to play your video"` : (a.tool==='Lyric Video' ? `onclick="alert('This video doesn\\'t have a cloud copy — it was made before cloud saving, or the file was too large to store. The download on your device is your copy. Tip: 15s and 30s clips always save here.')" style="cursor:pointer;"` : (a.url ? `onclick="window.open('${a.url}','_blank')" style="cursor:pointer;" title="Click to view full size"` : ''))))}>
         <img src="${a.url || toolThumb(a.tool)}" alt="${a.name||a.tool}" style="width:100%;height:80px;object-fit:cover;display:block;"/>
       </div>
       <div class="recent-info">
@@ -1786,6 +1872,7 @@ async function showAssetsPanel() {
         <div class="recent-meta">${a.tool} · ${new Date(a.created_at).toLocaleDateString()}${a.data && a.data._by ? ' · by ' + tmEsc(a.data._by) : ''}</div>
         ${a.url ? `<a href="${a.url}" download target="_blank" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;">Download ↓</a>` : ''}
         ${a.tool==='Master' && a.data && a.data.job ? `<a onclick="openMasterAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Master →</a>` : ''}
+        ${a.tool==='Report Card' && a.data && a.data.card ? `<a onclick="rcOpen(assetsCache[${i}].data)" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Report Card →</a>` : ''}
         ${a.tool==='Ad Kit' && a.data && a.data.primary_text ? `<a onclick="openAdAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">Open Ad Kit →</a>` : ''}
         ${a.tool==='Release Plan' && a.data ? `<a onclick="openPlanAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Plan →</a>` : ''}
         ${a.tool==='Forecast' && a.data && a.data.scenarios ? `<a onclick="openForecastAsset(${i})" style="color:var(--neon);font-size:9px;font-weight:700;text-decoration:none;cursor:pointer;">View Forecast →</a>` : ''}
@@ -1950,7 +2037,7 @@ function switchTool(tool, sidebarBtn) {
   document.querySelectorAll('[id^="tool-"]').forEach(t => t.classList.add('hidden'));
   document.getElementById('tool-' + tool).classList.remove('hidden');
   document.querySelectorAll('.tool-card').forEach(c => c.classList.toggle('active', c.dataset.tool === tool));
-  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', master:'Mastering', team:'Staff'};
+  const titles = {art:'Cover Art Generator', plan:'Release Plan Generator', merch:'Merch Mockup Studio', assets:'My Assets', settings:'Settings', resize:'Cover Art Resizer', audio:'MP3 → WAV Converter', trim:'Audio Trimmer', meta:'Metadata Formatter', split:'Split Sheet Generator', check:'Release Checklist', lyric:'Lyric Video Creator (Beta)', writer:'Lyric Writer', forecast:'Earnings Forecast', ads:'Ad Generator', report:'Song Report Card', master:'Mastering', team:'Staff'};
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
@@ -3163,6 +3250,145 @@ function mxRetry() {
   mxStop();
   document.getElementById('mx-result').style.display = 'none';
   document.getElementById('mx-placeholder').style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ====== SONG REPORT CARD ======
+let rcItems = [];   // [{ kind: 'image'|'file', name, data (dataURL or text), thumb }]
+const RC_TOOLS = {
+  ads: ['Make the ad kit', "rcGo('ads')"], lyric: ['Make a lyric video', "rcGo('lyric')"], trim: ['Cut the hook', "rcGo('trim')"],
+  art: ['Make new visuals', "rcGo('art')"], plan: ['Plan the next release', "rcGo('plan')"], master: ['Master it', "rcGo('master')"],
+  merch: ['Make merch', "rcGo('merch')"], check: ['Open the Release Checklist', "rcGo('check')"], forecast: ['See what it could earn', "rcGo('forecast')"],
+  distribute: ['Distribute with Stop One', "window.open('distribution.html','_blank')"]
+};
+function rcEsc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+async function rcInit() {
+  try { const d = await (await fetch('/api/report-card', { headers: await authHeaders() })).json(); if (d && d.enabled) document.querySelectorAll('.rc-gate').forEach(el => { el.style.display = ''; }); } catch (e) {}
+}
+rcInit();
+// screenshots get shrunk before upload (sharp enough to read, small enough to send)
+function rcShrink(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1600, sc = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+      let q = 0.85, url = c.toDataURL('image/jpeg', q);
+      while (url.length > 1800000 && q > 0.4) { q -= 0.15; url = c.toDataURL('image/jpeg', q); }
+      URL.revokeObjectURL(img.src); resolve(url);
+    };
+    img.onerror = () => reject(new Error('That image couldn’t be read.'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+async function rcAdd(files) {
+  const err = document.getElementById('rc-error'); err.style.display = 'none';
+  for (const f of Array.from(files || [])) {
+    const isCsv = /\.csv$/i.test(f.name) || /csv|text\/plain/.test(f.type);
+    if (isCsv) {
+      if (rcItems.filter(x => x.kind === 'file').length >= 3) continue;
+      const text = (await f.text()).slice(0, 20000);
+      rcItems.push({ kind: 'file', name: f.name, data: text });
+    } else if (/^image\//.test(f.type)) {
+      if (rcItems.filter(x => x.kind === 'image').length >= 6) { err.textContent = 'Up to 6 screenshots per report card.'; err.style.display = 'block'; continue; }
+      try { const url = await rcShrink(f); rcItems.push({ kind: 'image', name: f.name, data: url }); } catch (e) { err.textContent = e.message; err.style.display = 'block'; }
+    }
+  }
+  rcDrawFiles();
+}
+function rcRemove(i) { rcItems.splice(i, 1); rcDrawFiles(); }
+function rcDrawFiles() {
+  document.getElementById('rc-files').innerHTML = rcItems.map((x, i) => '<div class="rc-file">' + (x.kind === 'image' ? '<img src="' + x.data + '" alt=""/>' : '<span><i class="ti ti-file-spreadsheet" style="font-size:18px;color:var(--neon);display:block;"></i>' + rcEsc(x.name.slice(0, 24)) + '</span>') + '<button type="button" aria-label="Remove" onclick="rcRemove(' + i + ')">×</button></div>').join('');
+}
+(function rcDragDrop() {
+  const d = document.getElementById('rc-drop'); if (!d) return;
+  ['dragenter', 'dragover'].forEach(ev => d.addEventListener(ev, e => { e.preventDefault(); d.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => d.addEventListener(ev, e => { e.preventDefault(); d.classList.remove('over'); }));
+  d.addEventListener('drop', e => rcAdd(e.dataTransfer.files));
+})();
+// the last report card for this song, so the new one can say what changed
+async function rcPrevious(title) {
+  try {
+    const r = await loadAssets();
+    const t = String(title || '').trim().toLowerCase();
+    const a = (r.items || []).find(x => x.tool === 'Report Card' && x.data && x.data._inputs && String(x.data._inputs.title || '').trim().toLowerCase() === t && x.data.metrics);
+    return a ? { date: a.created_at, period: a.data.metrics.period, stats: a.data.metrics.stats, audience_mix: a.data.metrics.audience_mix } : null;
+  } catch (e) { return null; }
+}
+async function rcGenerate() {
+  const title = document.getElementById('rc-title').value.trim(), artist = document.getElementById('rc-artist').value.trim();
+  const err = document.getElementById('rc-error'); err.style.display = 'none';
+  if (!title || !artist) { err.textContent = 'Add the song title and your artist name.'; err.style.display = 'block'; return; }
+  if (!rcItems.length) { err.textContent = 'Add at least one screenshot of your stats.'; err.style.display = 'block'; return; }
+  const btn = document.getElementById('rc-btn'); btn.disabled = true;
+  document.getElementById('rc-placeholder').style.display = 'none';
+  document.getElementById('rc-result').style.display = 'none';
+  document.getElementById('rc-loading').classList.add('active');
+  const lt = document.getElementById('rc-loading-text'); lt.textContent = 'Reading your numbers...';
+  const tm = setTimeout(() => { lt.textContent = 'Writing your report card...'; }, 12000);
+  try {
+    const previous = await rcPrevious(title);
+    const payload = { title, artist, notes: document.getElementById('rc-notes').value.trim(), previous,
+      images: rcItems.filter(x => x.kind === 'image').map(x => x.data), files: rcItems.filter(x => x.kind === 'file').map(x => ({ name: x.name, text: x.data })) };
+    const res = await fetch('/api/report-card', { method: 'POST', headers: await authHeaders(), body: JSON.stringify(payload) });
+    const d = await res.json().catch(() => ({ error: 'Something went wrong. Try again.' }));
+    clearTimeout(tm);
+    document.getElementById('rc-loading').classList.remove('active');
+    if (d.error === 'limit_reached') { document.getElementById('rc-placeholder').style.display = 'flex'; showLimit('rc-error', 'report cards'); }
+    else if (d.error || !d.card) { document.getElementById('rc-placeholder').style.display = 'flex'; err.textContent = d.error || 'Something went wrong. Try again.'; err.style.display = 'block'; }
+    else {
+      const saved = { card: d.card, metrics: d.metrics, _inputs: { title, artist } };
+      rcRender(saved);
+      const name = title + ' \u2014 report card';
+      addRecent(null, name, 'Report Card', null, saved);
+      saveAsset('Report Card', name, null, saved);
+    }
+  } catch (e) {
+    clearTimeout(tm);
+    document.getElementById('rc-loading').classList.remove('active');
+    document.getElementById('rc-placeholder').style.display = 'flex';
+    err.textContent = 'Couldn’t reach the server. Try again.'; err.style.display = 'block';
+  }
+  btn.disabled = false;
+}
+const RC_VERDICT = { growing: '↗ GROWING', steady: '→ HOLDING STEADY', slowing: '↘ SLOWING DOWN', early: '● EARLY DAYS' };
+function rcRender(saved) {
+  const c = saved.card || {}, inp = saved._inputs || {};
+  let h = '<div class="rc-card">';
+  h += '<div class="rc-head"><div class="rc-pill ' + rcEsc(c.verdict) + '">' + (RC_VERDICT[c.verdict] || RC_VERDICT.steady) + '</div>' +
+    '<div class="rc-headline">' + rcEsc(c.headline) + '</div>' + (c.summary ? '<div class="rc-summary">' + rcEsc(c.summary) + '</div>' : '') + '</div>';
+  if ((c.numbers || []).length) h += '<div class="rc-nums">' + c.numbers.map(n => {
+    const up = /^\+|↑/.test(n.change || ''), down = /^-|−|↓/.test(n.change || '');
+    return '<div class="rc-num"><div class="l">' + rcEsc(n.label) + '</div><div class="v">' + rcEsc(n.value) + (n.change ? '<span class="c ' + (up ? 'up' : down ? 'down' : '') + '">' + rcEsc(n.change) + '</span>' : '') + '</div></div>';
+  }).join('') + '</div>';
+  if (c.vs_last) h += '<div class="rc-sec"><div class="t" style="color:#8fb0ff;">SINCE YOUR LAST REPORT</div><div style="color:#e8e8f5;font-size:12.5px;line-height:1.55;">' + rcEsc(c.vs_last) + '</div></div>';
+  if ((c.working || []).length) h += '<div class="rc-sec rc-ok"><div class="t">WHAT\u2019S WORKING</div><ul>' + c.working.map(x => '<li>' + rcEsc(x) + '</li>').join('') + '</ul></div>';
+  if ((c.watch || []).length) h += '<div class="rc-sec rc-watch"><div class="t">KEEP AN EYE ON</div><ul>' + c.watch.map(x => '<li>' + rcEsc(x) + '</li>').join('') + '</ul></div>';
+  if ((c.where || []).length) h += '<div class="rc-sec"><div class="t" style="color:var(--neon);">WHERE IT\u2019S HITTING</div><div class="rc-where">' + c.where.map(w => '<div><b>' + rcEsc(w.place) + '</b><span>' + rcEsc(w.why) + '</span></div>').join('') + '</div></div>';
+  if ((c.moves || []).length) h += '<div class="rc-sec" style="border-color:var(--neon);"><div class="t" style="color:var(--neon);">YOUR NEXT 3 MOVES</div>' + c.moves.map((m, i) =>
+    '<div class="rc-move"><div class="n">' + (i + 1) + '</div><div><p>' + rcEsc(m.text) + '</p>' + (RC_TOOLS[m.tool] ? '<button type="button" onclick="' + RC_TOOLS[m.tool][1] + '">' + RC_TOOLS[m.tool][0] + ' \u2192</button>' : '') + '</div></div>').join('') + '</div>';
+  h += '<div class="rc-src">' + ((c.sources || []).length ? 'Read from: ' + rcEsc(c.sources.join(', ')) + (c.period ? ' \u00b7 ' + rcEsc(c.period) : '') + '. ' : '') + 'Run it again next week on \u201c' + rcEsc(inp.title || 'this song') + '\u201d and your card will show what changed.</div>';
+  h += '</div>';
+  const r = document.getElementById('rc-result'); r.innerHTML = h; r.style.display = 'block';
+  document.getElementById('rc-placeholder').style.display = 'none';
+}
+function rcOpen(saved) {
+  if (!saved || !saved.card) return;
+  switchTool('report', null);
+  const inp = saved._inputs || {};
+  document.getElementById('rc-title').value = inp.title || '';
+  document.getElementById('rc-artist').value = inp.artist || '';
+  rcRender(saved);
+  setTimeout(() => { const r = document.getElementById('rc-result'); if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
+// next-move buttons: open the tool with the song carried over
+function rcGo(tool) {
+  const title = document.getElementById('rc-title').value.trim(), artist = document.getElementById('rc-artist').value.trim();
+  switchTool(tool, null);
+  const set = (id, v) => { const el = document.getElementById(id); if (el && v && !el.value) el.value = v; };
+  if (tool === 'ads') { set('ad-title', title); set('ad-artist', artist); }
+  if (tool === 'plan') { set('plan-artist', artist); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -5853,6 +6079,7 @@ function loadRecent(index) {
     return;
   }
   if(item.type === 'Ad Kit' && item.data && item.data.primary_text) { openAdKit(item.data); return; }
+  if(item.type === 'Report Card' && item.data && item.data.card) { rcOpen(item.data); return; }
   if(item.type === 'Release Plan' && item.data) {
     switchTool('plan', null);
     setToolActive(document.querySelector('.tool-card[data-tool=plan]'));
