@@ -322,6 +322,30 @@ body{overflow:auto;height:auto;}
 .mg-bar .sp{flex:1;min-width:180px;}
 .mg-invite{border-color:#FFC83D66;background:#FFC83D0d;}
 .mg-switch{margin:0 0 10px;}
+/* Release Watch (inside Song Report Card) */
+.rw-panel{margin-bottom:16px;}
+.rw-row{display:grid;grid-template-columns:1fr auto;gap:8px;}
+.rw-artist{display:flex;align-items:center;gap:12px;}
+.rw-artist img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#0f0f1a;}
+.rw-artist b{color:#fff;font-size:15px;display:block;}
+.rw-artist small{color:var(--muted);font-size:11px;}
+.rw-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:#e8e8f5;font-size:12px;font-weight:700;user-select:none;}
+.rw-toggle .sw{width:36px;height:20px;border-radius:10px;background:#2a2a3a;position:relative;transition:background .15s;}
+.rw-toggle .sw:after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
+.rw-toggle.on .sw{background:var(--neon);} .rw-toggle.on .sw:after{left:18px;}
+.rw-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
+.rw-stat{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:9px 11px;}
+.rw-stat .l{color:var(--muted);font-size:10px;font-weight:700;}
+.rw-stat .v{color:#fff;font-size:18px;font-weight:800;margin-top:2px;}
+.rw-stat .c{font-size:10.5px;font-weight:800;margin-left:5px;} .rw-stat .c.up{color:var(--neon);} .rw-stat .c.down{color:#ff8a8a;}
+.rw-rels{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+.rw-rel{display:flex;align-items:center;gap:10px;font-size:12px;color:#e8e8f5;}
+.rw-rel img{width:32px;height:32px;border-radius:6px;object-fit:cover;}
+.rw-rel span{color:var(--muted);font-size:10.5px;}
+.rw-links{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+.rw-links a{color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;}
+.rw-links a:hover{color:#fff;}
+@media(max-width:768px){ .rw-stats{grid-template-columns:repeat(2,1fr);} .rw-row{grid-template-columns:1fr;} }
 /* Song Report Card */
 .rc-drop{border:1px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:#0f0f1a;transition:border-color .15s;}
 .rc-drop:hover,.rc-drop.over{border-color:var(--neon);}
@@ -1153,6 +1177,11 @@ body{overflow:auto;height:auto;}
 
     <!-- SONG REPORT CARD -->
     <div id="tool-report" class="hidden">
+      <div class="gen-panel rw-panel rw-gate" id="rw-panel" style="display:none;">
+        <div class="gen-title">📡 Release alerts &amp; weekly numbers</div>
+        <div id="rw-body"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
+        <div class="error-msg" id="rw-error"></div>
+      </div>
       <div class="generator" style="align-items:start;">
         <div class="gen-panel">
           <div class="gen-title">📊 Song Report Card</div>
@@ -1699,6 +1728,7 @@ sbAuth.auth.getSession().then(async ({ data }) => {
 
   // managers: which account are we working in? (must be known before anything loads or saves)
   await mgInit();
+  rwInit();
 
   // show real plan in sidebar
   if (!mgActing) try {
@@ -3259,6 +3289,69 @@ function mxRetry() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ====== RELEASE WATCH: paste your Spotify artist link once; new-release + one-week emails, free weekly numbers ======
+let rwState = null;
+async function rwFetch(body) {
+  const r = await fetch('/api/release-watch', body ? { method: 'POST', headers: await authHeaders(), body: JSON.stringify(body) } : { headers: await authHeaders() });
+  const d = await r.json().catch(() => ({ error: 'Couldn\u2019t reach the server. Try again.' }));
+  if (d && d.enabled) rwState = d;
+  return d;
+}
+function rwErr(t) { const e = document.getElementById('rw-error'); if (e) { e.textContent = t || ''; e.style.display = t ? 'block' : 'none'; } }
+function rwNum(n) { if (n == null || isNaN(n)) return '\u2014'; n = Number(n); return n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : n >= 1e4 ? Math.round(n / 1e3) + 'K' : n >= 1e3 ? (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K' : String(n); }
+function rwDelta(a, b, fmt) {
+  if (a == null || b == null || a === b) return '';
+  const d = a - b; return '<span class="c ' + (d > 0 ? 'up' : 'down') + '">' + (d > 0 ? '+' : '\u2212') + (fmt ? fmt(Math.abs(d)) : Math.abs(d)) + '</span>';
+}
+function rwRender() {
+  const box = document.getElementById('rw-body'); if (!box) return;
+  const d = rwState || {};
+  const w = d.watch;
+  if (!w) {
+    box.innerHTML = '<div class="gen-sub" style="margin-bottom:10px;">Paste your Spotify artist link once. We\u2019ll email you the day a new song drops with your first-week plan, check in a week later with your Report Card, and track your Spotify numbers every week for free.</div>' +
+      '<div class="rw-row"><input class="form-input" id="rw-link" placeholder="https://open.spotify.com/artist/..." onkeydown="if(event.key===\'Enter\')rwConnect()"/><button class="gen-btn" id="rw-btn" style="margin:0;white-space:nowrap;" onclick="rwConnect()"><i class="ti ti-brand-spotify"></i> Turn on alerts</button></div>' +
+      '<div class="mx-note" style="margin-top:8px;">In Spotify: open your artist page \u2192 \u22ef \u2192 Share \u2192 Copy link to artist. A song link works too.</div>' +
+      (d.ready && !d.ready.spotify ? '<div class="mx-note" style="color:#FFC83D;margin-top:6px;">Setup: add SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in Vercel to switch this on.</div>' : '');
+    return;
+  }
+  const s0 = (d.snapshots[0] && d.snapshots[0].data) || {}, s1 = (d.snapshots[1] && d.snapshots[1].data) || {};
+  const g = (o, a, b) => o && o[a] != null ? (b ? o[a][b] : o[a]) : null;
+  const sp0 = s0.spotify || {}, sp1 = s1.spotify || {}, lf0 = s0.lastfm || {}, lf1 = s1.lastfm || {}, dz0 = s0.deezer || {}, dz1 = s1.deezer || {};
+  const stat = (label, v, prev, fmt) => '<div class="rw-stat"><div class="l">' + label + '</div><div class="v">' + (fmt ? fmt(v) : (v == null ? '\u2014' : v)) + rwDelta(v, prev, fmt) + '</div></div>';
+  let h = '<div class="rw-row" style="align-items:center;"><div class="rw-artist">' + (w.artist_image ? '<img src="' + rcEsc(w.artist_image) + '" alt=""/>' : '') +
+    '<div><b>' + rcEsc(w.artist_name || 'Your artist') + '</b><small>' + (w.alerts ? 'Release emails go to ' + rcEsc(w.email || 'your account email') : 'Release emails are off') + '</small></div></div>' +
+    '<label class="rw-toggle' + (w.alerts ? ' on' : '') + '" onclick="rwAlerts(' + (w.alerts ? 'false' : 'true') + ')"><span class="sw"></span> Release emails</label></div>';
+  h += '<div class="rw-stats">' + stat('Spotify popularity (0\u2013100)', sp0.popularity, sp1.popularity) + stat('Spotify followers', sp0.followers, sp1.followers, rwNum) +
+    stat('Last.fm listeners', lf0.listeners, lf1.listeners, rwNum) + stat('Deezer fans', dz0.fans, dz1.fans, rwNum) + '</div>';
+  h += '<div class="mx-note" style="margin-top:6px;">Updated every week' + (d.snapshots[0] ? ' \u00b7 last ' + rcEsc(d.snapshots[0].taken_on) : '') + (d.snapshots[1] ? ' \u00b7 changes are vs the week before' : ' \u00b7 next week shows what changed') + '.</div>';
+  const rels = (d.releases || []).slice(0, 3);
+  if (rels.length) h += '<div class="rw-rels">' + rels.map(r => '<div class="rw-rel">' + (r.image ? '<img src="' + rcEsc(r.image) + '" alt=""/>' : '') + '<div>' + rcEsc(r.name) + '<br><span>' + rcEsc(r.release_date || '') + ' \u00b7 ' + (r.baseline ? 'already out when you connected' : r.followup_at ? 'launch email + one-week check-in sent' : r.alerted_at ? 'launch email sent' : 'spotted') + '</span></div></div>').join('') + '</div>';
+  h += '<div class="rw-links"><a onclick="rwChange()">Change artist</a><a onclick="rwDisconnect(this)">Turn off and remove</a></div>';
+  if (d.ready && !d.ready.email) h += '<div class="mx-note" style="color:#FFC83D;margin-top:6px;">Setup: emails start once RESEND_API_KEY is added in Vercel.</div>';
+  box.innerHTML = h;
+}
+async function rwInit() {
+  try {
+    const d = await rwFetch();
+    if (d && d.enabled) { document.querySelectorAll('.rw-gate').forEach(el => { el.style.display = ''; }); rwRender(); }
+  } catch (e) {}
+}
+async function rwConnect() {
+  const link = (document.getElementById('rw-link') || {}).value || '';
+  rwErr('');
+  if (!/spotify/.test(link)) { rwErr('Paste your Spotify artist link (open.spotify.com/artist/...).'); return; }
+  const btn = document.getElementById('rw-btn'); if (btn) { btn.disabled = true; btn.innerHTML = 'Connecting\u2026'; }
+  const d = await rwFetch({ action: 'connect', link: link.trim() });
+  if (d.error) { rwErr(d.error); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-brand-spotify"></i> Turn on alerts'; } return; }
+  rwRender();
+}
+async function rwAlerts(on) { const d = await rwFetch({ action: 'alerts', on }); if (d.error) rwErr(d.error); rwRender(); }
+function rwChange() { if (rwState) rwState.watch = null; rwRender(); setTimeout(() => { const i = document.getElementById('rw-link'); if (i) i.focus(); }, 30); }
+async function rwDisconnect(a) {
+  if (a.dataset.confirm !== '1') { a.dataset.confirm = '1'; a.textContent = 'Tap again to turn off'; setTimeout(() => { a.dataset.confirm = ''; a.textContent = 'Turn off and remove'; }, 4000); return; }
+  const d = await rwFetch({ action: 'disconnect' }); if (d.error) rwErr(d.error); rwRender();
+}
+
 // ====== SONG REPORT CARD ======
 let rcItems = [];   // [{ kind: 'image'|'file', name, data (dataURL or text), thumb }]
 const RC_TOOLS = {
@@ -3360,7 +3453,8 @@ async function rcGenerate() {
   const tm = setTimeout(() => { lt.textContent = 'Writing your report card...'; }, 12000);
   try {
     const previous = await rcPrevious(title);
-    const payload = { title, artist, notes: document.getElementById('rc-notes').value.trim(), previous,
+    const pub = rwState && rwState.watch && rwState.snapshots && rwState.snapshots.length ? { artist: rwState.watch.artist_name, this_week: rwState.snapshots[0], week_before: rwState.snapshots[1] || null } : null;
+    const payload = { title, artist, notes: document.getElementById('rc-notes').value.trim(), previous, public_numbers: pub,
       images: rcItems.filter(x => x.kind === 'image').map(x => x.data), files: rcItems.filter(x => x.kind === 'file').map(x => ({ name: x.name, text: x.data })) };
     const res = await fetch('/api/report-card', { method: 'POST', headers: await authHeaders(), body: JSON.stringify(payload) });
     const d = await res.json().catch(() => ({ error: 'Something went wrong. Try again.' }));
