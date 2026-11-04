@@ -59,6 +59,14 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 - Saves as MP4 in Chrome, Safari and Edge (Firefox can only record WebM). On phones, "Save to Photos / Share" then "Save Video" puts it in the camera roll. "Download again" is there after export.
 - A cloud copy saves to My Assets when the file is under about 45 MB (15s and 30s clips always fit); otherwise the file on the device is the copy.`,
 
+  report: `SONG REPORT CARD (rolling out)
+- "How is my song doing?" in plain words. The artist adds the song title, their artist name, and up to 6 screenshots of their stats (or the file from Spotify for Artists' download button), plus an optional goal.
+- Best screenshots: Spotify for Artists > Audience > Overview (the numbers at the top), Segments and Location, or the song's page; the Stop One dashboard Overview (streams by platform, TikTok/Instagram/YouTube views of videos using the sound, Shazams) and top cities. Apple Music for Artists, YouTube Studio and TikTok analytics also work.
+- The card: growing / holding steady / slowing down / early days, a one-line verdict, the key numbers with their change, what's working, what to keep an eye on, where it's hitting (cities and countries), and 3 next moves with a button into the right tool (ad kit for those cities, lyric video, cut the hook, release plan...).
+- Run it every week on the same song title and the card says what changed since last time. Cards save to My Assets.
+- Spotify for Artists doesn't show skip rate; saves, playlist adds and plays per listener are the "do they like it" signals. "Programmed" listeners found the song through Spotify's own playlists and radio.
+- Limits: Free 1 a month, Pro 8, Premium 30. Coming: Stop One artists get it automatically every week, plus a weekly email.`,
+
   merch: `MERCH MOCKUPS
 - Upload art and see it on real AI-generated product mockups: tees, hoodies, hats, phone cases, posters, tote bags, sweatpants, jackets (8 products, 8 colors).
 - Shows a cost breakdown: print-on-demand vs bulk, plus a suggested retail range.`,
@@ -146,14 +154,14 @@ Artists own everything they make: covers, plans, lyrics, videos and ads are thei
 
 export const TOOL_NAMES = {
   forecast: 'Earnings Forecast', art: 'Cover Art Generator', plan: 'Release Planner', merch: 'Merch Mockups',
-  writer: 'Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', master: 'Mastering', resize: 'Cover Resizer',
+  writer: 'Lyric Writer', lyric: 'Lyric Video Creator', ads: 'Ad Generator', report: 'Song Report Card', master: 'Mastering', resize: 'Cover Resizer',
   audio: 'MP3 to WAV', trim: 'Audio Trimmer', split: 'Split Sheet', meta: 'Metadata Formatter',
   check: 'Release Checklist', assets: 'My Assets', settings: 'Settings',
 };
 
 const TOOL_SECTION = {
   forecast: 'forecast', art: 'cover', plan: 'plan', merch: 'merch', writer: 'lyrics', lyric: 'lyricvideo',
-  ads: 'ads', master: 'mastering', resize: 'freetools', audio: 'freetools', trim: 'freetools', split: 'freetools', meta: 'freetools', check: 'freetools',
+  ads: 'ads', report: 'report', master: 'mastering', resize: 'freetools', audio: 'freetools', trim: 'freetools', split: 'freetools', meta: 'freetools', check: 'freetools',
 };
 
 // Everything is small enough to send in full today; the open tool's section goes first.

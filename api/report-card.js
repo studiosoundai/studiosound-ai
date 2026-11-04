@@ -1,0 +1,128 @@
+import { checkAndCount, logGeneration, hasEarlyAccess, accountUser } from './_usage.js';
+
+// Song Report Card: "how is my song doing?" in plain words, with the next move.
+// GET                                   -> { enabled }
+// POST { title, artist, images: [dataURL], files: [{ name, text }], notes?, previous? }
+//   images: screenshots (Spotify for Artists, the Stop One dashboard, Apple Music for Artists, TikTok...)
+//   files:  CSV text the artist downloaded (Spotify for Artists' download button)
+//   previous: the numbers from their last report card for this song, so we can say what changed
+//   -> { card, metrics }      (uses 1 report card)
+// Step 1 reads the numbers off the screens. Step 2 turns them into the report card.
+// Rollout: founders and Staff see it until REPORT_PUBLIC=true in Vercel.
+// Env: OPENAI_API_KEY, REPORT_MODEL (optional, default gpt-4o)
+
+const MODEL = process.env.REPORT_MODEL || 'gpt-4o';
+const TOOLS = ['ads', 'lyric', 'art', 'plan', 'master', 'trim', 'merch', 'check', 'forecast', 'distribute'];
+const clip = (s, n) => String(s == null ? '' : s).slice(0, n);
+
+async function enabledFor(user) {
+  if (!user || user.denied || !process.env.OPENAI_API_KEY) return false;
+  if (String(process.env.REPORT_PUBLIC || '').toLowerCase() === 'true') return true;
+  return (await hasEarlyAccess(user.email)) || (!!user.actor_email && await hasEarlyAccess(user.actor_email));
+}
+
+async function ai(messages, maxTokens) {
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + process.env.OPENAI_API_KEY },
+    body: JSON.stringify({ model: MODEL, response_format: { type: 'json_object' }, temperature: 0.4, max_tokens: maxTokens, messages }),
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message || 'AI error');
+  return JSON.parse(String(d.choices[0].message.content || '{}').replace(/```json|```/g, '').trim());
+}
+
+const EXTRACT = `You read music analytics screenshots and exports (Spotify for Artists, Apple Music for Artists, YouTube Studio, TikTok, distributor dashboards like Stop One that show streams by platform, Shazams and views where the song is used as a sound).
+Copy ONLY numbers you can actually see. Never guess or fill in a number that isn't shown. Keep the period each number covers (for example "last 7 days", "last 28 days", "1 month").
+If a number has a change next to it (like ↑13.0% or -1.6%), put it in change_pct as a number (13.0 or -1.6).
+Return JSON:
+{
+  "sources": ["which dashboards these came from, e.g. Spotify for Artists, Stop One dashboard"],
+  "period": "the main period the numbers cover",
+  "scope": "song | artist | catalog (whether these numbers are for one song, the whole artist, or many artists/tracks)",
+  "stats": [ { "platform": "Spotify | Apple Music | TikTok | YouTube | Instagram | Facebook | Shazam | Amazon Music | Pandora | Deezer | SoundCloud | All", "metric": "streams | listeners | monthly active listeners | saves | playlist adds | followers | streams per listener | views | shazams | ...", "value": 0, "period": "", "change_pct": null } ],
+  "audience_mix": { "active_pct": null, "previously_active_pct": null, "programmed_pct": null, "total_audience": null },
+  "top_countries": [ { "place": "", "platform": "", "value": 0, "share_pct": null, "active_pct": null } ],
+  "top_cities": [ { "place": "", "platform": "", "value": 0, "share_pct": null } ],
+  "notes": ["anything else useful you can see, like 'TikTok views dropped from ~900K a day to ~340K a day over the week', or Spotify's own insights text"]
+}`;
+
+const WRITE = `You are StudioSound's music analyst. You explain how an independent artist's music is doing in plain, simple words, like a smart friend in the industry, never like a data report.
+RULES
+- No jargon. Never say: KPI, metric, conversion, engagement rate, algorithmic, cohort, retention, CTR, segment. Say it the way an artist talks: "people are saving it", "they're coming back to it", "Spotify's playlists are bringing you new ears".
+- Be honest. If something is weak, say so kindly and say what to do about it. Don't hype weak numbers.
+- Every point must come from the numbers given. Never invent a number, a city, a playlist or a platform.
+- Short sentences. Each bullet is one or two sentences and includes the number that proves it, written simply (9.1K, up 56%).
+- "Programmed" listeners on Spotify are people who heard the song through Spotify's own playlists and radio, not by looking for the artist.
+- Shazams mean people heard the song out in the world (a party, a car, a club, a video) and looked it up. Views on TikTok/Instagram/YouTube/Facebook in a distributor dashboard are views of videos that use the song as a sound.
+- Saves and playlist adds show people liked it enough to keep it. Streams per listener shows they come back to it.
+- If the numbers cover many artists or a whole catalog, not one song, say so in the headline and talk about the catalog.
+- Spotify for Artists does not show skip rate, so never mention skip rate.
+- Next moves must be things the artist can do this week. Each one points to a StudioSound tool when one fits: ads (an ad kit aimed at the right cities), lyric (a lyric video for TikTok/Reels), trim (cut the hook as a TikTok sound or snippet), art (new cover or visuals), plan (a release plan for the next drop), master, merch, check (release checklist), forecast (earnings), distribute (Stop One distribution), or "" when no tool fits.
+Return JSON:
+{
+  "verdict": "growing | steady | slowing | early",
+  "headline": "one sentence a friend would say: how the song is doing overall",
+  "summary": "2-3 short sentences: the big picture in plain words",
+  "numbers": [ { "label": "short label like 'Spotify streams (28 days)'", "value": "9.1K", "change": "+56%" } ],
+  "working": ["2-4 things going well, each with its number"],
+  "watch": ["1-3 things that are weak or slowing, each with its number and why it matters"],
+  "where": [ { "place": "city or country", "why": "short reason, e.g. 'most active listeners' or '45 Pandora streams'" } ],
+  "moves": [ { "text": "a specific move for this week", "tool": "one of the tools above or empty" } ],
+  "vs_last": "one or two sentences comparing with their last report card, or empty if there is no last report"
+}
+numbers: the 4-6 most important numbers. where: up to 5 places. moves: exactly 3, most important first.`;
+
+export default async function handler(req, res) {
+  const user = await accountUser(req);
+  if (req.method === 'GET') return res.status(200).json({ enabled: await enabledFor(user) });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!user) return res.status(401).json({ error: 'Please sign in first.' });
+  if (user.denied) return res.status(user.status || 403).json({ error: user.error });
+  if (!(await enabledFor(user))) return res.status(403).json({ error: 'Song Report Card is coming soon.' });
+
+  const body = req.body || {};
+  const title = clip(body.title, 120).trim(), artist = clip(body.artist, 120).trim();
+  const images = (Array.isArray(body.images) ? body.images : []).filter(x => typeof x === 'string' && /^data:image\/(png|jpe?g|webp);base64,/.test(x) && x.length < 2500000).slice(0, 6);
+  const files = (Array.isArray(body.files) ? body.files : []).filter(f => f && typeof f.text === 'string').slice(0, 3).map(f => ({ name: clip(f.name, 80), text: clip(f.text, 20000) }));
+  if (!images.length && !files.length) return res.status(400).json({ error: 'Add at least one screenshot or downloaded file.' });
+
+  const gate = await checkAndCount(req, 'report_card');
+  if (!gate.ok) return res.status(gate.status).json({ error: gate.error, plan: gate.plan || null });
+
+  try {
+    // 1) read the numbers
+    const content = [{ type: 'text', text: `Song: "${title || 'unknown'}" by ${artist || 'unknown'}. Read every number from these ${images.length} screenshot(s)` + (files.length ? ` and ${files.length} downloaded file(s)` : '') + '.' }];
+    images.forEach(u => content.push({ type: 'image_url', image_url: { url: u, detail: 'high' } }));
+    files.forEach(f => content.push({ type: 'text', text: `FILE ${f.name}:\n${f.text}` }));
+    const metrics = await ai([{ role: 'system', content: EXTRACT }, { role: 'user', content }], 2500);
+    if (!Array.isArray(metrics.stats) || !metrics.stats.length) {
+      return res.status(422).json({ error: 'We couldn’t read any numbers from those. Try clear screenshots of your Spotify for Artists or distributor stats pages.' });
+    }
+
+    // 2) write the report card
+    const prev = body.previous && typeof body.previous === 'object' ? JSON.stringify(body.previous).slice(0, 6000) : '';
+    const card = await ai([
+      { role: 'system', content: WRITE },
+      { role: 'user', content: `Song: "${title || 'this song'}" by ${artist || 'the artist'}.` + (body.notes ? `\nWhat the artist wants: ${clip(body.notes, 300)}` : '') +
+        `\n\nNUMBERS READ FROM THEIR DASHBOARDS:\n${JSON.stringify(metrics).slice(0, 12000)}` +
+        (prev ? `\n\nTHEIR LAST REPORT CARD'S NUMBERS (for vs_last):\n${prev}` : '\n\nNo last report card.') },
+    ], 1800);
+
+    // keep it tidy
+    const arr = (a, n, len) => (Array.isArray(a) ? a : []).map(x => clip(x, len)).filter(Boolean).slice(0, n);
+    card.verdict = ['growing', 'steady', 'slowing', 'early'].includes(card.verdict) ? card.verdict : 'steady';
+    card.headline = clip(card.headline, 200); card.summary = clip(card.summary, 600); card.vs_last = clip(card.vs_last, 300);
+    card.numbers = (Array.isArray(card.numbers) ? card.numbers : []).slice(0, 6).map(n => ({ label: clip(n && n.label, 50), value: clip(n && n.value, 20), change: clip(n && n.change, 12) })).filter(n => n.label && n.value);
+    card.working = arr(card.working, 4, 300); card.watch = arr(card.watch, 3, 300);
+    card.where = (Array.isArray(card.where) ? card.where : []).slice(0, 5).map(w => ({ place: clip(w && w.place, 60), why: clip(w && w.why, 120) })).filter(w => w.place);
+    card.moves = (Array.isArray(card.moves) ? card.moves : []).slice(0, 3).map(m => ({ text: clip(m && m.text, 300), tool: TOOLS.includes(m && m.tool) ? m.tool : '' })).filter(m => m.text);
+    card.sources = arr(metrics.sources, 4, 60); card.period = clip(metrics.period, 60); card.scope = clip(metrics.scope, 20);
+
+    logGeneration(gate.userId, 'report_card', { title, artist, images: images.length, files: files.length, actor: gate.actingAs ? gate.actorEmail : null }, { metrics, card });
+    return res.status(200).json({ card, metrics });
+  } catch (e) {
+    console.error('report-card', e);
+    return res.status(500).json({ error: 'Something went wrong reading your stats. Try again.' });
+  }
+}
