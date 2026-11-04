@@ -41,6 +41,8 @@ Return JSON:
   "period": "the main period the numbers cover",
   "scope": "song | artist | catalog (whether these numbers are for one song, the whole artist, or many artists/tracks)",
   "stats": [ { "platform": "Spotify | Apple Music | TikTok | YouTube | Instagram | Facebook | Shazam | Amazon Music | Pandora | Deezer | SoundCloud | All", "metric": "streams | listeners | monthly active listeners | saves | playlist adds | followers | streams per listener | views | shazams | ...", "value": 0, "period": "", "change_pct": null } ],
+  "song": { "release_date": "the song's release date if shown, as YYYY-MM-DD", "all_time_streams": null, "has_canvas": "no if a Spotify 'Add Canvas' button is visible, yes if a Canvas is shown, otherwise unknown" },
+  "trend": "if a chart is shown, describe its shape in plain words with rough numbers, e.g. 'about 1,800 a week at launch, faded to about 50-100 a week since summer'",
   "audience_mix": { "active_pct": null, "previously_active_pct": null, "programmed_pct": null, "total_audience": null },
   "top_countries": [ { "place": "", "platform": "", "value": 0, "share_pct": null, "active_pct": null } ],
   "top_cities": [ { "place": "", "platform": "", "value": 0, "share_pct": null } ],
@@ -58,6 +60,10 @@ RULES
 - Saves and playlist adds show people liked it enough to keep it. Streams per listener shows they come back to it.
 - If the numbers cover many artists or a whole catalog, not one song, say so in the headline and talk about the catalog.
 - Spotify for Artists does not show skip rate, so never mention skip rate.
+- When two dashboards show the same platform (for example Spotify for Artists and a distributor's estimate of Spotify), trust the platform's own dashboard, never add them together, and don't point out small differences. Distributor numbers are estimates and lag a day or two.
+- Group suburbs and neighborhoods into their city when it's obvious (Lithia Springs and Atlanta = the Atlanta area; Brooklyn, the Bronx and New York = New York) and say the combined number.
+- Look at today's date and the release date. Every song's streams fade after release week; that is normal. For a song out more than about 6 months, judge it against that, say it plainly, and aim the moves at keeping it alive cheaply and at the NEXT release, using the cities where this song found fans. Don't tell them to spend ad money on an old, fading song unless it's growing again. If today is the release anniversary, mention it.
+- If the song has no Spotify Canvas (an "Add Canvas" button is showing), one move should be adding one: a short looping video, which a lyric video clip can be.
 - Next moves must be things the artist can do this week. Each one points to a StudioSound tool when one fits: ads (an ad kit aimed at the right cities), lyric (a lyric video for TikTok/Reels), trim (cut the hook as a TikTok sound or snippet), art (new cover or visuals), plan (a release plan for the next drop), master, merch, check (release checklist), forecast (earnings), distribute (Stop One distribution), or "" when no tool fits.
 Return JSON:
 {
@@ -104,7 +110,7 @@ export default async function handler(req, res) {
     const prev = body.previous && typeof body.previous === 'object' ? JSON.stringify(body.previous).slice(0, 6000) : '';
     const card = await ai([
       { role: 'system', content: WRITE },
-      { role: 'user', content: `Song: "${title || 'this song'}" by ${artist || 'the artist'}.` + (body.notes ? `\nWhat the artist wants: ${clip(body.notes, 300)}` : '') +
+      { role: 'user', content: `Today is ${new Date().toISOString().slice(0, 10)}. Song: "${title || 'this song'}" by ${artist || 'the artist'}.` + (body.notes ? `\nWhat the artist wants: ${clip(body.notes, 300)}` : '') +
         `\n\nNUMBERS READ FROM THEIR DASHBOARDS:\n${JSON.stringify(metrics).slice(0, 12000)}` +
         (prev ? `\n\nTHEIR LAST REPORT CARD'S NUMBERS (for vs_last):\n${prev}` : '\n\nNo last report card.') },
     ], 1800);
