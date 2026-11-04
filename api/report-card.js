@@ -3,7 +3,7 @@ import { checkAndCount, logGeneration, hasEarlyAccess, accountUser } from './_us
 // Song Report Card: "how is my song doing?" in plain words, with the next move.
 // GET                                   -> { enabled }
 // POST { title, artist, images: [dataURL], files: [{ name, text }], notes?, previous? }
-//   images: screenshots (Spotify for Artists, the Stop One dashboard, Apple Music for Artists, TikTok...)
+//   images: screenshots (Spotify for Artists, the Distribution Dashboard, Apple Music for Artists, TikTok...)
 //   files:  CSV text the artist downloaded (Spotify for Artists' download button)
 //   previous: the numbers from their last report card for this song, so we can say what changed
 //   -> { card, metrics }      (uses 1 report card)
@@ -32,12 +32,12 @@ async function ai(messages, maxTokens) {
   return JSON.parse(String(d.choices[0].message.content || '{}').replace(/```json|```/g, '').trim());
 }
 
-const EXTRACT = `You read music analytics screenshots and exports (Spotify for Artists, Apple Music for Artists, YouTube Studio, TikTok, distributor dashboards like Stop One that show streams by platform, Shazams and views where the song is used as a sound).
+const EXTRACT = `You read music analytics screenshots and exports (Spotify for Artists, Apple Music for Artists, YouTube Studio, TikTok, the Distribution Dashboard and other distributor dashboards that show streams by platform, Shazams and views where the song is used as a sound).
 Copy ONLY numbers you can actually see. Never guess or fill in a number that isn't shown. Keep the period each number covers (for example "last 7 days", "last 28 days", "1 month").
 If a number has a change next to it (like ↑13.0% or -1.6%), put it in change_pct as a number (13.0 or -1.6).
 Return JSON:
 {
-  "sources": ["which dashboards these came from, e.g. Spotify for Artists, Stop One dashboard"],
+  "sources": ["which dashboards these came from, e.g. Spotify for Artists, Distribution Dashboard"],
   "period": "the main period the numbers cover",
   "scope": "song | artist | catalog (whether these numbers are for one song, the whole artist, or many artists/tracks)",
   "stats": [ { "platform": "Spotify | Apple Music | TikTok | YouTube | Instagram | Facebook | Shazam | Amazon Music | Pandora | Deezer | SoundCloud | All", "metric": "streams | listeners | monthly active listeners | saves | playlist adds | followers | streams per listener | views | shazams | ...", "value": 0, "period": "", "change_pct": null } ],
