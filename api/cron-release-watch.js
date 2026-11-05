@@ -51,7 +51,8 @@ export default async function handler(req, res) {
       const snaps = await db(`music_snapshots?user_id=eq.${uid}&select=taken_on,data&order=taken_on.desc&limit=2`) || [];
       let latest = snaps[0] || null, prev = snaps[1] || null;
       if (!latest || Date.now() - new Date(latest.taken_on + 'T12:00:00Z').getTime() >= 7 * DAY - 3600000) {
-        const data = await takeSnapshot(w.spotify_artist_id, w.artist_name);
+        const newest = rels.filter(r => String(r.release_date || '') <= new Date().toISOString().slice(0, 10)).sort((a, b) => String(b.release_date || '').localeCompare(String(a.release_date || '')))[0];
+        const data = await takeSnapshot(w.spotify_artist_id, w.artist_name, newest && newest.name, latest && latest.data);
         await saveSnapshot(uid, w.spotify_artist_id, data);
         prev = latest; latest = { taken_on: new Date().toISOString().slice(0, 10), data };
         out.snapshots++;

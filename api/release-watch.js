@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   }
   const uid = acct.accountId;
   const enabled = await enabledFor(acct);
-  const ready = { spotify: spotifyReady(), email: emailReady() };
+  const ready = { spotify: spotifyReady(), email: emailReady(), youtube: !!process.env.YOUTUBE_API_KEY, genius: !!process.env.GENIUS_TOKEN, lastfm: !!process.env.LASTFM_API_KEY };
 
   try {
     if (req.method === 'GET') {
@@ -63,7 +63,9 @@ export default async function handler(req, res) {
       await db(`release_seen?user_id=eq.${uid}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
       const rels = await latestReleases(artist.id);
       if (rels.length) await db('release_seen?on_conflict=user_id,spotify_id', { method: 'POST', headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' }, body: rels.map(r => Object.assign({ user_id: uid, baseline: true }, r)) });
-      try { await saveSnapshot(uid, artist.id, await takeSnapshot(artist.id, artist.name)); } catch (e) { console.error('snapshot', e); }
+      const newest = rels.filter(r => String(r.release_date || '') <= new Date().toISOString().slice(0, 10)).sort((a, b) => String(b.release_date || '').localeCompare(String(a.release_date || '')))[0];
+      const last = await db(`music_snapshots?user_id=eq.${uid}&spotify_artist_id=eq.${artist.id}&select=data&order=taken_on.desc&limit=1`).catch(() => null);
+      try { await saveSnapshot(uid, artist.id, await takeSnapshot(artist.id, artist.name, newest && newest.name, last && last[0] && last[0].data)); } catch (e) { console.error('snapshot', e); }
       return res.status(200).json(Object.assign({ enabled: true, ready }, await state(uid)));
     }
     if (body.action === 'alerts') {

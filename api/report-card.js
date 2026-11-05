@@ -73,7 +73,7 @@ Return JSON:
   "verdict": "growing | steady | slowing | early",
   "headline": "one sentence a friend would say: how the song is doing overall",
   "summary": "2-3 short sentences: the big picture in plain words",
-  "numbers": [ { "label": "short label like 'Spotify streams (28 days)'", "value": "9.1K", "change": "+56%" } ],
+  "numbers": [ { "label": "short label like 'Spotify streams (28 days)'", "value": "9.1K", "change": "+56% (only if the screen shows a change; otherwise an empty string)" } ],
   "working": ["2-4 things going well, each with its number"],
   "watch": ["1-3 things that are weak or slowing, each with its number and why it matters"],
   "where": [ { "place": "city or country", "why": "short reason, e.g. 'most active listeners' or '45 Pandora streams'" } ],
@@ -111,20 +111,21 @@ export default async function handler(req, res) {
 
     // 2) write the report card
     const prev = body.previous && typeof body.previous === 'object' ? JSON.stringify(body.previous).slice(0, 6000) : '';
-    const pub = body.public_numbers && typeof body.public_numbers === 'object' ? JSON.stringify(body.public_numbers).slice(0, 3000) : '';
+    const pub = body.public_numbers && typeof body.public_numbers === 'object' ? JSON.stringify(body.public_numbers).slice(0, 9000) : '';
     const card = await ai([
       { role: 'system', content: WRITE },
       { role: 'user', content: `Today is ${new Date().toISOString().slice(0, 10)}. Song: "${title || 'this song'}" by ${artist || 'the artist'}.` + (body.notes ? `\nWhat the artist wants: ${clip(body.notes, 300)}` : '') +
         `\n\nNUMBERS READ FROM THEIR DASHBOARDS:\n${JSON.stringify(metrics).slice(0, 12000)}` +
         (prev ? `\n\nTHEIR LAST REPORT CARD'S NUMBERS (for vs_last):\n${prev}` : '\n\nNo last report card.') +
-        (pub ? `\n\nPUBLIC NUMBERS WE TRACK EVERY WEEK FOR THIS ARTIST (whole artist, not just this song; Spotify popularity is Spotify's 0-100 score of how hot the artist is right now). Use them as background, e.g. "your Spotify popularity went from 18 to 24 this week":\n${pub}` : '') },
+        (pub ? `\n\nPUBLIC NUMBERS WE TRACK EVERY WEEK FOR THIS ARTIST (this_week vs week_before): Last.fm listeners/plays (artist, and "latest" = their newest song), Deezer fans, each song's Deezer rank (higher = more popular on Deezer right now) and public Deezer playlists, Apple Music top-100 chart spots by country, YouTube channel subscribers/views and their newest videos' views, Genius lyric-page views, and real YouTube comments. Use them: say what changed week to week, mention any chart spot, and if comments are included, add one "working" or "watch" point that sums up what commenters are saying in plain words (what they quote or ask for, where they're from) without quoting usernames. Numbers here are for the whole artist unless they name a song:\n${pub}` : '') },
     ], 1800);
 
     // keep it tidy
     const arr = (a, n, len) => (Array.isArray(a) ? a : []).map(x => clip(x, len)).filter(Boolean).slice(0, n);
     card.verdict = ['growing', 'steady', 'slowing', 'early'].includes(card.verdict) ? card.verdict : 'steady';
     card.headline = clip(card.headline, 200); card.summary = clip(card.summary, 600); card.vs_last = clip(card.vs_last, 300);
-    card.numbers = (Array.isArray(card.numbers) ? card.numbers : []).slice(0, 6).map(n => ({ label: clip(n && n.label, 50), value: clip(n && n.value, 20), change: clip(n && n.change, 12) })).filter(n => n.label && n.value);
+    const realChange = (c) => /\d/.test(String(c || '')) && !/n\/?a|none|unknown/i.test(String(c)) ? clip(c, 12) : '';
+    card.numbers = (Array.isArray(card.numbers) ? card.numbers : []).slice(0, 6).map(n => ({ label: clip(n && n.label, 50), value: clip(n && n.value, 20), change: realChange(n && n.change) })).filter(n => n.label && n.value);
     card.working = arr(card.working, 4, 300); card.watch = arr(card.watch, 3, 300);
     card.where = (Array.isArray(card.where) ? card.where : []).slice(0, 5).map(w => ({ place: clip(w && w.place, 60), why: clip(w && w.why, 120) })).filter(w => w.place);
     card.moves = (Array.isArray(card.moves) ? card.moves : []).slice(0, 3).map(m => ({ text: clip(m && m.text, 300), tool: TOOLS.includes(m && m.tool) ? m.tool : '' })).filter(m => m.text);
