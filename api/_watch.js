@@ -96,6 +96,16 @@ async function youtube(path) {
   if (!k) return null;
   return await getJson(`https://www.googleapis.com/youtube/v3/${path}&key=${encodeURIComponent(k)}`, 8000);
 }
+// "youtube.com/@name", "youtube.com/channel/UC...", or just "@name" -> channel id (or null)
+export async function resolveYouTubeChannel(link) {
+  const s = String(link || '').trim();
+  const id = s.match(/channel\/(UC[0-9A-Za-z_-]{22})/);
+  if (id) return id[1];
+  const h = s.match(/@([0-9A-Za-z._-]{2,100})/);
+  if (!h) return null;
+  const c = await youtube('channels?part=id&forHandle=' + encodeURIComponent('@' + h[1]));
+  return (c && c.items && c.items[0] && c.items[0].id) || null;
+}
 async function youtubeSnapshot(name, latestSong, prev) {
   // find the channel once (a search costs 100 of the 10,000 free daily units), then reuse it every week
   let cid = prev && prev.youtube && prev.youtube.channel && prev.youtube.channel.id;
@@ -148,6 +158,7 @@ async function deezerSnapshot(name, latestSong) {
   out.playlists = plist.length; out.playlist_titles = plist.slice(0, 6).map(p => p.title).filter(Boolean);
   const st = song && song.data && song.data.find(t => songMatch(t.title, latestSong) && t.artist && squash(t.artist.name) === squash(name));
   if (st) out.latest = { title: st.title, rank: st.rank || 0 };
+  if (!out.fans && !out.top.length && !out.playlists && !out.latest) return null;   // an empty profile with the same name: show nothing rather than 0
   return out;
 }
 async function geniusSnapshot(name, latestSong) {

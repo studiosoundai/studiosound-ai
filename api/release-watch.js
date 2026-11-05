@@ -1,5 +1,5 @@
 import { hasEarlyAccess, resolveAccount } from './_usage.js';
-import { db, spotifyReady, emailReady, resolveArtist, latestReleases, takeSnapshot, saveSnapshot, unsubKey } from './_watch.js';
+import { db, spotifyReady, emailReady, resolveArtist, latestReleases, takeSnapshot, saveSnapshot, unsubKey, resolveYouTubeChannel } from './_watch.js';
 
 // Release Watch: the artist pastes their Spotify artist link once; we email them when a new song drops,
 // check in a week later, and keep a free weekly snapshot of their public numbers.
@@ -66,6 +66,19 @@ export default async function handler(req, res) {
       const newest = rels.filter(r => String(r.release_date || '') <= new Date().toISOString().slice(0, 10)).sort((a, b) => String(b.release_date || '').localeCompare(String(a.release_date || '')))[0];
       const last = await db(`music_snapshots?user_id=eq.${uid}&spotify_artist_id=eq.${artist.id}&select=data&order=taken_on.desc&limit=1`).catch(() => null);
       try { await saveSnapshot(uid, artist.id, await takeSnapshot(artist.id, artist.name, newest && newest.name, last && last[0] && last[0].data)); } catch (e) { console.error('snapshot', e); }
+      return res.status(200).json(Object.assign({ enabled: true, ready }, await state(uid)));
+    }
+    // the artist picks their own YouTube channel (when the automatic match is wrong or missing)
+    if (body.action === 'youtube') {
+      if (!process.env.YOUTUBE_API_KEY) return res.status(503).json({ error: 'YouTube isn’t switched on yet (YOUTUBE_API_KEY missing in Vercel).' });
+      const w = (await db(`release_watch?user_id=eq.${uid}&select=spotify_artist_id,artist_name`))[0];
+      if (!w) return res.status(400).json({ error: 'Connect your Spotify artist link first.' });
+      const cid = await resolveYouTubeChannel(body.link);
+      if (!cid) return res.status(400).json({ error: 'That doesn’t look like a YouTube channel link. Open your channel and copy the address (youtube.com/@yourname).' });
+      const rels = await latestReleases(w.spotify_artist_id).catch(() => []);
+      const newest = rels.filter(r => String(r.release_date || '') <= new Date().toISOString().slice(0, 10)).sort((a, b) => String(b.release_date || '').localeCompare(String(a.release_date || '')))[0];
+      // the channel is remembered through the snapshot: every weekly snapshot reuses the last one's channel
+      await saveSnapshot(uid, w.spotify_artist_id, await takeSnapshot(w.spotify_artist_id, w.artist_name, newest && newest.name, { youtube: { channel: { id: cid } } }));
       return res.status(200).json(Object.assign({ enabled: true, ready }, await state(uid)));
     }
     if (body.action === 'alerts') {
