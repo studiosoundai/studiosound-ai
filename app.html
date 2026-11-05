@@ -3321,13 +3321,35 @@ function rwRender() {
   let h = '<div class="rw-row" style="align-items:center;"><div class="rw-artist">' + (w.artist_image ? '<img src="' + rcEsc(w.artist_image) + '" alt=""/>' : '') +
     '<div><b>' + rcEsc(w.artist_name || 'Your artist') + '</b><small>' + (w.alerts ? 'Release emails go to ' + rcEsc(w.email || 'your account email') : 'Release emails are off') + '</small></div></div>' +
     '<label class="rw-toggle' + (w.alerts ? ' on' : '') + '" onclick="rwAlerts(' + (w.alerts ? 'false' : 'true') + ')"><span class="sw"></span> Release emails</label></div>';
-  h += '<div class="rw-stats">' + stat('Spotify popularity (0\u2013100)', sp0.popularity, sp1.popularity) + stat('Spotify followers', sp0.followers, sp1.followers, rwNum) +
-    stat('Last.fm listeners', lf0.listeners, lf1.listeners, rwNum) + stat('Deezer fans', dz0.fans, dz1.fans, rwNum) + '</div>';
-  h += '<div class="mx-note" style="margin-top:6px;">Updated every week' + (d.snapshots[0] ? ' \u00b7 last ' + rcEsc(d.snapshots[0].taken_on) : '') + (d.snapshots[1] ? ' \u00b7 changes are vs the week before' : ' \u00b7 next week shows what changed') + '.</div>';
+  const la0 = s0.latest || {}, la1 = (s1.latest && s1.latest.song === la0.song) ? s1.latest : {};
+  const yt0 = s0.youtube || {}, yt1 = s1.youtube || {}, yc0 = yt0.channel || {}, yc1 = yt1.channel || {};
+  const gn0 = s0.genius || {}, gn1 = s1.genius || {};
+  const short = (t) => '\u201c' + rcEsc(String(t).length > 20 ? String(t).slice(0, 19) + '\u2026' : t) + '\u201d';
+  const dl0 = dz0.latest || {}, dl1 = (dz1.latest && dz1.latest.title === dl0.title) ? dz1.latest : {};
+  const tiles = [];
+  if (lf0.listeners != null) tiles.push(stat('Last.fm listeners', lf0.listeners, lf1.listeners, rwNum));
+  if (la0.song) tiles.push(stat(short(la0.song) + ' on Last.fm', la0.listeners, la1.listeners, rwNum));
+  if (yc0.subscribers != null) tiles.push(stat('YouTube subscribers', yc0.subscribers, yc1.subscribers, rwNum));
+  if (yc0.views != null) tiles.push(stat('YouTube views (all)', yc0.views, yc1.views, rwNum));
+  if (dz0.fans != null) tiles.push(stat('Deezer fans', dz0.fans, dz1.fans, rwNum));
+  if (dl0.title) tiles.push(stat(short(dl0.title) + ' Deezer rank', dl0.rank, dl1.rank, rwNum));
+  if (dz0.playlists) tiles.push(stat('Deezer playlists with you', dz0.playlists, dz1.playlists));
+  if (gn0.latest && gn0.latest.pageviews) tiles.push(stat(short(gn0.latest.title) + ' lyric views', gn0.latest.pageviews, gn1.latest && gn1.latest.title === gn0.latest.title ? gn1.latest.pageviews : null, rwNum));
+  else if (gn0.pageviews) tiles.push(stat('Genius lyric views', gn0.pageviews, gn1.pageviews, rwNum));
+  if (!tiles.length) tiles.push(stat('Last.fm listeners', null, null));
+  h += '<div class="rw-stats">' + tiles.slice(0, 8).join('') + '</div>';
+  const extra = [];
+  if ((s0.apple_charts || []).length) extra.push('\ud83d\udcc8 <b>On Apple Music charts:</b> ' + s0.apple_charts.slice(0, 4).map(c => '#' + c.position + ' in ' + rcEsc(c.country) + ' (' + rcEsc(c.song) + ')').join(', '));
+  const nv = (yt0.videos || [])[0];
+  if (nv) extra.push('\u25b6\ufe0f <b>Newest video:</b> ' + rcEsc(nv.title) + ' \u00b7 ' + rwNum(nv.views) + ' views');
+  if ((yt0.comments || []).length) extra.push('\ud83d\udcac ' + yt0.comments.length + ' YouTube comments on \u201c' + rcEsc(yt0.comments_on || 'your newest video') + '\u201d go into your next Report Card.');
+  if (extra.length) h += '<div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;color:#e8e8f5;font-size:12px;line-height:1.5;">' + extra.map(x => '<div>' + x + '</div>').join('') + '</div>';
+  h += '<div class="mx-note" style="margin-top:6px;">Free public numbers from Last.fm, Deezer, YouTube, Genius and Apple Music charts, updated every week' + (d.snapshots[0] ? ' \u00b7 last ' + rcEsc(d.snapshots[0].taken_on) : '') + (d.snapshots[1] ? ' \u00b7 changes are vs the week before' : ' \u00b7 next week shows what changed') + '. Your Spotify numbers come from the screenshots below.</div>';
   const rels = (d.releases || []).slice(0, 3);
   if (rels.length) h += '<div class="rw-rels">' + rels.map(r => '<div class="rw-rel">' + (r.image ? '<img src="' + rcEsc(r.image) + '" alt=""/>' : '') + '<div>' + rcEsc(r.name) + '<br><span>' + rcEsc(r.release_date || '') + ' \u00b7 ' + (r.baseline ? 'already out when you connected' : r.followup_at ? 'launch email + one-week check-in sent' : r.alerted_at ? 'launch email sent' : 'spotted') + '</span></div></div>').join('') + '</div>';
   h += '<div class="rw-links"><a onclick="rwChange()">Change artist</a><a onclick="rwDisconnect(this)">Turn off and remove</a></div>';
   if (d.ready && !d.ready.email) h += '<div class="mx-note" style="color:#FFC83D;margin-top:6px;">Setup: emails start once RESEND_API_KEY is added in Vercel.</div>';
+  if (d.ready && (!d.ready.youtube || !d.ready.genius)) h += '<div class="mx-note" style="color:#FFC83D;margin-top:6px;">Setup: add ' + [!d.ready.youtube ? 'YOUTUBE_API_KEY' : '', !d.ready.genius ? 'GENIUS_TOKEN' : ''].filter(Boolean).join(' and ') + ' in Vercel for ' + [!d.ready.youtube ? 'YouTube numbers and comments' : '', !d.ready.genius ? 'lyric views' : ''].filter(Boolean).join(' and ') + '.</div>';
   box.innerHTML = h;
 }
 async function rwInit() {
@@ -3484,6 +3506,7 @@ function rcRender(saved) {
   h += '<div class="rc-head"><div class="rc-pill ' + rcEsc(c.verdict) + '">' + (RC_VERDICT[c.verdict] || RC_VERDICT.steady) + '</div>' +
     '<div class="rc-headline">' + rcEsc(c.headline) + '</div>' + (c.summary ? '<div class="rc-summary">' + rcEsc(c.summary) + '</div>' : '') + '</div>';
   if ((c.numbers || []).length) h += '<div class="rc-nums">' + c.numbers.map(n => {
+    if (n.change && (!/\d/.test(n.change) || /n\/?a/i.test(n.change))) n = Object.assign({}, n, { change: '' });
     const up = /^\+|↑/.test(n.change || ''), down = /^-|−|↓/.test(n.change || '');
     return '<div class="rc-num"><div class="l">' + rcEsc(n.label) + '</div><div class="v">' + rcEsc(n.value) + (n.change ? '<span class="c ' + (up ? 'up' : down ? 'down' : '') + '">' + rcEsc(n.change) + '</span>' : '') + '</div></div>';
   }).join('') + '</div>';
