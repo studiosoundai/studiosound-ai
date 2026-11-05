@@ -345,7 +345,15 @@ body{overflow:auto;height:auto;}
 .rw-links{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
 .rw-links a{color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;}
 .rw-links a:hover{color:#fff;}
-@media(max-width:768px){ .rw-stats{grid-template-columns:repeat(2,1fr);} .rw-row{grid-template-columns:1fr;} }
+.yt-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.yt-box{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
+.yt-box h4{margin:0 0 6px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.yt-li{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#e8e8f5;padding:3px 0;}
+.yt-li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.yt-li span:last-child{color:var(--muted);white-space:nowrap;}
+.yt-bar{height:4px;border-radius:2px;background:#2a2a3a;margin:2px 0 4px;overflow:hidden;} .yt-bar i{display:block;height:100%;background:var(--neon);}
+.yt-note{margin-top:10px;font-size:12px;color:#e8e8f5;line-height:1.5;}
+@media(max-width:768px){ .rw-stats{grid-template-columns:repeat(2,1fr);} .rw-row{grid-template-columns:1fr;} .yt-cols{grid-template-columns:1fr;} }
 /* Song Report Card */
 .rc-drop{border:1px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:#0f0f1a;transition:border-color .15s;}
 .rc-drop:hover,.rc-drop.over{border-color:var(--neon);}
@@ -1181,6 +1189,11 @@ body{overflow:auto;height:auto;}
         <div class="gen-title">📡 Release alerts &amp; weekly numbers</div>
         <div id="rw-body"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
         <div class="error-msg" id="rw-error"></div>
+      </div>
+      <div class="gen-panel rw-panel" id="yt-panel" style="display:none;">
+        <div class="gen-title">▶️ Your YouTube Studio numbers</div>
+        <div id="yt-body"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
+        <div class="error-msg" id="yt-error"></div>
       </div>
       <div class="generator" style="align-items:start;">
         <div class="gen-panel">
@@ -2999,6 +3012,7 @@ function mxSetStrength(i) {
 }
 let mxPos = 0, mxDur = 0;
 let mxFile = null, mxRef = null, mxInputPath = null, mxRefPath = null, mxJob = null, mxPoll = null;
+let mxOffA = 0, mxAudioEl = null;
 let mxAC = null, mxBufA = null, mxBufB = null, mxSrcA = null, mxSrcB = null, mxGainA = null, mxGainB = null, mxStartAt = 0, mxPlaying = false, mxSide = 'b', mxRaf = null, mxMeta = null;
 
 let mxLastStyle = 'balanced';
@@ -3065,7 +3079,7 @@ async function mxStart() {
   const style = document.getElementById('mx-style').value;
   if (!mxFile && !mxInputPath) { mxErr('Upload your mix first.'); return; }
   if (style === 'reference' && !mxRef && !mxRefPath) { mxErr('Upload the song you want yours to sound like.'); return; }
-  mxStop();
+  mxStop(); mxUnlock();
   const btn = document.getElementById('mx-btn'); btn.disabled = true;
   document.getElementById('mx-placeholder').style.display = 'none';
   document.getElementById('mx-result').style.display = 'none';
@@ -3113,31 +3127,49 @@ function mxWait(job) {
   });
 }
 
+// Phones: audio has to be switched on during a tap, and iPhones mute web audio when the ring/silent switch
+// is on unless the page says it's a music player. Called on the Master tap and on every play tap.
+function mxUnlock() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}   // iOS 17+: play even on silent
+  try {
+    mxAC = mxAC || new (window.AudioContext || window.webkitAudioContext)();
+    if (mxAC.state !== 'running') mxAC.resume();
+  } catch (e) {}
+  try {   // older iPhones: a tiny silent <audio> play moves the page into "music" mode (ignores the silent switch)
+    if (!mxAudioEl) {
+      mxAudioEl = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      mxAudioEl.setAttribute('playsinline', ''); mxAudioEl.loop = false;
+    }
+    const p = mxAudioEl.play(); if (p && p.catch) p.catch(() => {});
+  } catch (e) {}
+}
 async function mxDecode(arrayBuf) {
   mxAC = mxAC || new (window.AudioContext || window.webkitAudioContext)();
-  return await mxAC.decodeAudioData(arrayBuf);
+  return await new Promise((ok, bad) => {      // callback form too: older Safari has no promise version
+    const pr = mxAC.decodeAudioData(arrayBuf, ok, bad);
+    if (pr && pr.then) pr.then(ok, bad);
+  });
 }
 
 async function mxShow(job, d) {
   const m = d.metrics || {}, before = m.before || {}, after = m.after || {};
   const style = mxMeta ? mxMeta.style : (d.style || 'balanced');
   // build the A/B: original segment from the file on this device, mastered preview from the server
-  mxBufA = null; mxBufB = null;
-  try {
-    const pb = await (await fetch(d.preview_url)).arrayBuffer();
-    mxBufB = await mxDecode(pb);
-    if (mxFile) {
-      const full = await mxDecode(await mxFile.arrayBuffer());
-      const sr = full.sampleRate, start = m.full_preview ? 0 : Math.floor((m.preview_start || 0) * sr), len = Math.min(mxBufB.duration * sr, full.length - start);
-      mxBufA = mxAC.createBuffer(full.numberOfChannels, Math.max(1, Math.floor(len)), sr);
-      for (let c = 0; c < full.numberOfChannels; c++) mxBufA.copyToChannel(full.getChannelData(c).subarray(start, start + Math.floor(len)), c);
-    }
-  } catch (e) { console.warn('preview decode', e); }
+  mxBufA = null; mxBufB = null; mxOffA = 0;
+  try { mxBufB = await mxDecode(await (await fetch(d.preview_url)).arrayBuffer()); } catch (e) { console.warn('preview decode', e); }
+  // the original plays straight from your file, from the same spot (no copy: phones ran out of memory on long WAVs)
+  if (mxBufB && mxFile) {
+    try { mxBufA = await mxDecode(await mxFile.arrayBuffer()); mxOffA = m.full_preview ? 0 : (m.preview_start || 0); }
+    catch (e) { console.warn('original decode', e); mxBufA = null; }
+  }
   const diff = (after.lufs != null && before.lufs != null) ? (after.lufs - before.lufs) : 0;
   mxDur = mxBufB ? mxBufB.duration : 0;
   mxPos = (m.full_preview && m.preview_start && m.preview_start < mxDur - 5) ? m.preview_start : 0;   // start at the chorus
   const strengthV = m.strength != null ? m.strength : (mxMeta && mxMeta.strength) || d.strength;
-  let h = '<div class="mx-ab side-b" id="mx-ab">' +
+  let h = !mxBufB ? '<div class="mx-ab side-b" id="mx-ab"><div class="mx-note" style="margin-bottom:6px;">Your mastered song:</div>' +
+    '<audio controls playsinline preload="auto" src="' + rcEsc(d.preview_url) + '" style="width:100%;"></audio>' +
+    '<div class="mx-note">This device couldn\u2019t load the before/after switch, so here\u2019s the master on its own. On a computer you can flip between your mix and the master while it plays.</div></div>' :
+    '<div class="mx-ab side-b" id="mx-ab">' +
     '<div class="mx-ab-row"><button type="button" class="mx-play" id="mx-play" onclick="mxToggle()" aria-label="Play">▶</button>' +
     (mxBufA ? '<div class="mx-toggle"><button type="button" id="mx-ab-a" onclick="mxSwitch(\'a\')">Original</button><button type="button" id="mx-ab-b" class="active" onclick="mxSwitch(\'b\')">Mastered</button></div>' : '<span style="color:var(--muted);font-size:12px;">Mastered preview</span>') +
     '</div>' +
@@ -3235,7 +3267,7 @@ function mxPlayFrom(pos) {
   mxGainA = mxAC.createGain(); mxGainB = mxAC.createGain();
   mxGainA.connect(mxAC.destination); mxGainB.connect(mxAC.destination);
   const t = mxAC.currentTime + 0.05;
-  if (mxBufA && mxPos < mxBufA.duration) { mxSrcA = mxAC.createBufferSource(); mxSrcA.buffer = mxBufA; mxSrcA.connect(mxGainA); mxSrcA.start(t, mxPos); }
+  if (mxBufA && mxOffA + mxPos < mxBufA.duration) { mxSrcA = mxAC.createBufferSource(); mxSrcA.buffer = mxBufA; mxSrcA.connect(mxGainA); mxSrcA.start(t, mxOffA + mxPos); }
   mxSrcB = mxAC.createBufferSource(); mxSrcB.buffer = mxBufB; mxSrcB.connect(mxGainB); mxSrcB.start(t, mxPos);
   mxGainA.gain.value = 0; mxGainB.gain.value = 0; mxApplyGains();
   mxStartAt = t; mxPlaying = true;
@@ -3253,6 +3285,7 @@ function mxPlayFrom(pos) {
 }
 function mxToggle() {
   if (mxPlaying) { mxStop(); return; }
+  mxUnlock();
   mxPlayFrom(mxPos >= mxDur - 0.1 ? 0 : mxPos);
 }
 function mxSeek(e) {
@@ -3342,6 +3375,7 @@ function rwRender() {
   if ((s0.apple_charts || []).length) extra.push('\ud83d\udcc8 <b>On Apple Music charts:</b> ' + s0.apple_charts.slice(0, 4).map(c => '#' + c.position + ' in ' + rcEsc(c.country) + ' (' + rcEsc(c.song) + ')').join(', '));
   const nv = (yt0.videos || [])[0];
   if (nv) extra.push('\u25b6\ufe0f <b>Newest video:</b> ' + rcEsc(nv.title) + ' \u00b7 ' + rwNum(nv.views) + ' views');
+  if (d.ready && d.ready.youtube) extra.push('<span style="color:var(--muted);">' + (yc0.id ? 'YouTube: ' + rcEsc(yc0.title || 'channel found') + '. Not your channel?' : 'We couldn\u2019t find your YouTube channel.') + ' <a style="color:var(--neon);font-weight:700;cursor:pointer;" onclick="rwYtForm()">' + (yc0.id ? 'Change it' : 'Add it') + '</a></span><span id="rw-yt-form"></span>');
   if ((yt0.comments || []).length) extra.push('\ud83d\udcac ' + yt0.comments.length + ' YouTube comments on \u201c' + rcEsc(yt0.comments_on || 'your newest video') + '\u201d go into your next Report Card.');
   if (extra.length) h += '<div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;color:#e8e8f5;font-size:12px;line-height:1.5;">' + extra.map(x => '<div>' + x + '</div>').join('') + '</div>';
   h += '<div class="mx-note" style="margin-top:6px;">Free public numbers from Last.fm, Deezer, YouTube, Genius and Apple Music charts, updated every week' + (d.snapshots[0] ? ' \u00b7 last ' + rcEsc(d.snapshots[0].taken_on) : '') + (d.snapshots[1] ? ' \u00b7 changes are vs the week before' : ' \u00b7 next week shows what changed') + '. Your Spotify numbers come from the screenshots below.</div>';
@@ -3357,6 +3391,7 @@ async function rwInit() {
     const d = await rwFetch();
     if (d && d.enabled) { document.querySelectorAll('.rw-gate').forEach(el => { el.style.display = ''; }); rwRender(); }
   } catch (e) {}
+  ytInit();
 }
 async function rwConnect() {
   const link = (document.getElementById('rw-link') || {}).value || '';
@@ -3367,11 +3402,132 @@ async function rwConnect() {
   if (d.error) { rwErr(d.error); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-brand-spotify"></i> Turn on alerts'; } return; }
   rwRender();
 }
+function rwYtForm() {
+  const f = document.getElementById('rw-yt-form'); if (!f) return;
+  f.innerHTML = '<div class="rw-row" style="margin-top:6px;"><input class="form-input" id="rw-yt" placeholder="youtube.com/@yourname" onkeydown="if(event.key===\'Enter\')rwYt()"/><button class="gen-btn" id="rw-yt-btn" style="margin:0;white-space:nowrap;" onclick="rwYt()"><i class="ti ti-brand-youtube"></i> Use this channel</button></div>';
+  setTimeout(() => { const i = document.getElementById('rw-yt'); if (i) i.focus(); }, 30);
+}
+async function rwYt() {
+  const v = (document.getElementById('rw-yt') || {}).value || '';
+  rwErr('');
+  if (!/youtube|@/.test(v)) { rwErr('Paste your YouTube channel link, like youtube.com/@yourname.'); return; }
+  const b = document.getElementById('rw-yt-btn'); if (b) { b.disabled = true; b.textContent = 'Checking\u2026'; }
+  const d = await rwFetch({ action: 'youtube', link: v.trim() });
+  if (d.error) { rwErr(d.error); if (b) { b.disabled = false; b.textContent = 'Use this channel'; } return; }
+  rwRender();
+}
 async function rwAlerts(on) { const d = await rwFetch({ action: 'alerts', on }); if (d.error) rwErr(d.error); rwRender(); }
 function rwChange() { if (rwState) rwState.watch = null; rwRender(); setTimeout(() => { const i = document.getElementById('rw-link'); if (i) i.focus(); }, 30); }
 async function rwDisconnect(a) {
   if (a.dataset.confirm !== '1') { a.dataset.confirm = '1'; a.textContent = 'Tap again to turn off'; setTimeout(() => { a.dataset.confirm = ''; a.textContent = 'Turn off and remove'; }, 4000); return; }
   const d = await rwFetch({ action: 'disconnect' }); if (d.error) rwErr(d.error); rwRender();
+}
+
+// ====== CONNECT YOUTUBE: the artist signs in with Google once; private YouTube Studio numbers every week ======
+let ytState = null;
+async function ytFetch(body) {
+  const r = await fetch('/api/youtube-connect', body ? { method: 'POST', headers: await authHeaders(), body: JSON.stringify(body) } : { headers: await authHeaders() });
+  const d = await r.json().catch(() => ({ error: 'Couldn’t reach the server. Try again.' }));
+  if (d && d.enabled) ytState = d;
+  return d;
+}
+function ytErr(t) { const e = document.getElementById('yt-error'); if (e) { e.textContent = t || ''; e.style.display = t ? 'block' : 'none'; } }
+const YT_BACK = {
+  connected: ['ok', 'YouTube connected. Your numbers are below.'],
+  cancelled: ['err', 'YouTube wasn’t connected (you cancelled on Google’s page).'],
+  noaccess: ['err', 'Google didn’t give us access to your YouTube Analytics. Try again and leave both boxes ticked.'],
+  nochannel: ['err', 'That Google account doesn’t have a YouTube channel. Try again and pick the account (or Brand Account) your channel is on.'],
+  retry: ['err', 'Google didn’t finish connecting. Tap Connect YouTube again.'],
+  expired: ['err', 'That took too long. Tap Connect YouTube again.'],
+  error: ['err', 'Something went wrong connecting YouTube. Try again.'],
+};
+let ytBackMsg = null;
+async function ytInit() {
+  try {
+    const q = new URLSearchParams(location.search), flag = q.get('yt');
+    if (flag) {
+      ytBackMsg = YT_BACK[flag] || null;
+      q.delete('yt'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    }
+    const d = await ytFetch();
+    if (d && d.enabled) { document.getElementById('yt-panel').style.display = ''; ytRender(); }
+    if (ytBackMsg && ytBackMsg[0] === 'err') ytErr(ytBackMsg[1]);
+  } catch (e) {}
+}
+function ytMins(s) { if (s == null) return '—'; s = Math.round(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function ytRender() {
+  const box = document.getElementById('yt-body'); if (!box) return;
+  const d = ytState || {};
+  if (!d.connected) {
+    box.innerHTML = '<div class="gen-sub" style="margin-bottom:10px;">See what YouTube Studio sees: views, watch time, subscribers gained, where viewers find you, your top cities and countries, Shorts vs long videos, and the second people stop watching. Sign in with Google once and we’ll pull it every week and use it in your Report Card. Read-only: we can’t post, edit or delete anything.</div>' +
+      '<button class="gen-btn" id="yt-btn" style="margin:0;width:auto;padding-left:22px;padding-right:22px;" onclick="ytConnect()"' + (d.ready ? '' : ' disabled') + '><i class="ti ti-brand-youtube"></i> Connect YouTube</button>' +
+      '<div class="mx-note" style="margin-top:8px;">Pick the Google account your channel is on. If your channel is a Brand Account, choose it when Google asks.</div>' +
+      (d.ready ? '' : '<div class="mx-note" style="color:#FFC83D;margin-top:6px;">Setup: add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel to switch this on.</div>');
+    return;
+  }
+  const l = d.link || {}, lat = (d.latest && d.latest.data) || {}, wk = lat.week || {}, pw = lat.prev_week || {};
+  const ch = lat.channel || {};
+  let h = '<div class="rw-row" style="align-items:center;"><div class="rw-artist">' + (l.channel_image ? '<img src="' + rcEsc(l.channel_image) + '" alt=""/>' : '') +
+    '<div><b>' + rcEsc(l.channel_title || 'Your channel') + '</b><small>' + (ch.subscribers != null ? rwNum(ch.subscribers) + ' subscribers · ' : '') + (d.latest ? 'updated ' + rcEsc(d.latest.taken_on) : 'connected') + '</small></div></div>' +
+    '<button class="gen-btn" id="yt-refresh" style="margin:0;padding:8px 14px;font-size:12px;background:transparent;border:1px solid var(--border);color:#e8e8f5;" onclick="ytRefresh()"><i class="ti ti-refresh"></i> Update now</button></div>';
+  if (l.last_error === 'reconnect') h += '<div class="yt-note" style="color:#FFC83D;">Google ended the connection (this happens every so often). <a style="color:var(--neon);font-weight:700;cursor:pointer;" onclick="ytConnect()">Reconnect YouTube</a> to keep your numbers coming.</div>';
+  if (ytBackMsg && ytBackMsg[0] === 'ok') { h += '<div class="yt-note" style="color:var(--neon);font-weight:700;">' + rcEsc(ytBackMsg[1]) + '</div>'; ytBackMsg = null; }
+  if (!d.latest) {
+    h += '<div class="yt-note" style="color:var(--muted);">No numbers yet. Tap Update now in a minute.</div>';
+  } else {
+    const stat = (label, v, prev, fmt) => '<div class="rw-stat"><div class="l">' + label + '</div><div class="v">' + (fmt ? fmt(v) : (v == null ? '—' : v)) + rwDelta(v, prev, fmt === ytMins ? null : fmt) + '</div></div>';
+    const net = (o) => o && o.subscribers_gained != null ? o.subscribers_gained - (o.subscribers_lost || 0) : null;
+    h += '<div class="rw-stats">' + [
+      stat('Views (7 days)', wk.views, pw.views, rwNum),
+      stat('Watch hours (7 days)', wk.watch_hours, pw.watch_hours, rwNum),
+      stat('New subscribers (7 days)', net(wk), net(pw)),
+      stat('Avg. view length', wk.avg_view_seconds, null, ytMins),
+    ].join('') + '</div>';
+    const list = (title, rows) => rows.length ? '<div class="yt-box"><h4>' + title + '</h4>' + rows.join('') + '</div>' : '';
+    const li = (a, b, pct) => '<div class="yt-li"><span>' + a + '</span><span>' + b + '</span></div>' + (pct != null ? '<div class="yt-bar"><i style="width:' + Math.max(2, Math.min(100, pct)) + '%"></i></div>' : '');
+    let cn; try { cn = new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) { cn = null; }
+    const cname = (c) => { try { return cn ? cn.of(c) : c; } catch (e) { return c; } };
+    const cols = [
+      list('How people find you', (lat.traffic || []).slice(0, 5).map(t => li(rcEsc(t.source), t.share + '%', t.share))),
+      list('Top cities', (lat.cities || []).slice(0, 5).map(c => li(rcEsc(c.city), rwNum(c.views)))),
+      list('Top countries', (lat.countries || []).slice(0, 5).map(c => li(rcEsc(cname(c.country)), rwNum(c.views)))),
+      list('Top videos (28 days)', (lat.top_videos || []).slice(0, 4).map(v => li(rcEsc(v.title), rwNum(v.views)))),
+      list('Shorts vs long videos', (lat.formats || []).filter(f => f.views).map(f => li(rcEsc(f.type), f.share + '% of views', f.share))),
+      list('Who’s watching', (lat.audience || []).map(a => li(rcEsc(a.gender + ' ' + a.age), a.share + '%', a.share))),
+    ].filter(Boolean);
+    if (cols.length) h += '<div class="yt-cols">' + cols.join('') + '</div>';
+    const r = lat.retention;
+    if (r) h += '<div class="yt-note">⏱️ <b>Where viewers stop watching “' + rcEsc(r.video) + '”:</b> ' + r.still_watching.at_25pct + '% are still watching a quarter of the way in, ' + r.still_watching.at_50pct + '% at the halfway point' + (r.half_gone_at ? '; half are gone by ' + rcEsc(r.half_gone_at) : '') + (r.biggest_early_drop_at ? '; the biggest early drop is around ' + rcEsc(r.biggest_early_drop_at) : '') + '.</div>';
+    h += '<div class="mx-note" style="margin-top:8px;">From YouTube Analytics. YouTube’s numbers settle about 3 days late, so “7 days” ends 3 days ago; changes are vs the 7 days before. Updated every week and used in your Report Card.</div>';
+  }
+  h += '<div class="rw-links"><a onclick="ytDisconnect(this)">Disconnect YouTube</a></div>';
+  box.innerHTML = h;
+}
+async function ytConnect() {
+  ytErr('');
+  const b = document.getElementById('yt-btn'); if (b) { b.disabled = true; b.innerHTML = 'Opening Google…'; }
+  const d = await ytFetch({ action: 'start' });
+  if (d.url) { location.href = d.url; return; }
+  ytErr(d.error || 'Couldn’t start. Try again.');
+  if (b) { b.disabled = false; b.innerHTML = '<i class="ti ti-brand-youtube"></i> Connect YouTube'; }
+}
+async function ytRefresh() {
+  ytErr('');
+  const b = document.getElementById('yt-refresh'); if (b) { b.disabled = true; b.innerHTML = 'Updating…'; }
+  const d = await ytFetch({ action: 'refresh' });
+  if (d.error) ytErr(d.error);
+  ytRender();
+}
+async function ytDisconnect(a) {
+  if (a.dataset.confirm !== '1') { a.dataset.confirm = '1'; a.textContent = 'Tap again to disconnect'; setTimeout(() => { a.dataset.confirm = ''; a.textContent = 'Disconnect YouTube'; }, 4000); return; }
+  const d = await ytFetch({ action: 'disconnect' }); if (d.error) ytErr(d.error); ytRender();
+}
+function ytForReport() {
+  const lat = ytState && ytState.connected && ytState.latest && ytState.latest.data;
+  if (!lat) return null;
+  const o = Object.assign({ channel: (ytState.link || {}).channel_title, taken_on: ytState.latest.taken_on }, lat);
+  if (o.top_videos) o.top_videos = o.top_videos.slice(0, 6).map(v => ({ title: v.title, views: v.views, watch_hours: v.watch_hours, avg_percent_watched: v.avg_percent_watched, subscribers_gained: v.subscribers_gained }));
+  return o;
 }
 
 // ====== SONG REPORT CARD ======
@@ -3476,7 +3632,7 @@ async function rcGenerate() {
   try {
     const previous = await rcPrevious(title);
     const pub = rwState && rwState.watch && rwState.snapshots && rwState.snapshots.length ? { artist: rwState.watch.artist_name, this_week: rwState.snapshots[0], week_before: rwState.snapshots[1] || null } : null;
-    const payload = { title, artist, notes: document.getElementById('rc-notes').value.trim(), previous, public_numbers: pub,
+    const payload = { title, artist, notes: document.getElementById('rc-notes').value.trim(), previous, public_numbers: pub, youtube_studio: ytForReport(),
       images: rcItems.filter(x => x.kind === 'image').map(x => x.data), files: rcItems.filter(x => x.kind === 'file').map(x => ({ name: x.name, text: x.data })) };
     const res = await fetch('/api/report-card', { method: 'POST', headers: await authHeaders(), body: JSON.stringify(payload) });
     const d = await res.json().catch(() => ({ error: 'Something went wrong. Try again.' }));
