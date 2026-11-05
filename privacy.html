@@ -47,7 +47,7 @@ a{color:var(--neon);}
 </nav>
 <div class="wrap">
   <h1>Privacy Policy</h1>
-  <div class="updated">Effective date: July 14, 2026</div>
+  <div class="updated">Effective date: November 5, 2026</div>
 
   <p>This Privacy Policy explains how StudioSound.ai ("we," "us") collects, uses, and protects your information when you use our website and services (the "Service").</p>
 
@@ -74,38 +74,51 @@ a{color:var(--neon);}
   <h2>3. AI Processing and Public Web Research</h2>
   <p>When you generate content, your prompts and uploaded images are sent to the third-party AI providers that power the relevant tool so they can produce your result. These providers process this data under their own terms and privacy policies. Do not include sensitive personal information in prompts.</p>
   <p><strong>Public web research:</strong> When you provide an artist name and social handle to personalization features (such as the Release Planner), our systems search publicly available sources — such as music platforms, social media, and news — to gather information about that artist and comparable artists, solely to personalize your results. We only access information that is already public, and the research compiled is stored with your generation record.</p>
-  <p><strong>Improving our AI:</strong> We may use generation records in anonymized and aggregated form to analyze, improve, and train StudioSound.ai's features and AI systems, as described in our Terms of Use. We do not sell this data.</p>
+  <p><strong>Improving our AI:</strong> We may use generation records in anonymized and aggregated form to analyze, improve, and train StudioSound.ai's features and AI systems, as described in our Terms of Use. This never includes data we receive from Google or YouTube (see section 4). We do not sell this data.</p>
 
-  <h2>4. Service Providers</h2>
+  <h2 id="youtube">4. YouTube and Google Data</h2>
+  <p>If you choose <strong>Connect YouTube</strong>, you sign in with Google and allow StudioSound.ai read-only access to your YouTube channel information and YouTube Analytics. StudioSound.ai uses YouTube API Services. By connecting, you agree to the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube Terms of Service</a>, and Google's handling of your data is described in the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>
+  <ul>
+    <li><strong>What we access:</strong> your channel's name, picture and public counts, and your channel's analytics (views, watch time, subscribers gained and lost, likes, comments and shares counts, traffic sources, countries and cities, viewer age and gender groups, Shorts vs. long-video views, your top videos and how long viewers keep watching them). We request read-only permissions (<code>youtube.readonly</code> and <code>yt-analytics.readonly</code>). We cannot upload, edit, delete or post anything on your channel.</li>
+    <li><strong>How we use it:</strong> only to show you your numbers in the Studio, keep a weekly history so you can see what changed, and write your Song Report Card. To write the Report Card, a summary of these numbers is sent to our AI model provider to produce your card; it is not used for anything else.</li>
+    <li><strong>What we store:</strong> a weekly summary of your numbers and an encrypted access key from Google that lets us read them each week. We do not store your Google password.</li>
+    <li><strong>What we never do:</strong> we do not sell this data, use it for advertising, share it with anyone except as needed to provide these features, let humans read it except with your permission, for security, or as required by law, or use it to train or improve AI models (ours or anyone else's).</li>
+    <li><strong>Disconnecting and deletion:</strong> tap <em>Disconnect YouTube</em> in the Studio at any time. We then tell Google to revoke our access and delete the stored key and all saved YouTube numbers right away. You can also remove access from your Google account at <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>; your saved numbers are then deleted when you disconnect or within 30 days. Deleting your StudioSound.ai account deletes them too.</li>
+  </ul>
+  <p>StudioSound.ai's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+
+  <h2>5. Service Providers</h2>
   <p>We share information only with the providers necessary to run the Service:</p>
   <ul>
     <li><strong>Supabase</strong> — authentication, database, and file storage;</li>
     <li><strong>Stripe</strong> — payment processing and billing;</li>
     <li><strong>Vercel</strong> — website hosting;</li>
     <li><strong>AI model providers</strong> — content generation as described above;</li>
+    <li><strong>Google (YouTube API Services)</strong> — your YouTube channel numbers, only if you choose Connect YouTube (see section 4);</li>
+    <li><strong>Resend</strong> — sending account and release emails;</li>
     <li><strong>GitHub</strong> — hosting of site images and assets.</li>
   </ul>
   <p>We may also disclose information if required by law or to protect our rights, users, or the public.</p>
 
-  <h2 id="cookies">5. Cookies and Local Storage</h2>
+  <h2 id="cookies">6. Cookies and Local Storage</h2>
   <p>We use strictly necessary cookies and browser storage to keep you signed in and make the Service work (for example, your authentication session). Stripe may set cookies during checkout for fraud prevention. We do not use advertising cookies on the Service.</p>
 
-  <h2 id="security">6. Security</h2>
+  <h2 id="security">7. Security</h2>
   <p>We use industry-standard measures to protect your information, including encrypted connections (HTTPS/SSL), hashed passwords, access controls on our database, and secrets management for API credentials. No system is 100% secure, but we work to protect your data and will notify you as required by law in the event of a breach affecting your personal information.</p>
 
-  <h2>7. Data Retention and Deletion</h2>
+  <h2>8. Data Retention and Deletion</h2>
   <p>We keep your account information and generated content while your account is active. You can request deletion of your account and associated data at any time by emailing <a href="mailto:hello@studiosound.ai">hello@studiosound.ai</a>; we will delete your data within 30 days except where we must retain records (for example, payment records required for tax and accounting).</p>
 
-  <h2>8. Your Rights</h2>
+  <h2>9. Your Rights</h2>
   <p>Depending on where you live, you may have the right to access, correct, delete, or export your personal information, and to object to or restrict certain processing. To exercise any of these rights, contact us at <a href="mailto:hello@studiosound.ai">hello@studiosound.ai</a>. You can unsubscribe from the newsletter at any time via the link in any newsletter email or by contacting us.</p>
 
-  <h2>9. Children</h2>
+  <h2>10. Children</h2>
   <p>The Service is not directed to children under 13, and we do not knowingly collect personal information from them. If you believe a child has provided us personal information, contact us and we will delete it.</p>
 
-  <h2>10. Changes to This Policy</h2>
+  <h2>11. Changes to This Policy</h2>
   <p>We may update this Privacy Policy from time to time. If changes are material, we will provide notice (for example, by email or an in-app notice). The effective date above shows when this policy was last revised.</p>
 
-  <h2>11. Contact</h2>
+  <h2>12. Contact</h2>
   <p>Privacy questions or requests: <a href="mailto:hello@studiosound.ai">hello@studiosound.ai</a></p>
 
   <div class="footer-note">© 2026 StudioSound.ai — The AI Studio for Independent Artists. See also our <a href="terms.html">Terms of Use</a>.</div>
