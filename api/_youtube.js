@@ -99,14 +99,15 @@ export async function pullStudio(access) {
     q({ startDate: start28, endDate: end, metrics: 'viewerPercentage', dimensions: 'ageGroup,gender' }),
     q({ startDate: start28, endDate: end, metrics: 'views,estimatedMinutesWatched,averageViewPercentage,subscribersGained', dimensions: 'video', sort: '-views', maxResults: '8' }),
   ]);
-  const tot = (d) => { const r = rows(d)[0]; if (!r) return null; const [views, minutes, avgDur, subsG, subsL, likes, comments, shares] = r; return { views, watch_hours: Math.round(minutes / 60), avg_view_seconds: Math.round(avgDur), subscribers_gained: subsG, subscribers_lost: subsL, likes, comments, shares }; };
+  const tot = (d) => { const r = rows(d)[0]; if (!r) return null; const [views, minutes, avgDur, subsG, subsL, likes, comments, shares] = r; return { views, watch_hours: Math.round(minutes / 60), watch_minutes: Math.round(minutes), avg_view_seconds: Math.round(avgDur), subscribers_gained: subsG, subscribers_lost: subsL, likes, comments, shares }; };
   const out = { period: { week: [start7, end], month: [start28, end] }, week: tot(w), prev_week: tot(pw) };
   const tr = rows(traffic); const trTotal = tr.reduce((n, r) => n + (r[1] || 0), 0) || 1;
   out.traffic = tr.slice(0, 6).map(r => ({ source: TRAFFIC[r[0]] || String(r[0]).replace(/_/g, ' ').toLowerCase(), views: r[1], share: Math.round(r[1] / trTotal * 100) }));
   out.countries = rows(countries).map(r => ({ country: r[0], views: r[1], watch_hours: Math.round((r[2] || 0) / 60) }));
   out.cities = rows(cities).map(r => ({ city: r[0], views: r[1] }));
   const ty = rows(types); const tyTotal = ty.reduce((n, r) => n + (r[1] || 0), 0) || 1;
-  out.formats = ty.map(r => ({ type: r[0] === 'SHORTS' ? 'Shorts' : r[0] === 'VIDEO_ON_DEMAND' ? 'Long videos' : r[0] === 'LIVE_STREAM' ? 'Live' : String(r[0]).toLowerCase(), views: r[1], share: Math.round(r[1] / tyTotal * 100), subscribers_gained: r[2] }));
+  const fmt = (t) => { const k = String(t).toLowerCase().replace(/[^a-z]/g, ''); return k === 'shorts' ? 'Shorts' : k === 'videoondemand' ? 'Long videos' : k === 'livestream' ? 'Live' : k === 'story' ? 'Stories' : k || 'Other'; };
+  out.formats = ty.map(r => ({ type: fmt(r[0]), views: r[1], share: Math.round(r[1] / tyTotal * 100), subscribers_gained: r[2] }));
   out.audience = rows(demo).sort((a, b) => b[2] - a[2]).slice(0, 4).map(r => ({ age: String(r[0]).replace('age', '').replace('-', '–'), gender: String(r[1]).toLowerCase(), share: Math.round(r[2]) }));
 
   // top videos, with titles and length, and where viewers stop watching on the top one
