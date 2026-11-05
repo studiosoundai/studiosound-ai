@@ -3454,6 +3454,8 @@ async function ytInit() {
     if (ytBackMsg && ytBackMsg[0] === 'err') ytErr(ytBackMsg[1]);
   } catch (e) {}
 }
+function ytWatch(m) { if (m == null) return '\u2014'; m = Math.round(m); return m < 60 ? m + ' min' : m < 600 ? Math.floor(m / 60) + 'h ' + (m % 60) + 'm' : rwNum(Math.round(m / 60)) + ' hrs'; }
+function ytType(t) { const k = String(t || '').toLowerCase().replace(/[^a-z]/g, ''); return k === 'shorts' ? 'Shorts' : k === 'videoondemand' || k === 'longvideos' ? 'Long videos' : k === 'livestream' || k === 'live' ? 'Live' : (t || 'Other'); }
 function ytMins(s) { if (s == null) return '—'; s = Math.round(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 function ytRender() {
   const box = document.getElementById('yt-body'); if (!box) return;
@@ -3479,8 +3481,8 @@ function ytRender() {
     const net = (o) => o && o.subscribers_gained != null ? o.subscribers_gained - (o.subscribers_lost || 0) : null;
     h += '<div class="rw-stats">' + [
       stat('Views (7 days)', wk.views, pw.views, rwNum),
-      stat('Watch hours (7 days)', wk.watch_hours, pw.watch_hours, rwNum),
-      stat('New subscribers (7 days)', net(wk), net(pw)),
+      (wk.watch_minutes != null ? stat('Watch time (7 days)', wk.watch_minutes, pw.watch_minutes, ytWatch) : stat('Watch hours (7 days)', wk.watch_hours, pw.watch_hours, rwNum)),
+      stat('Subscriber change (7 days)', net(wk), net(pw)),
       stat('Avg. view length', wk.avg_view_seconds, null, ytMins),
     ].join('') + '</div>';
     const list = (title, rows) => rows.length ? '<div class="yt-box"><h4>' + title + '</h4>' + rows.join('') + '</div>' : '';
@@ -3492,10 +3494,11 @@ function ytRender() {
       list('Top cities', (lat.cities || []).slice(0, 5).map(c => li(rcEsc(c.city), rwNum(c.views)))),
       list('Top countries', (lat.countries || []).slice(0, 5).map(c => li(rcEsc(cname(c.country)), rwNum(c.views)))),
       list('Top videos (28 days)', (lat.top_videos || []).slice(0, 4).map(v => li(rcEsc(v.title), rwNum(v.views)))),
-      list('Shorts vs long videos', (lat.formats || []).filter(f => f.views).map(f => li(rcEsc(f.type), f.share + '% of views', f.share))),
+      list('Shorts vs long videos', (lat.formats || []).filter(f => f.views).map(f => li(rcEsc(ytType(f.type)), f.share + '% of views', f.share))),
       list('Who’s watching', (lat.audience || []).map(a => li(rcEsc(a.gender + ' ' + a.age), a.share + '%', a.share))),
     ].filter(Boolean);
     if (cols.length) h += '<div class="yt-cols">' + cols.join('') + '</div>';
+    if (!(lat.cities || []).length && !(lat.countries || []).length && !(lat.audience || []).length) h += '<div class="mx-note" style="margin-top:8px;">Cities, countries and age groups show up once your channel gets more views: YouTube hides them on small numbers to protect viewers\u2019 privacy.</div>';
     const r = lat.retention;
     if (r) h += '<div class="yt-note">⏱️ <b>Where viewers stop watching “' + rcEsc(r.video) + '”:</b> ' + r.still_watching.at_25pct + '% are still watching a quarter of the way in, ' + r.still_watching.at_50pct + '% at the halfway point' + (r.half_gone_at ? '; half are gone by ' + rcEsc(r.half_gone_at) : '') + (r.biggest_early_drop_at ? '; the biggest early drop is around ' + rcEsc(r.biggest_early_drop_at) : '') + '.</div>';
     h += '<div class="mx-note" style="margin-top:8px;">From YouTube Analytics. YouTube’s numbers settle about 3 days late, so “7 days” ends 3 days ago; changes are vs the 7 days before. Updated every week and used in your Report Card.</div>';
