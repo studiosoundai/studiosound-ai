@@ -314,6 +314,7 @@ body{overflow:auto;height:auto;}
 .tm-remove{background:none;border:0.5px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
 .tm-remove:hover{border-color:#ff5c7a;color:#ff5c7a;}
 .tm-add{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;}
+.gf-add{grid-template-columns:1.6fr 1fr 1fr;} .gf-add #gf-note{grid-column:1 / span 2;}
 /* Managers */
 .mg-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#00FFD10d;border:0.5px solid #00FFD155;border-radius:10px;padding:10px 14px;margin:0 0 14px;color:#e8e8f5;font-size:12px;line-height:1.5;}
 .mg-bar b{color:#fff;}
@@ -414,7 +415,7 @@ body{overflow:auto;height:auto;}
 .mg-add{display:grid;grid-template-columns:1fr auto;gap:8px;}
 .mg-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
 @media(max-width:768px){ .mg-add{grid-template-columns:1fr;} }
-@media(max-width:768px){ .tm-add{grid-template-columns:1fr;} }
+@media(max-width:768px){ .tm-add{grid-template-columns:1fr;} .gf-add #gf-note{grid-column:auto;} }
 .mx-key{display:inline-block;border:1px solid #2a2a3e;border-radius:5px;padding:0 5px;font-size:10px;color:var(--text);}
 .mx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .mx-stat{background:#0f0f1a;border:0.5px solid var(--border);border-radius:10px;padding:10px;}
@@ -1686,6 +1687,22 @@ body{overflow:auto;height:auto;}
         <div id="tm-list"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
         <div class="mx-note" style="margin-top:12px;">Removing someone puts them back on the plan they had before (Free, or their paid plan if they subscribe).</div>
       </div>
+      <div class="gen-panel" style="max-width:720px;margin-bottom:16px;">
+        <div class="gen-title">🎁 Gifted plans</div>
+        <div class="gen-sub">Give an artist or creator Pro or Premium for a set time, like an influencer making a tutorial. They get the plan only (no early access to tools that aren't public yet). It works even if they haven't signed up: they start on it the moment they create an account with that email. When the time is up they go back to Free on their own.</div>
+        <div class="tm-add gf-add">
+          <input class="form-input" id="gf-email" type="email" placeholder="Their email" autocomplete="off" onkeydown="if(event.key==='Enter')gfGive()"/>
+          <select class="form-input" id="gf-plan"><option value="premium">Premium</option><option value="pro">Pro</option></select>
+          <select class="form-input" id="gf-months"><option value="1">1 month</option><option value="3" selected>3 months</option><option value="6">6 months</option><option value="12">12 months</option><option value="0">No end date</option></select>
+          <input class="form-input" id="gf-note" placeholder="Note (optional), e.g. YouTube tutorial" maxlength="80" onkeydown="if(event.key==='Enter')gfGive()"/>
+          <button class="gen-btn" id="gf-btn" style="margin:0;white-space:nowrap;" onclick="gfGive()"><i class="ti ti-gift"></i> Give plan</button>
+        </div>
+        <div class="error-msg" id="gf-error"></div>
+        <div class="mx-note" id="gf-msg" style="color:var(--neon);"></div>
+        <div class="section-label" style="margin:18px 0 10px;">GIFTED <span id="gf-count" style="color:var(--muted);"></span></div>
+        <div id="gf-list"><p style="color:var(--muted);font-size:12px;">Loading…</p></div>
+        <div class="mx-note" style="margin-top:12px;">Giving a plan to the same email again resets the plan and the clock. If someone pays for a plan, their paid plan always wins.</div>
+      </div>
     </div>
 
     <!-- RECENT GENERATIONS -->
@@ -2090,7 +2107,7 @@ function switchTool(tool, sidebarBtn) {
   document.getElementById('topbar-title').textContent = titles[tool] || 'Dashboard';
   if(tool === 'assets') showAssetsPanel();
   if(tool === 'settings') fillSettings();
-  if(tool === 'team') tmLoad();
+  if(tool === 'team') { tmLoad(); gfLoad(); }
   if(tool === 'split' && !document.querySelector('#sp-rows .form-row')) { addSplitRow(); addSplitRow(); }
   if(tool === 'forecast' && !document.querySelector('#fc-rows .fc-row')) {
     let restored = false;
@@ -4063,6 +4080,66 @@ async function tmRemove(email, btn) {
     tmSay('', email + ' was removed and is back on ' + (d.plan || 'free').charAt(0).toUpperCase() + (d.plan || 'free').slice(1) + '.');
     tmLoad();
   } catch (e) { tmSay('Couldn’t reach the server. Try again.'); btn.disabled = false; }
+}
+// ====== GIFTED PLANS (owner only, on the Staff page) ======
+function gfSay(err, msg) {
+  const e = document.getElementById('gf-error'); e.textContent = err || ''; e.style.display = err ? 'block' : 'none';
+  document.getElementById('gf-msg').textContent = msg || '';
+}
+function gfCap(p) { p = p || 'free'; return p.charAt(0).toUpperCase() + p.slice(1); }
+function gfDate(d) { return new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); }
+function gfRender(gifts) {
+  const list = document.getElementById('gf-list');
+  document.getElementById('gf-count').textContent = gifts.length ? '(' + gifts.length + ')' : '';
+  if (!gifts.length) { list.innerHTML = '<p style="color:var(--muted);font-size:12px;">No gifted plans yet. Add an email above.</p>'; return; }
+  list.innerHTML = gifts.map(g => {
+    const days = g.expires_at ? Math.ceil((new Date(g.expires_at) - Date.now()) / 86400000) : null;
+    const status = !g.signed_up ? '<span class="tm-pill wait">Waiting to sign up</span>'
+      : g.paying ? '<span class="tm-pill ok">Paying · ' + tmEsc(gfCap(g.now_on)) + '</span>'
+      : '<span class="tm-pill ok">Signed up · ' + tmEsc(gfCap(g.now_on)) + '</span>';
+    const ends = g.expires_at ? '<span' + (days <= 14 ? ' style="color:#FFC83D;"' : '') + '>Ends ' + gfDate(g.expires_at) + (days <= 14 ? ' (' + Math.max(0, days) + ' day' + (days === 1 ? '' : 's') + ' left)' : '') + '</span>' : '<span>No end date</span>';
+    return '<div class="tm-row"><div><div class="tm-email">' + tmEsc(g.email) + '</div><div class="tm-meta">' + status +
+      '<span>Gifted ' + tmEsc(gfCap(g.plan)) + '</span>' + ends + (g.note ? '<span>' + tmEsc(g.note) + '</span>' : '') + '</div></div>' +
+      '<button type="button" class="tm-remove" data-email="' + tmEsc(g.email) + '" onclick="gfRemove(this.dataset.email, this)">Remove</button></div>';
+  }).join('');
+}
+async function gfLoad() {
+  try {
+    const d = await (await fetch('/api/gifts', { headers: await authHeaders() })).json();
+    if (!d.owner) { document.getElementById('gf-list').innerHTML = '<p style="color:var(--muted);font-size:12px;">Only the account owner can give plans.</p>'; return; }
+    if (d.error) { gfSay(d.error); return; }
+    gfRender(d.gifts || []);
+  } catch (e) { gfSay('Couldn’t load gifted plans. Try again.'); }
+}
+async function gfGive() {
+  const email = document.getElementById('gf-email').value.trim(), note = document.getElementById('gf-note').value.trim();
+  const plan = document.getElementById('gf-plan').value, months = Number(document.getElementById('gf-months').value);
+  gfSay('', '');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { gfSay('Enter a valid email address.'); return; }
+  const btn = document.getElementById('gf-btn'); btn.disabled = true;
+  try {
+    const d = await (await fetch('/api/gifts', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'give', email, plan, months, note }) })).json();
+    if (!d.ok) gfSay(d.error || 'Couldn’t give the plan. Try again.');
+    else {
+      document.getElementById('gf-email').value = ''; document.getElementById('gf-note').value = '';
+      const until = d.expires_at ? ' until ' + gfDate(d.expires_at) : ' with no end date';
+      gfSay('', !d.signed_up ? '✓ ' + d.email + ' will start on ' + gfCap(d.plan) + ' as soon as they sign up with this email (' + (d.expires_at ? 'ends ' + gfDate(d.expires_at) : 'no end date') + ').'
+        : d.now_on === d.plan ? '✓ ' + d.email + ' is now on ' + gfCap(d.plan) + until + '. They may need to refresh.'
+        : '✓ Saved, but ' + d.email + ' already has ' + gfCap(d.now_on) + ', so nothing changed for them.');
+      gfLoad();
+    }
+  } catch (e) { gfSay('Couldn’t reach the server. Try again.'); }
+  btn.disabled = false;
+}
+async function gfRemove(email, btn) {
+  if (btn.dataset.confirm !== '1') { btn.dataset.confirm = '1'; btn.textContent = 'Tap again to remove'; setTimeout(() => { btn.dataset.confirm = ''; btn.textContent = 'Remove'; }, 4000); return; }
+  btn.disabled = true; gfSay('', '');
+  try {
+    const d = await (await fetch('/api/gifts', { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ action: 'remove', email }) })).json();
+    if (!d.ok) { gfSay(d.error || 'Couldn’t remove it.'); btn.disabled = false; return; }
+    gfSay('', 'Gift removed. ' + email + ' is on ' + gfCap(d.plan) + ' now.');
+    gfLoad();
+  } catch (e) { gfSay('Couldn’t reach the server. Try again.'); btn.disabled = false; }
 }
 async function tmInit() {
   try {
