@@ -100,5 +100,8 @@ export default async function handler(req, res) {
       }
     } catch (e) { console.error('youtube cleanup', e.message); }
   }
+  // gifted plans (Staff page): end the ones that ran out, keep the live ones applied
+  try { const g = await db('rpc/gift_daily', { method: 'POST', body: {} }); if (g && g.ended) out.gifts_ended = g.ended; }
+  catch (e) { if (!/gift_daily|404/.test(e.message || '')) console.error('gift_daily', e.message); }
   return res.status(200).json(Object.assign({ ok: true, watched: (watches || []).length }, out));
 }
